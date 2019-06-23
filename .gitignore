@@ -52,3 +52,7 @@ Mkfile.old
 dkms.conf
 
 .idea
+.gradle
+app/.externalNativeBuild
+app/build
+build
