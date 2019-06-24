@@ -6,6 +6,9 @@
 #include <android/log.h>
 
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#else
+#include <stdio.h>
+#define LOGW(...) printf
 #endif//DEF ANDROID
 
 #include <cglm.h>

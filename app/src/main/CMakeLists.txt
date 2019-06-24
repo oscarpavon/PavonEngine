@@ -2,6 +2,37 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+set(engine_source 
+model.c
+vector.c
+file_loader.c
+level.c
+camera.c
+images.c
+input.c        
+gui.c
+shader.c
+game.c
+object_select.c
+engine.c
+)
+
+if(NOT ANDROID)
+
+set(sources 
+level_editor/main.c
+level_editor/windows.c
+)
+
+add_executable(Editor ${sources} ${engine_source})
+
+target_link_libraries(Editor        
+        glfw
+        EGL
+        GLESv2
+        m
+        )
+endif(NOT ANDROID)
 
 if(ANDROID)
 
@@ -18,35 +49,27 @@ log)
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
 set(main_file main.c audio.c)
-endif(ANDROID)
 
-include_directories(/usr/include/cglm)
 
 add_library(maincode
     SHARED
         ${main_file}
-        model.c
-        vector.c
-        file_loader.c
-        level.c
-        camera.c
-        images.c
-        input.c        
-        gui.c
-        shader.c
-        game.c
-        object_select.c
-        engine.c
+        ${engine_source}
     )
 
-target_link_libraries(maincode        
-        EGL
-        GLESv2
-        )
+endif(ANDROID)
+
+include_directories(/usr/include/cglm)
+
+
+
+
 
 
 if(ANDROID)
 target_link_libraries(maincode
+        EGL
+        GLESv2
         android
         native_app_glue        
         ${log-lib}
