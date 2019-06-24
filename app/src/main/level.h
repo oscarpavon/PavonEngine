@@ -12,13 +12,6 @@ typedef struct level{
     ModelArray models_array;
 }Level;
 
-#include "model.h"
-struct Player{
-    const char* name;
-    struct Model model;
-
-
-};
 
 void load_level(const char* path, Level* output_level);
 

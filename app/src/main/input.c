@@ -13,6 +13,11 @@ void handle_input_event(struct AInputEvent * event){
     touch_position_y  = AMotionEvent_getY(event,0);
 }
 
+void handle_finger_up(){
+    touch_position_x = -1;
+    touch_position_y = -1;
+}
+
 int32_t handle_input(struct android_app* app, AInputEvent* event) {
 
     int32_t eventType = AInputEvent_getType(event);
@@ -27,7 +32,7 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
                             handle_input_event(event);
                             break;
                         case AMOTION_EVENT_ACTION_UP:
-
+                            handle_finger_up();
 
                             break;
                         case AMOTION_EVENT_ACTION_MOVE:

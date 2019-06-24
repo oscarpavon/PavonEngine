@@ -9,7 +9,7 @@ void init_camera(){
     glm_mat4_identity(main_camera.view);
     glm_mat4_identity(main_camera.projection);
 
-    init_vec3(0.0f, 1.0f, 0.0f, camera_front);
+    init_vec3(0.0f, -1.0f, 0.0f, camera_front);
     init_vec3(0.0f, 0.0f,  1.0f, camera_up);
     init_vec3(0,-2,1.f, camera_position);
 

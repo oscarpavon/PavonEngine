@@ -25,6 +25,8 @@
 #include "gui.h"
 #include "shader.h"
 
+#include "game.h"
+
 static EGLint const attribute_list[] = {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -119,7 +121,7 @@ void handle_cmd(struct android_app *pApp, int32_t cmd) {
     }
 }
 
-Level new_level;
+
 
 void init_level_models(){
     for(size_t i = 0; i < new_level.models_array.count ; i++){
@@ -267,7 +269,7 @@ void android_main(struct android_app* app){
 
     init_camera();
 
-    init_button();
+    init_gui();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -275,6 +277,8 @@ void android_main(struct android_app* app){
     load_model_texture_to_gpu();
     create_models_shaders();
     init_level_models();
+
+    init_game();
 
     while(!should_close){
 
@@ -292,11 +296,11 @@ void android_main(struct android_app* app){
 
         draw_frame();
         draw_gui();
+        update_game();
 
         eglSwapBuffers(display,surface);
 
-        touch_position_x = -1;
-        touch_position_y = -1;
+
 
     }
 

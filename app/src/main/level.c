@@ -22,6 +22,10 @@ void load_level(const char* path, Level* output_level){
     model03.texture.image = load_image("skydome.jpg");
     model04.texture.image = load_image("grass03.png");
 
+    struct Model fireman_model;
+    load_model("fireman.gltf",&fireman_model);
+    fireman_model.texture.image = load_image("fireman.png");
+    glm_mat4_identity(fireman_model.model_mat);
 
     glm_mat4_identity(model01.model_mat);
     glm_mat4_identity(model02.model_mat);
@@ -32,9 +36,11 @@ void load_level(const char* path, Level* output_level){
     glm_scale(model02.model_mat, (vec3){0.4, 0.4, 0.4});
     //glm_rotate(model02.model_mat, 180 , (vec3){1,0,0});
 
+    glm_scale(fireman_model.model_mat, (vec3){0.4, 0.4, 0.4});
 
     add_model_to_array(&output_level->models_array, model02);
     add_model_to_array(&output_level->models_array, model01);
     add_model_to_array(&output_level->models_array, model03);
     add_model_to_array(&output_level->models_array, model04);
+    add_model_to_array(&output_level->models_array, fireman_model);
 }

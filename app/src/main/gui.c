@@ -10,12 +10,17 @@
 
 #include "shader.h"
 
-#include <memory.h>
+#include <string.h>
+#include <GLES2/gl2.h>
 
 typedef unsigned short int ui_size;
 
 GLuint vert_shader;
 GLuint frag_shader;
+
+static GLuint vertex_buffer_id;
+VertexArray vertex_array;
+
 
 void compile_shaders(){
     vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
@@ -23,18 +28,19 @@ void compile_shaders(){
 }
 
 void create_gui_shaders(){
+    for(size_t i = 0; i < buttons.count ; i++) {
 
-    button1.shader = glCreateProgram();
-    glAttachShader( button1.shader, vert_shader);
-    glAttachShader( button1.shader, frag_shader);
-    glLinkProgram( button1.shader);
+        size_t offset = buttons.element_bytes_size;
 
-    GLuint shader = glCreateProgram();
-    glAttachShader( shader, vert_shader);
-    glAttachShader( shader, frag_shader);
-    glLinkProgram( shader);
+        Button *button = &buttons.data[0] + (i * offset);
 
-    shoot_button.shader = shader;
+        button->shader = glCreateProgram();
+        glAttachShader( button->shader, vert_shader);
+        glAttachShader( button->shader, frag_shader);
+        glLinkProgram( button->shader);
+    }
+
+
 }
 
 void check_if_pressed(struct Button* button){
@@ -47,8 +53,10 @@ void check_if_pressed(struct Button* button){
     if(minx <= touch_position_x && maxy >= touch_position_y){
         if(miny <= touch_position_y && maxx >= touch_position_x){
             button->pressed = true;
-            LOGW("button pressed");
+            //LOGW("button pressed");
         }
+    }else{
+        button->pressed = false;
     }
 }
 
@@ -95,7 +103,7 @@ void draw_button(){
 
         update_button_matrix(button);
 
-        glBindBuffer(GL_ARRAY_BUFFER,button->vertex_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
 
         glEnableVertexAttribArray(0);
 
@@ -115,14 +123,22 @@ void draw_button(){
 }
 
 void create_vertex_buffer(){
-    glGenBuffers(1,&button1.vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER,button1.vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, button1.vertex_array.count * sizeof(struct Vertex) , button1.vertex_array.vertices, GL_STATIC_DRAW);
-
+    glGenBuffers(1,&vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, vertex_array.count * sizeof(struct Vertex) , vertex_array.vertices, GL_STATIC_DRAW);
+    free(vertex_array.vertices);
 
 }
 
-void init_button(){
+void init_button(Button* button, float position_x , float position_y , float size_x, float size_y){
+    button->position[0] = position_x;
+    button->position[1] = position_y;
+
+    button->size[0] = size_x;
+    button->size[1] = size_y;
+}
+
+void init_gui_element_geometry(){
     struct Vertex vert1;
     init_vec3(-1.0F,1.0,0.0, vert1.postion);
     struct Vertex vert2;
@@ -133,37 +149,36 @@ void init_button(){
     init_vec3(1.0,-1.0F,0.0, vert4.postion);
 
 
-    init_vertex_array(&button1.vertex_array, 1);
-    add_vextex_to_array(&button1.vertex_array,vert1);
-    add_vextex_to_array(&button1.vertex_array,vert2);
-    add_vextex_to_array(&button1.vertex_array,vert3);
-    add_vextex_to_array(&button1.vertex_array,vert4);
+    init_vertex_array(&vertex_array, 1);
+    add_vextex_to_array(&vertex_array,vert1);
+    add_vextex_to_array(&vertex_array,vert2);
+    add_vextex_to_array(&vertex_array,vert3);
+    add_vextex_to_array(&vertex_array,vert4);
+}
+void init_gui(){
+
+    init_gui_element_geometry();
 
     compile_shaders();
-    create_gui_shaders();
+
     create_vertex_buffer();
 
-    button1.position[0] = 1000;
-    button1.position[1] = 500;
+    init_button(&button1, 600, 100, 35,35);
 
-    button1.size[0] = 35;
-    button1.size[1] = 35;
+    init_button(&back_button, 600, 300, 35,35);
 
-    shoot_button.position[0] = 1200;
-    shoot_button.position[1] = 1000;
-    shoot_button.size[0] = 35;
-    shoot_button.size[1] = 35;
-
-    shoot_button.vertex_buffer = button1.vertex_buffer;
 
     init_array(&buttons, sizeof(Button));
     add_element_to_array(&buttons,&button1);
     add_element_to_array(&buttons,&shoot_button);
+    add_element_to_array(&buttons,&back_button);
 
+    create_gui_shaders();
 
 }
 
 void draw_gui(){
     draw_button();
     check_if_pressed(&button1);
+    check_if_pressed(&back_button);
 }

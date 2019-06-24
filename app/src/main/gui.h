@@ -10,24 +10,33 @@
 #include <GLES2/gl2.h>
 
 
+#define POSITION_RELATIVE_LEFT_BOTTON 0
+#define POSITION_RELATIVE_LEFT_TOP 1
+
 
 typedef struct Button{
     bool pressed;
     vec2 size;
     vec2 position;
+    unsigned short int relative_to;
 
 
-    VertexArray vertex_array;
-    GLuint vertex_buffer;
     GLuint shader;
 }Button;
 
+
+typedef struct Menu{
+    Array buttons;
+}Menu;
+
 Button button1;
 Button shoot_button;
+Button back_button;
+Button virtual_joystick;
 
 Array buttons;
 
-void init_button();
+void init_gui();
 void draw_button();
 void draw_gui();
 

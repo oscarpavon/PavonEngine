@@ -98,10 +98,8 @@ void add_element_to_array(Array* array, void* element){
     if(!buffer){
         LOGW("array no allocated\n");
     }
-
     memcpy(buffer+(offset),element,array->element_bytes_size);
-    //Button* b3 = &buffer[0]+40;
-    free(array->data);
+
     array->data = buffer;
 
 
