@@ -23,6 +23,7 @@
 #include "audio.h"
 #include "input.h"
 #include "gui.h"
+#include "shader.h"
 
 static EGLint const attribute_list[] = {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -52,58 +53,6 @@ EGLint h = 0;
 
 bool should_close = false;
 
-static const char* triVertShader = "attribute vec3 vPosition;\
-attribute vec2 inUV;\
-varying vec2 v_TexCoord; \
-uniform mat4 MVP;   \
-void main()\
-{\
-    gl_Position = MVP * vec4(vPosition,1);\
-    v_TexCoord = inUV;\
-}\
-//end";
-
-static const char*  triFragShader = "precision mediump float; \
-   uniform sampler2D texture_sampler;\
-   varying vec2 v_TexCoord;                     \
-    void main()\
-    {\
-        gl_FragColor = texture2D(texture_sampler, v_TexCoord);\
-    }\
-//end";
-
-void print_shader_compile_log(GLuint shader, const char* path_for_error_debug){
-
-    GLint isCompiled = 0;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-    if(isCompiled == GL_FALSE){
-        LOGW("Failed to compile shader: %s\n",path_for_error_debug);
-        GLint lenght;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
-        GLchar error[lenght];
-        glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
-        LOGW("%s\n",error);
-    }
-
-}
-
-
-GLuint compile_shader(const char* src , GLenum type){
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader,1,&src,0);
-
-    glCompileShader(shader);
-
-    char* error_description = "";
-    if(type == GL_FRAGMENT_SHADER){
-        error_description = "fragment shader";
-    }else if (type == GL_VERTEX_SHADER){
-        error_description = "vertex shader";
-    }
-
-    print_shader_compile_log(shader,error_description);
-    return shader;
-}
 
 
 void create_window(struct android_app * app){
@@ -211,16 +160,8 @@ void create_models_shaders(){
 
     }
 
-    //button shader
-    GLuint vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    GLuint frag_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
-
-    button1.shader = glCreateProgram();
-    glAttachShader( button1.shader, vert_shader);
-    glAttachShader( button1.shader, frag_shader);
-    glLinkProgram( button1.shader);
-
 }
+
 void load_model_texture_to_gpu(){
     for(size_t i = 0; i < new_level.models_array.count ; i++) {
         struct Model *model = &new_level.models_array.models[i];
@@ -350,9 +291,12 @@ void android_main(struct android_app* app){
         //glm_rotate(mvp, 0.005f, axis);
 
         draw_frame();
-        draw_button();
+        draw_gui();
 
         eglSwapBuffers(display,surface);
+
+        touch_position_x = -1;
+        touch_position_y = -1;
 
     }
 

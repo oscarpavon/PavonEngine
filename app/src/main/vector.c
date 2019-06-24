@@ -1,7 +1,15 @@
 #include "vector.h"
-#include <string.h>
-#include <stdio.h>
 #include "vertex.h"
+
+#include "utils.h"
+
+void init_array(Array * array, size_t element_bytes_size){
+    array->count = 0;
+    array->data = malloc(element_bytes_size);
+    array->actual_bytes_size = element_bytes_size;
+    array->element_bytes_size = element_bytes_size;
+}
+
 
 
 int init_vertex_array(VertexArray* array, size_t size){
@@ -73,4 +81,28 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
     memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));
     //array->vertices2[array->count-1] = vertex;
    
+}
+
+#include "gui.h"
+void add_element_to_array(Array* array, void* element){
+    if(array->count == 0){
+        memcpy(&array->data[0],element,array->element_bytes_size);
+        array->count++;
+        return;
+    }
+    size_t offset = array->actual_bytes_size;
+    array->count++;
+    array->actual_bytes_size += array->element_bytes_size;
+    void* buffer;
+    buffer = realloc(array->data, array->actual_bytes_size);
+    if(!buffer){
+        LOGW("array no allocated\n");
+    }
+
+    memcpy(buffer+(offset),element,array->element_bytes_size);
+    //Button* b3 = &buffer[0]+40;
+    free(array->data);
+    array->data = buffer;
+
+
 }

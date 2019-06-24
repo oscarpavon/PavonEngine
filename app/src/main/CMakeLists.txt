@@ -30,6 +30,7 @@ add_library(maincode
         input.c
         audio.c
         gui.c
+        shader.c
     )
 
 target_link_libraries(maincode

@@ -1,10 +1,11 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdlib.h>
+
 
 #include "vertex.h"
 
+#include <memory.h>
 
 typedef struct vertex_array{    
     size_t size;
@@ -27,6 +28,15 @@ typedef struct model_array{
 }ModelArray;
 
 
+typedef struct array{
+    size_t actual_bytes_size;
+    size_t count;
+    size_t element_bytes_size;
+    void * data;
+}Array;
+
+void init_array(Array* array, size_t element_bytes_size);
+void add_element_to_array(Array* array, void* element);
 
 int init_model_array(ModelArray* array, size_t size);
 int init_vertex_array(VertexArray* array, size_t size);

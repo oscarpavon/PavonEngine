@@ -4,6 +4,15 @@
 
 #include "input.h"
 
+static inline void touch_position(float x , float y){
+    LOGW("------> X: %f , Y: %f",touch_position_x , touch_position_y);
+}
+
+void handle_input_event(struct AInputEvent * event){
+    touch_position_x = AMotionEvent_getX(event,0);
+    touch_position_y  = AMotionEvent_getY(event,0);
+}
+
 int32_t handle_input(struct android_app* app, AInputEvent* event) {
 
     int32_t eventType = AInputEvent_getType(event);
@@ -15,14 +24,14 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
                     int action = AKeyEvent_getAction(event) & AMOTION_EVENT_ACTION_MASK;
                     switch (action) {
                         case AMOTION_EVENT_ACTION_DOWN:
-                            LOGW("touch");
+                            handle_input_event(event);
                             break;
                         case AMOTION_EVENT_ACTION_UP:
 
 
                             break;
                         case AMOTION_EVENT_ACTION_MOVE:
-
+                            handle_input_event(event);
                             break;
                     }
                 }
