@@ -2,9 +2,13 @@
 #define FILE_LOADER_H
 
 #include "utils.h"
-#include "../../../../../SDK/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/android/asset_manager.h"
 
+#ifdef ANDROID
+#include "../../../../../SDK/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/android/asset_manager.h"
 AAssetManager* assets_manager;
+#endif
+
+
 
 struct ResourceDescriptor{
     int32_t descriptor;

@@ -1,4 +1,8 @@
 #include <stdlib.h>
-int main(){
+#include "windows.h"
 
+int main(){
+    Window main_window;
+    create_window(&main_window);
+    
 }

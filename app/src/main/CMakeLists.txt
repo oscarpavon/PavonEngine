@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.6.0)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
+if(ANDROID)
+
 add_library(native_app_glue STATIC
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
@@ -11,35 +13,46 @@ target_include_directories(native_app_glue PUBLIC
 
 
 find_library(log-lib
-        log)
-
+log)
 
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
+set(main_file main.c audio.c)
+endif(ANDROID)
+
+
+
+
 
 include_directories(/usr/include/cglm)
 
 add_library(maincode
     SHARED
-        main.c
+        ${main_file}
         model.c
         vector.c
         file_loader.c
         level.c
         camera.c
         images.c
-        input.c
-        audio.c
+        input.c        
         gui.c
         shader.c
         game.c
         object_select.c
     )
 
-target_link_libraries(maincode
-        android
-        native_app_glue
-        ${log-lib}
+target_link_libraries(maincode        
         EGL
         GLESv2
-        OpenSLES
         )
+
+
+if(ANDROID)
+target_link_libraries(maincode
+        android
+        native_app_glue        
+        ${log-lib}
+        OpenSLES
+        ) 
+endif(ANDROID)

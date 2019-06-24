@@ -3,7 +3,7 @@
 //
 
 #include "input.h"
-
+#ifdef ANDROID
 static inline void touch_position(float x , float y){
     LOGW("------> X: %f , Y: %f",touch_position_x , touch_position_y);
 }
@@ -49,3 +49,5 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
     } // end switch
     return  -1;
 }
+
+#endif //DEF ANDROID
