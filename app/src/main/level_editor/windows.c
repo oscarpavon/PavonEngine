@@ -10,9 +10,9 @@ void create_window(Window *win){
     
     glfwInit();
     
-    win->window = glfwCreateWindow(800,600,"Engine", glfwGetPrimaryMonitor() , NULL);
+    win->window = glfwCreateWindow(800,600,"Engine", NULL , NULL);
     glfwMakeContextCurrent(win->window);
-    glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
+    //glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
 
 }
 

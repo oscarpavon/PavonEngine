@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6.0)
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
 if(ANDROID)
@@ -20,10 +20,6 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_o
 set(main_file main.c audio.c)
 endif(ANDROID)
 
-
-
-
-
 include_directories(/usr/include/cglm)
 
 add_library(maincode
@@ -40,6 +36,7 @@ add_library(maincode
         shader.c
         game.c
         object_select.c
+        engine.c
     )
 
 target_link_libraries(maincode        
