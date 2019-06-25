@@ -26,7 +26,7 @@ struct Geometry{
 };
 
 
-
+void init_model();
 void load_model(const char* path, struct Model*);
 
 #endif // !MODEL_H

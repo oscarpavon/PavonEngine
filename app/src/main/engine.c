@@ -27,6 +27,9 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 
 }
+void draw_frame_editor(){
+    
+}
 
 void draw_frame(){
     for(size_t i = 0; i < new_level.models_array.count ; i++) {
@@ -139,6 +142,13 @@ void init_level_models(){
 }
 
 void init_engine(){
+    
+    init_camera();
+
+    glEnable(GL_DEPTH_TEST);
+}
+
+void init_game_engine(){
     should_close = false;
 
     load_level("level01.lvl",&new_level);
@@ -155,7 +165,6 @@ void init_engine(){
     init_level_models();
 
     init_game();
-
 }
 
 void engine_loop(){
@@ -176,8 +185,6 @@ void update_editor(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    //glm_rotate(mvp, 0.005f, axis);
-
-    draw_frame();
+    draw_frame_editor();
    
 }

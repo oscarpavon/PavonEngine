@@ -3,9 +3,12 @@
 #include "../engine.h"
 #include "input.h"
 
+#include "editor.h"
 
 int main(){
 
+    create_input_thread();
+    
     Window main_window;
     create_window(&main_window);
      

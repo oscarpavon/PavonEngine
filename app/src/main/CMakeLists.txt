@@ -25,6 +25,7 @@ set(sources
 level_editor/main.c
 level_editor/windows.c
 level_editor/input.c
+level_editor/editor.c
 )
 
 add_executable(Editor ${sources} ${engine_source})
@@ -34,6 +35,7 @@ target_link_libraries(Editor
         EGL
         GLESv2
         m
+        pthread
         )
 endif(NOT ANDROID)
 

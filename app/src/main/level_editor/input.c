@@ -9,6 +9,7 @@
 #include <cglm.h>
 #include "../camera.h"
 
+#include <math.h>
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
@@ -101,10 +102,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
            
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-	
 
-}
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
 
 		if (button == GLFW_MOUSE_BUTTON_RIGHT ){
@@ -133,7 +132,53 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void update_input(Engine* engine){
     if(engine->input.W.bIsPressed){
-        glm_translate(main_camera.view, (vec3){0,0.01,0});
-        
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+        glm_vec3_add(camera_position,move,camera_position);
+        update_look_at();
     }
+}
+
+float last_mouse_x = 400;
+float last_mouse_y = 300;
+bool first_mouse_movement = true;
+
+
+
+void camera_mouse_control(float yaw, float pitch){
+    vec3 front;
+    
+    front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
+    front[1] = sin(glm_rad(pitch));
+    front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
+
+    
+
+    glm_normalize(front);
+
+    glm_vec3_copy(front, camera_front);
+
+    update_look_at();
+}
+float horizontalAngle = 0;
+float verticalAngle = 0;
+void mouse_movement_control(float xpos, float ypos){
+    
+  
+    
+    horizontalAngle += 800/2 - xpos ;
+    
+    verticalAngle  += 600/2 - ypos ;
+
+    horizontalAngle *= 0.05;
+    verticalAngle *= 0.05;
+
+    camera_mouse_control(0, horizontalAngle);
+    
+
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+	
+    mouse_movement_control(xpos, ypos);
 }

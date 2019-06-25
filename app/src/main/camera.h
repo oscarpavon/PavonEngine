@@ -20,5 +20,6 @@ float camera_heigth_screen;
 float camera_width_screen;
 
 void init_camera();
+void update_look_at();
 
 #endif //PAVONTHEGAME_CAMERA_H

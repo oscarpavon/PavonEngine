@@ -12,7 +12,8 @@
 			"glfw3.h": "c",
 			"windows.h": "c",
 			"camera.h": "c",
-			"cglm.h": "c"
+			"cglm.h": "c",
+			"pthread.h": "c"
 		}
 	}
 }

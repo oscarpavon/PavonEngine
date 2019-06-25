@@ -137,6 +137,8 @@ void android_main(struct android_app* main_app){
 
     init_engine();
 
+    init_game_engine();
+
     while(!should_close){
 
         int events;

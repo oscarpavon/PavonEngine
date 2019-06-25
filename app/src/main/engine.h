@@ -17,6 +17,7 @@ struct android_app* app;
 
 void init_engine();
 void engine_loop();
+void init_game_engine();
 
 void update_editor(); 
 
