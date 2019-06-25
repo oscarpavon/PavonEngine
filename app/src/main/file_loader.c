@@ -5,6 +5,24 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+void close_file(File* file){
+#ifndef ANDROID
+        free((void*)file->path);
+#endif
+    free(file->data);
+}
+
+const char* get_path(const char* path){
+    char* editor_path = "../assets/";
+    char* buffer = malloc(500);
+    memset(buffer,0,500);
+    strcat(buffer,editor_path);
+    strcat(buffer,path);
+    return buffer;
+}
+
 
 void load_file(const char* path, File* output){
 #ifdef ANDROID
@@ -20,24 +38,28 @@ void load_file(const char* path, File* output){
     AAsset_read(file,output->data,size);
 
     output->size_in_bytes = size;
-
+    output->path = path;
+    
     AAsset_close(file);
 
 #else
-    FILE* file = fopen(path,"r");
+    const char* new_path = get_path(path);
+    output->path = new_path;
+    FILE* file = fopen(new_path,"r");
     if(file == NULL){
-        printf("error to load: %s\n", path);
+        printf("error to load: %s\n", new_path);
     }
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
+    rewind (file);
 
     void* file_buffer = malloc(file_size);
 
-    fread(file_buffer,sizeof(char), file_size, file);
+    fread(file_buffer,1, file_size, file);
     output->data = file_buffer;
     output->size_in_bytes = file_size;
     fclose(file);
-
+    
 #endif
 
 }

@@ -54,10 +54,10 @@ void load_model(const char* path , struct Model* model){
     cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
 
     if (result != cgltf_result_success){
-         LOGW("Model no loaded: %s \n", path);
+         LOGW("Model no loaded: %s \n", new_file.path);
          return;
     }
-    cgltf_load_buffers(&options,data,path);
+    cgltf_load_buffers(&options,data,new_file.path);
 
     load_primitives(data,&model->vertex_array);
     load_indices(data, &model->index_array);
@@ -65,5 +65,5 @@ void load_model(const char* path , struct Model* model){
     LOGW("gltf loaded. \n");
 
     cgltf_free(data);
-    free(new_file.data);
+    close_file(&new_file);
 }

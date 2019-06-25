@@ -19,6 +19,8 @@ engine.c
 
 if(NOT ANDROID)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 set(sources 
 level_editor/main.c
 level_editor/windows.c

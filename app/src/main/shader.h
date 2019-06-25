@@ -8,7 +8,8 @@
 #include <GLES2/gl2.h>
 #include "utils.h"
 
-static const char* triVertShader = "attribute vec3 vPosition;\
+static const char* triVertShader = "#version 100 \n \
+attribute vec3 vPosition;\
 attribute vec2 inUV;\
 varying vec2 v_TexCoord; \
 uniform mat4 MVP;   \
@@ -19,7 +20,8 @@ void main()\
 }\
 //end";
 
-static const char*  triFragShader = "precision mediump float; \
+static const char*  triFragShader = "#version 100 \n\
+precision mediump float; \
    uniform sampler2D texture_sampler;\
    varying vec2 v_TexCoord;                     \
     void main()\

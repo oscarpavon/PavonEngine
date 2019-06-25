@@ -17,6 +17,7 @@ struct ResourceDescriptor{
 };
 
 typedef struct file{
+    const char* path;
     size_t size_in_bytes;
     struct ResourceDescriptor resource_descriptor;
     void* data;
@@ -25,5 +26,6 @@ typedef struct file{
 
 
 void load_file(const char* path, File* output);
+void close_file(File* file);
 #endif // !FILE_LOADER_H
 
