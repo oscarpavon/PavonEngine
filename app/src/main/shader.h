@@ -30,6 +30,10 @@ precision mediump float; \
     }\
 //end";
 
+
+GLuint standart_vertex_shader;
+GLuint standart_fragment_shader;
+
 GLuint compile_shader(const char* src , GLenum type);
 
 #endif //PAVON_MOBILE_SHADER_H

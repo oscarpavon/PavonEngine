@@ -8,6 +8,9 @@
 
 #include <pthread.h>
 #include <string.h>
+#include "../vector.h"
+
+#include "../engine.h"
 
 typedef struct Element{
     vec3 position;
@@ -19,18 +22,27 @@ typedef struct Element{
 #define COMMAND_SAVE_LEVEL 2
 #define COMMAND_LOAD_LEVEL 3
 
+ModelArray editor_elements;
+bool can_draw;
+bool can_load_model;
+
 void add_element(){
     struct Model new_model;
     load_model("../assets/lince.gltf",&new_model);
-    glm_mat4_identity(new_model.model_mat);
-    GLuint vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    GLuint frag_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    glm_mat4_identity(new_model.model_mat);   
 
     new_model.shader = glCreateProgram();
-    glAttachShader(new_model.shader, vert_shader);
-    glAttachShader(new_model.shader, frag_shader);
+     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
+    standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    glAttachShader(new_model.shader, standart_vertex_shader);
+    glAttachShader(new_model.shader, standart_fragment_shader);
     glLinkProgram(new_model.shader);
 
+    add_model_to_array(&editor_elements,new_model);
+
+    init_models(&editor_elements);
+    can_draw = true;
+    can_load_model = false;
     printf("model loaded and shader created \n");
 }
 
@@ -55,7 +67,7 @@ void handle_command(unsigned short int command){
     switch (command)
     {
     case COMMAND_ADD_ELEMENT:
-       add_element();
+       can_load_model = true;
         break;
     
     default:
@@ -71,7 +83,7 @@ void* input_thread(void* in){
     {
          gets(command);
          printf("Input command: %s\n", command);
-         if(strcmp(command, "add") == 0){
+         if(strcmp(command, "a") == 0){
              command_code = COMMAND_ADD_ELEMENT;
          }else if (strcmp(command, "save") == 0){
              command_code = COMMAND_SAVE_LEVEL;
@@ -94,3 +106,26 @@ void check_user_input_command(){
 
 }
 
+
+void init_editor(){
+    init_model_array(&editor_elements, 1);
+    can_draw = false;
+    can_load_model = false;
+}
+
+ModelArray* models_to_draw;
+void update_model_to_draw(){
+    
+}
+
+void update_editor(){
+    glClearColor(1,0.5,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(can_draw)
+        draw_models(&editor_elements);
+    
+    if(can_load_model)
+        add_element();
+   
+}

@@ -15,7 +15,7 @@ void print_shader_compile_log(GLuint shader, const char* path_for_error_debug){
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
         GLchar error[lenght];
         glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
-        LOGW("%s\n",error);
+        LOGW("Error: %s\n",error);
     }
 
 }

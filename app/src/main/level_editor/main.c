@@ -7,11 +7,13 @@
 
 int main(){
 
-    create_input_thread();
-    
+   
     Window main_window;
     create_window(&main_window);
      
+    init_editor();
+    create_input_thread();
+
     Engine engine;
     glfwSetWindowUserPointer(main_window.window, &engine);
     glfwSetKeyCallback(main_window.window, key_callback);
@@ -19,6 +21,7 @@ int main(){
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
 
     init_engine();
+    
     while (!glfwWindowShouldClose(main_window.window))
     {
         update_envents();
