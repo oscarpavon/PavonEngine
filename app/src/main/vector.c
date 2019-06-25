@@ -48,6 +48,10 @@ void add_model_to_array(ModelArray* array, struct Model model){
     memcpy(&array->models[array->count-1],&model,sizeof(struct Model));
 }
 
+void *get_element_from_array(Array* array,int index){
+    return &array->data[0];
+}
+
 void add_index_to_array(IndexArray* array, unsigned short int value){
     if(array->count == 0){
         memcpy(array->indices,&value,sizeof(unsigned short int));
@@ -83,7 +87,7 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
    
 }
 
-#include "gui.h"
+
 void add_element_to_array(Array* array, void* element){
     if(array->count == 0){
         memcpy(&array->data[0],element,array->element_bytes_size);

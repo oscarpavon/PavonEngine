@@ -21,6 +21,7 @@ void init_game_engine();
 
 void init_models(ModelArray* array);
 void draw_models(ModelArray* models);
+void load_model_texture_to_gpu(ModelArray* models_array);
 
 void update_editor(); 
 

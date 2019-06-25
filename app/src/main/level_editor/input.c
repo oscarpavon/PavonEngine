@@ -6,10 +6,15 @@
 #include <stdlib.h>
 #include "../engine.h"
 
-#include <cglm.h>
+#include <cglm/cglm.h>
 #include "../camera.h"
 
 #include <math.h>
+
+#include "editor.h"
+
+
+bool move_camera;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
@@ -65,6 +70,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             engine->input.Z.bIsPressed = false;
         }
     }
+    if(key == GLFW_KEY_G){
+        if(action == GLFW_PRESS){
+            engine->input.G.bIsPressed = true;
+        }
+        if(action == GLFW_RELEASE){
+            engine->input.G.bIsPressed = false;
+        }
+    }
     
     if(key == GLFW_KEY_E){
         if(action == GLFW_PRESS){
@@ -110,6 +123,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			if(action == GLFW_PRESS){
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
+                move_camera = false;
 				
 			}
 			if(action == GLFW_RELEASE){
@@ -120,6 +134,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		if (button == GLFW_MOUSE_BUTTON_LEFT ){
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+                move_camera = true;
 			
 			}
 			if(action == GLFW_RELEASE){
@@ -131,12 +146,64 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 }
 
 void update_input(Engine* engine){
-    if(engine->input.W.bIsPressed){
-        vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
-        glm_vec3_add(camera_position,move,camera_position);
-        update_look_at();
+    if(!move_camera){
+        if(engine->input.S.bIsPressed){
+            get_element_status(selected_element);
+        }
+        if(engine->input.G.bIsPressed){
+            grab_mode = true;
+        }
+        if(engine->input.X.bIsPressed){
+            save_data();
+        }
+        if(engine->input.Z.bIsPressed){
+            load_level_in_editor();
+        }
     }
+
+    if(grab_mode){
+        if(engine->input.A.bIsPressed){
+            glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
+            glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+        }
+        if(engine->input.D.bIsPressed){
+            
+        }
+    }
+
+    if(move_camera){
+        if(engine->input.W.bIsPressed){
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+            glm_vec3_add(camera_position,move,camera_position);
+            update_look_at();
+        }
+        if(engine->input.S.bIsPressed){
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+            glm_vec3_sub(camera_position,move,camera_position);
+            update_look_at();
+        }
+        if(engine->input.D.bIsPressed){
+            vec3 cross;
+            glm_vec3_cross(camera_front, camera_up, cross);
+            glm_normalize(cross);
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+            glm_vec3_add(camera_position, move,camera_position);
+            update_look_at();
+        }
+        if(engine->input.A.bIsPressed){
+            vec3 cross;
+            glm_vec3_cross(camera_front, camera_up, cross);
+            glm_normalize(cross);
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+            glm_vec3_sub(camera_position, move,camera_position);
+            update_look_at();
+        }
+    }
+    
 }
 
 float last_mouse_x = 400;
@@ -179,6 +246,6 @@ void mouse_movement_control(float xpos, float ypos){
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-	
-    mouse_movement_control(xpos, ypos);
+	if(move_camera)
+        mouse_movement_control(xpos, ypos);
 }

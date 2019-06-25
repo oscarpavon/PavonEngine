@@ -46,4 +46,6 @@ void add_vextex_to_array(VertexArray*, struct Vertex);
 void add_index_to_array(IndexArray*, unsigned short int);
 void add_model_to_array(ModelArray*, struct Model);
 
+void *get_element_from_array(Array*,int index);
+
 #endif // !VECTOR_H

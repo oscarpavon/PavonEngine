@@ -13,7 +13,8 @@
 			"windows.h": "c",
 			"camera.h": "c",
 			"cglm.h": "c",
-			"pthread.h": "c"
+			"pthread.h": "c",
+			"cgltf.h": "c"
 		}
 	}
 }

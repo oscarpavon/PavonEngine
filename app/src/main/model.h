@@ -29,4 +29,7 @@ struct Geometry{
 void init_model();
 void load_model(const char* path, struct Model*);
 
+
+void parse_json(const char* json_file, size_t json_file_size);
+
 #endif // !MODEL_H

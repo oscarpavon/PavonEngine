@@ -22,6 +22,7 @@ typedef struct Input {
 	Key S;
 	Key C;
 	Key V;
+	Key G;
 	Key TAB;
 	Key KEY_1;
 	Key SPACE;
