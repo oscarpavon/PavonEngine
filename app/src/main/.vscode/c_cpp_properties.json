@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Editor",
+            "intelliSenseMode": "gcc-x64",
+            "cStandard": "c99",			
+			"defines": [                            
+                               
+            ],
+            "includePath": ["/usr/include/cglm"
+            ]
+        }
+    ],
+    "version": 4
+}

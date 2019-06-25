@@ -18,6 +18,8 @@ struct android_app* app;
 void init_engine();
 void engine_loop();
 
+void update_editor(); 
+
 bool should_close;
 
 

@@ -24,6 +24,7 @@ set(CMAKE_BUILD_TYPE Debug)
 set(sources 
 level_editor/main.c
 level_editor/windows.c
+level_editor/input.c
 )
 
 add_executable(Editor ${sources} ${engine_source})

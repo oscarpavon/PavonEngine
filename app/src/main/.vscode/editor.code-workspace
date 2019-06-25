@@ -7,7 +7,12 @@
 	"settings": {
 		"files.associations": {
 			"vector.h": "c",
-			"memory.h": "c"
+			"memory.h": "c",
+			"engine.h": "c",
+			"glfw3.h": "c",
+			"windows.h": "c",
+			"camera.h": "c",
+			"cglm.h": "c"
 		}
 	}
 }

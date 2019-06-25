@@ -7,7 +7,7 @@
 
 #include <GLFW/glfw3.h>
 
-
+#include "../camera.h"
 
 typedef struct window{
        GLFWwindow* window; 

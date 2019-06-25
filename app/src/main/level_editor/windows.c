@@ -14,6 +14,9 @@ void create_window(Window *win){
     glfwMakeContextCurrent(win->window);
     //glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
 
+    glViewport(0,0,800,600);
+    camera_heigth_screen = 600;
+    camera_width_screen = 800;
 }
 
 void update_envents(){

@@ -6,6 +6,7 @@
 #include "utils.h"
 
 void init_camera(){
+    
     glm_mat4_identity(main_camera.view);
     glm_mat4_identity(main_camera.projection);
 
