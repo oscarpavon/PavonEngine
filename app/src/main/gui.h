@@ -42,5 +42,6 @@ void init_gui();
 void draw_button();
 void draw_gui();
 void draw_loading_screen();
+void update_button_matrix(GLuint shader_id, vec2 size, vec2 position);
 
 #endif //PAVONTHEGAME_GUI_H
