@@ -19,7 +19,7 @@
 #include "level.h"
 #include "camera.h"
 
-
+#include <unistd.h>
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
     mat4 projection_view;
@@ -192,12 +192,15 @@ void compiles_standart_shaders(){
 }
 
 void init_engine(){
-    
+
     init_camera();
 
     glEnable(GL_DEPTH_TEST);
-
     compiles_standart_shaders();
+
+    sleep(2);
+
+
 }
 
 void init_game_engine(){

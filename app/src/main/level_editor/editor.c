@@ -187,9 +187,9 @@ void check_user_input_command(){
 
 
 void init_editor(){
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    init_vec3(0,3,0, camera_position);
+    update_look_at();
 
     init_model_array(&editor_elements, 1);
     init_model_array(&gizmos,1);

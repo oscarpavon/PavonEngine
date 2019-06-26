@@ -19,7 +19,9 @@ FT_Face face;
 FT_GlyphSlot g;
 
 void render_text(const char *text, float x, float y, float sx, float sy) {
-  
+  //glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 
+
   const char *p;
 
   for(p = text; *p; p++) {
@@ -71,6 +73,7 @@ void render_text(const char *text, float x, float y, float sx, float sy) {
     }
 
   }
+  glDisable(GL_BLEND);
 }
 
 void create_text_texture_buffer(){

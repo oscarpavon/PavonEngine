@@ -21,6 +21,7 @@
 #include "engine.h"
 #include "input.h"
 #include "file_loader.h"
+#include "gui.h"
 
 static EGLint const attribute_list[] = {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -134,6 +135,10 @@ void android_main(struct android_app* main_app){
     assets_manager = app->activity->assetManager;
 
     init_audio_manager();
+
+
+    draw_loading_screen();
+    eglSwapBuffers(display,surface);
 
     init_engine();
 

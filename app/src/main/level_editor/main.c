@@ -19,6 +19,9 @@ int main(){
 	glfwSetCursorPosCallback(main_window.window, mouse_callback);
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
 
+    draw_loading_screen();
+    glfwSwapBuffers(main_window.window);
+    
     init_engine();
     init_editor();
 

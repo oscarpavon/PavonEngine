@@ -21,6 +21,9 @@ void init_camera_local_transform(){
 
     glm_translate(camera_local_mat_position, (vec3){-0.4,-0.5,-3.5});
 
+    init_vec3(0,-2,1.f, camera_position);
+    update_look_at();
+
     glm_mat4_mul(camera_local_mat_position, main_camera.view, tranlate_dot_rot);
 
 }
@@ -38,8 +41,6 @@ void update_player_camera(){
     glm_mat4_inv(player.model->model_mat, inverse_player_matrix);
 
     glm_mat4_mul(tranlate_dot_rot,inverse_player_matrix,main_camera.view);
-
-
 
 }
 

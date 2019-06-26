@@ -41,6 +41,6 @@ Array buttons;
 void init_gui();
 void draw_button();
 void draw_gui();
-
+void draw_loading_screen();
 
 #endif //PAVONTHEGAME_GUI_H
