@@ -4,6 +4,8 @@
 #include "../utils.h"
 #include <GLES2/gl2.h>
 #include "../shader.h"
+#include "../camera.h"
+
 
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
@@ -18,24 +20,54 @@ GLuint uniform_text_color_location;
 FT_Face face;
 FT_GlyphSlot g;
 
+TextColumn column01;
+TextElement* first_text_element;
+
+#include <dirent.h> 
+void list_directory_files(){   
+
+    struct dirent *de;  // Pointer for directory entry 
+  
+    // opendir() returns a pointer of DIR type.  
+    DIR *dr = opendir("../assets/"); 
+  
+    if (dr == NULL)  // opendir returns NULL if couldn't open directory 
+    { 
+        printf("Could not open current directory\n" );         
+    }   
+
+    while ((de = readdir(dr)) != NULL) {       
+        TextElement element;
+        element.text  = de->d_name;
+        add_element_to_array(&column01.text_elements, &element );
+        column01.count++;     
+    }
+           
+  
+    closedir(dr);     
+}
+
 void render_text(const char *text, float x, float y, float sx, float sy) {
-  //glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
+    glUseProgram(text_shader_id);
 
   const char *p;
 
   for(p = text; *p; p++) {
     if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
         continue;
- 
+    
+    glBindTexture(GL_TEXTURE_2D, text_texture_id); 
+
     glTexImage2D(
       GL_TEXTURE_2D,
       0,
-      GL_ALPHA,
+      GL_LUMINANCE,
       g->bitmap.width,
       g->bitmap.rows,
       0,
-      GL_ALPHA,
+      GL_LUMINANCE,
       GL_UNSIGNED_BYTE,
       g->bitmap.buffer
     );
@@ -52,9 +84,7 @@ void render_text(const char *text, float x, float y, float sx, float sy) {
         {x2 + w, -y2 - h, 1, 1},
     };
     
-    glUseProgram(text_shader_id);
-
-    glBindTexture(GL_TEXTURE_2D, text_texture_id);  
+    
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
@@ -73,9 +103,40 @@ void render_text(const char *text, float x, float y, float sx, float sy) {
     }
 
   }
-  glDisable(GL_BLEND);
+  //glDisable(GL_BLEND);
+   
+    
 }
 
+
+void init_text_column(TextColumn* column){
+    init_array(&column->text_elements,sizeof(TextColumn));
+    column->count = 0;  
+}
+void draw_text_column(TextColumn* column){
+    float sx = 2.0 / camera_width_screen;
+    float sy = 2.0 / camera_heigth_screen; 
+
+    for(int i = 0; i < column->count; i++){
+        size_t offset = column->text_elements.element_bytes_size;
+        int y_pos = i*20+20;
+        if(i == 0){
+            y_pos = 20;
+        }
+        TextElement* text_element = &column->text_elements.data[0] + (i*offset);
+        render_text(text_element->text,  0,   1 - (y_pos) * sy,    sx, sy);        
+    }
+   
+}
+void mark_select_element(){
+    
+}
+void draw_directory_files(){
+    FT_Set_Pixel_Sizes(face, 0, 20);
+    
+    
+    draw_text_column(&column01);
+}
 void create_text_texture_buffer(){
 
     glGenTextures(1, &text_texture_id);
@@ -123,8 +184,36 @@ void init_text_renderer(){
 
     g = face->glyph;
 
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, 60);
 
     init_text_shader();
     create_text_texture_buffer();
+
+    //init_text_column(&column01);
+    draw_text_menu = false;
+    //list_directory_files();
+
+    init_array(&column01.text_elements, sizeof(TextElement));
+
+    TextElement element;
+    element.text  = "police.gltf";
+    add_element_to_array(&column01.text_elements, &element );
+    column01.count++;   
+    
+    element.text  = "police.gltf";
+    add_element_to_array(&column01.text_elements, &element );
+    column01.count++;  
+
+    element.text  = "fireman.gltf";
+    add_element_to_array(&column01.text_elements, &element );
+    column01.count++;   
+
+}
+
+void text_renderer_loop(){ 
+        
+    if(draw_text_menu){
+       
+        draw_directory_files();
+    }
 }

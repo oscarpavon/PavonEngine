@@ -27,9 +27,6 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 
 }
-void draw_frame_editor(){
-    
-}
 
 void draw_frame(){
     for(size_t i = 0; i < new_level.models_array.count ; i++) {
@@ -42,11 +39,10 @@ void draw_frame(){
         mat4 mvp;
         glm_mat4_identity(mvp);
 
-        //glm_rotate(&new_level.models_array.models[2].model_mat, 0.005f, (vec3){0,0,1});
         update_mvp(new_model->model_mat, mvp);
 
         GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
-        //glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
+
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
 
         glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
@@ -198,7 +194,7 @@ void init_engine(){
     glEnable(GL_DEPTH_TEST);
     compiles_standart_shaders();
 
-    sleep(2);
+    //sleep(2);
 
 
 }

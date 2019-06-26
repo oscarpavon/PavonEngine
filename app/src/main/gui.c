@@ -266,7 +266,7 @@ void draw_logo(){
 
     glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
-
+    glDisable(GL_BLEND);
 }
 
 void draw_loading_screen(){

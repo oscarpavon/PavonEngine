@@ -31,7 +31,7 @@ int main(){
 
         update_editor();
         update_input(&engine);
-
+   
         glfwSwapBuffers(main_window.window);
     }
     glfwTerminate();

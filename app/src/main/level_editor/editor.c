@@ -203,7 +203,8 @@ void init_editor(){
     can_draw = false;
     can_load_model = false;
 
-    element_id_count = 24;
+    element_id_count = 24;    
+
 }
 
 ModelArray* models_to_draw;
@@ -219,18 +220,16 @@ void update_editor(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    text_renderer_loop();   
+
     if(can_draw)
         draw_models(&editor_elements);
     
     if(can_load_model)
-        add_element();
-
-    float sx = 2.0 / camera_width_screen;
-    float sy = 2.0 / camera_heigth_screen;
-
-    render_text("Pavon Studios",  -1 + 8 * sx,   1 - 50 * sy,    sx, sy);
-             
+        add_element();    
+            
 
     glClear(GL_DEPTH_BUFFER_BIT);
     draw_gizmos();
+    
 }

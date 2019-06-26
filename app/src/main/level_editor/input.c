@@ -13,6 +13,7 @@
 
 #include "editor.h"
 
+#include "text.h"
 
 bool move_camera;
 
@@ -20,6 +21,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     Engine* engine = glfwGetWindowUserPointer(window);
 	
+
+
     if(key == GLFW_KEY_TAB){
         if(action == GLFW_PRESS){
             engine->input.TAB.bIsPressed = true;
@@ -52,6 +55,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
         if(action == GLFW_RELEASE){
             engine->input.D.bIsPressed = false;
+            engine->input.D.Released = true;
         }
     }
     if(key == GLFW_KEY_A){
@@ -101,6 +105,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
         if(action == GLFW_RELEASE){
             engine->input.X.bIsPressed = false;
+
         }
     }
     if(key == GLFW_KEY_V){
@@ -156,8 +161,12 @@ void update_input(Engine* engine){
         if(engine->input.X.bIsPressed){
             save_data();
         }
-        if(engine->input.Z.bIsPressed){
+        if(engine->input.Z.Released){
             load_level_in_editor();
+        }
+        if(engine->input.D.Released){
+            draw_text_menu = true;
+            engine->input.D.Released = false;
         }
 
         if(grab_mode){
