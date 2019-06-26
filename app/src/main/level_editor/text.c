@@ -6,6 +6,7 @@
 #include "../shader.h"
 #include "../camera.h"
 
+#include <stdlib.h>
 
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
@@ -20,32 +21,9 @@ GLuint uniform_text_color_location;
 FT_Face face;
 FT_GlyphSlot g;
 
-TextColumn column01;
-TextElement* first_text_element;
+TextColumn* dir_text_column;
 
-#include <dirent.h> 
-void list_directory_files(){   
 
-    struct dirent *de;  // Pointer for directory entry 
-  
-    // opendir() returns a pointer of DIR type.  
-    DIR *dr = opendir("../assets/"); 
-  
-    if (dr == NULL)  // opendir returns NULL if couldn't open directory 
-    { 
-        printf("Could not open current directory\n" );         
-    }   
-
-    while ((de = readdir(dr)) != NULL) {       
-        TextElement element;
-        element.text  = de->d_name;
-        add_element_to_array(&column01.text_elements, &element );
-        column01.count++;     
-    }
-           
-  
-    closedir(dr);     
-}
 
 void render_text(const char *text, float x, float y, float sx, float sy) {
   glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -107,10 +85,48 @@ void render_text(const char *text, float x, float y, float sx, float sy) {
    
     
 }
+#include <dirent.h> 
+void list_directory_files(TextColumn* column){   
+     float sx = 2.0 / camera_width_screen;
+    float sy = 2.0 / camera_heigth_screen;
+
+    struct dirent *de;  // Pointer for directory entry 
+  
+    // opendir() returns a pointer of DIR type.  
+    DIR *dr = opendir("../assets/"); 
+  
+    if (dr == NULL)  // opendir returns NULL if couldn't open directory 
+    { 
+        printf("Could not open current directory\n" );         
+    }   
+
+    int directory_count = 0;
+    while ((de = readdir(dr)) != NULL) {    
+        directory_count++; 
+    }
+
+    rewinddir(dr);
+    
+    column->elements = malloc(sizeof(TextElement) * directory_count);    
+    column->count = directory_count;
+
+    for(int i = 0; i < directory_count ; i++){        
+        de = readdir(dr);
+        column->elements[i].text = de->d_name;
+        int y_pos = i*20+20;
+        if(i == 0){
+            y_pos = 20;
+        }
+        render_text(de->d_name,  0,   1 - (y_pos) * sy,    sx, sy);   
+    }    
+  
+    closedir(dr);   
+   
+}
 
 
 void init_text_column(TextColumn* column){
-    init_array(&column->text_elements,sizeof(TextColumn));
+    //init_array(&column->text_elements,sizeof(TextColumn));
     column->count = 0;  
 }
 void draw_text_column(TextColumn* column){
@@ -118,24 +134,24 @@ void draw_text_column(TextColumn* column){
     float sy = 2.0 / camera_heigth_screen; 
 
     for(int i = 0; i < column->count; i++){
-        size_t offset = column->text_elements.element_bytes_size;
+        
         int y_pos = i*20+20;
         if(i == 0){
             y_pos = 20;
         }
-        TextElement* text_element = &column->text_elements.data[0] + (i*offset);
-        render_text(text_element->text,  0,   1 - (y_pos) * sy,    sx, sy);        
+       
+        TextElement* text_element =  &column->elements[i];
+        render_text(text_element->text,  0,   1 - (y_pos) * sy,    sx, sy);    
     }
    
 }
 void mark_select_element(){
-    
+
 }
 void draw_directory_files(){
     FT_Set_Pixel_Sizes(face, 0, 20);
-    
-    
-    draw_text_column(&column01);
+        
+   draw_text_column(dir_text_column);
 }
 void create_text_texture_buffer(){
 
@@ -188,31 +204,19 @@ void init_text_renderer(){
 
     init_text_shader();
     create_text_texture_buffer();
-
-    //init_text_column(&column01);
-    draw_text_menu = false;
-    //list_directory_files();
-
-    init_array(&column01.text_elements, sizeof(TextElement));
-
-    TextElement element;
-    element.text  = "police.gltf";
-    add_element_to_array(&column01.text_elements, &element );
-    column01.count++;   
     
-    element.text  = "police.gltf";
-    add_element_to_array(&column01.text_elements, &element );
-    column01.count++;  
+    draw_text_menu = false;
+    //
 
-    element.text  = "fireman.gltf";
-    add_element_to_array(&column01.text_elements, &element );
-    column01.count++;   
+    dir_text_column = malloc(sizeof(TextColumn));
+    list_directory_files(dir_text_column);
 
 }
 
 void text_renderer_loop(){ 
         
     if(draw_text_menu){
+       
        
         draw_directory_files();
     }

@@ -20,8 +20,8 @@ typedef struct{
 }TextElement;
 
 typedef struct {
-    int count;
-    Array text_elements;
+    int count;    
+    TextElement *elements;
 }TextColumn;
 
 

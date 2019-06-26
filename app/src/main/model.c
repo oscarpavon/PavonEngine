@@ -42,6 +42,9 @@ void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){
     }
 
 }
+void load_joints(){
+
+}
 
 void load_model(const char* path , struct Model* model){
     File new_file;
