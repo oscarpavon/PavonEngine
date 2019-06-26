@@ -159,18 +159,20 @@ void update_input(Engine* engine){
         if(engine->input.Z.bIsPressed){
             load_level_in_editor();
         }
+
+        if(grab_mode){
+            if(engine->input.A.bIsPressed){
+                glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
+                glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+            }
+            if(engine->input.D.bIsPressed){
+                
+            }
+        }
+
     }
 
-    if(grab_mode){
-        if(engine->input.A.bIsPressed){
-            glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
-            glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
-        }
-        if(engine->input.D.bIsPressed){
-            
-        }
-    }
-
+    
     if(move_camera){
         if(engine->input.W.bIsPressed){
             vec3 move;

@@ -14,6 +14,10 @@
 
 #include "../third_party/cgltf.h"
 
+#include "text.h"
+
+#include "../camera.h"
+
 #define COMMAND_ADD_ELEMENT 0
 #define COMMAND_REMOVE_ELEMENT 1
 #define COMMAND_SAVE_LEVEL 2
@@ -183,12 +187,18 @@ void check_user_input_command(){
 
 
 void init_editor(){
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     init_model_array(&editor_elements, 1);
     init_model_array(&gizmos,1);
 
     init_array(&editor_models,sizeof(Element));
 
     load_editor_element("editor/transform.gltf");
+
+    init_text_renderer();
 
     can_draw = false;
     can_load_model = false;
@@ -214,6 +224,12 @@ void update_editor(){
     
     if(can_load_model)
         add_element();
+
+    float sx = 2.0 / camera_width_screen;
+    float sy = 2.0 / camera_heigth_screen;
+
+    render_text("Pavon Studios",  -1 + 8 * sx,   1 - 50 * sy,    sx, sy);
+             
 
     glClear(GL_DEPTH_BUFFER_BIT);
     draw_gizmos();

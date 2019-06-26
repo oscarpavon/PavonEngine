@@ -9,9 +9,8 @@ int main(){
 
    
     Window main_window;
-    create_window(&main_window);
-     
-    init_editor();
+    create_window(&main_window);    
+   
     create_input_thread();
 
     Engine engine;
@@ -21,7 +20,8 @@ int main(){
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
 
     init_engine();
-    
+    init_editor();
+
     while (!glfwWindowShouldClose(main_window.window))
     {
         update_envents();

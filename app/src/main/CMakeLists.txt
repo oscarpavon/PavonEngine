@@ -26,9 +26,13 @@ level_editor/main.c
 level_editor/windows.c
 level_editor/input.c
 level_editor/editor.c
+level_editor/text.c
 )
 
 add_executable(Editor ${sources} ${engine_source})
+
+include(FindFreetype)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 target_link_libraries(Editor        
         glfw
@@ -36,6 +40,7 @@ target_link_libraries(Editor
         GLESv2
         m
         pthread
+        freetype
         )
 endif(NOT ANDROID)
 

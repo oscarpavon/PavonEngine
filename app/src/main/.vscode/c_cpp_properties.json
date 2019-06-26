@@ -7,7 +7,7 @@
 			"defines": [                            
                                
             ],
-            "includePath": ["/usr/include/cglm"
+            "includePath": ["/usr/include/cglm","/usr/include/freetype2"
             ]
         }
     ],

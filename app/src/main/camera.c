@@ -12,7 +12,7 @@ void init_camera(){
 
     init_vec3(0.0f, -1.0f, 0.0f, camera_front);
     init_vec3(0.0f, 0.0f,  1.0f, camera_up);
-    init_vec3(0,-2,1.f, camera_position);
+    init_vec3(0,3,0, camera_position);
 
     vec3 look_pos;
     glm_vec3_add(camera_position, camera_front, look_pos);

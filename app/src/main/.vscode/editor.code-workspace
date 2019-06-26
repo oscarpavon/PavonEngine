@@ -14,7 +14,9 @@
 			"camera.h": "c",
 			"cglm.h": "c",
 			"pthread.h": "c",
-			"cgltf.h": "c"
+			"cgltf.h": "c",
+			"ft2build.h": "c",
+			"editor.h": "c"
 		}
 	}
 }

@@ -77,9 +77,8 @@ void draw_models(ModelArray* models){
         struct Model *new_model = &models->models[i];
 
         glUseProgram(new_model->shader);
-        //glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
-       // glBindTexture(GL_TEXTURE_2D, 0);
-
+        glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+      
         mat4 mvp;
         glm_mat4_identity(mvp);
         
@@ -88,11 +87,13 @@ void draw_models(ModelArray* models){
         GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
     
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
- error = glGetError();
+        
+        error = glGetError();
         if(error != GL_NO_ERROR){
             LOGW("draw error\n");
             LOGW("Error %08x \n",error);
         }
+
         glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
 
     
@@ -209,7 +210,6 @@ void init_game_engine(){
     init_gui();
 
     glEnable(GL_DEPTH_TEST);
-
 
     load_model_texture_to_gpu(&new_level.models_array);
     create_models_shaders();

@@ -73,7 +73,9 @@ void update_button_matrix(Button* button){
     glm_ortho(0,camera_width_screen,camera_heigth_screen,0,0,1,projection);
 
     glm_scale(scale,(vec3){button->size[0],button->size[1],0});
+
     glm_translate(position,(vec3){button->position[0],button->position[1],0});
+
 
     mat4 model;
     glm_mul(position, scale, model);
@@ -132,10 +134,19 @@ void create_vertex_buffer(){
 
 void init_button(Button* button, float position_x , float position_y , float size_x, float size_y){
     button->position[0] = position_x;
-    button->position[1] = position_y;
 
     button->size[0] = size_x;
     button->size[1] = size_y;
+
+    button->original_position[0] = position_x;
+    if(button->relative_to == POSITION_RELATIVE_LEFT_BOTTON){
+        button->original_position[1] = camera_heigth_screen - position_y;
+        button->position[1] = camera_heigth_screen - position_y;
+    }
+    else{
+        button->original_position[1] = position_y;
+        button->position[1] = position_y;
+    }
 }
 
 void init_gui_element_geometry(){
@@ -163,15 +174,24 @@ void init_gui(){
 
     create_vertex_buffer();
 
+    button1.relative_to = 50;
     init_button(&button1, 600, 100, 35,35);
 
+
+    back_button.relative_to = 50;
     init_button(&back_button, 600, 300, 35,35);
+
+
+    virtual_joystick.relative_to = POSITION_RELATIVE_LEFT_BOTTON;
+    init_button(&virtual_joystick,300,300,50,50);
+
 
 
     init_array(&buttons, sizeof(Button));
     add_element_to_array(&buttons,&button1);
     add_element_to_array(&buttons,&shoot_button);
     add_element_to_array(&buttons,&back_button);
+    add_element_to_array(&buttons,&virtual_joystick);
 
     create_gui_shaders();
 
@@ -181,4 +201,8 @@ void draw_gui(){
     draw_button();
     check_if_pressed(&button1);
     check_if_pressed(&back_button);
+    check_if_pressed(&virtual_joystick);
+
+    virtual_joystick.position[0] = touch_position_x;
+    virtual_joystick.position[1] = touch_position_y;
 }

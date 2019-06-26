@@ -31,6 +31,28 @@ precision mediump float; \
 //end";
 
 
+static const char*  text_fragment_shader_source = "#version 100 \n\
+    precision mediump float;                    \
+   uniform sampler2D texture_sampler;           \
+   varying vec2 v_TexCoord;                     \
+   varying vec4 color;                     \
+    void main()\
+    {\
+        gl_FragColor = vec4(1, 1, 1, texture2D(texture_sampler, v_TexCoord).r) * vec4(1,0,0,1);\
+    }\
+//end";
+
+static const char* text_vertex_shader_source = "#version 100 \n \
+attribute vec4 coord;\
+varying vec2 v_TexCoord; \
+void main()\
+{\
+    gl_Position = vec4(coord.xy, 0, 1);\
+    v_TexCoord = coord.zw;\
+}\
+//end";
+
+
 GLuint standart_vertex_shader;
 GLuint standart_fragment_shader;
 
