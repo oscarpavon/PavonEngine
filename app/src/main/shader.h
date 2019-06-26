@@ -35,10 +35,10 @@ static const char*  text_fragment_shader_source = "#version 100 \n\
     precision mediump float;                    \
    uniform sampler2D texture_sampler;           \
    varying vec2 v_TexCoord;                     \
-   varying vec4 color;                     \
+   uniform vec4 color;                     \
     void main()\
     {\
-        gl_FragColor = vec4(1, 1, 1, texture2D(texture_sampler, v_TexCoord).r) * vec4(1,0,0,1);\
+        gl_FragColor = vec4(1, 1, 1, texture2D(texture_sampler, v_TexCoord).r) * color;\
     }\
 //end";
 

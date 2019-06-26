@@ -29,6 +29,7 @@ typedef struct Input {
 	Key ESC;
 	Key SHIFT;
 	Key R;
+	Key ENTER;
 }Input;
 
 

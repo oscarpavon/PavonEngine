@@ -23,6 +23,8 @@ void init_models(ModelArray* array);
 void draw_models(ModelArray* models);
 void load_model_texture_to_gpu(ModelArray* models_array);
 
+void init_model(struct Model* new_model);
+
 void update_editor(); 
 
 bool should_close;

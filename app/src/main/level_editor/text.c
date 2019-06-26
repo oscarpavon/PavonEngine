@@ -7,6 +7,8 @@
 #include "../camera.h"
 
 #include <stdlib.h>
+#include "../file_loader.h"
+#include "editor.h"
 
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
@@ -25,10 +27,13 @@ TextColumn* dir_text_column;
 
 
 
-void render_text(const char *text, float x, float y, float sx, float sy) {
-  glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
+    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
     glUseProgram(text_shader_id);
+    GLfloat black[4] = {0, 0, 0, 1};
+    GLfloat red[4] = {1, 0, 0, 1};
+    GLint uniform_color =  glGetUniformLocation(text_shader_id,"color");
 
   const char *p;
 
@@ -62,7 +67,10 @@ void render_text(const char *text, float x, float y, float sx, float sy) {
         {x2 + w, -y2 - h, 1, 1},
     };
     
-    
+    if(mark)
+        glUniform4fv(uniform_color, 1, red);
+    else
+        glUniform4fv(uniform_color, 1, black);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
@@ -107,17 +115,31 @@ void list_directory_files(TextColumn* column){
 
     rewinddir(dr);
     
-    column->elements = malloc(sizeof(TextElement) * directory_count);    
-    column->count = directory_count;
-
+       
     for(int i = 0; i < directory_count ; i++){        
         de = readdir(dr);
-        column->elements[i].text = de->d_name;
+        
         int y_pos = i*20+20;
         if(i == 0){
             y_pos = 20;
         }
-        render_text(de->d_name,  0,   1 - (y_pos) * sy,    sx, sy);   
+        bool can_mark = false;
+        if(mark_id == i)
+            can_mark = true;
+
+        if(open_file == 5 && mark_id == i){
+            char* editor_path = "../assets/";
+            char* buffer = malloc(500);
+            memset(buffer,0,500);
+            strcat(buffer,editor_path);
+            strcat(buffer,de->d_name);
+            add_element(de->d_name);
+            //printf("%s\n",buffer);
+            free(buffer);
+        }
+           
+
+        render_text(de->d_name,  0,   1 - (y_pos) * sy, sx, sy, can_mark);   
     }    
   
     closedir(dr);   
@@ -129,29 +151,15 @@ void init_text_column(TextColumn* column){
     //init_array(&column->text_elements,sizeof(TextColumn));
     column->count = 0;  
 }
-void draw_text_column(TextColumn* column){
-    float sx = 2.0 / camera_width_screen;
-    float sy = 2.0 / camera_heigth_screen; 
 
-    for(int i = 0; i < column->count; i++){
-        
-        int y_pos = i*20+20;
-        if(i == 0){
-            y_pos = 20;
-        }
-       
-        TextElement* text_element =  &column->elements[i];
-        render_text(text_element->text,  0,   1 - (y_pos) * sy,    sx, sy);    
-    }
-   
-}
 void mark_select_element(){
 
 }
 void draw_directory_files(){
     FT_Set_Pixel_Sizes(face, 0, 20);
         
-   draw_text_column(dir_text_column);
+   
+   list_directory_files(dir_text_column);
 }
 void create_text_texture_buffer(){
 
@@ -206,11 +214,9 @@ void init_text_renderer(){
     create_text_texture_buffer();
     
     draw_text_menu = false;
-    //
-
-    dir_text_column = malloc(sizeof(TextColumn));
-    list_directory_files(dir_text_column);
-
+    
+    mark_id = 0;
+    open_file = 0;
 }
 
 void text_renderer_loop(){ 
@@ -219,5 +225,6 @@ void text_renderer_loop(){
        
        
         draw_directory_files();
+       
     }
 }

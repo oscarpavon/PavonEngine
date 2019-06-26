@@ -57,9 +57,11 @@ void load_editor_element(const char* path_model){
 
 }
 
-void add_element(){
+void add_element(const char* path_to_element){
+    open_file = false;
+
     struct Model new_model;
-    const char* model_path = "../assets/lince.gltf";
+    const char* model_path = path_to_element;
     load_model(model_path,&new_model);
     glm_mat4_identity(new_model.model_mat);   
 
@@ -69,6 +71,8 @@ void add_element(){
     glAttachShader(new_model.shader, standart_vertex_shader);
     glAttachShader(new_model.shader, standart_fragment_shader);
     glLinkProgram(new_model.shader);
+
+    init_model(&new_model);
 
     add_model_to_array(&editor_elements,new_model);
     
@@ -80,11 +84,14 @@ void add_element(){
 
     element_id_count++;
 
+    
+
     add_element_to_array(&editor_models,&new_element);
 
     selected_element = (Element*)get_element_from_array(&editor_models,editor_elements.count-1);
 
-    init_models(&editor_elements);
+    //init_models(&editor_elements);
+   
     can_draw = true;
     can_load_model = false;
     printf("model loaded and shader created \n");
@@ -216,6 +223,7 @@ void draw_gizmos(){
     draw_models(&gizmos);
 }
 
+
 void update_editor(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -226,12 +234,14 @@ void update_editor(){
         draw_models(&editor_elements);
     
     if(can_load_model)
-        add_element();    
+        add_element("lince.gltf");    
             
 
     glClear(GL_DEPTH_BUFFER_BIT);
     draw_gizmos();
 
     text_renderer_loop();   
+
+
     
 }

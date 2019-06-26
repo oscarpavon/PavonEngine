@@ -8,7 +8,7 @@
 #include "../vector.h"
 
 void init_text_renderer();
-void render_text(const char *text, float x, float y, float sx, float sy);
+void render_text(const char *text, float x, float y, float sx, float sy , bool mark);
 void draw_directory_files();
 
 void text_renderer_loop();
@@ -24,6 +24,7 @@ typedef struct {
     TextElement *elements;
 }TextColumn;
 
-
+ int mark_id;
+ float open_file;
 
 #endif

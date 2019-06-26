@@ -22,4 +22,7 @@ void get_element_status(Element* element);
 void save_data();
 void load_level_in_editor();
 void list_directory_files();
+
+
+void add_element(const char* path_to_element);
 #endif

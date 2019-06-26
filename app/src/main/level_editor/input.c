@@ -20,8 +20,28 @@ bool move_camera;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     Engine* engine = glfwGetWindowUserPointer(window);
-	
+	engine->input.ENTER.Released = false;
+    Key* actual_key = NULL;
+    switch (key)
+    {
+    case GLFW_KEY_ENTER:
+        actual_key = &engine->input.ENTER;
+        break;
+    
+    default:
+        break;
+    }
 
+    if(actual_key != NULL){
+        if(action == GLFW_PRESS){
+            actual_key->bIsPressed = true;
+            actual_key->Released = false;
+        }
+        if(action == GLFW_RELEASE){
+            actual_key->bIsPressed = false;
+            actual_key->Released = true;
+        }
+    }
 
     if(key == GLFW_KEY_TAB){
         if(action == GLFW_PRESS){
@@ -39,6 +59,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
         if(action == GLFW_RELEASE){
             engine->input.S.bIsPressed = false;
+            engine->input.S.Released = true;
         }
     }
     if(key == GLFW_KEY_W){
@@ -150,10 +171,17 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 }
 
+static bool if_release(Key* key){
+    if(key->Released){
+        key->Released = false;
+        return true;
+    }
+    return false;
+}
 void update_input(Engine* engine){
     if(!move_camera){
         if(engine->input.S.bIsPressed){
-            get_element_status(selected_element);
+            //get_element_status(selected_element);
         }
         if(engine->input.G.bIsPressed){
             grab_mode = true;
@@ -176,6 +204,16 @@ void update_input(Engine* engine){
             }
             if(engine->input.D.bIsPressed){
                 
+            }
+        }
+
+        if(draw_text_menu){
+            if(engine->input.S.Released){
+                mark_id++;
+                engine->input.S.Released = false;
+            }
+            if(if_release(&engine->input.ENTER)){
+                open_file = 5;
             }
         }
 

@@ -156,6 +156,25 @@ void load_model_texture_to_gpu(ModelArray* models_array){
     }
 }
 
+void init_model(struct Model* new_model){    
+
+    VertexArray vertex_array = new_model->vertex_array;
+
+
+    glGenBuffers(1,&new_model->vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, vertex_array.count * sizeof(struct Vertex) , vertex_array.vertices, GL_STATIC_DRAW);
+
+
+    glGenBuffers(1,&new_model->index_buffer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                    new_model->index_array.count * sizeof(unsigned short int),
+                    new_model->index_array.indices , GL_STATIC_DRAW);
+
+    free(new_model->vertex_array.vertices);
+    free(new_model->index_array.indices);
+}
 
 void init_models(ModelArray* array){
     for(size_t i = 0; i < array->count ; i++){
