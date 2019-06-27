@@ -73,11 +73,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     if(actual_key != NULL){
         if(action == GLFW_PRESS){
-            actual_key->bIsPressed = true;
+            actual_key->pressed = true;
             actual_key->Released = false;
         }
         if(action == GLFW_RELEASE){
-            actual_key->bIsPressed = false;
+            actual_key->pressed = false;
             actual_key->Released = true;
         }
     } 
@@ -93,6 +93,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
                 move_camera = false;
+                editor_mode = EDITOR_DEFAULT_MODE;
 				
 			}
 			if(action == GLFW_RELEASE){
@@ -104,6 +105,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
                 move_camera = true;
+                editor_mode = EDITOR_NAVIGATE_MODE;
 			
 			}
 			if(action == GLFW_RELEASE){
@@ -128,28 +130,28 @@ void init_input(){
 
 void grab_mode(){
     if(key_released(&input.G)){
-        editor_mode = DEFAULT_MODE;
+        editor_mode = EDITOR_DEFAULT_MODE;
         editor_mode_show_text = "Default Mode";
         return;
     }
     editor_mode_show_text = "Grab Mode";
         
-    if(input.W.bIsPressed){
+    if(input.W.pressed){
         vec3 move = {0,-0.02,0};
     glm_translate(selected_element->model->model_mat, move);
     glm_vec3_add(selected_element->position,move,selected_element->position);
     }
-    if(input.S.bIsPressed){
+    if(input.S.pressed){
         vec3 move = {0,0.02,0};
     glm_translate(selected_element->model->model_mat, move);
     glm_vec3_add(selected_element->position,move,selected_element->position);
     }
-    if(input.D.bIsPressed){
+    if(input.D.pressed){
             vec3 move = {-0.02,0,0};
     glm_translate(selected_element->model->model_mat, move);
     glm_vec3_add(selected_element->position,move,selected_element->position);
     }
-    if(input.A.bIsPressed){
+    if(input.A.pressed){
         vec3 move = {0.02,0,0};
     glm_translate(selected_element->model->model_mat, move);
     glm_vec3_add(selected_element->position,move,selected_element->position);
@@ -159,19 +161,38 @@ void grab_mode(){
 
 void navigate_mode(){
     if(move_camera){
-        if(input.W.bIsPressed){
+        if(input.E.pressed){
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+            glm_vec3_add(camera_position,move,camera_position);
+            update_look_at();
+        }
+        if(input.Q.pressed){
+            vec3 move;
+            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+            glm_vec3_sub(camera_position,move,camera_position);
+            update_look_at();
+        }
+        if(input.J.pressed){
+
+        }
+        if(input.K.pressed){
+
+        }
+
+        if(input.W.pressed){
             vec3 move;
             glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
             glm_vec3_add(camera_position,move,camera_position);
             update_look_at();
         }
-        if(input.S.bIsPressed){
+        if(input.S.pressed){
             vec3 move;
             glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
             glm_vec3_sub(camera_position,move,camera_position);
             update_look_at();
         }
-        if(input.D.bIsPressed){
+        if(input.D.pressed){
             vec3 cross;
             glm_vec3_cross(camera_front, camera_up, cross);
             glm_normalize(cross);
@@ -180,7 +201,7 @@ void navigate_mode(){
             glm_vec3_add(camera_position, move,camera_position);
             update_look_at();
         }
-        if(input.A.bIsPressed){
+        if(input.A.pressed){
             vec3 cross;
             glm_vec3_cross(camera_front, camera_up, cross);
             glm_normalize(cross);
@@ -191,6 +212,30 @@ void navigate_mode(){
         }
     }
 }
+void input_text_menu(TextMenu* menu, Key* open_key){
+
+    if(key_released(open_key)){
+        menu->show = true;
+        menu->type = MENU_TYPE_ADD_MODEL;
+    }
+
+    if(menu->show){
+        if(key_released(&input.J)){
+            menu->actual_element_select++;
+        }
+        if(key_released(&input.K)){
+            menu->actual_element_select--;
+        }
+        if(key_released(&input.ENTER)){
+            if(add_element_menu.type == MENU_TYPE_ADD_MODEL)
+                open_file = 5;
+            if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE)
+                add_texture = true;
+                
+            menu->element_selected = true;
+        }
+    }
+}
 
 void default_mode(){
     if(!move_camera){
@@ -198,20 +243,16 @@ void default_mode(){
             get_element_status(selected_element);
         }
         
-        if(input.X.bIsPressed){
+        if(input.X.pressed){
             save_data();
         }
         if(key_released(&input.Z)){
             load_level_in_editor();            
-        }
-        if(key_released(&input.A)){
-            add_element_menu.show = true;
-            add_element_menu.type = MENU_TYPE_ADD_MODEL;
-        }
+        }        
 
         
         if(key_released(&input.G)){
-            editor_mode = GRAB_MODE;
+            editor_mode = EDITOR_GRAB_MODE;
         }
 
         if(key_released(&input.Q)){
@@ -223,35 +264,21 @@ void default_mode(){
             add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
         }
         
-
-        if(add_element_menu.show){
-            if(key_released(&input.J)){
-                mark_id++;
-            }
-            if(key_released(&input.K)){
-                mark_id--;
-            }
-            if(key_released(&input.ENTER)){
-                if(add_element_menu.type == MENU_TYPE_ADD_MODEL)
-                    open_file = 5;
-                if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE)
-                    add_texture = true;
-                    
-                add_element_menu.element_selected = true;
-            }
-        }
+        input_text_menu(&add_element_menu,&input.A);
+        input_text_menu(&list_editor_element,&input.L);
 
     }
 }
 void update_input(){
     switch (editor_mode)
     {    
-    case DEFAULT_MODE:
+    case EDITOR_DEFAULT_MODE:
         default_mode();
         break;
-    case NAVIGATE_MODE:
+    case EDITOR_NAVIGATE_MODE:
         navigate_mode();
-    case GRAB_MODE:
+        break;
+    case EDITOR_GRAB_MODE:
         grab_mode();
         break;
 

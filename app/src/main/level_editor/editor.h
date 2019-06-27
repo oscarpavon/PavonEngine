@@ -2,6 +2,7 @@
 #define EDITOR_EDITOR
 
 #include <cglm/cglm.h>
+#include "text.h"
 
 void create_input_thread();
 void init_editor();
@@ -20,11 +21,11 @@ typedef struct Element{
 Element* selected_element;
 
 typedef enum {
-    GRAB_MODE,
-    DEFAULT_MODE,
-    SCALE_MODE,
-    ROTATE_MODE,
-    NAVIGATE_MODE
+    EDITOR_GRAB_MODE,
+    EDITOR_DEFAULT_MODE,
+    EDITOR_SCALE_MODE,
+    EDITOR_ROTATE_MODE,
+    EDITOR_NAVIGATE_MODE
 }Mode;
 
 
@@ -43,5 +44,7 @@ void add_editor_texture(const char* image_path);
 const char* editor_mode_show_text;
 
 Mode editor_mode;
+
+TextMenu list_editor_element;
 
 #endif

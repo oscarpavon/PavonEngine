@@ -30,6 +30,7 @@ ModelArray gizmos;
 bool can_draw;
 
 
+
 Array editor_elements;
 
 unsigned int element_id_count;
@@ -85,7 +86,7 @@ void add_editor_element(const char* path_to_element){
     
     Element new_element;
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
-    new_element.model = &editor_models.models[0];
+    new_element.model = &editor_models.models[element_id_count];
     new_element.id = element_id_count;
     new_element.model_path = model_path;
 
@@ -182,6 +183,7 @@ void get_elements_in_editor_map(){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         printf("Element name: %s\n", element->model_path);
     }
+  
 
 }
 void get_element_status(Element* element){
@@ -207,21 +209,43 @@ void init_editor(){
     can_draw = false;
 
 
-    element_id_count = 24;    
+    element_id_count = 0;    
 
-    editor_mode = DEFAULT_MODE;
+    editor_mode = EDITOR_DEFAULT_MODE;
 
     editor_mode_show_text = "Default Mode";
 
     init_input();
 
     add_texture = false;
+
+    list_editor_element.show = false;
+    list_editor_element.actual_element_select = 0;
+
+
 }
 
 void draw_gizmos(){
     draw_models(&gizmos);
 }
 
+
+
+void draw_editor_elements_text_list(){
+    float text_size = 12;
+    set_text_size(text_size);
+
+     for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        //printf("Element name: %s\n", element->model_path);
+        int y_pos = i*text_size+text_size;
+        if(i == 0){
+            y_pos = text_size;
+        }
+        render_text(element->model_path,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    }
+       
+}
 
 void update_editor(){
     glClearColor(1,0.5,0,1);
@@ -234,8 +258,10 @@ void update_editor(){
     glClear(GL_DEPTH_BUFFER_BIT);
     draw_gizmos();
 
-    text_renderer_loop();   
-    
+    text_renderer_loop();
+
+    if(list_editor_element.show)   
+        draw_editor_elements_text_list();
 }
 
 

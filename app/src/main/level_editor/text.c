@@ -20,13 +20,12 @@ GLuint text_shader_id;
 
 GLuint uniform_text_color_location;
 
-FT_Face face;
+
 FT_GlyphSlot g;
 
 TextColumn* dir_text_column;
 
-float pixel_size_x;
-float pixel_size_y;
+
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -123,17 +122,17 @@ void list_directory_files(TextColumn* column){
             y_pos = 20;
         }
         bool can_mark = false;
-        if(mark_id == i)
+        if(add_element_menu.actual_element_select == i)
             can_mark = true;
 
         if(add_element_menu.type == MENU_TYPE_ADD_MODEL){
-            if(open_file == 5 && mark_id == i){
+            if(open_file == 5 && add_element_menu.actual_element_select == i){
                 add_editor_element(de->d_name);
                 
             }
         }
         if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE){
-             if(add_texture == true && mark_id == i){
+             if(add_texture == true && add_element_menu.actual_element_select == i){
                 add_editor_texture(de->d_name);
             }
         }
@@ -146,6 +145,8 @@ void list_directory_files(TextColumn* column){
     closedir(dr);   
    
 }
+
+
 
 
 void draw_directory_files(){

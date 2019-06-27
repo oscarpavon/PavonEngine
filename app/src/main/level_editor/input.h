@@ -7,7 +7,7 @@
 
 
 typedef struct Key{
-	bool bIsPressed;
+	bool pressed;
 	bool Released;
 }Key;
 
