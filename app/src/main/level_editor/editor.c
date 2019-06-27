@@ -88,10 +88,11 @@ void add_editor_element(const char* path_to_element){
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
     new_element.model = &editor_models.models[element_id_count];
     new_element.id = element_id_count;
-    new_element.model_path = model_path;
+
+    new_element.model_path = malloc(strlen(model_path));
+    strcpy(new_element.model_path,model_path);
 
     element_id_count++;
-
     
 
     add_element_to_array(&editor_elements,&new_element);
@@ -109,11 +110,26 @@ void delete_element(){
 
 }
 
+void clean_element(Element* element){
+    free(element->texture_path);
+    free(element->model_path);
+}
+
+void clean_editor(){
+    for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        clean_element(element);
+    }
+}
+
 void add_editor_texture(const char* image_path){
     add_texture = false;
     selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
     selected_element->model->texture.image = load_image(image_path);
     load_model_texture_to_gpu(selected_element->model);
+    selected_element->texture_path = malloc(strlen(image_path));
+    strcpy(selected_element->texture_path,image_path);
+
     
 }
 
@@ -127,6 +143,8 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
     fputs("\t\"path\" : ", new_file);
     fprintf(new_file,"\"%s\"\n",selected_element->model_path);
+    fputs("\t\"texture\" : ", new_file);
+    fprintf(new_file,"\"%s\"\n",selected_element->texture_path);
     fputs("}",new_file);
 }
 

@@ -41,6 +41,8 @@ void get_elements_in_editor_map();
 void add_editor_element(const char* path_to_element);
 void add_editor_texture(const char* image_path);
 
+void clean_editor();
+
 const char* editor_mode_show_text;
 
 Mode editor_mode;

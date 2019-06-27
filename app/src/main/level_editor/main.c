@@ -33,5 +33,7 @@ int main(){
    
         glfwSwapBuffers(main_window.window);
     }
+    clean_editor();
+    
     glfwTerminate();
 }

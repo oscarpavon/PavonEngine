@@ -160,6 +160,7 @@ void grab_mode(){
 }
 
 void navigate_mode(){
+    editor_mode_show_text = "Navigate Mode";
     if(move_camera){
         if(input.E.pressed){
             vec3 move;
@@ -243,7 +244,7 @@ void default_mode(){
             get_element_status(selected_element);
         }
         
-        if(input.X.pressed){
+        if(key_released(&input.X)){
             save_data();
         }
         if(key_released(&input.Z)){
@@ -269,6 +270,7 @@ void default_mode(){
 
     }
 }
+
 void update_input(){
     switch (editor_mode)
     {    
