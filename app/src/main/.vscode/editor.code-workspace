@@ -16,7 +16,11 @@
 			"pthread.h": "c",
 			"cgltf.h": "c",
 			"ft2build.h": "c",
-			"editor.h": "c"
+			"editor.h": "c",
+			"string_view": "c",
+			"ratio": "c",
+			"chrono": "c",
+			"variant": "c"
 		}
 	}
 }

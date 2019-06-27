@@ -21,13 +21,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     Engine* engine = glfwGetWindowUserPointer(window);
 	engine->input.ENTER.Released = false;
+    engine->input.Z.Released = false;
+
     Key* actual_key = NULL;
     switch (key)
     {
     case GLFW_KEY_ENTER:
         actual_key = &engine->input.ENTER;
         break;
-    
+    case GLFW_KEY_Z:
+        actual_key = &engine->input.Z;
+        break;
     default:
         break;
     }
@@ -87,14 +91,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             engine->input.A.bIsPressed = false;
         }
     }
-    if(key == GLFW_KEY_Z){
-        if(action == GLFW_PRESS){
-            engine->input.Z.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.Z.bIsPressed = false;
-        }
-    }
+    
     if(key == GLFW_KEY_G){
         if(action == GLFW_PRESS){
             engine->input.G.bIsPressed = true;
@@ -142,7 +139,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 
-
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
 
 		if (button == GLFW_MOUSE_BUTTON_RIGHT ){
@@ -171,7 +167,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 }
 
-static bool if_release(Key* key){
+static inline bool if_release(Key* key){
     if(key->Released){
         key->Released = false;
         return true;
@@ -189,13 +185,14 @@ void update_input(Engine* engine){
         if(engine->input.X.bIsPressed){
             save_data();
         }
-        if(engine->input.Z.Released){
-            load_level_in_editor();
+        if(if_release(&engine->input.Z)){
+            load_level_in_editor();            
         }
         if(engine->input.D.Released){
             draw_text_menu = true;
             engine->input.D.Released = false;
         }
+
 
         if(grab_mode){
             if(engine->input.A.bIsPressed){

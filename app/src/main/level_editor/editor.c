@@ -106,7 +106,7 @@ void save_data(){
     fputs("{\n\t\"id\" : ", new_file);
     fprintf(new_file,"%i,\n",selected_element->id);
     fputs("\t\"pos\" : ", new_file);
-    fprintf(new_file,"%f %f %f,\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
+    fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
     fputs("\t\"path\" : ", new_file);
     fprintf(new_file,"\"%s\"\n",selected_element->model_path);
     fputs("}",new_file);
@@ -120,6 +120,11 @@ void load_level_in_editor(){
 
     FILE* level_file = fopen("new_level.lvl","r");
 
+    int return_number = 0;
+
+    //fscanf(level_file,"%d", &return_number);
+
+
     fseek(level_file, 0, SEEK_END);
     long file_size = ftell(level_file);
     rewind (level_file);
@@ -129,6 +134,7 @@ void load_level_in_editor(){
     fread(file_buffer,sizeof(char), file_size, level_file);
      
     
+
     parse_json(file_buffer,file_size);
 
     Element new_element;
