@@ -49,7 +49,8 @@ void add_model_to_array(ModelArray* array, struct Model model){
 }
 
 void *get_element_from_array(Array* array,int index){
-    return &array->data[0];
+    size_t offset = array->element_bytes_size;
+    return &array->data[0] + (index*offset);
 }
 
 void add_index_to_array(IndexArray* array, unsigned short int value){

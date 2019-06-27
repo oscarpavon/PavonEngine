@@ -32,6 +32,8 @@ typedef struct Input {
 	Key ENTER;
 	Key J;
 	Key K;
+	Key T;
+	Key L;
 }Input;
 
 

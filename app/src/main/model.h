@@ -27,13 +27,13 @@ struct Geometry{
 
 typedef struct{
     unsigned int id;
-    const char* path;
+    char* path;
     vec3 position;    
 }LoadModel;
 
 
 void init_model();
-void load_model(const char* path, struct Model*);
+int load_model(const char* path, struct Model*);
 
 
 void parse_json(const char* json_file, size_t json_file_size);

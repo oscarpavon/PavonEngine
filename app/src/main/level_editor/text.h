@@ -24,9 +24,15 @@ typedef struct {
     TextElement *elements;
 }TextColumn;
 
+typedef enum{
+    MENU_TYPE_ADD_MODEL,
+    MENU_TYPE_ADD_TEXTURE    
+}TextMenuType;
+
 typedef struct {
     bool show;
     bool element_selected;
+    TextMenuType type;
 }TextMenu;
 
 
@@ -34,5 +40,6 @@ TextMenu add_element_menu;
 
  int mark_id;
  float open_file;
+bool add_texture;
 
 #endif

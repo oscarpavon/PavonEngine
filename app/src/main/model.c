@@ -46,7 +46,7 @@ void load_joints(){
 
 }
 
-void load_model(const char* path , struct Model* model){
+int load_model(const char* path , struct Model* model){
     File new_file;
 
     load_file(path,&new_file);
@@ -58,7 +58,7 @@ void load_model(const char* path , struct Model* model){
 
     if (result != cgltf_result_success){
          LOGW("Model no loaded: %s \n", new_file.path);
-         return;
+         return -1;
     }
     cgltf_load_buffers(&options,data,new_file.path);
 
@@ -69,6 +69,7 @@ void load_model(const char* path , struct Model* model){
 
     cgltf_free(data);
     close_file(&new_file);
+    return 0;
 }
 
 void free_model_load(LoadModel* model){

@@ -52,6 +52,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_X:
         actual_key = &input.X;
         break;
+    case GLFW_KEY_Q:
+        actual_key = &input.Q;
+        break;
+    case GLFW_KEY_E:
+        actual_key = &input.E;
+        break;
+    case GLFW_KEY_T:
+        actual_key = &input.T;
+        break;
+    case GLFW_KEY_L:
+        actual_key = &input.L;
+        break;
      case GLFW_KEY_ESCAPE:
         actual_key = &input.ESC;
         break;
@@ -122,23 +134,27 @@ void grab_mode(){
     }
     editor_mode_show_text = "Grab Mode";
         
-        if(input.W.bIsPressed){
-        glm_translate(selected_element->model->model_mat, (vec3){0,0.02,0});
-        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
-        }
-        if(input.S.bIsPressed){
-        glm_translate(selected_element->model->model_mat, (vec3){0,-0.02,0});
-        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
-        }
-        if(input.D.bIsPressed){
-        glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
-        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
-        }
-        if(input.A.bIsPressed){
-        glm_translate(selected_element->model->model_mat, (vec3){-0.02,0,0});
-        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+    if(input.W.bIsPressed){
+        vec3 move = {0,-0.02,0};
+    glm_translate(selected_element->model->model_mat, move);
+    glm_vec3_add(selected_element->position,move,selected_element->position);
+    }
+    if(input.S.bIsPressed){
+        vec3 move = {0,0.02,0};
+    glm_translate(selected_element->model->model_mat, move);
+    glm_vec3_add(selected_element->position,move,selected_element->position);
+    }
+    if(input.D.bIsPressed){
+            vec3 move = {-0.02,0,0};
+    glm_translate(selected_element->model->model_mat, move);
+    glm_vec3_add(selected_element->position,move,selected_element->position);
+    }
+    if(input.A.bIsPressed){
+        vec3 move = {0.02,0,0};
+    glm_translate(selected_element->model->model_mat, move);
+    glm_vec3_add(selected_element->position,move,selected_element->position);
 
-        }
+    }
 }
 
 void navigate_mode(){
@@ -178,8 +194,8 @@ void navigate_mode(){
 
 void default_mode(){
     if(!move_camera){
-        if(input.S.bIsPressed){
-            //get_element_status(selected_element);
+        if(key_released(&input.S)){
+            get_element_status(selected_element);
         }
         
         if(input.X.bIsPressed){
@@ -190,13 +206,22 @@ void default_mode(){
         }
         if(key_released(&input.A)){
             add_element_menu.show = true;
+            add_element_menu.type = MENU_TYPE_ADD_MODEL;
         }
 
         
         if(key_released(&input.G)){
             editor_mode = GRAB_MODE;
         }
+
+        if(key_released(&input.Q)){
+            get_elements_in_editor_map();
+        }
        
+        if(key_released(&input.T)){
+            add_element_menu.show = true;
+            add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
+        }
         
 
         if(add_element_menu.show){
@@ -207,7 +232,11 @@ void default_mode(){
                 mark_id--;
             }
             if(key_released(&input.ENTER)){
-                open_file = 5;
+                if(add_element_menu.type == MENU_TYPE_ADD_MODEL)
+                    open_file = 5;
+                if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE)
+                    add_texture = true;
+                    
                 add_element_menu.element_selected = true;
             }
         }

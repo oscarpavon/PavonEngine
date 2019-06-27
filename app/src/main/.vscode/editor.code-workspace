@@ -20,7 +20,8 @@
 			"string_view": "c",
 			"ratio": "c",
 			"chrono": "c",
-			"variant": "c"
+			"variant": "c",
+			"*.tcc": "c"
 		}
 	}
 }

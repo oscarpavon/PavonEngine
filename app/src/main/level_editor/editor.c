@@ -18,17 +18,19 @@
 
 #include "../camera.h"
 
+#include "../images.h"
+
 #define COMMAND_ADD_ELEMENT 0
 #define COMMAND_REMOVE_ELEMENT 1
 #define COMMAND_SAVE_LEVEL 2
 #define COMMAND_LOAD_LEVEL 3
 
-ModelArray editor_elements;
+ModelArray editor_models;
 ModelArray gizmos;
 bool can_draw;
-bool can_load_model;
 
-Array editor_models;
+
+Array editor_elements;
 
 unsigned int element_id_count;
 
@@ -53,18 +55,21 @@ void load_editor_element(const char* path_model){
     
 
     init_models(&gizmos);
-    load_model_texture_to_gpu(&gizmos);
+    load_models_texture_to_gpu(&gizmos);
 
     
 
 }
 
-void add_element(const char* path_to_element){
+void add_editor_element(const char* path_to_element){
     open_file = false;
 
     struct Model new_model;
     const char* model_path = path_to_element;
-    load_model(model_path,&new_model);
+    int result = load_model(model_path,&new_model);
+    if(result==-1){
+        return;
+    }
     glm_mat4_identity(new_model.model_mat);   
 
     new_model.shader = glCreateProgram();
@@ -76,11 +81,11 @@ void add_element(const char* path_to_element){
 
     init_model(&new_model);
 
-    add_model_to_array(&editor_elements,new_model);
+    add_model_to_array(&editor_models,new_model);
     
     Element new_element;
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
-    new_element.model = &editor_elements.models[0];
+    new_element.model = &editor_models.models[0];
     new_element.id = element_id_count;
     new_element.model_path = model_path;
 
@@ -88,14 +93,14 @@ void add_element(const char* path_to_element){
 
     
 
-    add_element_to_array(&editor_models,&new_element);
+    add_element_to_array(&editor_elements,&new_element);
 
-    selected_element = (Element*)get_element_from_array(&editor_models,editor_elements.count-1);
+    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
 
     //init_models(&editor_elements);
    
     can_draw = true;
-    can_load_model = false;
+    
     printf("model loaded and shader created \n");
 }
 
@@ -103,8 +108,18 @@ void delete_element(){
 
 }
 
-void save_data(){
-    FILE* new_file = fopen("new_level.lvl","w+");
+void add_editor_texture(const char* image_path){
+    add_texture = false;
+    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
+    selected_element->model->texture.image = load_image(image_path);
+    load_model_texture_to_gpu(selected_element->model);
+    
+}
+
+void add_element_to_save_data(FILE* new_file, Element* selected_element, int index){
+    if(index !=0){
+        fputs(",\n", new_file);
+    }
     fputs("{\n\t\"id\" : ", new_file);
     fprintf(new_file,"%i,\n",selected_element->id);
     fputs("\t\"pos\" : ", new_file);
@@ -112,6 +127,17 @@ void save_data(){
     fputs("\t\"path\" : ", new_file);
     fprintf(new_file,"\"%s\"\n",selected_element->model_path);
     fputs("}",new_file);
+}
+
+void save_data(){
+    FILE* new_file = fopen("new_level.lvl","w+");
+        
+    for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        //printf("Element name: %s\n", element->model_path);
+        add_element_to_save_data(new_file,element,i);
+    }
+
 
     fclose(new_file);
 
@@ -133,15 +159,13 @@ void load_level_in_editor(){
 
     char file_buffer[file_size];
 
-    fread(file_buffer,sizeof(char), file_size, level_file);
-     
+    fread(file_buffer,sizeof(char), file_size, level_file);    
     
 
     parse_json(file_buffer,file_size);
 
     Element new_element;
     glm_vec3_copy((vec3){0,0,0}, new_element.position);    
-    
 
     element_id_count++;
 
@@ -151,11 +175,75 @@ void load_level_in_editor(){
 
 
 
+void get_elements_in_editor_map(){
+    printf("Elements count: %i\n", editor_elements.count);
+
+    for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        printf("Element name: %s\n", element->model_path);
+    }
+
+}
+void get_element_status(Element* element){
+    printf("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
+
+}
+
+
+void init_editor(){
+    
+    init_vec3(0,3,0, camera_position);
+    update_look_at();
+
+    init_model_array(&editor_models, 1);
+    init_model_array(&gizmos,1);
+
+    init_array(&editor_elements,sizeof(Element));
+
+    load_editor_element("editor/transform.gltf");
+
+    init_text_renderer();
+
+    can_draw = false;
+
+
+    element_id_count = 24;    
+
+    editor_mode = DEFAULT_MODE;
+
+    editor_mode_show_text = "Default Mode";
+
+    init_input();
+
+    add_texture = false;
+}
+
+void draw_gizmos(){
+    draw_models(&gizmos);
+}
+
+
+void update_editor(){
+    glClearColor(1,0.5,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
+
+    if(can_draw)
+        draw_models(&editor_models);  
+      
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    draw_gizmos();
+
+    text_renderer_loop();   
+    
+}
+
+
 void handle_command(unsigned short int command){
     switch (command)
     {
     case COMMAND_ADD_ELEMENT:
-       can_load_model = true;
+       
         break;
     
     default:
@@ -177,15 +265,9 @@ void* input_thread(void* in){
              command_code = COMMAND_SAVE_LEVEL;
          }
          handle_command(command_code);
-    }
-    
+    }  
    
 
-
-}
-
-void get_element_status(Element* element){
-    printf("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
 
 }
 
@@ -193,69 +275,4 @@ void create_input_thread(){
     pthread_t input_thread_id;
     pthread_create(&input_thread_id,NULL, input_thread, NULL);
 
-}
-
-void check_user_input_command(){
-
-}
-
-
-
-void init_editor(){
-    
-    init_vec3(0,3,0, camera_position);
-    update_look_at();
-
-    init_model_array(&editor_elements, 1);
-    init_model_array(&gizmos,1);
-
-    init_array(&editor_models,sizeof(Element));
-
-    load_editor_element("editor/transform.gltf");
-
-    init_text_renderer();
-
-    can_draw = false;
-    can_load_model = false;
-
-    element_id_count = 24;    
-
-    editor_mode = DEFAULT_MODE;
-
-    editor_mode_show_text = "Default Mode";
-
-    init_input();
-
-}
-
-ModelArray* models_to_draw;
-void update_model_to_draw(){
-    
-}
-
-void draw_gizmos(){
-    draw_models(&gizmos);
-}
-
-
-void update_editor(){
-    glClearColor(1,0.5,0,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-   
-
-    if(can_draw)
-        draw_models(&editor_elements);
-    
-    if(can_load_model)
-        add_element("lince.gltf");    
-            
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-    draw_gizmos();
-
-    text_renderer_loop();   
-
-
-    
 }

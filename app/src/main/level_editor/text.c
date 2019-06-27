@@ -126,16 +126,18 @@ void list_directory_files(TextColumn* column){
         if(mark_id == i)
             can_mark = true;
 
-        if(open_file == 5 && mark_id == i){
-            char* editor_path = "../assets/";
-            char* buffer = malloc(500);
-            memset(buffer,0,500);
-            strcat(buffer,editor_path);
-            strcat(buffer,de->d_name);
-            add_element(de->d_name);
-            //printf("%s\n",buffer);
-            free(buffer);
+        if(add_element_menu.type == MENU_TYPE_ADD_MODEL){
+            if(open_file == 5 && mark_id == i){
+                add_editor_element(de->d_name);
+                
+            }
         }
+        if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE){
+             if(add_texture == true && mark_id == i){
+                add_editor_texture(de->d_name);
+            }
+        }
+       
            
 
         render_text(de->d_name,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
@@ -212,6 +214,8 @@ void init_text_renderer(){
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
+
+    add_element_menu.type = MENU_TYPE_ADD_MODEL;
 }
 
 void draw_editor_mode(){
