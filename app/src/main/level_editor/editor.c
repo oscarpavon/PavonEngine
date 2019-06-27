@@ -55,6 +55,8 @@ void load_editor_element(const char* path_model){
     init_models(&gizmos);
     load_model_texture_to_gpu(&gizmos);
 
+    
+
 }
 
 void add_element(const char* path_to_element){
@@ -217,6 +219,12 @@ void init_editor(){
     can_load_model = false;
 
     element_id_count = 24;    
+
+    editor_mode = DEFAULT_MODE;
+
+    editor_mode_show_text = "Default Mode";
+
+    init_input();
 
 }
 

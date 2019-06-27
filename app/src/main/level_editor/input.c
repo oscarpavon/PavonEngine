@@ -19,18 +19,41 @@ bool move_camera;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
-    Engine* engine = glfwGetWindowUserPointer(window);
-	engine->input.ENTER.Released = false;
-    engine->input.Z.Released = false;
-
     Key* actual_key = NULL;
     switch (key)
     {
     case GLFW_KEY_ENTER:
-        actual_key = &engine->input.ENTER;
+        actual_key = &input.ENTER;
         break;
     case GLFW_KEY_Z:
-        actual_key = &engine->input.Z;
+        actual_key = &input.Z;
+        break;
+    case GLFW_KEY_A:
+        actual_key = &input.A;
+        break;
+    case GLFW_KEY_D:
+        actual_key = &input.D;
+        break;
+    case GLFW_KEY_W:
+        actual_key = &input.W;
+        break;
+    case GLFW_KEY_S:
+        actual_key = &input.S;
+        break;
+    case GLFW_KEY_G:
+        actual_key = &input.G;
+        break;
+    case GLFW_KEY_J:
+        actual_key = &input.J;
+        break;
+    case GLFW_KEY_K:
+        actual_key = &input.K;
+        break;
+    case GLFW_KEY_X:
+        actual_key = &input.X;
+        break;
+     case GLFW_KEY_ESCAPE:
+        actual_key = &input.ESC;
         break;
     default:
         break;
@@ -45,95 +68,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             actual_key->bIsPressed = false;
             actual_key->Released = true;
         }
-    }
-
-    if(key == GLFW_KEY_TAB){
-        if(action == GLFW_PRESS){
-            engine->input.TAB.bIsPressed = true;
-            engine->input.TAB.Released = false;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.TAB.bIsPressed = false;
-            engine->input.TAB.Released = true;
-        }
-    }
-    if(key == GLFW_KEY_S){
-        if(action == GLFW_PRESS){
-            engine->input.S.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.S.bIsPressed = false;
-            engine->input.S.Released = true;
-        }
-    }
-    if(key == GLFW_KEY_W){
-        if(action == GLFW_PRESS){
-            engine->input.W.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.W.bIsPressed = false;
-        }
-    }
-    if(key == GLFW_KEY_D){
-        if(action == GLFW_PRESS){
-            engine->input.D.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.D.bIsPressed = false;
-            engine->input.D.Released = true;
-        }
-    }
-    if(key == GLFW_KEY_A){
-        if(action == GLFW_PRESS){
-            engine->input.A.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.A.bIsPressed = false;
-        }
-    }
-    
-    if(key == GLFW_KEY_G){
-        if(action == GLFW_PRESS){
-            engine->input.G.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.G.bIsPressed = false;
-        }
-    }
-    
-    if(key == GLFW_KEY_E){
-        if(action == GLFW_PRESS){
-            engine->input.E.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.E.bIsPressed = false;
-        }
-    }
-    if(key == GLFW_KEY_Q){
-        if(action == GLFW_PRESS){
-            engine->input.Q.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.Q.bIsPressed = false;
-        }
-    }
-    if(key == GLFW_KEY_X){
-        if(action == GLFW_PRESS){
-            engine->input.X.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.X.bIsPressed = false;
-
-        }
-    }
-    if(key == GLFW_KEY_V){
-        if(action == GLFW_PRESS){
-            engine->input.V.bIsPressed = true;
-        }
-        if(action == GLFW_RELEASE){
-            engine->input.V.bIsPressed = false;
-        }
-    }
+    } 
   
            
 }
@@ -167,70 +102,60 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 }
 
-static inline bool if_release(Key* key){
+static inline bool key_released(Key* key){
     if(key->Released){
         key->Released = false;
         return true;
     }
     return false;
 }
-void update_input(Engine* engine){
-    if(!move_camera){
-        if(engine->input.S.bIsPressed){
-            //get_element_status(selected_element);
-        }
-        if(engine->input.G.bIsPressed){
-            grab_mode = true;
-        }
-        if(engine->input.X.bIsPressed){
-            save_data();
-        }
-        if(if_release(&engine->input.Z)){
-            load_level_in_editor();            
-        }
-        if(engine->input.D.Released){
-            draw_text_menu = true;
-            engine->input.D.Released = false;
-        }
 
+void init_input(){
+    memset(&input,0,sizeof(Input));
+}
 
-        if(grab_mode){
-            if(engine->input.A.bIsPressed){
-                glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
-                glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
-            }
-            if(engine->input.D.bIsPressed){
-                
-            }
-        }
-
-        if(draw_text_menu){
-            if(engine->input.S.Released){
-                mark_id++;
-                engine->input.S.Released = false;
-            }
-            if(if_release(&engine->input.ENTER)){
-                open_file = 5;
-            }
-        }
-
+void grab_mode(){
+    if(key_released(&input.G)){
+        editor_mode = DEFAULT_MODE;
+        editor_mode_show_text = "Default Mode";
+        return;
     }
+    editor_mode_show_text = "Grab Mode";
+        
+        if(input.W.bIsPressed){
+        glm_translate(selected_element->model->model_mat, (vec3){0,0.02,0});
+        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+        }
+        if(input.S.bIsPressed){
+        glm_translate(selected_element->model->model_mat, (vec3){0,-0.02,0});
+        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+        }
+        if(input.D.bIsPressed){
+        glm_translate(selected_element->model->model_mat, (vec3){0.02,0,0});
+        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
+        }
+        if(input.A.bIsPressed){
+        glm_translate(selected_element->model->model_mat, (vec3){-0.02,0,0});
+        glm_vec3_add(selected_element->position,(vec3){0.02,0,0},selected_element->position);
 
-    
+        }
+}
+
+void navigate_mode(){
     if(move_camera){
-        if(engine->input.W.bIsPressed){
+        if(input.W.bIsPressed){
             vec3 move;
             glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
             glm_vec3_add(camera_position,move,camera_position);
             update_look_at();
         }
-        if(engine->input.S.bIsPressed){
+        if(input.S.bIsPressed){
             vec3 move;
             glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
             glm_vec3_sub(camera_position,move,camera_position);
             update_look_at();
         }
-        if(engine->input.D.bIsPressed){
+        if(input.D.bIsPressed){
             vec3 cross;
             glm_vec3_cross(camera_front, camera_up, cross);
             glm_normalize(cross);
@@ -239,7 +164,7 @@ void update_input(Engine* engine){
             glm_vec3_add(camera_position, move,camera_position);
             update_look_at();
         }
-        if(engine->input.A.bIsPressed){
+        if(input.A.bIsPressed){
             vec3 cross;
             glm_vec3_cross(camera_front, camera_up, cross);
             glm_normalize(cross);
@@ -249,7 +174,61 @@ void update_input(Engine* engine){
             update_look_at();
         }
     }
-    
+}
+
+void default_mode(){
+    if(!move_camera){
+        if(input.S.bIsPressed){
+            //get_element_status(selected_element);
+        }
+        
+        if(input.X.bIsPressed){
+            save_data();
+        }
+        if(key_released(&input.Z)){
+            load_level_in_editor();            
+        }
+        if(key_released(&input.A)){
+            add_element_menu.show = true;
+        }
+
+        
+        if(key_released(&input.G)){
+            editor_mode = GRAB_MODE;
+        }
+       
+        
+
+        if(add_element_menu.show){
+            if(key_released(&input.J)){
+                mark_id++;
+            }
+            if(key_released(&input.K)){
+                mark_id--;
+            }
+            if(key_released(&input.ENTER)){
+                open_file = 5;
+                add_element_menu.element_selected = true;
+            }
+        }
+
+    }
+}
+void update_input(){
+    switch (editor_mode)
+    {    
+    case DEFAULT_MODE:
+        default_mode();
+        break;
+    case NAVIGATE_MODE:
+        navigate_mode();
+    case GRAB_MODE:
+        grab_mode();
+        break;
+
+    default:
+        break;
+    } 
 }
 
 float last_mouse_x = 400;

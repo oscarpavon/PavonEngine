@@ -30,18 +30,18 @@ typedef struct Input {
 	Key SHIFT;
 	Key R;
 	Key ENTER;
+	Key J;
+	Key K;
 }Input;
 
 
-typedef struct Engine{
-    Input input;
-}Engine;
+Input input;
 
-
-
-void update_input(Engine*);
+void update_input();
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+void init_input();
 
 #endif // !EDITOR_INPUT_H

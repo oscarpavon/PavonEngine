@@ -25,7 +25,8 @@ FT_GlyphSlot g;
 
 TextColumn* dir_text_column;
 
-
+float pixel_size_x;
+float pixel_size_y;
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -95,9 +96,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
 }
 #include <dirent.h> 
 void list_directory_files(TextColumn* column){   
-     float sx = 2.0 / camera_width_screen;
-    float sy = 2.0 / camera_heigth_screen;
-
+   
     struct dirent *de;  // Pointer for directory entry 
   
     // opendir() returns a pointer of DIR type.  
@@ -139,7 +138,7 @@ void list_directory_files(TextColumn* column){
         }
            
 
-        render_text(de->d_name,  0,   1 - (y_pos) * sy, sx, sy, can_mark);   
+        render_text(de->d_name,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
     }    
   
     closedir(dr);   
@@ -147,19 +146,10 @@ void list_directory_files(TextColumn* column){
 }
 
 
-void init_text_column(TextColumn* column){
-    //init_array(&column->text_elements,sizeof(TextColumn));
-    column->count = 0;  
-}
-
-void mark_select_element(){
-
-}
 void draw_directory_files(){
-    FT_Set_Pixel_Sizes(face, 0, 20);
-        
+    FT_Set_Pixel_Sizes(face, 0, 20);    
    
-   list_directory_files(dir_text_column);
+    list_directory_files(dir_text_column);
 }
 void create_text_texture_buffer(){
 
@@ -208,23 +198,39 @@ void init_text_renderer(){
 
     g = face->glyph;
 
-    FT_Set_Pixel_Sizes(face, 0, 60);
+    FT_Set_Pixel_Sizes(face, 0, 20);
 
     init_text_shader();
     create_text_texture_buffer();
     
-    draw_text_menu = false;
-    
+        
     mark_id = 0;
     open_file = 0;
+
+    add_element_menu.show = false;
+    add_element_menu.element_selected = false;
+
+    pixel_size_x = 2.0 / camera_width_screen;
+    pixel_size_y = 2.0 / camera_heigth_screen;
+}
+
+void draw_editor_mode(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 }
 
 void text_renderer_loop(){ 
-        
-    if(draw_text_menu){
-       
+
+    
+    draw_editor_mode();
+
+    if(add_element_menu.show){       
        
         draw_directory_files();
+        if(add_element_menu.element_selected){
+            add_element_menu.show = false;
+            add_element_menu.element_selected = false;
+        }
        
     }
 }

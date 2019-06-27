@@ -16,7 +16,13 @@ typedef struct Element{
 
 Element* selected_element;
 
-bool grab_mode;
+typedef enum {
+    GRAB_MODE,
+    DEFAULT_MODE,
+    SCALE_MODE,
+    ROTATE_MODE,
+    NAVIGATE_MODE
+}Mode;
 
 void get_element_status(Element* element);
 void save_data();
@@ -25,4 +31,9 @@ void list_directory_files();
 
 
 void add_element(const char* path_to_element);
+
+const char* editor_mode_show_text;
+
+Mode editor_mode;
+
 #endif

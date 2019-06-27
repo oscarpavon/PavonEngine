@@ -13,8 +13,7 @@ int main(){
    
     create_input_thread();
 
-    Engine engine;
-    glfwSetWindowUserPointer(main_window.window, &engine);
+   
     glfwSetKeyCallback(main_window.window, key_callback);
 	glfwSetCursorPosCallback(main_window.window, mouse_callback);
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
@@ -30,7 +29,7 @@ int main(){
         update_envents();
 
         update_editor();
-        update_input(&engine);
+        update_input();
    
         glfwSwapBuffers(main_window.window);
     }

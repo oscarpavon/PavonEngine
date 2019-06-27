@@ -12,7 +12,7 @@ void render_text(const char *text, float x, float y, float sx, float sy , bool m
 void draw_directory_files();
 
 void text_renderer_loop();
-bool draw_text_menu;
+
 
 typedef struct{
     bool selected;
@@ -23,6 +23,14 @@ typedef struct {
     int count;    
     TextElement *elements;
 }TextColumn;
+
+typedef struct {
+    bool show;
+    bool element_selected;
+}TextMenu;
+
+
+TextMenu add_element_menu;
 
  int mark_id;
  float open_file;
