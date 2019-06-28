@@ -209,6 +209,11 @@ void get_element_status(Element* element){
 
 }
 
+void select_editor_elemenent(int id){
+    printf("Slected edito0r element \n");
+    Element* element = (Element*)get_element_from_array(&editor_elements,id);
+    selected_element = element;
+}
 
 void init_editor(){
     
@@ -237,10 +242,10 @@ void init_editor(){
 
     add_texture = false;
 
-    list_editor_element.show = false;
-    list_editor_element.actual_element_select = 0;
-
-
+    editor_element_list_menu.show = false;
+    editor_element_list_menu.actual_element_select = 0;
+    editor_element_list_menu.execute_function = &select_editor_elemenent;
+    
 }
 
 void draw_gizmos(){
@@ -260,7 +265,11 @@ void draw_editor_elements_text_list(){
         if(i == 0){
             y_pos = text_size;
         }
-        render_text(element->model_path,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+        bool can_mark = false;
+        if(editor_element_list_menu.actual_element_select == i)
+            can_mark = true;
+
+        render_text(element->model_path,  0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
     }
        
 }
@@ -278,7 +287,7 @@ void update_editor(){
 
     text_renderer_loop();
 
-    if(list_editor_element.show)   
+    if(editor_element_list_menu.show)   
         draw_editor_elements_text_list();
 }
 

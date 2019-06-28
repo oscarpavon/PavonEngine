@@ -47,6 +47,6 @@ const char* editor_mode_show_text;
 
 Mode editor_mode;
 
-TextMenu list_editor_element;
+TextMenu editor_element_list_menu;
 
 #endif

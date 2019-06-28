@@ -127,19 +127,18 @@ void list_directory_files(TextColumn* column){
 
         if(add_element_menu.type == MENU_TYPE_ADD_MODEL){
             if(open_file == 5 && add_element_menu.actual_element_select == i){
-                add_editor_element(de->d_name);
-                
+                strcpy(add_element_menu.text_for_action,de->d_name);
             }
         }
         if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE){
              if(add_texture == true && add_element_menu.actual_element_select == i){
-                add_editor_texture(de->d_name);
+                strcpy(add_element_menu.text_for_action,de->d_name);
             }
         }
        
            
-
-        render_text(de->d_name,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
+        if(add_element_menu.show)
+            render_text(de->d_name,  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
     }    
   
     closedir(dr);   
@@ -186,6 +185,10 @@ void init_text_shader(){
 
 }
 
+void test_function(int s){
+    printf("test\n");
+}
+
 void init_text_renderer(){
     FT_Library ft;
 
@@ -212,11 +215,14 @@ void init_text_renderer(){
 
     add_element_menu.show = false;
     add_element_menu.element_selected = false;
+    add_element_menu.execute = false;
+    add_element_menu.type = MENU_TYPE_ADD_MODEL;
+    add_element_menu.execute_function = &test_function;
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
 
-    add_element_menu.type = MENU_TYPE_ADD_MODEL;
+    
 }
 
 void draw_editor_mode(){
@@ -229,13 +235,34 @@ void text_renderer_loop(){
     
     draw_editor_mode();
 
-    if(add_element_menu.show){       
+    
+
+    if(add_element_menu.execute){       
        
         draw_directory_files();
+
         if(add_element_menu.element_selected){
+            if(add_element_menu.type == MENU_TYPE_ADD_MODEL){
+                if(open_file == 5){
+                    add_editor_element(add_element_menu.text_for_action);
+                }
+            }
+            if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE){
+                if(add_texture == true){
+                    add_editor_element(add_element_menu.text_for_action);
+                    
+                }
+            }
+        }
+
+        if(add_element_menu.element_selected){
+            add_element_menu.execute_function(1);
             add_element_menu.show = false;
             add_element_menu.element_selected = false;
+            add_element_menu.execute = false;
         }
        
     }
+
+    
 }

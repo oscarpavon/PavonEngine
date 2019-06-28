@@ -34,11 +34,16 @@ typedef enum{
     MENU_TYPE_ADD_TEXTURE    
 }TextMenuType;
 
+typedef void(*ExecuteFunction)(int);
+
 typedef struct {
     bool show;
     bool element_selected;
+    bool execute;
     unsigned int actual_element_select;
+    ExecuteFunction execute_function;
     TextMenuType type;
+    char text_for_action[30];
 }TextMenu;
 
 

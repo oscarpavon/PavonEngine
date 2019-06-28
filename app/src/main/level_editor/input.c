@@ -214,8 +214,9 @@ void navigate_mode(){
     }
 }
 void input_text_menu(TextMenu* menu, Key* open_key){
-
+    
     if(key_released(open_key)){
+        menu->execute = true;
         menu->show = true;
         menu->type = MENU_TYPE_ADD_MODEL;
     }
@@ -234,7 +235,10 @@ void input_text_menu(TextMenu* menu, Key* open_key){
                 add_texture = true;
                 
             menu->element_selected = true;
+            menu->show = false;
+            menu->execute_function(menu->actual_element_select);
         }
+
     }
 }
 
@@ -266,7 +270,7 @@ void default_mode(){
         }
         
         input_text_menu(&add_element_menu,&input.A);
-        input_text_menu(&list_editor_element,&input.L);
+        input_text_menu(&editor_element_list_menu,&input.L);
 
     }
 }
