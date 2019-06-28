@@ -50,6 +50,8 @@ void add_model_to_array(ModelArray* array, struct Model model){
 
 void *get_element_from_array(Array* array,int index){
     size_t offset = array->element_bytes_size;
+    if(index == 0)
+        return array->data;
     return &array->data[0] + (index*offset);
 }
 
@@ -91,7 +93,7 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
 
 void add_element_to_array(Array* array, void* element){
     if(array->count == 0){
-        memcpy(&array->data[0],element,array->element_bytes_size);
+        memcpy(array->data,element,array->element_bytes_size);
         array->count++;
         return;
     }

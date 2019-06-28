@@ -2,6 +2,8 @@
 #define EDITOR_EDITOR
 
 #include <cglm/cglm.h>
+#include <cglm/quat.h>
+
 #include "text.h"
 
 void create_input_thread();
@@ -12,6 +14,7 @@ typedef struct Element{
     unsigned int id;
     char name;
     vec3 position;
+    versor rotation;
     struct Model* model;
     char* model_path;
     char* texture_path;
@@ -45,6 +48,8 @@ void add_editor_texture(const char* image_path);
 void change_to_editor_mode(EditorMode mode);
 
 void clean_editor();
+
+void rotate_editor_element(Element* element, float angle, vec3 axis);
 
 const char* editor_mode_show_text;
 

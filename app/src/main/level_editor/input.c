@@ -376,6 +376,13 @@ void rotate_input_mode(){
     if(key_released(&input.X)){
 
     }
+    if(key_released(&input.J)){
+       rotate_editor_element(selected_element, -5, (vec3){0,0,1});
+    }
+    if(key_released(&input.K)){
+        
+        rotate_editor_element(selected_element, 5, (vec3){0,0,1});
+    }
 }
 
 

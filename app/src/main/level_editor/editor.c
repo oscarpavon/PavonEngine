@@ -91,6 +91,7 @@ void add_editor_element(const char* path_to_element){
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
     new_element.model = &editor_models.models[element_id_count];
     new_element.id = element_id_count;
+    glm_quat_identity(new_element.rotation);
 
     new_element.model_path = malloc(strlen(model_path));
     strcpy(new_element.model_path,model_path);
@@ -100,9 +101,7 @@ void add_editor_element(const char* path_to_element){
 
     add_element_to_array(&editor_elements,&new_element);
 
-    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
-
-    //init_models(&editor_elements);
+    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);    
    
     can_draw = true;
     
@@ -123,17 +122,35 @@ void clean_editor(){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         clean_element(element);
     }
+    free(editor_elements.data);
 }
 
 void add_editor_texture(const char* image_path){
     add_texture = false;
-    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
+    //selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
     selected_element->model->texture.image = load_image(image_path);
     load_model_texture_to_gpu(selected_element->model);
     selected_element->texture_path = malloc(strlen(image_path));
     strcpy(selected_element->texture_path,image_path);
 
     
+}
+
+void rotate_editor_element(Element* element, float angle, vec3 axis){
+   
+    versor new_rot_quat;
+    glm_quatv(new_rot_quat, glm_rad(angle), axis);
+
+    versor result_quat;
+    glm_quat_mul(element->rotation, new_rot_quat, result_quat);
+
+    glm_quat_copy(result_quat, element->rotation);
+
+    mat4 model_rot_mat;
+    glm_quat_mat4(new_rot_quat,model_rot_mat);
+
+    glm_mul(element->model->model_mat, model_rot_mat, element->model->model_mat);
+
 }
 
 void add_element_to_save_data(FILE* new_file, Element* selected_element, int index){
@@ -144,6 +161,8 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     fprintf(new_file,"%i,\n",selected_element->id);
     fputs("\t\"pos\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
+    fputs("\t\"rot\" : ", new_file);
+    fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
     fputs("\t\"path\" : ", new_file);
     fprintf(new_file,"\"%s\"\n",selected_element->model_path);
     fputs("\t\"texture\" : ", new_file);
@@ -214,7 +233,13 @@ void get_element_status(Element* element){
 
 void select_editor_elemenent(int id){
     printf("Slected edito0r element \n");
-    Element* element = (Element*)get_element_from_array(&editor_elements,id);
+    Element* element = NULL;
+    if(id == 0){
+        element = (Element*)&editor_elements.data[0];
+        element->model = &editor_models.models[0];
+    }
+        
+     element = (Element*)get_element_from_array(&editor_elements,id);
     selected_element = element;
 }
 
