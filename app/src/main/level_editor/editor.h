@@ -49,4 +49,6 @@ EditorMode editor_mode;
 
 TextMenu editor_element_list_menu;
 
+bool can_draw_gizmos;
+
 #endif

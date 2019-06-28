@@ -15,6 +15,7 @@ shader.c
 game.c
 object_select.c
 engine.c
+skeletal.c
 )
 
 if(NOT ANDROID)

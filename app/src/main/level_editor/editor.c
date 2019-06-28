@@ -274,16 +274,20 @@ void init_editor(){
     editor_element_list_menu.show = false;
     editor_element_list_menu.actual_element_select = 0;
     editor_element_list_menu.execute_function = &select_editor_elemenent;
+
+    can_draw_gizmos = true;
     
 }
 
 void draw_gizmos(){
-    Model* actual_gizmo = &gizmos.models[0];
-    if(selected_element){
-        glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
-    }
-    
-    draw_models(&gizmos);
+    if(can_draw_gizmos){
+        Model* actual_gizmo = &gizmos.models[0];
+        if(selected_element){
+            glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+        }
+
+        draw_models(&gizmos);
+    }   
     
 }
 
@@ -318,6 +322,7 @@ void update_editor(){
       
 
     glClear(GL_DEPTH_BUFFER_BIT);
+
     draw_gizmos();
 
     text_renderer_loop();

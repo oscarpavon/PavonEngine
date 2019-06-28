@@ -8,6 +8,10 @@
 #include <cglm.h>
 
 #include "images.h"
+
+#include "skeletal.h"
+
+
 typedef struct Model{
     VertexArray vertex_array;
     IndexArray index_array;
@@ -19,6 +23,8 @@ typedef struct Model{
     GLuint shader;
 
     Texture texture;
+
+    Skeletal* skeletal;
 }Model;
 
 struct Geometry{

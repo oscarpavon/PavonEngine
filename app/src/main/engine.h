@@ -18,13 +18,12 @@ struct android_app* app;
 
 typedef struct Element{
     unsigned int id;
-    char name;
+    char* name;
     vec3 position;
     versor rotation;
     struct Model* model;
     char* model_path;
-    char* texture_path;
-    bool selected;
+    char* texture_path;    
 }Element;
 
 void init_engine();

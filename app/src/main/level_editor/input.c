@@ -110,6 +110,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_R:
         actual_key = &input.R;
         break;
+    case GLFW_KEY_1:
+        actual_key = &input.KEY_1;
+        break;
+    case GLFW_KEY_2:
+        actual_key = &input.KEY_2;
+        break;
+    case GLFW_KEY_3:
+        actual_key = &input.KEY_3;
+        break;
     case GLFW_KEY_ESCAPE:
         actual_key = &input.ESC;
         break;
@@ -362,6 +371,13 @@ void default_mode(){
         
         input_text_menu(&add_element_menu,&input.A);
         input_text_menu(&editor_element_list_menu,&input.L);
+
+        
+        if(key_released(&input.KEY_1)){
+            if(can_draw_gizmos){
+                can_draw_gizmos = false;
+            }else can_draw_gizmos = true;
+        }
 
     }
 }

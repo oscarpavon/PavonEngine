@@ -9,6 +9,7 @@
 
 #include "engine.h"
 
+
 void load_uv(cgltf_data* data, VertexArray* out_vertex_array){
 
 
@@ -45,10 +46,36 @@ void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){
     }
 
 }
-void load_joints(){
+
+void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_to_store){
+  Node new_node;
+  memset(&new_node,0,sizeof(Node));  
+
+  if(in_node->parent && parent != NULL)
+    new_node.parent = parent;
+  memcpy(new_node.rotation, in_node->rotation, sizeof(versor));
+  
+  memcpy(new_node.translation, in_node->translation, sizeof(vec3));
+  new_node.name = malloc(strlen(in_node->name));
+  strcpy(new_node.name,in_node->name);
+
+  memcpy(&store_nodes[index_to_store],&new_node,sizeof(Node)); 
+
+  for(int i = 0; i < in_node->children_count; i++){ 
+    Node* parent = &store_nodes[index_to_store];    
+    load_node( parent, in_node->children[i],store_nodes,index_to_store+1);
+  }
 
 }
 
+void load_joints( cgltf_data* data){
+  int node_count = data->nodes_count;
+  Node nodes[node_count];
+  memset(nodes,0,sizeof(nodes));
+
+  load_node(NULL, data->scene->nodes[0],nodes,0);
+
+}
 int load_model(const char* path , struct Model* model){
     File new_file;
 
@@ -68,6 +95,10 @@ int load_model(const char* path , struct Model* model){
     load_primitives(data,&model->vertex_array);
     load_indices(data, &model->index_array);
     load_uv(data,&model->vertex_array);
+
+    if(data->skins){
+      load_joints(data);
+    }
     LOGW("gltf loaded. \n");
 
     cgltf_free(data);
@@ -126,11 +157,22 @@ static int dump_array(const char *js, jsmntok_t *t, size_t count, int index, flo
 	}
 }
 
+int element_id = 0;
+int element_id_limit = 2;
+bool can_run = true;
+
+
+
 static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element* model) {
 	int i, j, k;
+  if(!can_run){
+    return 0;
+  }
+
 	if (count == 0) {
 		return 0;
 	}
+
 	if (t->type == JSMN_PRIMITIVE) {
 		printf("%.*s = primitive ", t->end - t->start, js+t->start);
 
@@ -146,7 +188,8 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element*
     
 
 		return 1;
-	} else if (t->type == JSMN_STRING) {
+	} 
+  else if (t->type == JSMN_STRING) {
 		printf("'%.*s'", t->end - t->start, js+t->start);
 
     if (jsoneq(js, t, "path") == 0) {
@@ -159,62 +202,118 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element*
       strcpy(model->model_path, text);    
     }
 
+    if (jsoneq(js, t, "texture") == 0){
+      t = t+1;
+      size_t size = get_token_size(t);
+      char text[size+1];
+      memcpy(&text,&js[t->start],size);
+      text[size] = '\0';
+      model->texture_path = malloc(size+1);
+      strcpy(model->texture_path, text); 
+      if(element_id<element_id_limit){
+        element_id++;        
+      }else{
+        can_run = false;
+      }
+         
+    }
+
 		return 1;
-	} else if (t->type == JSMN_OBJECT) {
+	} 
+  else if (t->type == JSMN_OBJECT) {
+    
+   
 		printf("\n");
 		j = 0;
 		for (i = 0; i < t->size; i++) {
-			for (k = 0; k < indent; k++) printf("  ");
-			j += dump(js, t+1+j, count-j, indent+1, model);
+
+      if(!can_run){
+        break;
+      }
+            
+			//for (k = 0; k < indent; k++) printf("  ");
+
+      Element* element = &model[element_id];
+			j += dump(js, t+1+j, count-j, indent+1, element);
+
 			printf(": ");
-      //dump_int(js, t+1+j, t+j , count-j, indent+1, model);
-			j += dump(js, t+1+j, count-j, indent+1, model);     
+
+			j += dump(js, t+1+j, count-j, indent+1, element);     
 
 
 
 			printf("\n");
 		}
+    
 		return j+1;
-	} else if (t->type == JSMN_ARRAY) {
-		j = 0;
-    int array_element_index = 0;
-		printf("\n");
-    vec3 pos;
-		for (i = 0; i < t->size; i++) {
-     
-      for (k = 0; k < indent-1; k++) {
-        printf("  ");
-      }
-
-      printf("   - ");
-      float float_number = 0;
-      
-      dump_array(js, t+1+j, count-j, array_element_index,pos);
-      array_element_index++;
-      
-      printf("Float: %f\n",float_number);
-
-      j += dump(js, t+1+j, count-j, indent+1, model);
+	} 
+  else if (t->type == JSMN_ARRAY) {
+      j = 0;
+      int array_element_index = 0;
       printf("\n");
+      
+      if (jsoneq(js, t-1, "pos") == 0) {
+                  vec3 pos;
+                  for (i = 0; i < t->size; i++) {   
 
-		}
+                    dump_array(js, t+1+j, count-j, array_element_index,pos);
+                    array_element_index++;               
 
-    glm_vec3_copy(pos,model->position);
-		return j+1;
+                    j += dump(js, t+1+j, count-j, indent+1, model);                 
+
+                  }
+                  glm_vec3_copy(pos,model->position);
+                    
+      }
+      if (jsoneq(js, t-1, "rot") == 0) {
+                          vec4 quat;
+                          for (i = 0; i < t->size; i++) {   
+
+                            dump_array(js, t+1+j, count-j, array_element_index,quat);
+                            array_element_index++;               
+
+                            j += dump(js, t+1+j, count-j, indent+1, model);                 
+
+                          }
+                          glm_vec4_copy(quat,model->rotation);
+      }
+      for (i = 0; i < t->size; i++) {
+        if(!can_run){
+          break;
+        }
+        for (k = 0; k < indent-1; k++) {
+          printf("  ");
+        }
+
+        printf("   - ");      
+
+        j += dump(js, t+1+j, count-j, indent+1, model);
+        printf("\n");
+
+      }
+       
+     
+       
+      return j+1;
 	}
 	return 0;
 }
 
 void parse_json(const char* json_file, size_t json_file_size){
-  jsmn_parser p;
-  jsmntok_t t[10];
-  jsmn_init(&p);
+  jsmn_parser parser;
+  int max_tokens = 100;
+  jsmntok_t tokens[max_tokens];
+  jsmn_init(&parser);
  
-  int result = jsmn_parse(&p,json_file,json_file_size,t,10);
+  int number_of_tokens_readed = jsmn_parse(&parser,json_file,json_file_size,tokens,max_tokens);
 
-  Element model01;
+  Element models[4];
+  memset(models,0,sizeof(Element)*4);
+  int count = tokens[0].size;
+  
+  dump(json_file,tokens,number_of_tokens_readed,0, models);
 
-  dump(json_file,t,10,0, &model01);
+  int o = 2;
   
   printf("json parsed\n");
 }
