@@ -35,7 +35,7 @@ Array editor_elements;
 
 unsigned int element_id_count;
 
-void load_editor_element(const char* path_model){
+void load_editor_element(const char* path_model, const char* color_texture_path){
    
 
     struct Model new_model;
@@ -49,14 +49,17 @@ void load_editor_element(const char* path_model){
     glAttachShader(new_model.shader, standart_fragment_shader);
     glLinkProgram(new_model.shader);
 
-    new_model.texture.image = load_image("editor/transform_gizmo.jpg");
+    new_model.texture.image = load_image(color_texture_path);
 
+    init_model(&new_model);
+    //load_models_texture_to_gpu(&gizmos);
+    load_model_texture_to_gpu(&new_model);
 
     add_model_to_array(&gizmos,new_model);
     
 
-    init_models(&gizmos);
-    load_models_texture_to_gpu(&gizmos);
+    //init_models(&gizmos);  
+    
 
     
 
@@ -225,7 +228,8 @@ void init_editor(){
 
     init_array(&editor_elements,sizeof(Element));
 
-    load_editor_element("editor/transform.gltf");
+    load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
+    load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
 
     init_text_renderer();
 
@@ -249,7 +253,13 @@ void init_editor(){
 }
 
 void draw_gizmos(){
+    Model* actual_gizmo = &gizmos.models[0];
+    if(selected_element){
+        glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+    }
+    
     draw_models(&gizmos);
+    
 }
 
 

@@ -25,8 +25,9 @@ typedef enum {
     EDITOR_DEFAULT_MODE,
     EDITOR_SCALE_MODE,
     EDITOR_ROTATE_MODE,
-    EDITOR_NAVIGATE_MODE
-}Mode;
+    EDITOR_NAVIGATE_MODE,
+    EDITOR_CHANGING_MODE_MODE
+}EditorMode;
 
 
 
@@ -41,11 +42,13 @@ void get_elements_in_editor_map();
 void add_editor_element(const char* path_to_element);
 void add_editor_texture(const char* image_path);
 
+void change_to_editor_mode(EditorMode mode);
+
 void clean_editor();
 
 const char* editor_mode_show_text;
 
-Mode editor_mode;
+EditorMode editor_mode;
 
 TextMenu editor_element_list_menu;
 

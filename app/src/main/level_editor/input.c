@@ -17,6 +17,49 @@
 
 bool move_camera;
 
+
+EditorMode mode_to_change;
+
+float horizontalAngle = 0;
+float verticalAngle = 0;
+
+void camera_mouse_control(float yaw, float pitch){
+    vec3 front;
+    
+    front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
+    front[1] = sin(glm_rad(pitch));
+    front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
+
+    
+
+    glm_normalize(front);
+
+    glm_vec3_copy(front, camera_front);
+
+    update_look_at();
+}
+
+void mouse_movement_control(float xpos, float ypos){
+    
+  
+    
+    horizontalAngle += 800/2 - xpos ;
+    
+    verticalAngle  += 600/2 - ypos ;
+
+    horizontalAngle *= 0.05;
+    verticalAngle *= 0.05;
+
+    camera_mouse_control(0, horizontalAngle);
+    
+
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+	if(move_camera)
+        mouse_movement_control(xpos, ypos);
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     Key* actual_key = NULL;
@@ -64,8 +107,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_L:
         actual_key = &input.L;
         break;
-     case GLFW_KEY_ESCAPE:
+    case GLFW_KEY_R:
+        actual_key = &input.R;
+        break;
+    case GLFW_KEY_ESCAPE:
         actual_key = &input.ESC;
+        break;
+    case GLFW_KEY_V:
+        actual_key = &input.V;
         break;
     default:
         break;
@@ -93,7 +142,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
                 move_camera = false;
-                editor_mode = EDITOR_DEFAULT_MODE;
+                change_to_editor_mode(EDITOR_DEFAULT_MODE);
 				
 			}
 			if(action == GLFW_RELEASE){
@@ -105,7 +154,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
                 move_camera = true;
-                editor_mode = EDITOR_NAVIGATE_MODE;
+                change_to_editor_mode(EDITOR_NAVIGATE_MODE);
 			
 			}
 			if(action == GLFW_RELEASE){
@@ -126,15 +175,42 @@ static inline bool key_released(Key* key){
 
 void init_input(){
     memset(&input,0,sizeof(Input));
+    
+}
+
+void change_to_editor_mode(EditorMode mode){
+    editor_mode =  EDITOR_CHANGING_MODE_MODE;
+    mode_to_change = mode;
+    switch (mode)
+    {    
+    case EDITOR_DEFAULT_MODE:
+        editor_mode_show_text = "Default Mode";
+        break;
+    case EDITOR_NAVIGATE_MODE:
+        editor_mode_show_text = "Navigate Mode";
+        move_camera = true;
+        break;
+    case EDITOR_GRAB_MODE:
+        editor_mode_show_text = "Grab Mode";
+        break;
+    case EDITOR_ROTATE_MODE:
+        editor_mode_show_text = "Rotate Mode";
+        break;
+    case EDITOR_CHANGING_MODE_MODE:
+        editor_mode = mode_to_change;
+        break;
+    default:
+        break;
+    } 
+    memset(&input,0,sizeof(Input));
 }
 
 void grab_mode(){
     if(key_released(&input.G)){
-        editor_mode = EDITOR_DEFAULT_MODE;
-        editor_mode_show_text = "Default Mode";
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;
     }
-    editor_mode_show_text = "Grab Mode";
+    
         
     if(input.W.pressed){
         vec3 move = {0,-0.02,0};
@@ -160,8 +236,15 @@ void grab_mode(){
 }
 
 void navigate_mode(){
-    editor_mode_show_text = "Navigate Mode";
+    
+    if(key_released(&input.V)){
+        move_camera = false;
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        return;
+    }
+
     if(move_camera){
+        
         if(input.E.pressed){
             vec3 move;
             glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
@@ -175,10 +258,10 @@ void navigate_mode(){
             update_look_at();
         }
         if(input.J.pressed){
-
+            
         }
         if(input.K.pressed){
-
+            
         }
 
         if(input.W.pressed){
@@ -257,14 +340,22 @@ void default_mode(){
 
         
         if(key_released(&input.G)){
-            editor_mode = EDITOR_GRAB_MODE;
+            change_to_editor_mode(EDITOR_GRAB_MODE);
         }
 
+        if(key_released(&input.R)){
+            change_to_editor_mode(EDITOR_ROTATE_MODE);
+        }
         if(key_released(&input.Q)){
             get_elements_in_editor_map();
         }
+
+        if(key_released(&input.V)){
+            change_to_editor_mode(EDITOR_NAVIGATE_MODE);
+        }
        
         if(key_released(&input.T)){
+            add_element_menu.execute = true;
             add_element_menu.show = true;
             add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
         }
@@ -274,6 +365,20 @@ void default_mode(){
 
     }
 }
+
+void rotate_input_mode(){
+    
+    if(key_released(&input.R)){
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        return;
+    }
+
+    if(key_released(&input.X)){
+
+    }
+}
+
+
 
 void update_input(){
     switch (editor_mode)
@@ -287,7 +392,12 @@ void update_input(){
     case EDITOR_GRAB_MODE:
         grab_mode();
         break;
-
+    case EDITOR_ROTATE_MODE:
+        rotate_input_mode();
+        break;
+    case EDITOR_CHANGING_MODE_MODE:
+        editor_mode = mode_to_change;
+        break;
     default:
         break;
     } 
@@ -299,40 +409,4 @@ bool first_mouse_movement = true;
 
 
 
-void camera_mouse_control(float yaw, float pitch){
-    vec3 front;
-    
-    front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
-    front[1] = sin(glm_rad(pitch));
-    front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
 
-    
-
-    glm_normalize(front);
-
-    glm_vec3_copy(front, camera_front);
-
-    update_look_at();
-}
-float horizontalAngle = 0;
-float verticalAngle = 0;
-void mouse_movement_control(float xpos, float ypos){
-    
-  
-    
-    horizontalAngle += 800/2 - xpos ;
-    
-    verticalAngle  += 600/2 - ypos ;
-
-    horizontalAngle *= 0.05;
-    verticalAngle *= 0.05;
-
-    camera_mouse_control(0, horizontalAngle);
-    
-
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-	if(move_camera)
-        mouse_movement_control(xpos, ypos);
-}

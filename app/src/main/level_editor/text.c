@@ -249,7 +249,7 @@ void text_renderer_loop(){
             }
             if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE){
                 if(add_texture == true){
-                    add_editor_element(add_element_menu.text_for_action);
+                    add_editor_texture(add_element_menu.text_for_action);
                     
                 }
             }

@@ -8,7 +8,7 @@
 #include <cglm.h>
 
 #include "images.h"
-struct Model{
+typedef struct Model{
     VertexArray vertex_array;
     IndexArray index_array;
 
@@ -19,7 +19,7 @@ struct Model{
     GLuint shader;
 
     Texture texture;
-};
+}Model;
 
 struct Geometry{
 
