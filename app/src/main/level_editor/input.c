@@ -340,13 +340,15 @@ void default_mode(){
             get_element_status(selected_element);
         }
         
-        if(key_released(&input.X)){
+        if(key_released(&input.W)){
             save_data();
         }
         if(key_released(&input.Z)){
             load_level_in_editor();            
         }        
-
+        if(key_released(&input.X)){
+            remove_selected_element();            
+        } 
         
         if(key_released(&input.G)){
             change_to_editor_mode(EDITOR_GRAB_MODE);

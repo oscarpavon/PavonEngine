@@ -43,6 +43,8 @@ void clean_editor();
 
 void rotate_editor_element(Element* element, float angle, vec3 axis);
 
+void remove_selected_element();
+
 const char* editor_mode_show_text;
 
 EditorMode editor_mode;
@@ -50,5 +52,6 @@ EditorMode editor_mode;
 TextMenu editor_element_list_menu;
 
 bool can_draw_gizmos;
+bool can_draw_skeletal_bones;
 
 #endif

@@ -121,6 +121,7 @@ void clean_editor(){
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         clean_element(element);
+        
     }
     free(editor_elements.data);
 }
@@ -243,6 +244,13 @@ void select_editor_elemenent(int id){
     selected_element = element;
 }
 
+void remove_selected_element(){
+    remove_last_element_from_model_array(&editor_models);
+    clean_element(selected_element);
+    selected_element = NULL;
+    remove_element_from_array(&editor_elements);
+}
+
 void init_editor(){
     
     init_vec3(0,3,0, camera_position);
@@ -276,19 +284,29 @@ void init_editor(){
     editor_element_list_menu.execute_function = &select_editor_elemenent;
 
     can_draw_gizmos = true;
+    can_draw_skeletal_bones = false;
     
+}
+
+void draw_skeletal_bones(){
+    
+    //glBindBuffer(GL_ARRAY_BUFFER, mesh->vertex_buffer);
+	glDrawArrays(GL_POINTS, 0, 3);
+    glLineWidth(3);
+
 }
 
 void draw_gizmos(){
     if(can_draw_gizmos){
         Model* actual_gizmo = &gizmos.models[0];
-        if(selected_element){
+        if(selected_element != NULL){
             glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
         }
 
         draw_models(&gizmos);
-    }   
-    
+    }
+    if(can_draw_skeletal_bones)   
+        draw_skeletal_bones();
 }
 
 

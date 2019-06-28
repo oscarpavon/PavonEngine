@@ -48,6 +48,44 @@ void add_model_to_array(ModelArray* array, struct Model model){
     memcpy(&array->models[array->count-1],&model,sizeof(struct Model));
 }
 
+void remove_last_element_from_model_array(ModelArray* array){
+    if(array->count==1){
+        array->count--;
+        array->size = sizeof(struct Model);
+        Model* temp = malloc(sizeof(struct Model));
+        free(array->models);
+        array->models = temp;
+        return;
+    }
+
+    array->count--;
+    array->size -= sizeof(struct Model);
+    Model* temp = malloc(sizeof(struct Model) * array->size);
+    memcpy(temp,array->models,sizeof(struct Model) * array->size);
+    free(array->models);
+    array->models = temp;
+    
+}
+
+void remove_element_from_array(Array* array){
+    if(array->count==1){
+        array->count--;
+        array->actual_bytes_size = array->element_bytes_size;
+        Model* temp = malloc(array->element_bytes_size);
+        free(array->data);
+        array->data = temp;
+        return;
+    }
+
+    array->count--;
+    array->actual_bytes_size -= array->element_bytes_size;
+    Model* temp = malloc(array->actual_bytes_size);
+    memcpy(temp,array->data,array->actual_bytes_size);
+    free(array->data);
+    array->data = temp;
+    
+}
+
 void *get_element_from_array(Array* array,int index){
     size_t offset = array->element_bytes_size;
     if(index == 0)

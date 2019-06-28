@@ -37,8 +37,11 @@ typedef struct array{
 
 void init_array(Array* array, size_t element_bytes_size);
 void add_element_to_array(Array* array, void* element);
+void remove_element_from_array(Array* array);
 
 int init_model_array(ModelArray* array, size_t size);
+void remove_last_element_from_model_array(ModelArray* array);
+
 int init_vertex_array(VertexArray* array, size_t size);
 int init_index_array(IndexArray* array, size_t size);
 

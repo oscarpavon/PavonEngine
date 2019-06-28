@@ -21,7 +21,10 @@
 			"ratio": "c",
 			"chrono": "c",
 			"variant": "c",
-			"*.tcc": "c"
+			"*.tcc": "c",
+			"array": "c",
+			"initializer_list": "c",
+			"utility": "c"
 		}
 	}
 }

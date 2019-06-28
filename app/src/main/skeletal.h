@@ -13,10 +13,10 @@ typedef struct Node{
     versor rotation;
 }Node;
 
-typedef struct{
+typedef struct Skeletal{
     Node* nodes;
     Node* joints;
-    
+
 }Skeletal;
 
 

@@ -24,7 +24,7 @@ typedef struct Model{
 
     Texture texture;
 
-    Skeletal* skeletal;
+    struct Skeletal* skeletal;
 }Model;
 
 struct Geometry{
