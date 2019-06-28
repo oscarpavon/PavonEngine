@@ -25,12 +25,6 @@ struct Geometry{
 
 };
 
-typedef struct{
-    unsigned int id;
-    char* path;
-    vec3 position;    
-}LoadModel;
-
 
 void init_model();
 int load_model(const char* path, struct Model*);

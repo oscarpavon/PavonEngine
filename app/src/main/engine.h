@@ -14,6 +14,18 @@ struct android_app* app;
 #include <stdbool.h>
 #endif
 
+#include <cglm.h>
+
+typedef struct Element{
+    unsigned int id;
+    char name;
+    vec3 position;
+    versor rotation;
+    struct Model* model;
+    char* model_path;
+    char* texture_path;
+    bool selected;
+}Element;
 
 void init_engine();
 void engine_loop();

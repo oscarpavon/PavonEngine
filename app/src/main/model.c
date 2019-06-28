@@ -1,10 +1,13 @@
 #include "model.h"
+
 #define CGLTF_IMPLEMENTATION
 #include "third_party/cgltf.h"
 #include "stdio.h"
 #include <vec3.h>
 
 #include "file_loader.h"
+
+#include "engine.h"
 
 void load_uv(cgltf_data* data, VertexArray* out_vertex_array){
 
@@ -72,8 +75,8 @@ int load_model(const char* path , struct Model* model){
     return 0;
 }
 
-void free_model_load(LoadModel* model){
-  free(model->path);
+void free_model_load(Element* model){
+  free(model->model_path);
 
 }
 
@@ -90,7 +93,7 @@ static inline size_t get_token_size(jsmntok_t *t){
   return length;
 }
 
-static int dump_int(const char *js, jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, LoadModel* model) {
+static int dump_int(const char *js, jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, Element* model) {
 
     if (jsoneq(js, object_t, "id") == 0) {
         size_t size = get_token_size(next_t);
@@ -123,7 +126,7 @@ static int dump_array(const char *js, jsmntok_t *t, size_t count, int index, flo
 	}
 }
 
-static int dump(const char *js, jsmntok_t *t, size_t count, int indent, LoadModel* model) {
+static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element* model) {
 	int i, j, k;
 	if (count == 0) {
 		return 0;
@@ -152,8 +155,8 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, LoadMode
       char text[size+1];
       memcpy(&text,&js[t->start],size);
       text[size] = '\0';
-      model->path = malloc(size+1);
-      strcpy(model->path, text);    
+      model->model_path = malloc(size+1);
+      strcpy(model->model_path, text);    
     }
 
 		return 1;
@@ -209,8 +212,7 @@ void parse_json(const char* json_file, size_t json_file_size){
  
   int result = jsmn_parse(&p,json_file,json_file_size,t,10);
 
-  LoadModel model01;
-  model01.id = 0;
+  Element model01;
 
   dump(json_file,t,10,0, &model01);
   

@@ -210,7 +210,7 @@ void load_level_in_editor(){
 
     element_id_count++;
 
-    add_element_to_array(&editor_models,&new_element);
+    add_element_to_array(&editor_elements,&new_element);
     fclose(level_file);
 }
 

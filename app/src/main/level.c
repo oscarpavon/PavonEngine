@@ -18,7 +18,7 @@ void load_level(const char* path, Level* output_level){
     load_model("terrain.gltf",&model04);
 
     struct Model skeleta_mesh;
-    load_model("skeletal_mesh.gltf",&skeleta_mesh);
+//    load_model("skeletal_mesh.gltf",&skeleta_mesh);
 
     model01.texture.image = load_image("police.jpg");
     model02.texture.image = load_image("lince.png");
@@ -47,6 +47,6 @@ void load_level(const char* path, Level* output_level){
     add_model_to_array(&output_level->models_array, model03);
     add_model_to_array(&output_level->models_array, model04);
     add_model_to_array(&output_level->models_array, fireman_model);
-    add_model_to_array(&output_level->models_array, skeleta_mesh);
+    //add_model_to_array(&output_level->models_array, skeleta_mesh);
 
 }

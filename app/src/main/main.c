@@ -3,12 +3,6 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
-
-
-#include "third_party/stb_image.h"
-
-
-
 #include <vec3.h>
 #include <cglm.h>
 

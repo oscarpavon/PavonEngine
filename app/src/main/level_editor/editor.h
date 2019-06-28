@@ -5,21 +5,13 @@
 #include <cglm/quat.h>
 
 #include "text.h"
+#include "../engine.h"
 
 void create_input_thread();
 void init_editor();
 void update_editor();
 
-typedef struct Element{
-    unsigned int id;
-    char name;
-    vec3 position;
-    versor rotation;
-    struct Model* model;
-    char* model_path;
-    char* texture_path;
-    bool selected;
-}Element;
+
 
 Element* selected_element;
 
