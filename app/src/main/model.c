@@ -139,42 +139,34 @@ static int dump_int(const char *js, jsmntok_t *next_t, jsmntok_t *object_t, size
 static int dump_array(const char *js, jsmntok_t *t, size_t count, int index, float* firt_array_element) {
 	
 	if (t->type == JSMN_PRIMITIVE) {
-		
-
-    
-       
-        size_t size = get_token_size(t);
-        char text[size+1];
-        memcpy(&text,&js[t->start],size);
-        text[size] = '\0';
-        float model_id = atof(text);
-        firt_array_element += index;
-        memcpy(firt_array_element, &model_id, sizeof(float));
-    
-    
+    size_t size = get_token_size(t);
+    char text[size+1];
+    memcpy(&text,&js[t->start],size);
+    text[size] = '\0';
+    float model_id = atof(text);
+    firt_array_element += index;
+    memcpy(firt_array_element, &model_id, sizeof(float));
 
 		return 1;
 	}
 }
 
 int element_id = 0;
-int element_id_limit = 2;
+int element_id_limit = 23;
 bool can_run = true;
 
+struct Element* model;
+struct Element* _elements_array;
 
-
-static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Element* model) {
-	int i, j, k;
-  if(!can_run){
-    return 0;
-  }
+static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
+	int i, j;
+  model = &_elements_array[element_id];
 
 	if (count == 0) {
 		return 0;
 	}
 
 	if (token->type == JSMN_PRIMITIVE) {
-		printf("%.*s = primitive ", token->end - token->start, js+token->start);
 
     if (jsoneq(js, token-1, "id") == 0){
        
@@ -190,7 +182,6 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
 		return 1;
 	} 
   else if (token->type == JSMN_STRING) {
-		printf("'%.*s'", token->end - token->start, js+token->start);
 
     if (jsoneq(js, token, "path") == 0) {
       token = token+1;
@@ -212,10 +203,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
       strcpy(model->texture_path, text); 
       if(element_id<element_id_limit){
         element_id++;        
-      }else{
-        can_run = false;
-      }
-         
+      }         
     }
 
 		return 1;
@@ -224,15 +212,10 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
    
 		j = 0;
 		for (i = 0; i < token->size; i++) {
+    
+			//j += dump(js, token+1+j, count-j, indent+1);	
 
-      if(!can_run){
-        break;
-      }           
-
-      Element* element = &model[element_id];
-			j += dump(js, token+1+j, count-j, indent+1, element);	
-
-			j += dump(js, token+1+j, count-j, indent+1, element); 
+			j += dump(js, token+1+j, count-j, indent+1); 
 
 		}
     
@@ -249,7 +232,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
                     dump_array(js, token+1+j, count-j, array_element_index,pos);
                     array_element_index++;               
 
-                    j += dump(js, token+1+j, count-j, indent+1, model);                 
+                    j += dump(js, token+1+j, count-j, indent+1);                 
 
                   }
                   glm_vec3_copy(pos,model->position);
@@ -262,17 +245,14 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
                             dump_array(js, token+1+j, count-j, array_element_index,quat);
                             array_element_index++;               
 
-                            j += dump(js, token+1+j, count-j, indent+1, model);                 
+                            j += dump(js, token+1+j, count-j, indent+1);                 
 
                           }
                           glm_vec4_copy(quat,model->rotation);
       }
-      for (i = 0; i < token->size; i++) {
-        if(!can_run){
-          break;
-        }           
+      for (i = 0; i < token->size; i++) {             
 
-        j += dump(js, token+1+j, count-j, indent+1, model);     
+        j += dump(js, token+1+j, count-j, indent+1);     
 
       }      
             
@@ -281,26 +261,63 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Elem
 	return 0;
 }
 
-void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
+int parse_elements_count(const char* json_file){
   jsmn_parser parser;
-  int max_tokens = 100;
+  jsmn_init(&parser);
+
+  jsmntok_t level_info_tokens[3];
+  int model_count = 0;
+  jsmn_parse(&parser,json_file,22,level_info_tokens,3);
+
+  jsmntok_t* count_model_token = &level_info_tokens[2];
+  size_t size = get_token_size(count_model_token);
+  char text[size+1];
+  memcpy(&text,&json_file[count_model_token->start],size);
+  text[size] = '\0';
+  unsigned int model_id = atoi(text);
+
+  int model_count_result = 0;
+  memcpy(&model_count_result, &model_id, sizeof(unsigned int));
+  printf("Model count: %i\n",model_count_result);
+  return model_count_result;
+}
+
+void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
+  int model_count = parse_elements_count(json_file);
+  int token_count = model_count *(2+3+4+2+2+1+1);//id + id_num + pos + array + 3 pos + rot + 4 rot + path + textur + textur + model path  
+  
+  jsmn_parser parser;
+  int max_tokens = token_count+30;
   jsmntok_t tokens[max_tokens];
   jsmn_init(&parser);
- 
-  int number_of_tokens_readed = jsmn_parse(&parser,json_file,json_file_size,tokens,max_tokens);
-
-  init_array(out_element,sizeof(Element));
-
-  Element models[4];
-  memset(models,0,sizeof(Element)*4);
-  int count = tokens[0].size;
   
-  dump(json_file,tokens,number_of_tokens_readed,0, models);
 
-  add_element_to_array(out_element,&models[0]);
-  add_element_to_array(out_element,&models[1]);
+
+  char* models_json_file = malloc(json_file_size-24);
+  memset(models_json_file,0,json_file_size-24);
+  models_json_file[json_file_size-24] = '\0';
+
+  memcpy(models_json_file,json_file+24,json_file_size-24);
+
+  //printf("%s\n", models_json_file);  
+
+  Element models[model_count];
+  memset(models,0,sizeof(models));
+  _elements_array = &models[0];
+
+  int number_of_tokens_readed = jsmn_parse(&parser,models_json_file,json_file_size-24,tokens,max_tokens);
+
+  init_array(out_element,sizeof(Element));   
+
+  dump(models_json_file,tokens,number_of_tokens_readed,0);
+
+  
+  for(int i = 0; i < model_count; i++){
+    add_element_to_array(out_element,&models[i]);
+  }
+ 
 
   int o = 2;
-  
+  free(models_json_file);
   printf("json level parsed\n");
 }

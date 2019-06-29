@@ -166,22 +166,42 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     fputs("\t\"rot\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
     fputs("\t\"path\" : ", new_file);
-    fprintf(new_file,"\"%s\"\n",selected_element->model_path);
+    fprintf(new_file,"\"%s\",\n",selected_element->model_path);
     fputs("\t\"texture\" : ", new_file);
     fprintf(new_file,"\"%s\"\n",selected_element->texture_path);
     fputs("}",new_file);
 }
+void save_level_info(FILE* new_file){
+    fputs("{\n\t\"model_count\" : ", new_file);
+    fprintf(new_file,"%i",element_id_count);
+    fputs("\n},\n",new_file);
+}
 
+void create_save_data_backup(){
+    FILE* level_file = fopen("new_level.lvl","r");
+    fseek(level_file, 0, SEEK_END);
+    long file_size = ftell(level_file);
+    rewind (level_file);
+
+    char file_buffer[file_size];
+
+    fread(file_buffer,sizeof(char), file_size, level_file);
+
+    FILE* new_file = fopen("level.bkp1","w");
+    fputs(file_buffer,new_file);
+    fclose(new_file);
+
+    fclose(level_file);
+}
 void save_data(){
+    create_save_data_backup();
     FILE* new_file = fopen("new_level.lvl","w+");
-        
+    save_level_info(new_file);   
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         //printf("Element name: %s\n", element->model_path);
         add_element_to_save_data(new_file,element,i);
     }
-
-
     fclose(new_file);
 
 }
@@ -255,9 +275,9 @@ void select_editor_elemenent(int id){
     if(id == 0){
         element = (Element*)&editor_elements.data[0];
         element->model = &editor_models.models[0];
-    }
-        
-     element = (Element*)get_element_from_array(&editor_elements,id);
+    }        
+    element = (Element*)get_element_from_array(&editor_elements,id);
+    element->model = &editor_models.models[id];
     selected_element = element;
 }
 

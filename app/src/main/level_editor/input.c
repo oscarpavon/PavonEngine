@@ -186,9 +186,25 @@ void init_input(){
     memset(&input,0,sizeof(Input));
     
 }
+void input_change_mode(){
+    if(key_released(&input.G)){
+        change_to_editor_mode(EDITOR_GRAB_MODE);
+    }
 
+    if(key_released(&input.R)){
+        change_to_editor_mode(EDITOR_ROTATE_MODE);
+    }
+    if(key_released(&input.V)){
+        change_to_editor_mode(EDITOR_NAVIGATE_MODE);
+    }
+}
 void change_to_editor_mode(EditorMode mode){
-    editor_mode =  EDITOR_CHANGING_MODE_MODE;
+    if(editor_mode == mode){
+        editor_mode = EDITOR_CHANGING_MODE_MODE;
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        return;
+    }
+    editor_mode = EDITOR_CHANGING_MODE_MODE;
     mode_to_change = mode;
     switch (mode)
     {    
@@ -215,14 +231,11 @@ void change_to_editor_mode(EditorMode mode){
 }
 
 void grab_mode(){
+    input_change_mode();
+
     draw_rotate_gizmo = false;
     draw_translate_gizmo = true;
-    if(key_released(&input.G)){
-        change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        return;
-    }
-    
-        
+           
     if(input.W.pressed){
         vec3 move = {0,-0.02,0};
     glm_translate(selected_element->model->model_mat, move);
@@ -247,65 +260,66 @@ void grab_mode(){
 }
 
 void navigate_mode(){
-    
+    input_change_mode();
+
     if(key_released(&input.V)){
         move_camera = false;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;
     }
 
-    if(move_camera){
+    
         
-        if(input.E.pressed){
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
-            glm_vec3_add(camera_position,move,camera_position);
-            update_look_at();
-        }
-        if(input.Q.pressed){
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
-            glm_vec3_sub(camera_position,move,camera_position);
-            update_look_at();
-        }
-        if(input.J.pressed){
-            
-        }
-        if(input.K.pressed){
-            
-        }
-
-        if(input.W.pressed){
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
-            glm_vec3_add(camera_position,move,camera_position);
-            update_look_at();
-        }
-        if(input.S.pressed){
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
-            glm_vec3_sub(camera_position,move,camera_position);
-            update_look_at();
-        }
-        if(input.D.pressed){
-            vec3 cross;
-            glm_vec3_cross(camera_front, camera_up, cross);
-            glm_normalize(cross);
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
-            glm_vec3_add(camera_position, move,camera_position);
-            update_look_at();
-        }
-        if(input.A.pressed){
-            vec3 cross;
-            glm_vec3_cross(camera_front, camera_up, cross);
-            glm_normalize(cross);
-            vec3 move;
-            glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
-            glm_vec3_sub(camera_position, move,camera_position);
-            update_look_at();
-        }
+    if(input.E.pressed){
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+        glm_vec3_add(camera_position,move,camera_position);
+        update_look_at();
     }
+    if(input.Q.pressed){
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+        glm_vec3_sub(camera_position,move,camera_position);
+        update_look_at();
+    }
+    if(input.J.pressed){
+        
+    }
+    if(input.K.pressed){
+        
+    }
+
+    if(input.W.pressed){
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+        glm_vec3_add(camera_position,move,camera_position);
+        update_look_at();
+    }
+    if(input.S.pressed){
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+        glm_vec3_sub(camera_position,move,camera_position);
+        update_look_at();
+    }
+    if(input.D.pressed){
+        vec3 cross;
+        glm_vec3_cross(camera_front, camera_up, cross);
+        glm_normalize(cross);
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+        glm_vec3_add(camera_position, move,camera_position);
+        update_look_at();
+    }
+    if(input.A.pressed){
+        vec3 cross;
+        glm_vec3_cross(camera_front, camera_up, cross);
+        glm_normalize(cross);
+        vec3 move;
+        glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+        glm_vec3_sub(camera_position, move,camera_position);
+        update_look_at();
+    }
+    
 }
 void input_text_menu(TextMenu* menu, Key* open_key){
     
@@ -340,56 +354,52 @@ void default_mode(){
     draw_rotate_gizmo = false;
     draw_translate_gizmo = false;
 
-    if(!move_camera){
-        if(key_released(&input.S)){
-            get_element_status(selected_element);
-        }
-        
-        if(key_released(&input.W)){
-            save_data();
-        }
-        if(key_released(&input.Z)){
-            load_level_in_editor();            
-        }        
-        if(key_released(&input.X)){
-            remove_selected_element();            
-        } 
-        
-        if(key_released(&input.G)){
-            change_to_editor_mode(EDITOR_GRAB_MODE);
-        }
+    input_change_mode();
 
-        if(key_released(&input.R)){
-            change_to_editor_mode(EDITOR_ROTATE_MODE);
-        }
-        if(key_released(&input.Q)){
-            get_elements_in_editor_map();
-        }
-
-        if(key_released(&input.V)){
-            change_to_editor_mode(EDITOR_NAVIGATE_MODE);
-        }
-       
-        if(key_released(&input.T)){
-            add_element_menu.execute = true;
-            add_element_menu.show = true;
-            add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
-        }
-        
-        input_text_menu(&add_element_menu,&input.A);
-        input_text_menu(&editor_element_list_menu,&input.L);
-
-        
-        if(key_released(&input.KEY_1)){
-            if(can_draw_gizmos){
-                can_draw_gizmos = false;
-            }else can_draw_gizmos = true;
-        }
-
+    
+    if(key_released(&input.S)){
+        get_element_status(selected_element);
     }
+    
+    if(key_released(&input.W)){
+        save_data();
+    }
+    if(key_released(&input.Z)){
+        load_level_in_editor();            
+    }        
+    if(key_released(&input.X)){
+        remove_selected_element();            
+    } 
+    
+    
+    if(key_released(&input.Q)){
+        get_elements_in_editor_map();
+    }
+
+    
+    
+    if(key_released(&input.T)){
+        add_element_menu.execute = true;
+        add_element_menu.show = true;
+        add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
+    }
+    
+    input_text_menu(&add_element_menu,&input.A);
+    input_text_menu(&editor_element_list_menu,&input.L);
+
+    
+    if(key_released(&input.KEY_1)){
+        if(can_draw_gizmos){
+            can_draw_gizmos = false;
+        }else can_draw_gizmos = true;
+    }
+
+   
 }
 
 void rotate_input_mode(){
+    input_change_mode();
+
     draw_rotate_gizmo = true;
     draw_translate_gizmo = false;
 
