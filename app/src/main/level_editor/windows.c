@@ -1,6 +1,6 @@
 #include "windows.h"
 #include <stdio.h>
-
+#include "text.h"
 void create_window(Window *win){
   
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -15,7 +15,7 @@ void create_window(Window *win){
     glfwMakeContextCurrent(win->window);
     //glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
   
-
+    
     glViewport(0,0,800,600);
     camera_heigth_screen = 600;
     camera_width_screen = 800;
@@ -23,4 +23,11 @@ void create_window(Window *win){
 
 void update_envents(){
     glfwPollEvents();  
+}
+
+void window_resize_callback(GLFWwindow* window, int width, int height){
+    glViewport(0,0,width,height);
+    camera_heigth_screen = height;
+    camera_width_screen = width;
+    update_text_renderer_window_size();
 }

@@ -15,7 +15,7 @@ void update_editor();
 
 Element* selected_element;
 
-typedef enum {
+typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
     EDITOR_SCALE_MODE,
@@ -45,15 +45,18 @@ void rotate_editor_element(Element* element, float angle, vec3 axis);
 
 void remove_selected_element();
 
+
 const char* editor_mode_show_text;
 
-EditorMode editor_mode;
+enum EditorMode editor_mode;
 
-TextMenu editor_element_list_menu;
+struct TextMenu editor_element_list_menu;
 
 bool can_draw_gizmos;
 bool draw_translate_gizmo;
 bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
+
+float camera_velocity;
 
 #endif

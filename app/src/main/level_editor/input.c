@@ -43,9 +43,9 @@ void mouse_movement_control(float xpos, float ypos){
     
   
     
-    horizontalAngle += 800/2 - xpos ;
+    horizontalAngle += camera_width_screen/2 - xpos ;
     
-    verticalAngle  += 600/2 - ypos ;
+    verticalAngle  += camera_heigth_screen/2 - ypos ;
 
     horizontalAngle *= 0.05;
     verticalAngle *= 0.05;
@@ -56,7 +56,7 @@ void mouse_movement_control(float xpos, float ypos){
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-	if(move_camera)
+	if(mouse_navigate_control)
         mouse_movement_control(xpos, ypos);
 }
 
@@ -112,6 +112,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_1:
         actual_key = &input.KEY_1;
+        break;    
+    case GLFW_KEY_ESCAPE:
+        actual_key = &input.ESC;
+        break;
+    case GLFW_KEY_V:
+        actual_key = &input.V;
+        break;
+    case GLFW_KEY_P:
+        actual_key = &input.P;
+        break;
+    case GLFW_KEY_O://letter "o"
+        actual_key = &input.O;
+        break;
+    case GLFW_KEY_I://letter "o"
+        actual_key = &input.I;
         break;
     case GLFW_KEY_2:
         actual_key = &input.KEY_2;
@@ -119,11 +134,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_3:
         actual_key = &input.KEY_3;
         break;
-    case GLFW_KEY_ESCAPE:
-        actual_key = &input.ESC;
+    case GLFW_KEY_0://number zero
+        actual_key = &input.KEY_0;
         break;
-    case GLFW_KEY_V:
-        actual_key = &input.V;
+    case GLFW_KEY_9:
+        actual_key = &input.KEY_9;
         break;
     default:
         break;
@@ -151,6 +166,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
                 move_camera = false;
+                mouse_navigate_control = false;
                 change_to_editor_mode(EDITOR_DEFAULT_MODE);
 				
 			}
@@ -163,6 +179,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
                 move_camera = true;
+                mouse_navigate_control = true;
                 change_to_editor_mode(EDITOR_NAVIGATE_MODE);
 			
 			}
@@ -230,74 +247,152 @@ void change_to_editor_mode(EditorMode mode){
     memset(&input,0,sizeof(Input));
 }
 
+
+float move_object_value = 0.02;
+bool grid_translate = false;
+
 void grab_mode(){
     input_change_mode();
 
     draw_rotate_gizmo = false;
-    draw_translate_gizmo = true;
-           
-    if(input.W.pressed){
-        vec3 move = {0,-0.02,0};
-    glm_translate(selected_element->model->model_mat, move);
-    glm_vec3_add(selected_element->position,move,selected_element->position);
-    }
-    if(input.S.pressed){
-        vec3 move = {0,0.02,0};
-    glm_translate(selected_element->model->model_mat, move);
-    glm_vec3_add(selected_element->position,move,selected_element->position);
-    }
-    if(input.D.pressed){
-            vec3 move = {-0.02,0,0};
-    glm_translate(selected_element->model->model_mat, move);
-    glm_vec3_add(selected_element->position,move,selected_element->position);
-    }
-    if(input.A.pressed){
-        vec3 move = {0.02,0,0};
-    glm_translate(selected_element->model->model_mat, move);
-    glm_vec3_add(selected_element->position,move,selected_element->position);
+    draw_translate_gizmo = true;   
+    
 
+    if(!grid_translate){
+        if(key_released(&input.KEY_1)){
+            grid_translate = true;
+        } 
+        float move_object_value = 0.02;
+        if(input.W.pressed){
+            vec3 move = {0,-move_object_value,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(input.S.pressed){
+            vec3 move = {0,move_object_value,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(input.D.pressed){
+            vec3 move = {-move_object_value,0,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(input.A.pressed){
+            vec3 move = {move_object_value,0,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+
+        }
+        if(input.E.pressed){
+            vec3 move = {0,0,move_object_value};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(input.Q.pressed){
+            vec3 move = {0,0,-move_object_value};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+    }else{
+        if(key_released(&input.KEY_1)){
+            grid_translate = false;
+        } 
+        move_object_value = 10;
+        if(key_released(&input.D)){
+            vec3 move = {move_object_value,0,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(key_released(&input.A)){
+            vec3 move = {-move_object_value,0,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(key_released(&input.S)){
+            vec3 move = {0,-move_object_value,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(key_released(&input.W)){
+            vec3 move = {0,move_object_value,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(key_released(&input.I)){
+            move_object_value = 100;
+        }
+        if(key_released(&input.O)){
+            move_object_value = 10;
+        }
     }
 }
+float rotate_value = 100;
 
 void navigate_mode(){
     input_change_mode();
 
-    if(key_released(&input.V)){
-        move_camera = false;
-        change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        return;
+    if(input.O.pressed){
+        camera_velocity += 0.02;
+    }
+    if(input.I.pressed){
+        camera_velocity -= 0.02;
     }
 
-    
-        
+
+    vec3 velocity_vector;
+    glm_vec3_copy((vec3){camera_velocity,camera_velocity,camera_velocity}, velocity_vector);
+
     if(input.E.pressed){
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+        glm_vec3_mul(velocity_vector,camera_up,move);
         glm_vec3_add(camera_position,move,camera_position);
         update_look_at();
     }
     if(input.Q.pressed){
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_up,move);
+        glm_vec3_mul(velocity_vector,camera_up,move);
         glm_vec3_sub(camera_position,move,camera_position);
         update_look_at();
     }
     if(input.J.pressed){
-        
+        horizontalAngle += 800/2 - rotate_value ;
+        rotate_value -= 30;
+        if(rotate_value < -10000){
+            rotate_value = -100;
+        }
+
+        verticalAngle  += 600/2 - 100 ;
+
+        horizontalAngle *= 0.05;
+        verticalAngle *= 0.05;
+
+        camera_mouse_control(0, horizontalAngle);
     }
     if(input.K.pressed){
-        
+         horizontalAngle += 800/2 - rotate_value ;
+        rotate_value += 30;
+        if(rotate_value > 10000){
+            rotate_value = 100;
+        }
+
+        verticalAngle  += 600/2 - 100 ;
+
+        horizontalAngle *= 0.05;
+        verticalAngle *= 0.05;
+
+        camera_mouse_control(0, horizontalAngle);
     }
 
     if(input.W.pressed){
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+        glm_vec3_mul(velocity_vector,camera_front,move);
         glm_vec3_add(camera_position,move,camera_position);
         update_look_at();
     }
     if(input.S.pressed){
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04},camera_front,move);
+        glm_vec3_mul(velocity_vector,camera_front,move);
         glm_vec3_sub(camera_position,move,camera_position);
         update_look_at();
     }
@@ -306,7 +401,7 @@ void navigate_mode(){
         glm_vec3_cross(camera_front, camera_up, cross);
         glm_normalize(cross);
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+        glm_vec3_mul(velocity_vector, cross, move );
         glm_vec3_add(camera_position, move,camera_position);
         update_look_at();
     }
@@ -315,7 +410,7 @@ void navigate_mode(){
         glm_vec3_cross(camera_front, camera_up, cross);
         glm_normalize(cross);
         vec3 move;
-        glm_vec3_mul((vec3){0.04,0.04,0.04}, cross, move );
+        glm_vec3_mul(velocity_vector, cross, move );
         glm_vec3_sub(camera_position, move,camera_position);
         update_look_at();
     }

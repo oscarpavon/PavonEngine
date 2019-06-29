@@ -13,6 +13,8 @@ void draw_directory_files();
 
 void text_renderer_loop();
 
+void update_text_renderer_window_size();
+
 FT_Face face;
 static inline void set_text_size(float size){
     FT_Set_Pixel_Sizes(face, 0, size);  
@@ -36,7 +38,7 @@ typedef enum{
 
 typedef void(*ExecuteFunction)(int);
 
-typedef struct {
+typedef struct TextMenu{
     bool show;
     bool element_selected;
     bool execute;

@@ -31,11 +31,14 @@ ModelArray editor_models;
 ModelArray gizmos;
 bool can_draw;
 
-
-
 Array editor_elements;
 
 unsigned int element_id_count;
+
+void editor_message(const char* message){
+    set_text_size(12);
+    render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
+}
 
 void load_editor_element(const char* path_model, const char* color_texture_path){
    
@@ -325,6 +328,8 @@ void init_editor(){
 
     draw_translate_gizmo = false;
     draw_rotate_gizmo = false;
+
+    camera_velocity = 0.04;
     
 }
 
@@ -385,7 +390,7 @@ void update_editor(){
     draw_gizmos();
 
     text_renderer_loop();
-
+    editor_message("test");
     if(editor_element_list_menu.show)   
         draw_editor_elements_text_list();
 }

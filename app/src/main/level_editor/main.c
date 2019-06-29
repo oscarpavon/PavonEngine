@@ -17,6 +17,7 @@ int main(){
     glfwSetKeyCallback(main_window.window, key_callback);
 	glfwSetCursorPosCallback(main_window.window, mouse_callback);
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(main_window.window, window_resize_callback);
 
     draw_loading_screen();
     glfwSwapBuffers(main_window.window);

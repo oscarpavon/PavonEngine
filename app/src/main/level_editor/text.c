@@ -31,7 +31,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
     glUseProgram(text_shader_id);
-    GLfloat black[4] = {0, 0, 0, 1};
+    GLfloat black[4] = {1, 1, 1, 1};
     GLfloat red[4] = {1, 0, 0, 1};
     GLint uniform_color =  glGetUniformLocation(text_shader_id,"color");
 
@@ -224,7 +224,10 @@ void init_text_renderer(){
 
     
 }
-
+void update_text_renderer_window_size(){
+    pixel_size_x = 2.0 / camera_width_screen;
+    pixel_size_y = 2.0 / camera_heigth_screen;
+}
 void draw_editor_mode(){
     FT_Set_Pixel_Sizes(face, 0, 12);
     render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
