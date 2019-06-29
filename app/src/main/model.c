@@ -163,7 +163,7 @@ bool can_run = true;
 
 
 
-static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element* model) {
+static int dump(const char *js, jsmntok_t *token, size_t count, int indent, Element* model) {
 	int i, j, k;
   if(!can_run){
     return 0;
@@ -173,14 +173,14 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element*
 		return 0;
 	}
 
-	if (t->type == JSMN_PRIMITIVE) {
-		printf("%.*s = primitive ", t->end - t->start, js+t->start);
+	if (token->type == JSMN_PRIMITIVE) {
+		printf("%.*s = primitive ", token->end - token->start, js+token->start);
 
-    if (jsoneq(js, t-1, "id") == 0){
+    if (jsoneq(js, token-1, "id") == 0){
        
-        size_t size = get_token_size(t);
+        size_t size = get_token_size(token);
         char text[size+1];
-        memcpy(&text,&js[t->start],size);
+        memcpy(&text,&js[token->start],size);
         text[size] = '\0';
         unsigned int model_id = atoi(text);
         memcpy(&model->id, &model_id, sizeof(unsigned int));
@@ -189,24 +189,24 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element*
 
 		return 1;
 	} 
-  else if (t->type == JSMN_STRING) {
-		printf("'%.*s'", t->end - t->start, js+t->start);
+  else if (token->type == JSMN_STRING) {
+		printf("'%.*s'", token->end - token->start, js+token->start);
 
-    if (jsoneq(js, t, "path") == 0) {
-      t = t+1;
-      size_t size = get_token_size(t);
+    if (jsoneq(js, token, "path") == 0) {
+      token = token+1;
+      size_t size = get_token_size(token);
       char text[size+1];
-      memcpy(&text,&js[t->start],size);
+      memcpy(&text,&js[token->start],size);
       text[size] = '\0';
       model->model_path = malloc(size+1);
       strcpy(model->model_path, text);    
     }
 
-    if (jsoneq(js, t, "texture") == 0){
-      t = t+1;
-      size_t size = get_token_size(t);
+    if (jsoneq(js, token, "texture") == 0){
+      token = token+1;
+      size_t size = get_token_size(token);
       char text[size+1];
-      memcpy(&text,&js[t->start],size);
+      memcpy(&text,&js[token->start],size);
       text[size] = '\0';
       model->texture_path = malloc(size+1);
       strcpy(model->texture_path, text); 
@@ -220,86 +220,68 @@ static int dump(const char *js, jsmntok_t *t, size_t count, int indent, Element*
 
 		return 1;
 	} 
-  else if (t->type == JSMN_OBJECT) {
-    
+  else if (token->type == JSMN_OBJECT) {  
    
-		printf("\n");
 		j = 0;
-		for (i = 0; i < t->size; i++) {
+		for (i = 0; i < token->size; i++) {
 
       if(!can_run){
         break;
-      }
-            
-			//for (k = 0; k < indent; k++) printf("  ");
+      }           
 
       Element* element = &model[element_id];
-			j += dump(js, t+1+j, count-j, indent+1, element);
+			j += dump(js, token+1+j, count-j, indent+1, element);	
 
-			printf(": ");
+			j += dump(js, token+1+j, count-j, indent+1, element); 
 
-			j += dump(js, t+1+j, count-j, indent+1, element);     
-
-
-
-			printf("\n");
 		}
     
 		return j+1;
 	} 
-  else if (t->type == JSMN_ARRAY) {
+  else if (token->type == JSMN_ARRAY) {
       j = 0;
       int array_element_index = 0;
-      printf("\n");
       
-      if (jsoneq(js, t-1, "pos") == 0) {
+      if (jsoneq(js, token-1, "pos") == 0) {
                   vec3 pos;
-                  for (i = 0; i < t->size; i++) {   
+                  for (i = 0; i < token->size; i++) {   
 
-                    dump_array(js, t+1+j, count-j, array_element_index,pos);
+                    dump_array(js, token+1+j, count-j, array_element_index,pos);
                     array_element_index++;               
 
-                    j += dump(js, t+1+j, count-j, indent+1, model);                 
+                    j += dump(js, token+1+j, count-j, indent+1, model);                 
 
                   }
                   glm_vec3_copy(pos,model->position);
                     
       }
-      if (jsoneq(js, t-1, "rot") == 0) {
+      if (jsoneq(js, token-1, "rot") == 0) {
                           vec4 quat;
-                          for (i = 0; i < t->size; i++) {   
+                          for (i = 0; i < token->size; i++) {   
 
-                            dump_array(js, t+1+j, count-j, array_element_index,quat);
+                            dump_array(js, token+1+j, count-j, array_element_index,quat);
                             array_element_index++;               
 
-                            j += dump(js, t+1+j, count-j, indent+1, model);                 
+                            j += dump(js, token+1+j, count-j, indent+1, model);                 
 
                           }
                           glm_vec4_copy(quat,model->rotation);
       }
-      for (i = 0; i < t->size; i++) {
+      for (i = 0; i < token->size; i++) {
         if(!can_run){
           break;
-        }
-        for (k = 0; k < indent-1; k++) {
-          printf("  ");
-        }
+        }           
 
-        printf("   - ");      
+        j += dump(js, token+1+j, count-j, indent+1, model);     
 
-        j += dump(js, t+1+j, count-j, indent+1, model);
-        printf("\n");
-
-      }
-       
-     
-       
+      }      
+            
       return j+1;
 	}
 	return 0;
 }
 
-void parse_json(const char* json_file, size_t json_file_size){
+void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
   jsmn_parser parser;
   int max_tokens = 100;
   jsmntok_t tokens[max_tokens];
@@ -307,13 +289,18 @@ void parse_json(const char* json_file, size_t json_file_size){
  
   int number_of_tokens_readed = jsmn_parse(&parser,json_file,json_file_size,tokens,max_tokens);
 
+  init_array(out_element,sizeof(Element));
+
   Element models[4];
   memset(models,0,sizeof(Element)*4);
   int count = tokens[0].size;
   
   dump(json_file,tokens,number_of_tokens_readed,0, models);
 
+  add_element_to_array(out_element,&models[0]);
+  add_element_to_array(out_element,&models[1]);
+
   int o = 2;
   
-  printf("json parsed\n");
+  printf("json level parsed\n");
 }

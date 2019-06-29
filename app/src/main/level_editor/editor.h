@@ -52,6 +52,8 @@ EditorMode editor_mode;
 TextMenu editor_element_list_menu;
 
 bool can_draw_gizmos;
+bool draw_translate_gizmo;
+bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
 
 #endif

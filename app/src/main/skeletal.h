@@ -22,4 +22,8 @@ typedef struct Skeletal{
 
 void free_node(Node*);
 
+static inline void get_local_matrix(Node* node, mat4 out_mat);
+static inline void get_global_matrix(Node* node, mat4 out_mat);
+
+
 #endif

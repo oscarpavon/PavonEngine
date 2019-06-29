@@ -66,7 +66,46 @@ void draw_frame(){
     }
 
 }
+void draw_simgle_model(struct Model * new_model){
+    GLenum error ;
+    glUseProgram(new_model->shader);
+    glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+    
+    mat4 mvp;
+    glm_mat4_identity(mvp);
+    
+    update_mvp(new_model->model_mat, mvp);
 
+    GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
+
+    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
+    
+    error = glGetError();
+    if(error != GL_NO_ERROR){
+        LOGW("draw error\n");
+        LOGW("Error %08x \n",error);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
+
+
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
+
+    glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
+
+    error = glGetError();
+    if(error != GL_NO_ERROR){
+        LOGW("draw error\n");
+        LOGW("Error %08x \n",error);
+    }
+}
 void draw_models(ModelArray* models){
     for(size_t i = 0; i < models->count ; i++) {
         GLenum error ;

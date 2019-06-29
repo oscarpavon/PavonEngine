@@ -28,7 +28,7 @@ typedef struct model_array{
 }ModelArray;
 
 
-typedef struct array{
+typedef struct Array{
     size_t actual_bytes_size;
     size_t count;
     size_t element_bytes_size;

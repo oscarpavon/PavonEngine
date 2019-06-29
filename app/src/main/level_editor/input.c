@@ -215,6 +215,8 @@ void change_to_editor_mode(EditorMode mode){
 }
 
 void grab_mode(){
+    draw_rotate_gizmo = false;
+    draw_translate_gizmo = true;
     if(key_released(&input.G)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;
@@ -335,6 +337,9 @@ void input_text_menu(TextMenu* menu, Key* open_key){
 }
 
 void default_mode(){
+    draw_rotate_gizmo = false;
+    draw_translate_gizmo = false;
+
     if(!move_camera){
         if(key_released(&input.S)){
             get_element_status(selected_element);
@@ -385,7 +390,9 @@ void default_mode(){
 }
 
 void rotate_input_mode(){
-    
+    draw_rotate_gizmo = true;
+    draw_translate_gizmo = false;
+
     if(key_released(&input.R)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;

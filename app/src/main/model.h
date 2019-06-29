@@ -11,6 +11,7 @@
 
 #include "skeletal.h"
 
+#include "vector.h"
 
 typedef struct Model{
     VertexArray vertex_array;
@@ -28,7 +29,8 @@ typedef struct Model{
 }Model;
 
 struct Geometry{
-
+    unsigned int vertex_count;
+    struct Vertex* vertices;
 };
 
 
@@ -36,6 +38,6 @@ void init_model();
 int load_model(const char* path, struct Model*);
 
 
-void parse_json(const char* json_file, size_t json_file_size);
+void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element);
 
 #endif // !MODEL_H

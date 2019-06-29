@@ -20,6 +20,8 @@
 
 #include "../images.h"
 
+#include "skeletal_editor.h"
+
 #define COMMAND_ADD_ELEMENT 0
 #define COMMAND_REMOVE_ELEMENT 1
 #define COMMAND_SAVE_LEVEL 2
@@ -108,9 +110,6 @@ void add_editor_element(const char* path_to_element){
     printf("model loaded and shader created \n");
 }
 
-void delete_element(){
-
-}
 
 void clean_element(Element* element){
     free(element->texture_path);
@@ -124,6 +123,8 @@ void clean_editor(){
         
     }
     free(editor_elements.data);
+
+    clean_skeletal_editor();
 }
 
 void add_editor_texture(const char* image_path){
@@ -185,15 +186,34 @@ void save_data(){
 
 }
 
-void load_level_in_editor(){
-    
+void set_selected_element_transform(vec3 position, versor rotation){
+    glm_translate(selected_element->model->model_mat, position);
+    glm_vec3_add(selected_element->position,position,selected_element->position);
+
+    mat4 model_rot_mat;
+    glm_quat_mat4(rotation,model_rot_mat);
+
+    glm_mul(selected_element->model->model_mat, model_rot_mat, selected_element->model->model_mat);
+
+    glm_quat_copy(rotation, selected_element->rotation);
+}
+
+Array load_elements;
+
+void add_loaded_elements_to_editor(){
+    for(int i = 0; i < load_elements.count; i++){
+        Element* element = &load_elements.data[i*load_elements.element_bytes_size];
+        add_editor_element(element->model_path);
+        add_editor_texture(element->texture_path);
+        set_selected_element_transform(element->position,element->rotation);
+    }
+}
+
+void load_level_in_editor(){    
 
     FILE* level_file = fopen("new_level.lvl","r");
 
     int return_number = 0;
-
-    //fscanf(level_file,"%d", &return_number);
-
 
     fseek(level_file, 0, SEEK_END);
     long file_size = ftell(level_file);
@@ -201,18 +221,15 @@ void load_level_in_editor(){
 
     char file_buffer[file_size];
 
-    fread(file_buffer,sizeof(char), file_size, level_file);    
-    
+    fread(file_buffer,sizeof(char), file_size, level_file);
 
-    parse_json(file_buffer,file_size);
-
-    Element new_element;
-    glm_vec3_copy((vec3){0,0,0}, new_element.position);    
-
-    element_id_count++;
-
-    add_element_to_array(&editor_elements,&new_element);
     fclose(level_file);
+
+    load_level_elements_from_json(file_buffer,file_size, &load_elements);
+
+    add_loaded_elements_to_editor();
+    
+    free(load_elements.data);
 }
 
 
@@ -284,26 +301,30 @@ void init_editor(){
     editor_element_list_menu.execute_function = &select_editor_elemenent;
 
     can_draw_gizmos = true;
-    can_draw_skeletal_bones = false;
-    
-}
+    can_draw_skeletal_bones = true;
 
-void draw_skeletal_bones(){
+    draw_translate_gizmo = false;
+    draw_rotate_gizmo = false;
     
-    //glBindBuffer(GL_ARRAY_BUFFER, mesh->vertex_buffer);
-	glDrawArrays(GL_POINTS, 0, 3);
-    glLineWidth(3);
-
 }
 
 void draw_gizmos(){
     if(can_draw_gizmos){
-        Model* actual_gizmo = &gizmos.models[0];
-        if(selected_element != NULL){
-            glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+        if(draw_translate_gizmo){
+            Model* actual_gizmo = &gizmos.models[0];
+            if(selected_element != NULL){
+                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+            }
+            draw_simgle_model(actual_gizmo);
         }
-
-        draw_models(&gizmos);
+        if(draw_rotate_gizmo){
+            Model* actual_gizmo = &gizmos.models[1];
+            if(selected_element != NULL){
+                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+            }
+            draw_simgle_model(actual_gizmo);
+        }
+        
     }
     if(can_draw_skeletal_bones)   
         draw_skeletal_bones();
