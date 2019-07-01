@@ -1,6 +1,5 @@
 #include "editor.h"
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "../model.h"
@@ -11,8 +10,6 @@
 #include "../vector.h"
 
 #include "../engine.h"
-
-#include "../third_party/cgltf.h"
 
 #include "text.h"
 
@@ -31,9 +28,7 @@ ModelArray editor_models;
 ModelArray gizmos;
 bool can_draw;
 
-Array editor_elements;
-
-unsigned int element_id_count;
+ModelArray LOD_models;
 
 void editor_message(const char* message){
     set_text_size(12);
@@ -60,37 +55,49 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
     //load_models_texture_to_gpu(&gizmos);
     load_model_texture_to_gpu(&new_model);
 
-    add_model_to_array(&gizmos,new_model);
-    
+    add_model_to_array(&gizmos,new_model);    
 
-    //init_models(&gizmos);  
-    
-
-    
+    //init_models(&gizmos);   
 
 }
 
 void add_editor_element(const char* path_to_element){
     open_file = false;
 
-    struct Model new_model;
+    struct Model new_model[3];
+    memset(new_model,0,sizeof(new_model));
+
     const char* model_path = path_to_element;
-    int result = load_model(model_path,&new_model);
+    int result = load_model(model_path,new_model);
     if(result==-1){
         return;
-    }
-    glm_mat4_identity(new_model.model_mat);   
+    }    
+    
 
-    new_model.shader = glCreateProgram();
+    struct Model* model0 = &new_model[0];
+
+    glm_mat4_identity(model0->model_mat);   
+
+    model0->shader = glCreateProgram();
     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
     standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
-    glAttachShader(new_model.shader, standart_vertex_shader);
-    glAttachShader(new_model.shader, standart_fragment_shader);
-    glLinkProgram(new_model.shader);
+    glAttachShader(model0->shader, standart_vertex_shader);
+    glAttachShader(model0->shader, standart_fragment_shader);
+    glLinkProgram(model0->shader);
 
-    init_model(&new_model);
+    init_model(model0);
+    model0->actual_LOD = 0;
+    model0->change_LOD = false;
+    add_model_to_array(&editor_models,new_model[0]);
 
-    add_model_to_array(&editor_models,new_model);
+    if(new_model[0].LOD_count >= 1){
+        for(int i = 0; i < new_model[0].LOD_count; i++){
+            glm_mat4_identity(new_model[i+1].model_mat);  
+            init_model(&new_model[i+1]);
+            new_model[i+1].shader = model0->shader;
+            add_model_to_array(&LOD_models,new_model[i+1]);
+        }
+    }
     
     Element new_element;
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
@@ -137,7 +144,6 @@ void add_editor_texture(const char* image_path){
     load_model_texture_to_gpu(selected_element->model);
     selected_element->texture_path = malloc(strlen(image_path));
     strcpy(selected_element->texture_path,image_path);
-
     
 }
 
@@ -158,56 +164,6 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
 
 }
 
-void add_element_to_save_data(FILE* new_file, Element* selected_element, int index){
-    if(index !=0){
-        fputs(",\n", new_file);
-    }
-    fputs("{\n\t\"id\" : ", new_file);
-    fprintf(new_file,"%i,\n",selected_element->id);
-    fputs("\t\"pos\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
-    fputs("\t\"rot\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
-    fputs("\t\"path\" : ", new_file);
-    fprintf(new_file,"\"%s\",\n",selected_element->model_path);
-    fputs("\t\"texture\" : ", new_file);
-    fprintf(new_file,"\"%s\"\n",selected_element->texture_path);
-    fputs("}",new_file);
-}
-void save_level_info(FILE* new_file){
-    fputs("{\n\t\"model_count\" : ", new_file);
-    fprintf(new_file,"%i",element_id_count);
-    fputs("\n},\n",new_file);
-}
-
-void create_save_data_backup(){
-    FILE* level_file = fopen("new_level.lvl","r");
-    fseek(level_file, 0, SEEK_END);
-    long file_size = ftell(level_file);
-    rewind (level_file);
-
-    char file_buffer[file_size];
-
-    fread(file_buffer,sizeof(char), file_size, level_file);
-
-    FILE* new_file = fopen("level.bkp1","w");
-    fputs(file_buffer,new_file);
-    fclose(new_file);
-
-    fclose(level_file);
-}
-void save_data(){
-    create_save_data_backup();
-    FILE* new_file = fopen("new_level.lvl","w+");
-    save_level_info(new_file);   
-    for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
-        //printf("Element name: %s\n", element->model_path);
-        add_element_to_save_data(new_file,element,i);
-    }
-    fclose(new_file);
-
-}
 
 void set_selected_element_transform(vec3 position, versor rotation){
     glm_translate(selected_element->model->model_mat, position);
@@ -289,6 +245,7 @@ void remove_selected_element(){
     clean_element(selected_element);
     selected_element = NULL;
     remove_element_from_array(&editor_elements);
+    element_id_count--;
 }
 
 void init_editor(){
@@ -330,6 +287,8 @@ void init_editor(){
     draw_rotate_gizmo = false;
 
     camera_velocity = 0.04;
+
+    init_model_array(&LOD_models,1);
     
 }
 
@@ -376,11 +335,33 @@ void draw_editor_elements_text_list(){
     }
        
 }
+void check_elements_camera_distance_for_LOD(){
+    for(int i = 0; i< editor_elements.count ; i++){
+        Element* element = selected_element;
+        float camera_distance = glm_vec3_distance(element->position, camera_position);
+        //printf("Camera Distance: %f\n",camera_distance);
+        if(camera_distance >= 8){
+            element->model->change_LOD  = true;
+        }else if (camera_distance <= 7.6){
+            element->model->change_LOD  = false;
+        }
+    }
+}
 
+void assign_LOD_mesh(){
+    for(int i = 0; i < editor_models.count ; i++){
+        struct Model* model = &editor_models.models[i];
+        if(model->change_LOD){
+            model->LOD = &LOD_models.models[model->actual_LOD];
+        }
+    }
+}
 void update_editor(){
     glClearColor(1,0.5,0,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    check_elements_camera_distance_for_LOD();
+    assign_LOD_mesh();
     if(can_draw)
         draw_models(&editor_models);  
       

@@ -29,7 +29,8 @@ TextColumn* dir_text_column;
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- 
+    glDisable(GL_CULL_FACE);
+    
     glUseProgram(text_shader_id);
     GLfloat black[4] = {1, 1, 1, 1};
     GLfloat red[4] = {1, 0, 0, 1};
@@ -90,7 +91,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
 
   }
   //glDisable(GL_BLEND);
-   
+   glEnable(GL_CULL_FACE); 
     
 }
 #include <dirent.h> 

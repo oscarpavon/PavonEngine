@@ -26,6 +26,11 @@ typedef struct Model{
     Texture texture;
 
     struct Skeletal* skeletal;
+    
+    unsigned int short LOD_count;
+    unsigned int short actual_LOD;
+    struct Model* LOD;
+    bool change_LOD;
 }Model;
 
 struct Geometry{

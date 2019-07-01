@@ -109,7 +109,11 @@ void draw_simgle_model(struct Model * new_model){
 void draw_models(ModelArray* models){
     for(size_t i = 0; i < models->count ; i++) {
         GLenum error ;
-        struct Model *new_model = &models->models[i];
+        struct Model *new_model;
+        new_model = &models->models[i];
+        if(new_model->change_LOD){
+            new_model = new_model->LOD;
+        }
 
         glUseProgram(new_model->shader);
         glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
@@ -134,7 +138,10 @@ void draw_models(ModelArray* models){
     
         glEnableVertexAttribArray(0);
 
+        
+    
         glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
@@ -272,6 +279,7 @@ void init_engine(){
     init_camera();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE); 
     compiles_standart_shaders();
 
     //sleep(2);

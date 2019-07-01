@@ -6,6 +6,7 @@
 
 #include "text.h"
 #include "../engine.h"
+#include "data.h"
 
 void create_input_thread();
 void init_editor();
@@ -58,5 +59,10 @@ bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
 
 float camera_velocity;
+
+
+Array editor_elements;
+
+unsigned int element_id_count;
 
 #endif

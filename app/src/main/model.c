@@ -9,6 +9,10 @@
 
 #include "engine.h"
 
+VertexArray* actual_vertex_array;
+IndexArray* actual_index_array;
+struct Model* actual_model;
+bool model_loaded = false;
 
 void load_uv(cgltf_data* data, VertexArray* out_vertex_array){
 
@@ -22,8 +26,7 @@ void load_uv(cgltf_data* data, VertexArray* out_vertex_array){
 
 }
 void load_indices(cgltf_data* data, IndexArray* index_array){
-    init_index_array(index_array,data->meshes[0].primitives[0].indices->count);
-
+   
     for(size_t i = 0 ; i < data->meshes[0].primitives[0].indices->count ; i++){
         unsigned short int index= cgltf_accessor_read_index(data->meshes[0].primitives[0].indices,i);
         add_index_to_array(index_array,index);
@@ -32,10 +35,46 @@ void load_indices(cgltf_data* data, IndexArray* index_array){
 
 
 }
+void read_accesor_vertex(cgltf_accessor* accessor){
+  for(size_t v = 0 ; v < accessor->count ; v++){
+    struct Vertex vertex;
+    memset(&vertex,0,sizeof(struct Vertex));
+    cgltf_accessor_read_float(accessor,v,&vertex.postion[0],3);
+    add_vextex_to_array(actual_vertex_array,vertex);
+  }
+}
 
-void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){
+void read_accessor_indices(cgltf_accessor* accessor){
+    for(size_t i = 0 ; i < accessor->count ; i++){
+        unsigned short int index= cgltf_accessor_read_index(accessor,i);
+        add_index_to_array(actual_index_array,index);
+    }
+}
 
-    init_vertex_array(out_vertex_array,data->accessors[0].count);
+void load_attribute(cgltf_attribute* attribute){
+  switch (attribute->type)
+  {
+  case cgltf_attribute_type_position:
+    read_accesor_vertex(attribute->data);
+    break;
+  
+  default:
+    break;
+  }
+}
+
+
+void load_primitive(cgltf_primitive* primitive){
+  load_attribute(&primitive->attributes[0]);
+  read_accessor_indices(primitive->indices);
+}
+
+void load_mesh(cgltf_mesh* mesh){
+  load_primitive(&mesh->primitives[0]);
+  model_loaded = true;
+}
+
+void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){ 
 
     for(size_t v = 0 ; v < data->accessors[0].count ; v++){
             struct Vertex vertex;
@@ -76,34 +115,92 @@ void load_joints( cgltf_data* data){
   load_node(NULL, data->scene->nodes[0],nodes,0);
 
 }
+
+void check_LOD(cgltf_data* data){
+  if(data->nodes_count > 1){
+    for(int i = 0; i < data->nodes_count; i++){
+      int node_name_size = strlen(data->nodes[i].name);
+      char name[node_name_size];
+      strcpy(name,data->nodes[i].name);
+      for(int n = 0; n<node_name_size; n++){
+        if(name[n] == '_'){
+          if(strcmp("LOD0",&name[n]+1) == 0){
+         
+            printf("Found LOD0\n");
+            load_mesh(data->nodes[i].mesh);
+      
+            break;
+          }
+          if(strcmp("LOD1",&name[n]+1) == 0){
+            actual_model->LOD_count++;
+            actual_model = actual_model+1;
+            init_index_array(&actual_model->index_array,1);
+            init_vertex_array(&actual_model->vertex_array,1);
+            actual_index_array = &actual_model->index_array;
+            actual_vertex_array = &actual_model->vertex_array;
+
+            printf("Found LOD1\n");            
+            load_mesh(data->nodes[i].mesh);
+ 
+            break;
+          }
+          if(strcmp("LOD3",&name[n]+1) == 0){
+            printf("Found LOD2\n");
+            //load_mesh(data->nodes[i].mesh);
+            break;
+          }
+        }
+      }
+    }
+   
+  }
+}
+
 int load_model(const char* path , struct Model* model){
-    File new_file;
+  model_loaded = false;
+  File new_file;
 
-    load_file(path,&new_file);
+  load_file(path,&new_file);
 
-    cgltf_options options = {0};
-    cgltf_data* data = NULL;
+  cgltf_options options = {0};
+  cgltf_data* data = NULL;
 
-    cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
+  cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
 
-    if (result != cgltf_result_success){
-         LOGW("Model no loaded: %s \n", new_file.path);
-         return -1;
-    }
-    cgltf_load_buffers(&options,data,new_file.path);
-
-    load_primitives(data,&model->vertex_array);
-    load_indices(data, &model->index_array);
-    load_uv(data,&model->vertex_array);
-
-    if(data->skins){
-      load_joints(data);
-    }
+  if (result != cgltf_result_success){
+        LOGW("Model no loaded: %s \n", new_file.path);
+        return -1;
+  }
+  cgltf_load_buffers(&options,data,new_file.path);
+  actual_vertex_array = &model->vertex_array;
+  actual_index_array = &model->index_array;
+  actual_model = model;
+  init_vertex_array(actual_vertex_array,1);
+  init_index_array(actual_index_array,1);
+  check_LOD(data);
+  if(model_loaded){
     LOGW("gltf loaded. \n");
 
     cgltf_free(data);
     close_file(&new_file);
     return 0;
+  }
+    
+
+  
+
+  load_primitives(data,&model->vertex_array);
+  load_indices(data, &model->index_array);
+  load_uv(data,&model->vertex_array);
+
+  if(data->skins){
+    load_joints(data);
+  }
+  LOGW("gltf loaded. \n");
+
+  cgltf_free(data);
+  close_file(&new_file);
+  return 0;
 }
 
 void free_model_load(Element* model){

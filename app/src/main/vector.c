@@ -99,7 +99,7 @@ void add_index_to_array(IndexArray* array, unsigned short int value){
         array->count++;
         return;
     }
-
+    
     array->count++;
     array->size += sizeof(unsigned short int);
     array->indices = realloc(array->indices,sizeof(unsigned short int) * array->size);
