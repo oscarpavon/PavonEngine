@@ -51,11 +51,20 @@ void read_accessor_indices(cgltf_accessor* accessor){
     }
 }
 
+void read_accesor_uv(cgltf_accessor* accessor){
+  for(size_t i = 0 ; i < accessor->count ; i++){
+      cgltf_accessor_read_float(accessor, i, &actual_vertex_array->vertices[i].uv[0], 2);
+  }
+}
+
 void load_attribute(cgltf_attribute* attribute){
   switch (attribute->type)
   {
   case cgltf_attribute_type_position:
     read_accesor_vertex(attribute->data);
+    break;
+  case cgltf_attribute_type_texcoord:
+    read_accesor_uv(attribute->data);
     break;
   
   default:
@@ -65,7 +74,10 @@ void load_attribute(cgltf_attribute* attribute){
 
 
 void load_primitive(cgltf_primitive* primitive){
-  load_attribute(&primitive->attributes[0]);
+  for(unsigned short int i = 0; i < primitive->attributes_count; i++){
+    load_attribute(&primitive->attributes[i]);
+  }
+  
   read_accessor_indices(primitive->indices);
 }
 

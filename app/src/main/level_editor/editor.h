@@ -8,6 +8,8 @@
 #include "../engine.h"
 #include "data.h"
 
+#include "input.h"
+
 void create_input_thread();
 void init_editor();
 void update_editor();
@@ -22,14 +24,15 @@ typedef enum EditorMode{
     EDITOR_SCALE_MODE,
     EDITOR_ROTATE_MODE,
     EDITOR_NAVIGATE_MODE,
-    EDITOR_CHANGING_MODE_MODE
+    EDITOR_CHANGING_MODE_MODE,
+    EDITOR_TEXT_INPUT_MODE
 }EditorMode;
 
 
 
 void get_element_status(Element* element);
-void save_data();
-void load_level_in_editor();
+
+void load_level_in_editor(const char*);
 void list_directory_files();
 
 void get_elements_in_editor_map();
@@ -46,6 +49,10 @@ void rotate_editor_element(Element* element, float angle, vec3 axis);
 
 void remove_selected_element();
 
+void reload_editor();
+
+
+void duplicate_selected_element();
 
 const char* editor_mode_show_text;
 

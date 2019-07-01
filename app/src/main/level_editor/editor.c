@@ -30,6 +30,9 @@ bool can_draw;
 
 ModelArray LOD_models;
 
+
+
+
 void editor_message(const char* message){
     set_text_size(12);
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
@@ -188,10 +191,14 @@ void add_loaded_elements_to_editor(){
     }
 }
 
-void load_level_in_editor(){    
+void load_level_in_editor(const char* name){    
 
-    FILE* level_file = fopen("new_level.lvl","r");
+    FILE* level_file = fopen(name,"r");
 
+    if(level_file == NULL){
+        printf("Level not found: %s\n",name);
+        return;
+    }
     int return_number = 0;
 
     fseek(level_file, 0, SEEK_END);
@@ -208,10 +215,30 @@ void load_level_in_editor(){
 
     add_loaded_elements_to_editor();
     
-    free(load_elements.data);
+    clean_array(&load_elements);
+    
 }
 
+void duplicate_selected_element(){
+    Element new_element;
+    memset(&new_element,0,sizeof(struct Element));
+    Model new_model;
+    memset(&new_element,0,sizeof(struct Model));
 
+    memcpy(&new_model,selected_element->model,sizeof(struct Model));
+    add_model_to_array(&editor_models,new_model);
+    
+    element_id_count++;
+    
+    memcpy(&new_element, selected_element, sizeof(struct Element));
+
+    new_element.model = &editor_models.models[editor_models.count-1];
+    new_element.id = element_id_count;
+    
+
+    add_element_to_array(&editor_elements,&new_element);
+    selected_element = get_element_from_array(&editor_elements,0);
+}
 
 void get_elements_in_editor_map(){
     printf("Elements count: %i\n", editor_elements.count);
@@ -246,6 +273,13 @@ void remove_selected_element(){
     selected_element = NULL;
     remove_element_from_array(&editor_elements);
     element_id_count--;
+}
+
+void reload_editor(){
+    element_id_count = 0;
+    clean_model_array(&editor_models);
+    clean_array(&editor_elements);   
+    
 }
 
 void init_editor(){
@@ -356,6 +390,8 @@ void assign_LOD_mesh(){
         }
     }
 }
+
+
 void update_editor(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -363,7 +399,7 @@ void update_editor(){
     check_elements_camera_distance_for_LOD();
     assign_LOD_mesh();
     if(can_draw)
-        draw_models(&editor_models);  
+        draw_elements(&editor_elements);  
       
 
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -374,6 +410,8 @@ void update_editor(){
     editor_message("test");
     if(editor_element_list_menu.show)   
         draw_editor_elements_text_list();
+
+   
 }
 
 

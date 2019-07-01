@@ -23,6 +23,89 @@ EditorMode mode_to_change;
 float horizontalAngle = 0;
 float verticalAngle = 0;
 
+static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
+{
+    if (code <= 0x7F) {
+        buffer[0] = code;
+        return 1;
+    }
+    if (code <= 0x7FF) {
+        buffer[0] = 0xC0 | (code >> 6);            /* 110xxxxx */
+        buffer[1] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
+        return 2;
+    }
+    if (code <= 0xFFFF) {
+        buffer[0] = 0xE0 | (code >> 12);           /* 1110xxxx */
+        buffer[1] = 0x80 | ((code >> 6) & 0x3F);   /* 10xxxxxx */
+        buffer[2] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
+        return 3;
+    }
+    if (code <= 0x10FFFF) {
+        buffer[0] = 0xF0 | (code >> 18);           /* 11110xxx */
+        buffer[1] = 0x80 | ((code >> 12) & 0x3F);  /* 10xxxxxx */
+        buffer[2] = 0x80 | ((code >> 6) & 0x3F);   /* 10xxxxxx */
+        buffer[3] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
+        return 4;
+    }
+    return 0;
+}
+
+unsigned char command_text_buffer[100];
+bool activate_text_input_mode = false;
+unsigned short int character_count = 0;
+
+
+void parse_command(const char* command){
+    if(command[1] == 'w'){
+        save_data(&command[3]);
+        printf("Saver\n");
+    }
+    if(command[1] == 'o'){        
+        load_level_in_editor(&command[3]);
+        printf("Saved\n");
+    }
+    if(command[1] == 'r'){        
+        reload_editor();
+        printf("reload\n");
+    }
+}
+
+void parse_characters(unsigned char character){
+    if(character == ':'){
+        printf("Command mode\n");
+        command_text_buffer[character_count] = character;
+        character_count++;
+        change_to_editor_mode(EDITOR_TEXT_INPUT_MODE);
+    }
+    if(editor_mode == EDITOR_TEXT_INPUT_MODE){
+        command_text_buffer[character_count] = character;
+        character_count++;
+    }
+}
+
+void character_callback(GLFWwindow* window, unsigned int codepoint){
+    unsigned char character[1];
+    code_to_utf8(character,codepoint);
+    //printf("Converted: %s\n",character);
+    parse_characters(character[0]);
+}
+
+void text_input_mode(){
+    if(key_released(&input.ENTER)){
+        parse_command(command_text_buffer);
+        character_count = 0;
+        memset(command_text_buffer,0,sizeof(command_text_buffer));
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+    }
+    if(key_released(&input.BACKSPACE)){
+        character_count--;
+        command_text_buffer[character_count] = '\0';
+    }
+    set_text_size(12);
+    render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
+
+}
+
 void camera_mouse_control(float yaw, float pitch){
     vec3 front;
     
@@ -63,6 +146,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     Key* actual_key = NULL;
+    Key* mod_key = NULL;
+    switch (mods)
+    {
+    case GLFW_MOD_SHIFT:
+        mod_key = &input.SHIFT;    
+    default:
+        break;
+    }
     switch (key)
     {
     case GLFW_KEY_ENTER:
@@ -140,6 +231,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_9:
         actual_key = &input.KEY_9;
         break;
+    case GLFW_KEY_BACKSPACE:
+        actual_key = &input.BACKSPACE;
     default:
         break;
     }
@@ -155,7 +248,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
     } 
   
-           
+    if(mod_key != NULL){
+        mod_key->pressed = true;
+    }
 }
 
 
@@ -191,13 +286,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 }
 
-static inline bool key_released(Key* key){
-    if(key->Released){
-        key->Released = false;
-        return true;
-    }
-    return false;
-}
 
 void init_input(){
     memset(&input,0,sizeof(Input));
@@ -241,6 +329,8 @@ void change_to_editor_mode(EditorMode mode){
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;
         break;
+    case EDITOR_TEXT_INPUT_MODE:
+        editor_mode_show_text = "Text Input";
     default:
         break;
     } 
@@ -262,7 +352,7 @@ void grab_mode(){
         if(key_released(&input.KEY_1)){
             grid_translate = true;
         } 
-        float move_object_value = 0.02;
+        
         if(input.W.pressed){
             vec3 move = {0,-move_object_value,0};
             glm_translate(selected_element->model->model_mat, move);
@@ -293,6 +383,12 @@ void grab_mode(){
             vec3 move = {0,0,-move_object_value};
             glm_translate(selected_element->model->model_mat, move);
             glm_vec3_add(selected_element->position,move,selected_element->position);
+        }
+        if(key_released(&input.I)){
+            move_object_value += 0.04;
+        }
+        if(key_released(&input.O)){
+            move_object_value -= 0.04;
         }
     }else{
         if(key_released(&input.KEY_1)){
@@ -451,16 +547,19 @@ void default_mode(){
 
     input_change_mode();
 
-    
+    if(input.SHIFT.pressed && key_released(&input.D)){
+       duplicate_selected_element();
+       printf("duplicated \n"); 
+    }
     if(key_released(&input.S)){
         get_element_status(selected_element);
     }
     
     if(key_released(&input.W)){
-        save_data();
+        //save_data("new_level.lvl");
     }
     if(key_released(&input.Z)){
-        load_level_in_editor();            
+        //load_level_in_editor("new_level.lvl");            
     }        
     if(key_released(&input.X)){
         remove_selected_element();            
@@ -532,12 +631,16 @@ void update_input(){
     case EDITOR_ROTATE_MODE:
         rotate_input_mode();
         break;
+    case EDITOR_TEXT_INPUT_MODE:
+        text_input_mode();
+        break;
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;
         break;
     default:
         break;
     } 
+   input.SHIFT.pressed = false;
 }
 
 float last_mouse_x = 400;

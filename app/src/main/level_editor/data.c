@@ -56,10 +56,10 @@ void create_save_data_backup(){
 
     fclose(level_file);
 }
-void save_data(){   
+void save_data(const char* name){   
 
     create_save_data_backup();
-    FILE* new_file = fopen("new_level.lvl","w+");
+    FILE* new_file = fopen(name,"w+");
     save_level_info(new_file);   
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);

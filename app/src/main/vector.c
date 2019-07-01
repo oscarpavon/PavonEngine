@@ -32,6 +32,22 @@ int init_model_array(ModelArray* array, size_t size){
     array->size = sizeof(struct Model) * size;
     return 0;
 }
+
+void clean_model_array(ModelArray* array){
+    array->count = 0;
+    free(array->models);
+    array->models = calloc(1,sizeof(struct Model));
+    array->size = sizeof(struct Model);
+}
+
+void clean_array(Array* array){
+    array->count = 0;
+    free(array->data);
+    array->data = malloc(array->element_bytes_size);
+    array->actual_bytes_size = array->element_bytes_size;
+    
+}
+
 void add_model_to_array(ModelArray* array, struct Model model){
     if(array->count == 0){
         memcpy(array->models,&model,sizeof(struct Model));
@@ -47,6 +63,7 @@ void add_model_to_array(ModelArray* array, struct Model model){
     }
     memcpy(&array->models[array->count-1],&model,sizeof(struct Model));
 }
+
 
 void remove_last_element_from_model_array(ModelArray* array){
     if(array->count==1){

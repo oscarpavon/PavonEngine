@@ -51,4 +51,7 @@ void add_model_to_array(ModelArray*, struct Model);
 
 void *get_element_from_array(Array*,int index);
 
+void clean_array(Array* array);
+void clean_model_array(ModelArray* model_array);
+
 #endif // !VECTOR_H

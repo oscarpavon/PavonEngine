@@ -23,7 +23,7 @@ typedef struct Element{
     versor rotation;
     struct Model* model;
     char* model_path;
-    char* texture_path;    
+    char* texture_path;   
 }Element;
 
 void init_engine();
@@ -31,7 +31,7 @@ void engine_loop();
 void init_game_engine();
 
 void init_models(ModelArray* array);
-void draw_models(ModelArray* models);
+void draw_elements(Array* elements);
 void draw_simgle_model(struct Model * new_model);
 void load_models_texture_to_gpu(ModelArray* models_array);
 void load_model_texture_to_gpu(struct Model*);

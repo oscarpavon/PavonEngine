@@ -35,7 +35,8 @@ void draw_frame(){
 
         glUseProgram(new_model->shader);
         glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
-
+        
+        
         mat4 mvp;
         glm_mat4_identity(mvp);
 
@@ -106,22 +107,25 @@ void draw_simgle_model(struct Model * new_model){
         LOGW("Error %08x \n",error);
     }
 }
-void draw_models(ModelArray* models){
-    for(size_t i = 0; i < models->count ; i++) {
+
+void draw_elements(Array *elements){
+    for(size_t i = 0; i < elements->count ; i++) {
         GLenum error ;
+        Element* element = get_element_from_array(elements,i);
         struct Model *new_model;
-        new_model = &models->models[i];
+        struct Model *LOD0 = element->model;
+        new_model = element->model;
         if(new_model->change_LOD){
-            new_model = new_model->LOD;
+            new_model = new_model->LOD;          
         }
 
         glUseProgram(new_model->shader);
-        glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+        glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
       
         mat4 mvp;
         glm_mat4_identity(mvp);
         
-        update_mvp(new_model->model_mat, mvp);
+        update_mvp(LOD0->model_mat, mvp);
 
         GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
     

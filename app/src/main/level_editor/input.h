@@ -39,6 +39,7 @@ typedef struct Input {
 	struct Key KEY_0;
 	struct Key KEY_9;
 	struct Key P;
+	struct Key BACKSPACE;
 }Input;
 
 
@@ -48,9 +49,19 @@ void update_input();
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void character_callback(GLFWwindow* window, unsigned int codepoint);
+
 
 void init_input();
 
 bool mouse_navigate_control;
+
+static inline bool key_released(Key* key){
+    if(key->Released){
+        key->Released = false;
+        return true;
+    }
+    return false;
+}
 
 #endif // !EDITOR_INPUT_H
