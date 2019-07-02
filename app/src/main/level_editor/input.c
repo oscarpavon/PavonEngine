@@ -68,6 +68,16 @@ void parse_command(const char* command){
         reload_editor();
         printf("reload\n");
     }
+    if(command[1] == 'd'){ 
+        unsigned int duplicate_count = atoi(&command[3]); 
+        for(int i = 0; i< duplicate_count; i++){
+            duplicate_selected_element();        
+            vec3 move = {-24,0,0};
+            glm_translate(selected_element->model->model_mat, move);
+            glm_vec3_add(selected_element->position,move,selected_element->position);
+        }      
+        printf("duplicated %i\n",duplicate_count);
+    }
 }
 
 void parse_characters(unsigned char character){
@@ -394,7 +404,7 @@ void grab_mode(){
         if(key_released(&input.KEY_1)){
             grid_translate = false;
         } 
-        move_object_value = 10;
+        
         if(key_released(&input.D)){
             vec3 move = {move_object_value,0,0};
             glm_translate(selected_element->model->model_mat, move);
@@ -416,10 +426,10 @@ void grab_mode(){
             glm_vec3_add(selected_element->position,move,selected_element->position);
         }
         if(key_released(&input.I)){
-            move_object_value = 100;
+            move_object_value += 2.4;
         }
         if(key_released(&input.O)){
-            move_object_value = 10;
+            move_object_value = 24;
         }
     }
 }

@@ -30,6 +30,7 @@ int init_model_array(ModelArray* array, size_t size){
     array->count = 0;
     array->models = calloc(size,sizeof(struct Model));
     array->size = sizeof(struct Model) * size;
+    array->capacity = size;
     return 0;
 }
 
@@ -54,7 +55,11 @@ void add_model_to_array(ModelArray* array, struct Model model){
         array->count++;
         return;
     }
-
+    if(array->count < array->capacity ){
+        memcpy(array->models,&model,sizeof(struct Model));
+        array->count++;
+        return;
+    }
     array->count++;
     array->size += sizeof(struct Model);
     array->models = realloc(array->models,sizeof(struct Model) * array->size);

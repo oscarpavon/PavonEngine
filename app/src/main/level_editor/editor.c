@@ -183,9 +183,14 @@ void set_selected_element_transform(vec3 position, versor rotation){
     glm_quat_copy(rotation, selected_element->rotation);
 }
 
+void update_camera_aspect_ratio(){
+    glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
+}
+
 Array load_elements;
 
 void add_loaded_elements_to_editor(){
+    init_model_array(&editor_models,load_elements.count);
     for(int i = 0; i < load_elements.count; i++){
         Element* element = &load_elements.data[i*load_elements.element_bytes_size];
         if(element->duplicated_of_id==-1 && element->id != 300){
@@ -201,8 +206,8 @@ void add_loaded_elements_to_editor(){
             element_id_count++;
             Element new_element;
             memcpy(&new_element, element, sizeof(struct Element));
-
-            new_element.model = &editor_models.models[editor_models.count-1];
+            if(element->duplicated_of_id > -1)
+                new_element.model = &editor_models.models[element->duplicated_of_id];            
             new_element.id = element_id_count;
             new_element.duplicated_of_id = element->duplicated_of_id;
 
@@ -263,10 +268,14 @@ void duplicate_selected_element(){
 
     new_element.model = &editor_models.models[editor_models.count-1];
     new_element.id = element_id_count;
-    new_element.duplicated_of_id = selected_element->id;
+
+    if(selected_element->duplicated_of_id > -1)
+        new_element.duplicated_of_id = selected_element->duplicated_of_id;
+    else
+        new_element.duplicated_of_id = selected_element->id;
 
     add_element_to_array(&editor_elements,&new_element);
-    selected_element = get_element_from_array(&editor_elements,0);
+    selected_element = get_element_from_array(&editor_elements,editor_elements.count-1);
 }
 
 void get_elements_in_editor_map(){

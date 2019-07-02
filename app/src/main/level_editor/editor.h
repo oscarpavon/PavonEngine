@@ -51,6 +51,7 @@ void remove_selected_element();
 
 void reload_editor();
 
+void update_camera_aspect_ratio();
 
 void duplicate_selected_element();
 

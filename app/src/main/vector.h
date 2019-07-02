@@ -24,6 +24,7 @@ typedef struct index_array{
 typedef struct model_array{
     size_t size;
     size_t count;
+    size_t capacity;
     struct Model* models;
 }ModelArray;
 
