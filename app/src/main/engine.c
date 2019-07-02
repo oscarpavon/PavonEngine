@@ -246,6 +246,8 @@ void init_model(struct Model* new_model){
 
     free(new_model->vertex_array.vertices);
     free(new_model->index_array.indices);
+    new_model->vertex_array.vertices = NULL;
+    new_model->index_array.indices = NULL;
 }
 
 void init_models(ModelArray* array){

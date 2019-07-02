@@ -188,33 +188,35 @@ void update_camera_aspect_ratio(){
 }
 
 Array load_elements;
-
+#define CAMERA__ELEMENT_ID 300
 void add_loaded_elements_to_editor(){
     init_model_array(&editor_models,load_elements.count);
     for(int i = 0; i < load_elements.count; i++){
         Element* element = &load_elements.data[i*load_elements.element_bytes_size];
-        if(element->duplicated_of_id==-1 && element->id != 300){
+        if(element->duplicated_of_id==-1 && element->id != CAMERA__ELEMENT_ID){
             add_editor_element(element->model_path);        
             add_editor_texture(element->texture_path);
-        }else if(element->id != 300){
+        }else if(element->id != CAMERA__ELEMENT_ID){
             Model new_model;
             memset(&new_model,0,sizeof(struct Model));
-
-            memcpy(&new_model,&editor_models.models[element->duplicated_of_id],sizeof(struct Model));
             add_model_to_array(&editor_models,new_model);
-            
+
+            struct Model* from = &editor_models.models[element->duplicated_of_id];
+            struct Model* model_copy = &editor_models.models[editor_models.count-1];   
+            memmove(model_copy,from,sizeof(struct Model));                    
+
             element_id_count++;
             Element new_element;
             memcpy(&new_element, element, sizeof(struct Element));
             if(element->duplicated_of_id > -1)
-                new_element.model = &editor_models.models[element->duplicated_of_id];            
+                new_element.model = &editor_models.models[editor_models.count-1];            
             new_element.id = element_id_count;
             new_element.duplicated_of_id = element->duplicated_of_id;
 
             add_element_to_array(&editor_elements,&new_element);
             selected_element = get_element_from_array(&editor_elements,editor_elements.count-1);
         }
-        if(element->id != 300){
+        if(element->id != CAMERA__ELEMENT_ID){
             set_selected_element_transform(element->position,element->rotation);
         }else{
             glm_vec3_copy(element->position,camera_position);
@@ -394,7 +396,9 @@ void draw_editor_elements_text_list(){
 
      for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
-        //printf("Element name: %s\n", element->model_path);
+        const char* name = element->model_path;
+        if(element->model_path == NULL)
+            name = "no_name";
         int y_pos = i*text_size+text_size;
         if(i == 0){
             y_pos = text_size;
@@ -403,7 +407,7 @@ void draw_editor_elements_text_list(){
         if(editor_element_list_menu.actual_element_select == i)
             can_mark = true;
 
-        render_text(element->model_path,  0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
     }
        
 }

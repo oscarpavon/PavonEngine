@@ -27,8 +27,15 @@ int init_index_array(IndexArray* array, size_t size){
 }
 
 int init_model_array(ModelArray* array, size_t size){
+    if(array->capacity != 0){
+        void* temp = realloc(array->models, sizeof(struct Model) * (size+array->capacity));
+        array->models = temp;
+        array->size = sizeof(struct Model) * (size + array->capacity);
+        array->capacity = size + array->capacity;
+        return 0;
+    }
     array->count = 0;
-    array->models = calloc(size,sizeof(struct Model));
+    array->models = malloc(sizeof(struct Model) * size);
     array->size = sizeof(struct Model) * size;
     array->capacity = size;
     return 0;
@@ -56,8 +63,8 @@ void add_model_to_array(ModelArray* array, struct Model model){
         return;
     }
     if(array->count < array->capacity ){
-        memcpy(array->models,&model,sizeof(struct Model));
         array->count++;
+        memcpy(&array->models[array->count-1],&model,sizeof(struct Model));    
         return;
     }
     array->count++;

@@ -7,9 +7,15 @@
 #include <stdbool.h>
 #include "../vector.h"
 
+
+#define DIRECTORY_MODELS 0
+#define DIRECTORY_TEXTURES 1
+
+
 void init_text_renderer();
 void render_text(const char *text, float x, float y, float sx, float sy , bool mark);
 void draw_directory_files();
+void draw_directory_file_type(unsigned short int type);
 
 void text_renderer_loop();
 
@@ -36,7 +42,7 @@ typedef enum{
     MENU_TYPE_ADD_TEXTURE    
 }TextMenuType;
 
-typedef void(*ExecuteFunction)(int);
+typedef void(*ExecuteFunction)(const char*);
 
 typedef struct TextMenu{
     bool show;
@@ -50,9 +56,10 @@ typedef struct TextMenu{
 
 
 TextMenu add_element_menu;
+TextMenu add_texture_menu;
 
- int mark_id;
- float open_file;
+int mark_id;
+float open_file;
 bool add_texture;
 
 float pixel_size_x;

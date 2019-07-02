@@ -527,10 +527,13 @@ void input_text_menu(TextMenu* menu, Key* open_key){
     if(key_released(open_key)){
         menu->execute = true;
         menu->show = true;
-        menu->type = MENU_TYPE_ADD_MODEL;
     }
 
     if(menu->show){
+        if(key_released(&input.ESC)){
+            menu->execute = false;
+            menu->show = false;
+        }
         if(key_released(&input.J)){
             menu->actual_element_select++;
         }
@@ -538,14 +541,14 @@ void input_text_menu(TextMenu* menu, Key* open_key){
             menu->actual_element_select--;
         }
         if(key_released(&input.ENTER)){
-            if(add_element_menu.type == MENU_TYPE_ADD_MODEL)
+            if(menu->type == MENU_TYPE_ADD_MODEL)
                 open_file = 5;
-            if(add_element_menu.type == MENU_TYPE_ADD_TEXTURE)
+            if(menu->type == MENU_TYPE_ADD_TEXTURE)
                 add_texture = true;
                 
             menu->element_selected = true;
             menu->show = false;
-            menu->execute_function(menu->actual_element_select);
+            //menu->execute_function(menu->actual_element_select);
         }
 
     }
@@ -582,14 +585,10 @@ void default_mode(){
 
     
     
-    if(key_released(&input.T)){
-        add_element_menu.execute = true;
-        add_element_menu.show = true;
-        add_element_menu.type = MENU_TYPE_ADD_TEXTURE;
-    }
-    
+        
     input_text_menu(&add_element_menu,&input.A);
     input_text_menu(&editor_element_list_menu,&input.L);
+    input_text_menu(&add_texture_menu,&input.T);
 
     
     if(key_released(&input.KEY_1)){
