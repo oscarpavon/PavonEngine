@@ -23,7 +23,8 @@ typedef struct Element{
     versor rotation;
     struct Model* model;
     char* model_path;
-    char* texture_path;   
+    char* texture_path;
+    short int duplicated_of_id;   
 }Element;
 
 void init_engine();

@@ -428,10 +428,10 @@ float rotate_value = 100;
 void navigate_mode(){
     input_change_mode();
 
-    if(input.O.pressed){
+    if(input.I.pressed){
         camera_velocity += 0.02;
     }
-    if(input.I.pressed){
+    if(input.O.pressed){
         camera_velocity -= 0.02;
     }
 

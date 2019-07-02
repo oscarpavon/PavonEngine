@@ -11,20 +11,25 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
     fputs("\t\"rot\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
-    fputs("\t\"path\" : ", new_file);
-    fprintf(new_file,"\"%s\",\n",selected_element->model_path);
-    fputs("\t\"texture\" : ", new_file);
-    fprintf(new_file,"\"%s\"\n",selected_element->texture_path);
+    if(selected_element->duplicated_of_id > -1){
+        fputs("\t\"copy\" : ", new_file);
+        fprintf(new_file,"%i\n",selected_element->duplicated_of_id);
+    }else{
+        fputs("\t\"path\" : ", new_file);
+        fprintf(new_file,"\"%s\",\n",selected_element->model_path);
+        fputs("\t\"texture\" : ", new_file);
+        fprintf(new_file,"\"%s\"\n",selected_element->texture_path);
+    }  
     fputs("}",new_file);
 }
 
 void save_level_info(FILE* new_file){
     fputs("{\n\t\"model_count\" : ", new_file);
-    fprintf(new_file,"%i",element_id_count);
+    fprintf(new_file,"%i",element_id_count+1);
     fputs("\n},\n",new_file);
 }
 
-void save_camera_editor_camera_transform(FILE* new_file){
+void save_camera_editor_camera_transform(FILE* new_file){     
     fputs(",\n", new_file);
     fputs("{\n\t\"type\" : ", new_file);
     fprintf(new_file,"\"%s\",\n","editor_camera");  
@@ -33,8 +38,7 @@ void save_camera_editor_camera_transform(FILE* new_file){
     fputs("\t\"pos\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f],\n",camera_position[0] , camera_position[1] , camera_position[2]);
     fputs("\t\"rot\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
-    
+    fprintf(new_file,"[%f , %f , %f , %f],\n",camera_rotation[0] , camera_rotation[1] , camera_rotation[2], camera_rotation[3]);
     fputs("\t\"texture\" : ", new_file);
     fprintf(new_file,"\"%s\"\n","no_texture");
     fputs("}",new_file);

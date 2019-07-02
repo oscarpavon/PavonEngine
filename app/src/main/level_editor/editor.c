@@ -103,6 +103,9 @@ void add_editor_element(const char* path_to_element){
     }
     
     Element new_element;
+    memset(&new_element,0,sizeof(struct Element));
+    new_element.duplicated_of_id = -1;
+
     glm_vec3_copy((vec3){0,0,0}, new_element.position);
     new_element.model = &editor_models.models[element_id_count];
     new_element.id = element_id_count;
@@ -185,9 +188,33 @@ Array load_elements;
 void add_loaded_elements_to_editor(){
     for(int i = 0; i < load_elements.count; i++){
         Element* element = &load_elements.data[i*load_elements.element_bytes_size];
-        add_editor_element(element->model_path);
-        add_editor_texture(element->texture_path);
-        set_selected_element_transform(element->position,element->rotation);
+        if(element->duplicated_of_id==-1 && element->id != 300){
+            add_editor_element(element->model_path);        
+            add_editor_texture(element->texture_path);
+        }else if(element->id != 300){
+            Model new_model;
+            memset(&new_model,0,sizeof(struct Model));
+
+            memcpy(&new_model,&editor_models.models[element->duplicated_of_id],sizeof(struct Model));
+            add_model_to_array(&editor_models,new_model);
+            
+            element_id_count++;
+            Element new_element;
+            memcpy(&new_element, element, sizeof(struct Element));
+
+            new_element.model = &editor_models.models[editor_models.count-1];
+            new_element.id = element_id_count;
+            new_element.duplicated_of_id = element->duplicated_of_id;
+
+            add_element_to_array(&editor_elements,&new_element);
+            selected_element = get_element_from_array(&editor_elements,editor_elements.count-1);
+        }
+        if(element->id != 300){
+            set_selected_element_transform(element->position,element->rotation);
+        }else{
+            glm_vec3_copy(element->position,camera_position);
+            update_look_at();
+        }
     }
 }
 
@@ -222,6 +249,8 @@ void load_level_in_editor(const char* name){
 void duplicate_selected_element(){
     Element new_element;
     memset(&new_element,0,sizeof(struct Element));
+    
+
     Model new_model;
     memset(&new_element,0,sizeof(struct Model));
 
@@ -234,7 +263,7 @@ void duplicate_selected_element(){
 
     new_element.model = &editor_models.models[editor_models.count-1];
     new_element.id = element_id_count;
-    
+    new_element.duplicated_of_id = selected_element->id;
 
     add_element_to_array(&editor_elements,&new_element);
     selected_element = get_element_from_array(&editor_elements,0);

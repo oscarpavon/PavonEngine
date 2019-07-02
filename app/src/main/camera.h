@@ -18,6 +18,7 @@ vec3 camera_front;
 vec3 camera_position;
 float camera_heigth_screen;
 float camera_width_screen;
+versor camera_rotation;
 
 void init_camera();
 void update_look_at();
