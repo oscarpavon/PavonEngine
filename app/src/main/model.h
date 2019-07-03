@@ -31,6 +31,9 @@ typedef struct Model{
     unsigned int short actual_LOD;
     struct Model* LOD;
     bool change_LOD;
+    struct Model* HLOD;
+    bool has_HLOD;
+    bool change_to_HLOD;
 }Model;
 
 struct Geometry{

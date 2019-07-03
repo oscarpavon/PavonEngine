@@ -127,6 +127,7 @@ void load_joints( cgltf_data* data){
   load_node(NULL, data->scene->nodes[0],nodes,0);
 
 }
+struct Model* in_model_array = NULL;
 
 void check_LOD(cgltf_data* data){
   if(data->nodes_count > 1){
@@ -156,10 +157,22 @@ void check_LOD(cgltf_data* data){
  
             break;
           }
+          
           if(strcmp("LOD3",&name[n]+1) == 0){
             printf("Found LOD2\n");
             //load_mesh(data->nodes[i].mesh);
             break;
+          }
+          if(strcmp("HLOD",&name[n]+1) == 0){
+            actual_model = actual_model+1;
+            printf("Found HLOD\n");
+            init_index_array(&actual_model->index_array,1);
+            init_vertex_array(&actual_model->vertex_array,1);
+            actual_index_array = &actual_model->index_array;
+            actual_vertex_array = &actual_model->vertex_array;            
+            load_mesh(data->nodes[i].mesh);
+            in_model_array->has_HLOD = true;
+             
           }
         }
       }
@@ -180,19 +193,21 @@ int load_model(const char* path , struct Model* model){
   cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
 
   if (result != cgltf_result_success){
-        LOGW("Model no loaded: %s \n", new_file.path);
-        return -1;
+    LOGW("Model no loaded: %s \n", new_file.path);
+    return -1;
   }
   cgltf_load_buffers(&options,data,new_file.path);
+  in_model_array = model;
   actual_vertex_array = &model->vertex_array;
   actual_index_array = &model->index_array;
   actual_model = model;
   init_vertex_array(actual_vertex_array,1);
   init_index_array(actual_index_array,1);
   check_LOD(data);
+
   if(model_loaded){
     LOGW("gltf loaded. \n");
-
+    in_model_array = NULL;
     cgltf_free(data);
     close_file(&new_file);
     return 0;

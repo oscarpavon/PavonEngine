@@ -67,7 +67,6 @@ void save_data(const char* name){
     save_level_info(new_file);   
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
-        //printf("Element name: %s\n", element->model_path);
         add_element_to_save_data(new_file,element,i);
     }
     save_camera_editor_camera_transform(new_file);

@@ -119,6 +119,10 @@ void *get_element_from_array(Array* array,int index){
     size_t offset = array->element_bytes_size;
     if(index == 0)
         return array->data;
+    if(index > array->count){
+        printf("Element out of ranger, array count: %i",array->count);
+        return NULL;
+    }         
     return &array->data[0] + (index*offset);
 }
 

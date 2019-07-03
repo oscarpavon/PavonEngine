@@ -62,7 +62,7 @@ void parse_command(const char* command){
     }
     if(command[1] == 'o'){        
         load_level_in_editor(&command[3]);
-        printf("Saved\n");
+        printf("Level loaded\n");
     }
     if(command[1] == 'r'){        
         reload_editor();
@@ -72,11 +72,14 @@ void parse_command(const char* command){
         unsigned int duplicate_count = atoi(&command[3]); 
         for(int i = 0; i< duplicate_count; i++){
             duplicate_selected_element();        
-            vec3 move = {-24,0,0};
+            vec3 move = {24,0,0};
             glm_translate(selected_element->model->model_mat, move);
             glm_vec3_add(selected_element->position,move,selected_element->position);
         }      
         printf("duplicated %i\n",duplicate_count);
+    }
+    if(command[1] == 'h'){
+        
     }
 }
 

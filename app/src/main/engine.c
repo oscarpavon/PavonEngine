@@ -114,10 +114,14 @@ void draw_elements(Array *elements){
         Element* element = get_element_from_array(elements,i);
         struct Model *new_model;
         struct Model *LOD0 = element->model;
-        new_model = element->model;
+        new_model = LOD0;
         if(new_model->change_LOD){
             new_model = new_model->LOD;          
         }
+        if(LOD0->change_to_HLOD){
+            new_model = LOD0->HLOD;
+        }
+        
 
         glUseProgram(new_model->shader);
         glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
