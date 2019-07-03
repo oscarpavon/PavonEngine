@@ -17,16 +17,11 @@
 #include "vector.h"
 #include "model.h"
 #include "level.h"
-#include "camera.h"
+
 
 #include <unistd.h>
 
-static inline void update_mvp(mat4 model, mat4 mvp_out){
-    mat4 projection_view;
-    glm_mul(main_camera.projection , main_camera.view, projection_view);
-    glm_mul(projection_view , model , mvp_out);
 
-}
 
 void draw_frame(){
     for(size_t i = 0; i < new_level.models_array.count ; i++) {
@@ -279,7 +274,7 @@ void init_models(ModelArray* array){
 
 }
 
-void compiles_standart_shaders(){
+void compiles_standard_shaders(){
     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
     standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
 }
@@ -289,8 +284,9 @@ void init_engine(){
     init_camera();
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE); 
-    compiles_standart_shaders();
+    glEnable(GL_CULL_FACE);
+    
+    compiles_standard_shaders();
 
     //sleep(2);
 

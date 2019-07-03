@@ -15,6 +15,7 @@ struct android_app* app;
 #endif
 
 #include <cglm.h>
+#include "camera.h"
 
 typedef struct Element{
     unsigned int id;
@@ -43,6 +44,10 @@ void update_editor();
 
 bool should_close;
 
-
+static inline void update_mvp(mat4 model, mat4 mvp_out){
+    mat4 projection_view;
+    glm_mul(main_camera.projection , main_camera.view, projection_view);
+    glm_mul(projection_view , model , mvp_out);
+}
 
 #endif //PAVON_MOBILE_ENGINE_H

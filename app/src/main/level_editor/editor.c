@@ -46,8 +46,7 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
     glm_mat4_identity(new_model.model_mat);   
 
     new_model.shader = glCreateProgram();
-     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    
     glAttachShader(new_model.shader, standart_vertex_shader);
     glAttachShader(new_model.shader, standart_fragment_shader);
     glLinkProgram(new_model.shader);
@@ -82,8 +81,7 @@ void add_editor_element(const char* path_to_element){
     glm_mat4_identity(model0->model_mat);   
 
     model0->shader = glCreateProgram();
-    standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+
     glAttachShader(model0->shader, standart_vertex_shader);
     glAttachShader(model0->shader, standart_fragment_shader);
     glLinkProgram(model0->shader);
@@ -338,6 +336,7 @@ void reload_editor(){
 }
 
 void init_editor(){
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
     init_vec3(0,3,0, camera_position);
     update_look_at();
@@ -378,6 +377,8 @@ void init_editor(){
     camera_velocity = 0.04;
 
     init_model_array(&LOD_models,1);
+
+    init_skeletal_editor();
     
 }
 

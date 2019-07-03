@@ -24,7 +24,8 @@
 			"*.tcc": "c",
 			"array": "c",
 			"initializer_list": "c",
-			"utility": "c"
+			"utility": "c",
+			"skeletal_editor.h": "c"
 		}
 	}
 }
