@@ -137,6 +137,13 @@ void add_editor_element(const char* path_to_element){
 void clean_element(Element* element){
     free(element->texture_path);
     free(element->model_path);
+    if(element->model->skeletal != NULL){
+        free(element->model->skeletal->joints);
+        free(element->model->skeletal);
+        
+    }
+        
+    
 }
 
 void clean_editor(){
@@ -369,7 +376,7 @@ void init_editor(){
     editor_element_list_menu.execute_function = &select_editor_elemenent;
 
     can_draw_gizmos = true;
-    can_draw_skeletal_bones = true;
+    can_draw_skeletal_bones = false;
 
     draw_translate_gizmo = false;
     draw_rotate_gizmo = false;

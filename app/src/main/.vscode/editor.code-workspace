@@ -25,7 +25,8 @@
 			"array": "c",
 			"initializer_list": "c",
 			"utility": "c",
-			"skeletal_editor.h": "c"
+			"skeletal_editor.h": "c",
+			"skeletal.h": "c"
 		}
 	}
 }

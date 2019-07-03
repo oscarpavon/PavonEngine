@@ -125,8 +125,13 @@ void load_joints( cgltf_data* data){
   memset(nodes,0,sizeof(nodes));
 
   load_node(NULL, data->scene->nodes[0],nodes,0);
-
+  Skeletal* skeletal = malloc(sizeof(Skeletal));
+  skeletal->joints_count = node_count;
+  Node* joints = malloc(sizeof(nodes));
+  skeletal->joints = joints;
+  actual_model->skeletal = skeletal;
 }
+
 struct Model* in_model_array = NULL;
 
 void check_LOD(cgltf_data* data){
@@ -211,10 +216,7 @@ int load_model(const char* path , struct Model* model){
     cgltf_free(data);
     close_file(&new_file);
     return 0;
-  }
-    
-
-  
+  }  
 
   load_primitives(data,&model->vertex_array);
   load_indices(data, &model->index_array);
@@ -222,7 +224,9 @@ int load_model(const char* path , struct Model* model){
 
   if(data->skins){
     load_joints(data);
+    
   }
+  
   LOGW("gltf loaded. \n");
 
   cgltf_free(data);

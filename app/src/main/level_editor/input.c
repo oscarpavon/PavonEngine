@@ -571,12 +571,7 @@ void default_mode(){
         get_element_status(selected_element);
     }
     
-    if(key_released(&input.W)){
-        //save_data("new_level.lvl");
-    }
-    if(key_released(&input.Z)){
-        //load_level_in_editor("new_level.lvl");            
-    }        
+  
     if(key_released(&input.X)){
         remove_selected_element();            
     } 
@@ -598,8 +593,12 @@ void default_mode(){
         if(can_draw_gizmos){
             can_draw_gizmos = false;
         }else can_draw_gizmos = true;
-    }
 
+    }
+    if(key_released(&input.KEY_2)){
+        init_skeletal_gizmo();
+        can_draw_skeletal_bones = true;
+    }
    
 }
 
