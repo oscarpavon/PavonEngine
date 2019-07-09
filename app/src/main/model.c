@@ -121,14 +121,14 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
 
 void load_joints( cgltf_data* data){
   int node_count = data->nodes_count;
-  Node nodes[node_count];
-  memset(nodes,0,sizeof(nodes));
+  Node* nodes = malloc(sizeof(Node) * node_count);
+
+  memset(nodes,0,sizeof(Node) * node_count);
 
   load_node(NULL, data->scene->nodes[0],nodes,0);
   Skeletal* skeletal = malloc(sizeof(Skeletal));
-  skeletal->joints_count = node_count;
-  Node* joints = malloc(sizeof(nodes));
-  skeletal->joints = joints;
+  skeletal->joints_count = node_count;  
+  skeletal->joints = nodes;
   actual_model->skeletal = skeletal;
 }
 

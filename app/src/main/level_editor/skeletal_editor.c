@@ -39,7 +39,7 @@ void init_skeletal_gizmo(){
     memset(vertices,0,sizeof(vertices));
 
     for(int i = 0; i < skeletal->joints_count ; i++){
-        mat4 local;
+        mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
         glm_mat4_mul(selected_element->model->model_mat, local, local);
         struct Vertex vert = { { local[3][0],local[3][1],local[3][3] } ,{0,0}};
@@ -49,7 +49,7 @@ void init_skeletal_gizmo(){
     skeletal_bones_gizmo_geometry.vertices = malloc(sizeof(vertices));
     memcpy(skeletal_bones_gizmo_geometry.vertices, vertices, sizeof(vertices));
     skeletal_bones_gizmo_geometry.vertex_count = vertex_count;
-    
+
     //create_skeletal_vertices_bones_gizmo();
     init_skeletal_gizmo_geometry();
 }
