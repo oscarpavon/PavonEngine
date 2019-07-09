@@ -4,7 +4,7 @@
 #include "editor.h"
 
 struct Geometry skeletal_bones_gizmo_geometry;
-GLuint vertex_buffer_id;
+GLuint skeletal_gizmo_vertices_buffer_id;
 
 
 void create_skeletal_vertices_bones_gizmo(){
@@ -25,8 +25,8 @@ void create_skeletal_vertices_bones_gizmo(){
 
 void init_skeletal_gizmo_geometry(){
     
-    glGenBuffers(1,&vertex_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
+    glGenBuffers(1,&skeletal_gizmo_vertices_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,skeletal_gizmo_vertices_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, skeletal_bones_gizmo_geometry.vertex_count * sizeof(struct Vertex) , skeletal_bones_gizmo_geometry.vertices, GL_STATIC_DRAW);
 }
 
@@ -42,7 +42,8 @@ void init_skeletal_gizmo(){
         mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
         glm_mat4_mul(selected_element->model->model_mat, local, local);
-        struct Vertex vert = { { local[3][0],local[3][1],local[3][3] } ,{0,0}};
+        struct Vertex vert = { { local[3][0],local[3][1],local[3][2] } ,{0,0}};
+        //struct Vertex vert = { { skeletal->joints[i].translation[0] ,skeletal->joints[i].translation[1] ,skeletal->joints[i].translation[2]} ,{0,0}};
         memcpy(&vertices[i],&vert,sizeof(struct Vertex));
 
     }
@@ -54,11 +55,12 @@ void init_skeletal_gizmo(){
     init_skeletal_gizmo_geometry();
 }
 
-GLuint shader;
+GLuint skelta_gizmo_shader;
 
 void draw_skeletal_bones(){
-     
-    glUseProgram(shader);
+    glBindBuffer(GL_ARRAY_BUFFER, skeletal_gizmo_vertices_buffer_id);
+
+    glUseProgram(skelta_gizmo_shader);
 
     mat4 mvp;
     glm_mat4_identity(mvp);
@@ -67,7 +69,7 @@ void draw_skeletal_bones(){
     glm_mat4_identity(model);
     update_mvp(model, mvp);
 
-    GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
+    GLint mvp_uniform =  glGetUniformLocation(skelta_gizmo_shader,"MVP");
 
     glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
 
@@ -75,7 +77,7 @@ void draw_skeletal_bones(){
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
     
     glLineWidth(10);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+   
 	glDrawArrays(GL_POINTS, 0, skeletal_bones_gizmo_geometry.vertex_count);
     
 
@@ -93,11 +95,13 @@ void init_skeletal_editor(){
     create_skeletal_vertices_bones_gizmo();
     init_skeletal_gizmo_geometry();
 
-    shader = glCreateProgram();
+    skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
+
+    skelta_gizmo_shader = glCreateProgram();
     
-    glAttachShader(shader, standart_vertex_shader);
-    glAttachShader(shader, standart_fragment_shader);
-    glLinkProgram(shader);
+    glAttachShader(skelta_gizmo_shader, standart_vertex_shader);
+    glAttachShader(skelta_gizmo_shader, skeletal_blue_shader);
+    glLinkProgram(skelta_gizmo_shader);
 }
 
 void clean_skeletal_editor(){

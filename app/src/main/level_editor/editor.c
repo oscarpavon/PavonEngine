@@ -390,6 +390,9 @@ void init_editor(){
 }
 
 void draw_gizmos(){
+    if(can_draw_skeletal_bones)   
+        draw_skeletal_bones();
+
     if(can_draw_gizmos){
         if(draw_translate_gizmo){
             Model* actual_gizmo = &gizmos.models[0];
@@ -406,9 +409,7 @@ void draw_gizmos(){
             draw_simgle_model(actual_gizmo);
         }
         
-    }
-    if(can_draw_skeletal_bones)   
-        draw_skeletal_bones();
+    }    
 }
 
 
