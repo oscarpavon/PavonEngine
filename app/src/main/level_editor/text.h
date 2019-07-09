@@ -58,6 +58,7 @@ typedef struct TextMenu{
 
 TextMenu add_element_menu;
 TextMenu add_texture_menu;
+TextMenu editor_element_list_menu;
 
 int mark_id;
 

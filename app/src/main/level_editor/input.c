@@ -97,6 +97,8 @@ void parse_characters(unsigned char character){
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint){
+    if(codepoint == 241)//equal "ñ"
+            return;
     unsigned char character[1];
     code_to_utf8(character,codepoint);
     //printf("Converted: %s\n",character);

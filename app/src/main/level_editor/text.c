@@ -20,11 +20,9 @@ GLuint text_shader_id;
 
 GLuint uniform_text_color_location;
 
-
 FT_GlyphSlot g;
 
 TextColumn* dir_text_column;
-
 
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
@@ -238,6 +236,20 @@ void add_element_text_menu_action(TextMenu* menu){
 void add_texture_to_element_menu_action(TextMenu* menu){
     add_editor_texture(menu->text_for_action);
 }
+
+void menu_show_editor_element_list(TextMenu* menu){
+    printf("Selected element\n");
+    int id = menu->actual_element_select;
+    Element* element = NULL;
+   
+    if(selected_element != NULL)
+        selected_element->selected = false;
+
+    element = (Element*)get_element_from_array(&editor_elements,id);
+    element->selected = true;
+    selected_element = element;
+}
+
 void init_text_renderer(){
     FT_Library ft;
 
@@ -263,12 +275,15 @@ void init_text_renderer(){
 
     memset(&add_element_menu,0,sizeof(TextMenu));
     memset(&add_texture_menu,0,sizeof(TextMenu));
+    memset(&editor_element_list_menu,0,sizeof(TextMenu));
 
     add_element_menu.execute_function = &add_element_text_menu_action;
     add_element_menu.type = MENU_TYPE_ADD_MODEL;
 
     add_texture_menu.type = MENU_TYPE_ADD_TEXTURE;
     add_texture_menu.execute_function = &add_texture_to_element_menu_action;
+
+    editor_element_list_menu.execute_function = &menu_show_editor_element_list;
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
@@ -307,6 +322,6 @@ void text_renderer_loop(){
 
     update_text_menu(&add_element_menu);
 
-    
+    update_text_menu(&editor_element_list_menu);
     
 }

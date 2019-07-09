@@ -12,14 +12,6 @@
 
 #include "editor_shader.h"
 
-void create_input_thread();
-void init_editor();
-void update_editor();
-
-
-
-Element* selected_element;
-
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -30,11 +22,14 @@ typedef enum EditorMode{
     EDITOR_TEXT_INPUT_MODE
 }EditorMode;
 
+void init_editor();
 
+void update_editor();
 
 void get_element_status(Element* element);
 
 void load_level_in_editor(const char*);
+
 void list_directory_files();
 
 void get_elements_in_editor_map();
@@ -59,11 +54,9 @@ void update_camera_aspect_ratio();
 
 void duplicate_selected_element();
 
-const char* editor_mode_show_text;
+char* editor_mode_show_text;
 
 enum EditorMode editor_mode;
-
-struct TextMenu editor_element_list_menu;
 
 bool can_draw_gizmos;
 bool draw_translate_gizmo;
@@ -72,9 +65,10 @@ bool can_draw_skeletal_bones;
 
 float camera_velocity;
 
+unsigned int element_id_count;
 
+Element* selected_element;
 Array editor_elements;
 
-unsigned int element_id_count;
 
 #endif

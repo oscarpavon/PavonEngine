@@ -327,15 +327,7 @@ void get_element_status(Element* element){
 }
 
 void select_editor_elemenent(int id){
-    printf("Slected edito0r element \n");
-    Element* element = NULL;
-    if(id == 0){
-        element = (Element*)&editor_elements.data[0];
-        element->model = &editor_models.models[0];
-    }        
-    element = (Element*)get_element_from_array(&editor_elements,id);
-    element->model = &editor_models.models[id];
-    selected_element = element;
+   
 }
 
 void remove_selected_element(){
@@ -381,10 +373,6 @@ void init_editor(){
     editor_mode_show_text = "Default Mode";
 
     init_input();
-
-    editor_element_list_menu.show = false;
-    editor_element_list_menu.actual_element_select = 0;
-    editor_element_list_menu.execute_function = &select_editor_elemenent;
 
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
