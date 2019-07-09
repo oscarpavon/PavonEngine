@@ -10,10 +10,7 @@ int main(){
    
     Window main_window;
     create_window(&main_window);    
-   
-    create_input_thread();
-
-   
+      
     glfwSetKeyCallback(main_window.window, key_callback);
 	glfwSetCursorPosCallback(main_window.window, mouse_callback);
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);

@@ -43,13 +43,7 @@ static const char*  text_fragment_shader_source = "#version 100 \n\
     }\
 //end";
 
-static const char*  skeletal_blue_joint_source = "#version 100 \n\
-precision mediump float; \
-    void main()\
-    {\
-        gl_FragColor = vec4(0,0,1,1);\
-    }\
-//end";
+
 
 static const char* text_vertex_shader_source = "#version 100 \n \
 attribute vec4 coord;\
@@ -64,8 +58,6 @@ void main()\
 
 GLuint standart_vertex_shader;
 GLuint standart_fragment_shader;
-
-GLuint skeletal_blue_shader;
 
 GLuint compile_shader(const char* src , GLenum type);
 

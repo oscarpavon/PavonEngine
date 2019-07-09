@@ -104,6 +104,9 @@ void draw_simgle_model(struct Model * new_model){
 }
 
 void draw_elements(Array *elements){
+    GLfloat white[4] = {1, 1, 1, 1};
+    GLfloat red[4] = {1, 0, 0, 1};
+
     for(size_t i = 0; i < elements->count ; i++) {
         GLenum error ;
         Element* element = get_element_from_array(elements,i);
@@ -114,11 +117,21 @@ void draw_elements(Array *elements){
             new_model = new_model->LOD;          
         }
         if(LOD0->change_to_HLOD){
-            new_model = LOD0->HLOD;
+            //new_model = LOD0->HLOD;
         }
         
-
         glUseProgram(new_model->shader);
+        
+        GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
+        if(element->selected){            
+            
+            glUniform4fv(uniform_color, 1, red);
+        }else
+        {
+           glUniform4fv(uniform_color, 1, white);
+        }
+        
+        
         glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
       
         mat4 mvp;
@@ -137,14 +150,10 @@ void draw_elements(Array *elements){
         }
 
         glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
-
     
-        glEnableVertexAttribArray(0);
-
-        
+        glEnableVertexAttribArray(0);        
     
         glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));

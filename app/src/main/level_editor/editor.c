@@ -5,7 +5,6 @@
 #include "../model.h"
 #include "../shader.h"
 
-#include <pthread.h>
 #include <string.h>
 #include "../vector.h"
 
@@ -19,10 +18,6 @@
 
 #include "skeletal_editor.h"
 
-#define COMMAND_ADD_ELEMENT 0
-#define COMMAND_REMOVE_ELEMENT 1
-#define COMMAND_SAVE_LEVEL 2
-#define COMMAND_LOAD_LEVEL 3
 
 ModelArray editor_models;
 ModelArray gizmos;
@@ -30,8 +25,19 @@ bool can_draw;
 
 ModelArray LOD_models;
 
+void deselect_all(){
+    for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = get_element_from_array(&editor_elements,i);
+        element->selected = false;
+    }
+}
 
-
+void select_last_element(){
+    if(selected_element != NULL)
+        selected_element->selected = false;
+    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
+    selected_element->selected = true;
+}
 
 void editor_message(const char* message){
     set_text_size(12);
@@ -48,23 +54,22 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
     new_model.shader = glCreateProgram();
     
     glAttachShader(new_model.shader, standart_vertex_shader);
-    glAttachShader(new_model.shader, standart_fragment_shader);
+    glAttachShader(new_model.shader, editor_standard_fragment_shader);
     glLinkProgram(new_model.shader);
+
+    glUseProgram(new_model.shader);
 
     new_model.texture.image = load_image(color_texture_path);
 
     init_model(&new_model);
-    //load_models_texture_to_gpu(&gizmos);
+
     load_model_texture_to_gpu(&new_model);
 
-    add_model_to_array(&gizmos,new_model);    
-
-    //init_models(&gizmos);   
+    add_model_to_array(&gizmos,new_model);  
 
 }
 
 void add_editor_element(const char* path_to_element){
-    open_file = false;
 
     struct Model new_model[3];
     memset(new_model,0,sizeof(new_model));
@@ -83,7 +88,7 @@ void add_editor_element(const char* path_to_element){
     model0->shader = glCreateProgram();
 
     glAttachShader(model0->shader, standart_vertex_shader);
-    glAttachShader(model0->shader, standart_fragment_shader);
+    glAttachShader(model0->shader, editor_standard_fragment_shader);
     glLinkProgram(model0->shader);
 
     init_model(model0);
@@ -126,8 +131,9 @@ void add_editor_element(const char* path_to_element){
 
     add_element_to_array(&editor_elements,&new_element);
 
-    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);    
-   
+    select_last_element();
+    
+
     can_draw = true;
     
     printf("model loaded and shader created \n");
@@ -158,8 +164,12 @@ void clean_editor(){
 }
 
 void add_editor_texture(const char* image_path){
-    add_texture = false;
-    //selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
+
+    if(selected_element == NULL){
+        printf("No element selected\n"); 
+        return;
+    }
+
     selected_element->model->texture.image = load_image(image_path);
     load_model_texture_to_gpu(selected_element->model);
     selected_element->texture_path = malloc(strlen(image_path));
@@ -210,7 +220,7 @@ void add_loaded_elements_to_editor(){
         if(element->duplicated_of_id==-1 && element->id != CAMERA__ELEMENT_ID){
             add_editor_element(element->model_path);        
             add_editor_texture(element->texture_path);
-        }else if(element->id != CAMERA__ELEMENT_ID){
+        }else if(element->id != CAMERA__ELEMENT_ID){            //Duplicated element
             Model new_model;
             memset(&new_model,0,sizeof(struct Model));
             add_model_to_array(&editor_models,new_model);
@@ -233,7 +243,7 @@ void add_loaded_elements_to_editor(){
         if(element->id != CAMERA__ELEMENT_ID && element->duplicated_of_id == -1){
             set_selected_element_transform(element->position,element->rotation);
         }else if(element->id != CAMERA__ELEMENT_ID && element->duplicated_of_id > -1){
-             glm_translate(selected_element->model->model_mat, element->position);
+            glm_translate(selected_element->model->model_mat, element->position);
         }
         if(element->id == CAMERA__ELEMENT_ID){
             glm_vec3_copy(element->position,camera_position);
@@ -297,7 +307,8 @@ void duplicate_selected_element(){
         new_element.duplicated_of_id = selected_element->id;
 
     add_element_to_array(&editor_elements,&new_element);
-    selected_element = get_element_from_array(&editor_elements,editor_elements.count-1);
+    
+    select_last_element();
 }
 
 void get_elements_in_editor_map(){
@@ -356,6 +367,8 @@ void init_editor(){
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
     load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
 
+    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
+
     init_text_renderer();
 
     can_draw = false;
@@ -368,8 +381,6 @@ void init_editor(){
     editor_mode_show_text = "Default Mode";
 
     init_input();
-
-    add_texture = false;
 
     editor_element_list_menu.show = false;
     editor_element_list_menu.actual_element_select = 0;
@@ -480,47 +491,9 @@ void update_editor(){
 
     text_renderer_loop();
     editor_message("test");
+
     if(editor_element_list_menu.show)   
         draw_editor_elements_text_list();
 
    
-}
-
-
-void handle_command(unsigned short int command){
-    switch (command)
-    {
-    case COMMAND_ADD_ELEMENT:
-       
-        break;
-    
-    default:
-        break;
-    }
-}
-
-void* input_thread(void* in){
-    printf("input thread crated \n");
-    char command[100];
-    unsigned short int command_code = 50;
-    while (1)
-    {
-         gets(command);
-         printf("Input command: %s\n", command);
-         if(strcmp(command, "a") == 0){
-             command_code = COMMAND_ADD_ELEMENT;
-         }else if (strcmp(command, "save") == 0){
-             command_code = COMMAND_SAVE_LEVEL;
-         }
-         handle_command(command_code);
-    }  
-   
-
-
-}
-
-void create_input_thread(){
-    pthread_t input_thread_id;
-    pthread_create(&input_thread_id,NULL, input_thread, NULL);
-
 }

@@ -163,7 +163,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     switch (mods)
     {
     case GLFW_MOD_SHIFT:
-        mod_key = &input.SHIFT;    
+        mod_key = &input.SHIFT;
+    case GLFW_MOD_ALT:
+        mod_key = &input.ALT;    
     default:
         break;
     }
@@ -544,14 +546,8 @@ void input_text_menu(TextMenu* menu, Key* open_key){
             menu->actual_element_select--;
         }
         if(key_released(&input.ENTER)){
-            if(menu->type == MENU_TYPE_ADD_MODEL)
-                open_file = 5;
-            if(menu->type == MENU_TYPE_ADD_TEXTURE)
-                add_texture = true;
-                
             menu->element_selected = true;
             menu->show = false;
-            //menu->execute_function(menu->actual_element_select);
         }
 
     }
@@ -567,6 +563,10 @@ void default_mode(){
        duplicate_selected_element();
        printf("duplicated \n"); 
     }
+    if(input.ALT.pressed && key_released(&input.A)){
+        printf("deselect all \n");
+        deselect_all(); 
+    }
     if(key_released(&input.S)){
         get_element_status(selected_element);
     }
@@ -581,14 +581,6 @@ void default_mode(){
         get_elements_in_editor_map();
     }
 
-    
-    
-        
-    input_text_menu(&add_element_menu,&input.A);
-    input_text_menu(&editor_element_list_menu,&input.L);
-    input_text_menu(&add_texture_menu,&input.T);
-
-    
     if(key_released(&input.KEY_1)){
         if(can_draw_gizmos){
             can_draw_gizmos = false;
@@ -599,7 +591,12 @@ void default_mode(){
         init_skeletal_gizmo();
         can_draw_skeletal_bones = true;
     }
-   
+    
+        
+    input_text_menu(&add_element_menu,&input.A);
+    input_text_menu(&editor_element_list_menu,&input.L);
+    input_text_menu(&add_texture_menu,&input.T);  
+
 }
 
 void rotate_input_mode(){
@@ -652,6 +649,7 @@ void update_input(){
         break;
     } 
    input.SHIFT.pressed = false;
+   input.ALT.pressed = false;
 }
 
 float last_mouse_x = 400;

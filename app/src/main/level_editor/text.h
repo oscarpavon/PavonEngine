@@ -42,7 +42,7 @@ typedef enum{
     MENU_TYPE_ADD_TEXTURE    
 }TextMenuType;
 
-typedef void(*ExecuteFunction)(const char*);
+typedef void(*ExecuteFunction)(struct TextMenu*);
 
 typedef struct TextMenu{
     bool show;
@@ -51,7 +51,8 @@ typedef struct TextMenu{
     unsigned int actual_element_select;
     ExecuteFunction execute_function;
     TextMenuType type;
-    char text_for_action[30];
+    unsigned short int element_count;
+    char text_for_action[30];   
 }TextMenu;
 
 
@@ -59,8 +60,6 @@ TextMenu add_element_menu;
 TextMenu add_texture_menu;
 
 int mark_id;
-float open_file;
-bool add_texture;
 
 float pixel_size_x;
 float pixel_size_y;

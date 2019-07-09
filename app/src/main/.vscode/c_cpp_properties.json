@@ -3,12 +3,13 @@
         {
             "name": "Editor",
             "intelliSenseMode": "gcc-x64",
-            "cStandard": "c11",			
-			"defines": [                            
-                               
+            "cStandard": "c11",
+            "defines": [],
+            "includePath": [
+                "/usr/include/cglm",
+                "/usr/include/freetype2"
             ],
-            "includePath": ["/usr/include/cglm","/usr/include/freetype2"
-            ]
+            "configurationProvider": "vector-of-bool.cmake-tools"
         }
     ],
     "version": 4

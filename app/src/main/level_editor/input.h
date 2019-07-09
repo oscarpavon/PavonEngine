@@ -40,6 +40,7 @@ typedef struct Input {
 	struct Key KEY_9;
 	struct Key P;
 	struct Key BACKSPACE;
+	struct Key ALT;
 }Input;
 
 

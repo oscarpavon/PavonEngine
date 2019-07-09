@@ -25,7 +25,8 @@ typedef struct Element{
     struct Model* model;
     char* model_path;
     char* texture_path;
-    short int duplicated_of_id;   
+    short int duplicated_of_id;
+    bool selected;
 }Element;
 
 void init_engine();

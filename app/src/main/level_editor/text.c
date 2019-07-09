@@ -30,68 +30,68 @@ TextColumn* dir_text_column;
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
-    
+
     glUseProgram(text_shader_id);
     GLfloat black[4] = {1, 1, 1, 1};
     GLfloat red[4] = {1, 0, 0, 1};
     GLint uniform_color =  glGetUniformLocation(text_shader_id,"color");
 
-  const char *p;
+    const char *p;
 
-  for(p = text; *p; p++) {
-    if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
-        continue;
+    for(p = text; *p; p++) {
+        if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
+            continue;
+        
+        glBindTexture(GL_TEXTURE_2D, text_texture_id); 
+
+        glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_LUMINANCE,
+        g->bitmap.width,
+        g->bitmap.rows,
+        0,
+        GL_LUMINANCE,
+        GL_UNSIGNED_BYTE,
+        g->bitmap.buffer
+        );
     
-    glBindTexture(GL_TEXTURE_2D, text_texture_id); 
-
-    glTexImage2D(
-      GL_TEXTURE_2D,
-      0,
-      GL_LUMINANCE,
-      g->bitmap.width,
-      g->bitmap.rows,
-      0,
-      GL_LUMINANCE,
-      GL_UNSIGNED_BYTE,
-      g->bitmap.buffer
-    );
- 
-    float x2 = x + g->bitmap_left * sx;
-    float y2 = -y - g->bitmap_top * sy;
-    float w = g->bitmap.width * sx;
-    float h = g->bitmap.rows * sy;
- 
-    GLfloat box[4][4] = {
-        {x2,     -y2    , 0, 0},
-        {x2 + w, -y2    , 1, 0},
-        {x2,     -y2 - h, 0, 1},
-        {x2 + w, -y2 - h, 1, 1},
-    };
+        float x2 = x + g->bitmap_left * sx;
+        float y2 = -y - g->bitmap_top * sy;
+        float w = g->bitmap.width * sx;
+        float h = g->bitmap.rows * sy;
     
-    if(mark)
-        glUniform4fv(uniform_color, 1, red);
-    else
-        glUniform4fv(uniform_color, 1, black);
+        GLfloat box[4][4] = {
+            {x2,     -y2    , 0, 0},
+            {x2 + w, -y2    , 1, 0},
+            {x2,     -y2 - h, 0, 1},
+            {x2 + w, -y2 - h, 1, 1},
+        };
+        
+        if(mark)
+            glUniform4fv(uniform_color, 1, red);
+        else
+            glUniform4fv(uniform_color, 1, black);
 
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
- 
-    x += (g->advance.x/64) * sx;
-    y += (g->advance.y/64) * sy;
+        glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+        x += (g->advance.x/64) * sx;
+        y += (g->advance.y/64) * sy;
 
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOGW("text draw error \n");
-        LOGW("Error %08x \n",error);
+        GLenum error = glGetError();
+        if(error != GL_NO_ERROR){
+            LOGW("text draw error \n");
+            LOGW("Error %08x \n",error);
+        }
+
     }
-
-  }
-  //glDisable(GL_BLEND);
-   glEnable(GL_CULL_FACE); 
+    //glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE); 
     
 }
 unsigned short int directory_show_type = 50;
@@ -167,28 +167,19 @@ void list_directory_files(TextMenu* menu){
         if(i == 0){
             y_pos = 20;
         }
+
         bool can_mark = false;
         if(menu->actual_element_select == i)
             can_mark = true;
 
-        if(menu->type == MENU_TYPE_ADD_MODEL){
-            if(open_file == 5 && menu->actual_element_select == i){
-                strcpy(menu->text_for_action,directories_names[i]);
-            }
-        }
-        if(menu->type == MENU_TYPE_ADD_TEXTURE){
-             if(add_texture == true && menu->actual_element_select == i){
-                strcpy(menu->text_for_action,directories_names[i]);
-            }
-        }
-       
-           
+        if(menu->actual_element_select == i){
+            strcpy(menu->text_for_action,directories_names[i]);
+        }     
+
         if(menu->show)
-            render_text(directories_names[i],  0,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
+            render_text(directories_names[i],  0 + (-(camera_width_screen/2)) * pixel_size_x ,   1 - (y_pos) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);   
     }    
   
-    
-   
 }
 
 
@@ -240,11 +231,13 @@ void init_text_shader(){
     //uniform_text_color_location =  glGetUniformLocation(text_shader_id,"color");
 
 }
-
-void test_function(int s){
-    printf("test\n");
+void add_element_text_menu_action(TextMenu* menu){
+    add_editor_element(menu->text_for_action);
 }
 
+void add_texture_to_element_menu_action(TextMenu* menu){
+    add_editor_texture(menu->text_for_action);
+}
 void init_text_renderer(){
     FT_Library ft;
 
@@ -267,16 +260,15 @@ void init_text_renderer(){
     
         
     mark_id = 0;
-    open_file = 0;
 
     memset(&add_element_menu,0,sizeof(TextMenu));
     memset(&add_texture_menu,0,sizeof(TextMenu));
 
-    add_element_menu.execute_function = &add_editor_element;
+    add_element_menu.execute_function = &add_element_text_menu_action;
     add_element_menu.type = MENU_TYPE_ADD_MODEL;
 
     add_texture_menu.type = MENU_TYPE_ADD_TEXTURE;
-    add_texture_menu.execute_function = &add_editor_texture;
+    add_texture_menu.execute_function = &add_texture_to_element_menu_action;
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
@@ -300,9 +292,10 @@ void update_text_menu(TextMenu* menu){
             draw_directory_file_type(DIRECTORY_TEXTURES);
         
         if(menu->element_selected){
-            menu->execute_function(menu->text_for_action);
+            menu->execute_function(menu);
             menu->execute = false;
             menu->show = false;
+            menu->element_selected = false;
         }
     }   
 }
@@ -313,5 +306,7 @@ void text_renderer_loop(){
     update_text_menu(&add_texture_menu);
 
     update_text_menu(&add_element_menu);
+
+    
     
 }
