@@ -27,6 +27,8 @@ typedef struct Element{
     char* texture_path;
     short int duplicated_of_id;
     bool selected;
+    bool has_HLOD;
+    bool has_LOD;
 }Element;
 
 void init_engine();

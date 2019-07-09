@@ -70,5 +70,7 @@ unsigned int element_id_count;
 Element* selected_element;
 Array editor_elements;
 
+Array selected_elements_id;
+
 
 #endif

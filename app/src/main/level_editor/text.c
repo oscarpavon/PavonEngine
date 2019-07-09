@@ -242,12 +242,24 @@ void menu_show_editor_element_list(TextMenu* menu){
     int id = menu->actual_element_select;
     Element* element = NULL;
    
-    if(selected_element != NULL)
-        selected_element->selected = false;
+    if(!input.SHIFT.pressed){
+        if(selected_element != NULL)
+            selected_element->selected = false;
+    }else{
+        add_element_to_array(&selected_elements_id,&selected_element->id);
+    }   
 
     element = (Element*)get_element_from_array(&editor_elements,id);
     element->selected = true;
     selected_element = element;
+    if(input.SHIFT.pressed){
+        add_element_to_array(&selected_elements_id,&selected_element->id);
+    }
+
+    for(int i = 0 ; i < selected_elements_id.count ; i++){
+        unsigned short int id = get_element_from_array(&selected_elements_id,i);
+        printf("seleteted: %i", id);
+    }
 }
 
 void init_text_renderer(){

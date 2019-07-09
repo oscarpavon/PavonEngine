@@ -82,7 +82,7 @@ void add_editor_element(const char* path_to_element){
     
 
     struct Model* model0 = &new_model[0];
-
+  
     glm_mat4_identity(model0->model_mat);   
 
     model0->shader = glCreateProgram();
@@ -128,7 +128,9 @@ void add_editor_element(const char* path_to_element){
 
     element_id_count++;
     
-
+    if(model0->LOD_count >= 1){
+        new_element.has_LOD  = true;
+    }
     add_element_to_array(&editor_elements,&new_element);
 
     select_last_element();
@@ -300,6 +302,7 @@ void duplicate_selected_element(){
 
     new_element.model = &editor_models.models[editor_models.count-1];
     new_element.id = element_id_count;
+    new_element.has_HLOD = false;
 
     if(selected_element->duplicated_of_id > -1)
         new_element.duplicated_of_id = selected_element->duplicated_of_id;
@@ -324,10 +327,6 @@ void get_elements_in_editor_map(){
 void get_element_status(Element* element){
     printf("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
 
-}
-
-void select_editor_elemenent(int id){
-   
 }
 
 void remove_selected_element(){
@@ -364,7 +363,8 @@ void init_editor(){
     init_text_renderer();
 
     can_draw = false;
-
+    
+    init_array(&selected_elements_id,sizeof(unsigned short int));
 
     element_id_count = 0;    
 
@@ -437,19 +437,21 @@ void draw_editor_elements_text_list(){
 void check_elements_camera_distance_for_LOD(){
     for(int i = 0; i< editor_elements.count ; i++){
         Element* element = get_element_from_array(&editor_elements,i);
-        float camera_distance = glm_vec3_distance(element->position, camera_position);
-        //printf("Camera Distance: %f\n",camera_distance);
-        if(camera_distance >= 8){
-            element->model->change_LOD  = true;
-        }else if (camera_distance <= 7.6){
-            element->model->change_LOD  = false;
-        }
-        if(camera_distance >= 20 && element->model->has_HLOD){
-            element->model->change_to_HLOD = true;
-        }
-        if(camera_distance < 19){
-            element->model->change_to_HLOD = false;
-        }
+        if(element->has_LOD){
+            float camera_distance = glm_vec3_distance(element->position, camera_position);
+            //printf("Camera Distance: %f\n",camera_distance);
+            if(camera_distance >= 8){
+                element->model->change_LOD  = true;
+            }else if (camera_distance <= 7.6){
+                element->model->change_LOD  = false;
+            }
+            if(camera_distance >= 20 && element->model->has_HLOD){
+                element->model->change_to_HLOD = true;
+            }
+            if(camera_distance < 19){
+                element->model->change_to_HLOD = false;
+            }
+        }        
     }
 }
 

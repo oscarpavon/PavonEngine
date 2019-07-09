@@ -58,7 +58,7 @@ unsigned short int character_count = 0;
 void parse_command(const char* command){
     if(command[1] == 'w'){
         save_data(&command[3]);
-        printf("Saver\n");
+        printf("Level saved: %s\n",&command[3]);
     }
     if(command[1] == 'o'){        
         load_level_in_editor(&command[3]);
@@ -67,6 +67,10 @@ void parse_command(const char* command){
     if(command[1] == 'r'){        
         reload_editor();
         printf("reload\n");
+    }
+    if(command[1] == 'h'){        
+        selected_element->has_HLOD = true;
+        printf("HLOD added\n");
     }
     if(command[1] == 'd'){ 
         unsigned int duplicate_count = atoi(&command[3]); 
@@ -258,16 +262,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if(action == GLFW_PRESS){
             actual_key->pressed = true;
             actual_key->Released = false;
+            if(mod_key != NULL)
+                mod_key->pressed = true;
         }
         if(action == GLFW_RELEASE){
             actual_key->pressed = false;
             actual_key->Released = true;
+            
         }
     } 
   
-    if(mod_key != NULL){
-        mod_key->pressed = true;
-    }
+    
 }
 
 
@@ -650,8 +655,7 @@ void update_input(){
     default:
         break;
     } 
-   input.SHIFT.pressed = false;
-   input.ALT.pressed = false;
+   
 }
 
 float last_mouse_x = 400;

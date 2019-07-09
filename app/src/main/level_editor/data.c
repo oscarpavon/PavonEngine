@@ -1,6 +1,11 @@
 #include "editor.h"
 #include "../camera.h"
 
+int add_array_of_numbers(int count){
+    
+    return 0;
+}
+
 void add_element_to_save_data(FILE* new_file, Element* selected_element, int index){
     if(index !=0){
         fputs(",\n", new_file);
@@ -11,6 +16,10 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
     fputs("\t\"rot\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f , %f],\n",selected_element->rotation[0] , selected_element->rotation[1] , selected_element->rotation[2], selected_element->rotation[3]);
+    if(selected_element->has_HLOD){
+        fputs("\t\"elements\" : ", new_file);
+
+    }
     if(selected_element->duplicated_of_id > -1){
         fputs("\t\"copy\" : ", new_file);
         fprintf(new_file,"%i\n",selected_element->duplicated_of_id);

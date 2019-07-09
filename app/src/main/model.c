@@ -146,7 +146,7 @@ void check_LOD(cgltf_data* data){
          
             printf("Found LOD0\n");
             load_mesh(data->nodes[i].mesh);
-      
+            
             break;
           }
           if(strcmp("LOD1",&name[n]+1) == 0){
@@ -208,10 +208,11 @@ int load_model(const char* path , struct Model* model){
   actual_model = model;
   init_vertex_array(actual_vertex_array,1);
   init_index_array(actual_index_array,1);
+
   check_LOD(data);
 
   if(model_loaded){
-    LOGW("gltf loaded. \n");
+    LOGW("gltf loaded with LODs. \n");
     in_model_array = NULL;
     cgltf_free(data);
     close_file(&new_file);
@@ -247,6 +248,7 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   return -1;
 }
 
+#define LEVEL_HEADER_SIZE 24
 static inline size_t get_token_size(jsmntok_t *t){
   size_t length = t->end - t->start;
   return length;
@@ -411,13 +413,13 @@ int parse_elements_count(const char* json_file){
 
   int model_count_result = 0;
   memcpy(&model_count_result, &model_id, sizeof(unsigned int));
-  printf("Model count: %i\n",model_count_result);
+  printf("Elements count: %i\n",model_count_result);
   return model_count_result;
 }
 
 void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
-  int model_count = parse_elements_count(json_file);
-  int token_count = model_count *(2+3+4+2+2+1+1);//id + id_num + pos + array + 3 pos + rot + 4 rot + path + textur + textur + model path  
+  int elements_count = parse_elements_count(json_file);
+  int token_count = elements_count *(2+3+4+2+2+1+1);//id + id_num + pos + array + 3 pos + rot + 4 rot + path + textur + textur + model path  
   
   jsmn_parser parser;
   int max_tokens = token_count+30;
@@ -426,30 +428,30 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   
 
 
-  char* models_json_file = malloc(json_file_size-24);
-  memset(models_json_file,0,json_file_size-24);
-  models_json_file[json_file_size-24] = '\0';
+  char* models_json_file = malloc(json_file_size-LEVEL_HEADER_SIZE);
+  memset(models_json_file,0,json_file_size-LEVEL_HEADER_SIZE);
+  models_json_file[json_file_size-LEVEL_HEADER_SIZE] = '\0';
 
-  memcpy(models_json_file,json_file+24,json_file_size-24);
+  memcpy(models_json_file,json_file+LEVEL_HEADER_SIZE,json_file_size-LEVEL_HEADER_SIZE);
 
   //printf("%s\n", models_json_file);  
 
-  Element models[model_count];
-  memset(models,0,sizeof(models));
-  _elements_array = &models[0];
-  for(int i = 0; i<model_count;i++){
-      models[i].duplicated_of_id = -1;
+  Element elements[elements_count];
+  memset(elements,0,sizeof(elements));
+  _elements_array = &elements[0];
+  for(int i = 0; i<elements_count;i++){
+      elements[i].duplicated_of_id = -1;
   }
 
-  int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-24 , tokens,max_tokens);
+  int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-LEVEL_HEADER_SIZE , tokens,max_tokens);
 
   init_array(out_element,sizeof(Element));   
 
   dump(models_json_file,tokens,number_of_tokens_readed,0);
 
   
-  for(int i = 0; i < model_count; i++){
-    add_element_to_array(out_element,&models[i]);
+  for(int i = 0; i < elements_count; i++){
+    add_element_to_array(out_element,&elements[i]);
   }
  
 
