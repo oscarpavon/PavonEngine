@@ -12,6 +12,8 @@
 
 #include "editor_shader.h"
 
+#include "editor_gizmos.h"
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -57,11 +59,6 @@ void duplicate_selected_element();
 char* editor_mode_show_text;
 
 enum EditorMode editor_mode;
-
-bool can_draw_gizmos;
-bool draw_translate_gizmo;
-bool draw_rotate_gizmo;
-bool can_draw_skeletal_bones;
 
 float camera_velocity;
 

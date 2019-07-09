@@ -60,6 +60,8 @@ TextMenu add_element_menu;
 TextMenu add_texture_menu;
 TextMenu editor_element_list_menu;
 
+TextMenu editor_add_native_element_menu;
+
 int mark_id;
 
 float pixel_size_x;

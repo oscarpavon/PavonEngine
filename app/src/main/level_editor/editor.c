@@ -20,7 +20,7 @@
 
 
 ModelArray editor_models;
-ModelArray gizmos;
+
 bool can_draw;
 
 ModelArray LOD_models;
@@ -44,30 +44,6 @@ void editor_message(const char* message){
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 }
 
-void load_editor_element(const char* path_model, const char* color_texture_path){
-   
-
-    struct Model new_model;
-    load_model(path_model,&new_model);
-    glm_mat4_identity(new_model.model_mat);   
-
-    new_model.shader = glCreateProgram();
-    
-    glAttachShader(new_model.shader, standart_vertex_shader);
-    glAttachShader(new_model.shader, editor_standard_fragment_shader);
-    glLinkProgram(new_model.shader);
-
-    glUseProgram(new_model.shader);
-
-    new_model.texture.image = load_image(color_texture_path);
-
-    init_model(&new_model);
-
-    load_model_texture_to_gpu(&new_model);
-
-    add_model_to_array(&gizmos,new_model);  
-
-}
 
 void add_editor_element(const char* path_to_element){
 
@@ -351,12 +327,12 @@ void init_editor(){
     update_look_at();
 
     init_model_array(&editor_models, 1);
-    init_model_array(&gizmos,1);
+ 
 
     init_array(&editor_elements,sizeof(Element));
 
-    load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
-    load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
+    init_gizmos();
+
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
@@ -374,12 +350,6 @@ void init_editor(){
 
     init_input();
 
-    can_draw_gizmos = true;
-    can_draw_skeletal_bones = false;
-
-    draw_translate_gizmo = false;
-    draw_rotate_gizmo = false;
-
     camera_velocity = 0.04;
 
     init_model_array(&LOD_models,1);
@@ -388,52 +358,7 @@ void init_editor(){
     
 }
 
-void draw_gizmos(){
-    if(can_draw_skeletal_bones)   
-        draw_skeletal_bones();
 
-    if(can_draw_gizmos){
-        if(draw_translate_gizmo){
-            Model* actual_gizmo = &gizmos.models[0];
-            if(selected_element != NULL){
-                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
-            }
-            draw_simgle_model(actual_gizmo);
-        }
-        if(draw_rotate_gizmo){
-            Model* actual_gizmo = &gizmos.models[1];
-            if(selected_element != NULL){
-                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
-            }
-            draw_simgle_model(actual_gizmo);
-        }
-        
-    }    
-}
-
-
-
-void draw_editor_elements_text_list(){
-    float text_size = 12;
-    set_text_size(text_size);
-
-     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
-        const char* name = element->model_path;
-        if(element->model_path == NULL)
-            name = "no_name";
-        int y_pos = i*text_size+text_size;
-        if(i == 0){
-            y_pos = text_size;
-        }
-        bool can_mark = false;
-        if(editor_element_list_menu.actual_element_select == i)
-            can_mark = true;
-
-        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
-    }
-       
-}
 void check_elements_camera_distance_for_LOD(){
     for(int i = 0; i< editor_elements.count ; i++){
         Element* element = get_element_from_array(&editor_elements,i);
@@ -480,10 +405,10 @@ void update_editor(){
     draw_gizmos();
 
     text_renderer_loop();
-    editor_message("test");
 
-    if(editor_element_list_menu.show)   
-        draw_editor_elements_text_list();
+    editor_message("editor message");
+
+    
 
    
 }

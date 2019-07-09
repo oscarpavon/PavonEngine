@@ -7,6 +7,7 @@
 typedef struct Key{
 	bool pressed;
 	bool Released;
+	int mods;
 }Key;
 
 typedef struct Input {

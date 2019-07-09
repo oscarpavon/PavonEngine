@@ -30,6 +30,7 @@ if(NOT ANDROID)
         level_editor/text.c
         level_editor/skeletal_editor.c
         level_editor/data.c
+        level_editor/editor_gizmos.c
         )
 
         add_executable(Editor ${sources} ${engine_source})

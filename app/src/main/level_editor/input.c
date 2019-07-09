@@ -163,20 +163,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-
     Key* actual_key = NULL;
-    Key* mod_key = NULL;
-    switch (mods)
-    {
-    case GLFW_MOD_SHIFT:
-        mod_key = &input.SHIFT;
-    case GLFW_MOD_ALT:
-        mod_key = &input.ALT;    
-    default:
-        break;
-    }
+    Key* actual_mod_key = NULL;
     switch (key)
-    {
+    {    
+    case GLFW_KEY_LEFT_SHIFT:
+        actual_mod_key = &input.SHIFT;
+        break;
+    case GLFW_KEY_LEFT_ALT:
+        actual_mod_key = &input.ALT;
+        break;
+    case GLFW_KEY_BACKSPACE:
+        actual_key = &input.BACKSPACE;
+        break;
     case GLFW_KEY_ENTER:
         actual_key = &input.ENTER;
         break;
@@ -252,8 +251,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_9:
         actual_key = &input.KEY_9;
         break;
-    case GLFW_KEY_BACKSPACE:
-        actual_key = &input.BACKSPACE;
+    
     default:
         break;
     }
@@ -262,8 +260,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if(action == GLFW_PRESS){
             actual_key->pressed = true;
             actual_key->Released = false;
-            if(mod_key != NULL)
-                mod_key->pressed = true;
+            actual_key->mods = mods;
         }
         if(action == GLFW_RELEASE){
             actual_key->pressed = false;
@@ -272,7 +269,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
     } 
   
-    
+    if(actual_mod_key != NULL){
+        if(action == GLFW_PRESS){
+            actual_mod_key->pressed = true;
+            actual_mod_key->Released = false;
+        }
+        if(action == GLFW_RELEASE){
+            actual_mod_key->pressed = false;
+            actual_mod_key->Released = true;
+            
+        }
+    } 
 }
 
 
@@ -534,12 +541,21 @@ void navigate_mode(){
     }
     
 }
-void input_text_menu(TextMenu* menu, Key* open_key){
-    
-    if(key_released(open_key)){
-        menu->execute = true;
-        menu->show = true;
+void input_text_menu(TextMenu* menu, Key* open_key, int mods){
+    if(mods == NULL){
+        if( key_released(open_key) ){
+            menu->execute = true;
+            menu->show = true;
+        }
+    }else{
+        if( key_released(open_key) ){
+            if(mods == open_key->mods){
+                menu->execute = true;
+                menu->show = true;
+            }            
+        }
     }
+    
 
     if(menu->show){
         if(key_released(&input.ESC)){
@@ -598,12 +614,14 @@ void default_mode(){
         init_skeletal_gizmo();
         can_draw_skeletal_bones = true;
     }
-    
-        
-    input_text_menu(&add_element_menu,&input.A);
-    input_text_menu(&editor_element_list_menu,&input.L);
-    input_text_menu(&add_texture_menu,&input.T);  
+           
+    input_text_menu(&add_element_menu,&input.A,NULL);
+    input_text_menu(&editor_element_list_menu,&input.L,NULL);
+    input_text_menu(&add_texture_menu,&input.T,NULL); 
 
+    
+    input_text_menu(&editor_add_native_element_menu, &input.E,GLFW_MOD_SHIFT);
+    
 }
 
 void rotate_input_mode(){

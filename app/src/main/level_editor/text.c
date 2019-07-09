@@ -326,6 +326,51 @@ void update_text_menu(TextMenu* menu){
         }
     }   
 }
+void draw_editor_elements_text_list(){
+    float text_size = 12;
+    set_text_size(text_size);
+
+     for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        const char* name = element->model_path;
+        if(element->model_path == NULL)
+            name = "no_name";
+        int y_pos = i*text_size+text_size;
+        if(i == 0){
+            y_pos = text_size;
+        }
+        bool can_mark = false;
+        if(editor_element_list_menu.actual_element_select == i)
+            can_mark = true;
+
+        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+    }
+       
+}
+
+void draw_native_editor_elments(TextMenu* menu){
+    float text_size = 12;
+    set_text_size(text_size);
+
+    int native_editor_element_count = 3;
+
+    for(int i = 0; i < native_editor_element_count; i++){
+     
+        const char* name = "Camera";
+       
+        int y_pos = i*text_size+text_size;
+        if(i == 0){
+            y_pos = text_size;
+        }
+        bool can_mark = false;
+        if(menu->actual_element_select == i)
+            can_mark = true;
+
+        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+    }
+       
+}
+
 void text_renderer_loop(){ 
     
     draw_editor_mode();
@@ -335,5 +380,12 @@ void text_renderer_loop(){
     update_text_menu(&add_element_menu);
 
     update_text_menu(&editor_element_list_menu);
+
+    update_text_menu(&editor_add_native_element_menu);
+
+    if(editor_element_list_menu.show)   
+        draw_editor_elements_text_list();
     
+    if(editor_add_native_element_menu.show)
+        draw_native_editor_elments(&editor_add_native_element_menu);
 }
