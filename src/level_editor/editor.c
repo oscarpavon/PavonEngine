@@ -29,6 +29,10 @@ CameraElement camera_in_editor;
 
 Model* selected_model;
 
+void play_game_standalone(){
+    int exit_status = system("st sh /home/pavon/sources/pavon-mobile/src/level_editor/compile_game.sh");
+}
+
 void deselect_all(){
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = get_element_from_array(&editor_elements,i);
@@ -84,6 +88,17 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "Camera01");
         selected_element->type = ELEMENT_TYPE_CAMERA;
         can_draw = true;
+    }else if ( strcmp("Player Start", native_element_name) == 0 )
+    {
+        add_empty_model();
+        add_element();
+        selected_model->draw = false;
+        strcpy(selected_element->name, "PlayerStart01");
+        selected_element->type = ELEMENT_TYPE_PLAYER_START;
+        can_draw = true;
+    }else if ( strcmp("Camera", native_element_name) == 0 )
+    {
+        
     }
 }
 

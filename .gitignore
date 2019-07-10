@@ -59,3 +59,4 @@ build
 *.iml
 .externalNativeBuild
 local.properties
+src/Game/assets

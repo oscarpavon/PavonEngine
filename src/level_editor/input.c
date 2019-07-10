@@ -596,6 +596,7 @@ void default_mode(){
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
         printf("playing \n");
+        play_game_standalone();
     }
 
     if(key__released(&input.P,GLFW_MOD_CONTROL)){

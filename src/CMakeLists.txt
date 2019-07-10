@@ -3,19 +3,19 @@ cmake_minimum_required(VERSION 3.6.0)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(engine_source 
-model.c
-vector.c
-file_loader.c
-level.c
-camera.c
-images.c
-input.c        
-gui.c
-shader.c
-game.c
-object_select.c
-engine.c
-skeletal.c
+        model.c
+        vector.c
+        file_loader.c
+        level.c
+        camera.c
+        images.c
+        input.c        
+        gui.c
+        shader.c
+        game.c
+        object_select.c
+        engine.c
+        skeletal.c
 )
 
 if(NOT ANDROID)
@@ -34,9 +34,10 @@ if(NOT ANDROID)
         )
 
         add_executable(Editor ${editor_sources} ${engine_source})
-
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
+
+        add_executable(Game ${engine_source} Game/main.c level_editor/windows.c)        
 
         target_link_libraries(Editor        
                 glfw
@@ -46,6 +47,15 @@ if(NOT ANDROID)
                 pthread
                 freetype
                 )
+
+        target_link_libraries(Game        
+                glfw
+                EGL
+                GLESv2
+                m
+                pthread                
+                )
+
 endif(NOT ANDROID)
 
 if(ANDROID)

@@ -30,6 +30,9 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
     glViewport(0,0,width,height);
     camera_heigth_screen = height;
     camera_width_screen = width;
-    update_text_renderer_window_size();
-    update_camera_aspect_ratio();
+
+    #ifdef EDITOR
+        update_text_renderer_window_size();
+        update_camera_aspect_ratio();
+    #endif // EDITOR 
 }

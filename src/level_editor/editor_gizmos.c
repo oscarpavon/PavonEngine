@@ -40,9 +40,18 @@ void draw_gizmos(){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
                 }
                 draw_simgle_model(actual_gizmo);
-                break;
+                
+            }
+            if(element->type == ELEMENT_TYPE_CAMERA){
+                Model* actual_gizmo = &gizmos.models[3];
+                if(selected_element != NULL){
+                    glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
+                }
+                draw_simgle_model(actual_gizmo);
+                
             }
         }
+        
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = &gizmos.models[0];
@@ -69,6 +78,7 @@ void init_gizmos(){
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
     load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
     load_editor_element("editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_editor_element("editor/player_start.gltf", "editor/player_start_gizmo.jpg");
 
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;

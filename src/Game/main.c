@@ -1,38 +1,24 @@
 #include <stdlib.h>
 #include "../level_editor/windows.h"
 #include "../engine.h"
-#include "../level_editor/input.h"
-
-#include "../level_editor/editor.h"
 
 int main(){
 
-   
     Window main_window;
-    create_window(&main_window);    
+    create_window(&main_window);  
       
-    glfwSetKeyCallback(main_window.window, key_callback);
-	glfwSetCursorPosCallback(main_window.window, mouse_callback);
-	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
-    glfwSetFramebufferSizeCallback(main_window.window, window_resize_callback);
-    glfwSetCharCallback(main_window.window, character_callback);
-
     draw_loading_screen();
     glfwSwapBuffers(main_window.window);
     
-    init_engine();
-    init_editor();
+    init_engine();  
 
     while (!glfwWindowShouldClose(main_window.window))
     {
         update_envents();
-
-        update_editor();
-        update_input();
+   
    
         glfwSwapBuffers(main_window.window);
-    }
-    clean_editor();
+    }   
     
     glfwTerminate();
 }
