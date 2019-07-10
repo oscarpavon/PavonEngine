@@ -66,4 +66,14 @@ static inline bool key_released(Key* key){
     return false;
 }
 
+static inline bool key__released(Key* key, int mods){
+	if(key->Released){
+		if(key->mods == mods){
+			key->Released = false;
+        	return true;
+		}        
+    }
+    return false;
+}
+
 #endif // !EDITOR_INPUT_H

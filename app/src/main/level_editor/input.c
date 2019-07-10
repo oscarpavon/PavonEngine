@@ -594,6 +594,13 @@ void default_mode(){
         get_element_status(selected_element);
     }
     
+    if(key__released(&input.P,GLFW_MOD_SHIFT)){
+        printf("playing \n");
+    }
+
+    if(key__released(&input.P,GLFW_MOD_CONTROL)){
+        //TODO: open game in new window
+    }
   
     if(key_released(&input.X)){
         remove_selected_element();            

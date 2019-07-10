@@ -46,7 +46,10 @@ void editor_message(const char* message){
 
 
 void add_editor_element(const char* path_to_element){
-
+    if(path_to_element == NULL){
+        printf("Error to load, null path (add_editor_element - 50\n");
+        return;
+    }
     struct Model new_model[3];
     memset(new_model,0,sizeof(new_model));
 
@@ -145,6 +148,10 @@ void add_editor_texture(const char* image_path){
 
     if(selected_element == NULL){
         printf("No element selected\n"); 
+        return;
+    }
+    if(image_path == NULL){
+        printf("Error to load, null path (add_editor_texture - 154\n");
         return;
     }
 

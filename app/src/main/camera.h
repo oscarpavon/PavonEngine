@@ -8,9 +8,14 @@
 #include <cglm.h>
 
 typedef struct camera {
-        mat4 projection;
-        mat4 view;
+    mat4 projection;
+    mat4 view;
 }Camera;
+
+typedef struct CameraElement{
+    vec3 position;
+    versor rotation;
+}CameraElement;
 
 Camera main_camera;
 vec3 camera_up;

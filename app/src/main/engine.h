@@ -31,6 +31,11 @@ typedef struct Element{
     bool has_LOD;
 }Element;
 
+typedef struct PlayerStart{
+    vec3 position;
+    versor rotation; 
+}PlayerStart;
+
 void init_engine();
 void engine_loop();
 void init_game_engine();

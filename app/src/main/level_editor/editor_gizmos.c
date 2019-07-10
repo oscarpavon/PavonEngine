@@ -55,10 +55,13 @@ void init_gizmos(){
     
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
     load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
+    load_editor_element("editor/camera.gltf", "editor/rotate_gizmo.png");
 
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
 
     draw_translate_gizmo = false;
     draw_rotate_gizmo = false;
+
+
 }

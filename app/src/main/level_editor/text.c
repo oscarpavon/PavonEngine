@@ -257,8 +257,10 @@ void menu_show_editor_element_list(TextMenu* menu){
     }
 
     for(int i = 0 ; i < selected_elements_id.count ; i++){
-        unsigned short int id = get_element_from_array(&selected_elements_id,i);
-        printf("seleteted: %i", id);
+        unsigned short int *id = get_element_from_array(&selected_elements_id,i);
+        unsigned short int id_number;
+        memcpy(&id_number,id,sizeof(unsigned short int));
+        printf("seleteted: %i\n", id_number);
     }
 }
 
