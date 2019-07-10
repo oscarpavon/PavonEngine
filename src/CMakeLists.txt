@@ -22,7 +22,7 @@ if(NOT ANDROID)
 
         set(CMAKE_BUILD_TYPE Debug)
 
-        set(sources 
+        set(editor_sources 
         level_editor/main.c
         level_editor/windows.c
         level_editor/input.c
@@ -33,7 +33,7 @@ if(NOT ANDROID)
         level_editor/editor_gizmos.c
         )
 
-        add_executable(Editor ${sources} ${engine_source})
+        add_executable(Editor ${editor_sources} ${engine_source})
 
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})

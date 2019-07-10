@@ -4,7 +4,10 @@
         {
             "label": "make",
             "type": "shell",
-            "command": "cd build && make"
+            "command": "cd build && make",
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }
