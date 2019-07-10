@@ -25,6 +25,10 @@ bool can_draw;
 
 ModelArray LOD_models;
 
+CameraElement camera_in_editor;
+
+Model* selected_model;
+
 void deselect_all(){
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = get_element_from_array(&editor_elements,i);
@@ -44,16 +48,54 @@ void editor_message(const char* message){
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 }
 
+void add_element(){
+    Element new_element;
+    memset(&new_element,0,sizeof(struct Element));
 
-void add_editor_element(const char* path_to_element){
-    if(path_to_element == NULL){
+    new_element.duplicated_of_id = -1;
+    new_element.model = &editor_models.models[element_id_count];
+    new_element.id = element_id_count;
+    new_element.type = ELEMENT_TYPE_MODEL;
+
+    glm_vec3_copy((vec3){0,0,0}, new_element.position);
+    
+    glm_quat_identity(new_element.rotation);    
+
+    element_id_count++;
+    
+    add_element_to_array(&editor_elements,&new_element);
+
+    select_last_element();
+}
+
+void add_empty_model(){
+    Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    add_model_to_array(&editor_models,new_model);
+    selected_model = &editor_models.models[editor_models.count-1];
+    glm_mat4_identity(selected_model->model_mat);
+}
+
+void add_editor_native_element(const char* native_element_name){
+    if( strcmp("Camera", native_element_name) == 0 ){
+        add_empty_model();
+        add_element();
+        selected_model->draw = false;
+        strcpy(selected_element->name, "Camera01");
+        selected_element->type = ELEMENT_TYPE_CAMERA;
+        can_draw = true;
+    }
+}
+
+void add_editor_element(const char* model_gltf_path){
+    if(model_gltf_path == NULL){
         printf("Error to load, null path (add_editor_element - 50\n");
         return;
     }
     struct Model new_model[3];
     memset(new_model,0,sizeof(new_model));
 
-    const char* model_path = path_to_element;
+    const char* model_path = model_gltf_path;
     int result = load_model(model_path,new_model);
     if(result==-1){
         return;
@@ -73,6 +115,7 @@ void add_editor_element(const char* path_to_element){
     init_model(model0);
     model0->actual_LOD = 0;
     model0->change_LOD = false;
+    model0->draw = true;
     
 
     if(new_model[0].LOD_count >= 1){
@@ -93,44 +136,25 @@ void add_editor_element(const char* path_to_element){
     
     add_model_to_array(&editor_models,new_model[0]);
 
-    Element new_element;
-    memset(&new_element,0,sizeof(struct Element));
-    new_element.duplicated_of_id = -1;
+    add_element();
 
-    glm_vec3_copy((vec3){0,0,0}, new_element.position);
-    new_element.model = &editor_models.models[element_id_count];
-    new_element.id = element_id_count;
-    glm_quat_identity(new_element.rotation);
-
-    new_element.model_path = malloc(strlen(model_path));
-    strcpy(new_element.model_path,model_path);
-
-    element_id_count++;
+    strcpy(selected_element->model_path,model_path);
     
     if(model0->LOD_count >= 1){
-        new_element.has_LOD  = true;
+        selected_element->has_LOD  = true;
     }
-    add_element_to_array(&editor_elements,&new_element);
-
-    select_last_element();
     
-
     can_draw = true;
     
     printf("model loaded and shader created \n");
 }
 
 
-void clean_element(Element* element){
-    free(element->texture_path);
-    free(element->model_path);
+void clean_element(Element* element){    
     if(element->model->skeletal != NULL){
         free(element->model->skeletal->joints);
-        free(element->model->skeletal);
-        
+        free(element->model->skeletal);        
     }
-        
-    
 }
 
 void clean_editor(){
@@ -157,7 +181,6 @@ void add_editor_texture(const char* image_path){
 
     selected_element->model->texture.image = load_image(image_path);
     load_model_texture_to_gpu(selected_element->model);
-    selected_element->texture_path = malloc(strlen(image_path));
     strcpy(selected_element->texture_path,image_path);
     
 }
