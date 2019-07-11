@@ -15,6 +15,8 @@
 
 #include "text.h"
 
+#include "../game.h"
+
 bool move_camera;
 
 
@@ -365,6 +367,7 @@ void change_to_editor_mode(EditorMode mode){
         editor_mode_show_text = "Rotate Mode";
         break;
     case EDITOR_PLAY_MODE:
+        init_game();
         editor_mode_show_text = "Play Mode";
         break;
     case EDITOR_CHANGING_MODE_MODE:
@@ -668,24 +671,39 @@ void rotate_input_mode(){
         rotate_editor_element(selected_element, 5, (vec3){0,0,1});
     }
 }
-
+bool player_in_start_position = false;
 void input_mode_play(){
+
+    update_game();
+
+    if(input.W.pressed){
+        vec3 move = {0,-move_object_value,0};
+        glm_translate(selected_element->model->model_mat, move);
+        glm_vec3_add(selected_element->position,move,selected_element->position);
+    }
+
     if(key_released(&input.ESC)){
         if(player1 != NULL)
             player1->model->draw = false;
+            
+        player_in_start_position = false;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
     }
-    if(player1 != NULL){
-        if(player_start == NULL){
-            printf("No player start\n");
+    if(!player_in_start_position){
+        if(player1 != NULL){
+            if(player_start == NULL){
+                printf("No player start\n");
+                return;
+            }
+            player1->model->draw = true;
+            set_element_position(player1,player_start->position);
+            player_in_start_position = true;
+        }else{
+            printf("No player selected\n");
             return;
         }
-        player1->model->draw = true;
-        set_element_position(player1,player_start->position);
-    }else{
-        printf("No player selected\n");
-        return;
     }
+    
 }
 
 void update_input(){

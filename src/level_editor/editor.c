@@ -27,11 +27,6 @@ ModelArray LOD_models;
 CameraElement camera_in_editor;
 
 
-void update_viewport_size(){
-    update_text_renderer_window_size();
-    update_camera_aspect_ratio();
-}
-
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
@@ -379,10 +374,7 @@ void update_editor(){
     assign_LOD_mesh();
     
     draw_elements(&editor_elements);  
-        draw_elements(&editor_elements);  
-    draw_elements(&editor_elements);  
-      
-
+    
     glClear(GL_DEPTH_BUFFER_BIT);
 
     draw_gizmos();

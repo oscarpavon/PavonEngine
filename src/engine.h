@@ -62,6 +62,8 @@ void set_selected_element_transform(vec3 position, versor rotation);
 
 void set_element_position(Element* element, vec3 position);
 
+void update_viewport_size();
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){

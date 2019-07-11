@@ -37,7 +37,7 @@ if(NOT ANDROID)
         level_editor/editor_gizmos.c
         )
 
-        add_executable(Editor ${editor_sources} ${engine_source})
+        add_executable(Editor ${editor_sources} ${engine_source} ${game_source})
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
 

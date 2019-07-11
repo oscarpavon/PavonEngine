@@ -19,6 +19,10 @@
 
 #include <unistd.h>
 
+void update_viewport_size(){
+    update_text_renderer_window_size();
+    update_camera_aspect_ratio();
+}
 
 void set_selected_element_transform(vec3 position, versor rotation){
     glm_translate(selected_element->model->model_mat, position);

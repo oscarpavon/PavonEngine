@@ -10,14 +10,12 @@
 
 #include "camera.h"
 
+#include "engine.h"
+
 void handle_camera_rotation(){
 
 }
 mat4 tranlate_dot_rot;
-
-void update_viewport_size(){
-
-}
 
 void init_camera_local_transform(){
     mat4 camera_local_mat_position;
@@ -32,17 +30,15 @@ void init_camera_local_transform(){
 
 }
 void init_game(){
-    player.model = &new_level.models_array.models[0];
-    glm_rotate(player.model->model_mat,180, (vec3){0,0,1});
+    
+    glm_rotate(player1->model->model_mat,180, (vec3){0,0,1});
     init_camera_local_transform();
 }
 
 
-
-
 void update_player_camera(){
     mat4 inverse_player_matrix;
-    glm_mat4_inv(player.model->model_mat, inverse_player_matrix);
+    glm_mat4_inv(player1->model->model_mat, inverse_player_matrix);
 
     glm_mat4_mul(tranlate_dot_rot,inverse_player_matrix,main_camera.view);
 
@@ -51,10 +47,10 @@ void update_player_camera(){
 void update_game(){
     update_player_camera();
     if(button1.pressed){
-        glm_translate(player.model->model_mat, (vec3){0,-0.01,0});
+        glm_translate(player1->model->model_mat, (vec3){0,-0.01,0});
     }
     if(back_button.pressed){
-        glm_translate(player.model->model_mat, (vec3){0,0.01,0});
+        glm_translate(player1->model->model_mat, (vec3){0,0.01,0});
     }
     if(virtual_joystick.pressed){
         virtual_joystick.position[0] = touch_position_x;

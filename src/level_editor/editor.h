@@ -14,6 +14,7 @@
 
 #include "editor_gizmos.h"
 
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -60,8 +61,6 @@ void duplicate_selected_element();
 void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
-
-void update_viewport_size();
 
 void new_empty_element();
 
