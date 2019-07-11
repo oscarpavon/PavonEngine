@@ -21,7 +21,8 @@ typedef enum EditorMode{
     EDITOR_ROTATE_MODE,
     EDITOR_NAVIGATE_MODE,
     EDITOR_CHANGING_MODE_MODE,
-    EDITOR_TEXT_INPUT_MODE
+    EDITOR_TEXT_INPUT_MODE,
+    EDITOR_PLAY_MODE
 }EditorMode;
 
 void init_editor();
@@ -62,15 +63,16 @@ void play_game_standalone();
 
 void update_viewport_size();
 
+void new_empty_element();
+
+void new_empty_model();
+
 char* editor_mode_show_text;
 
 enum EditorMode editor_mode;
 
 float camera_velocity;
 
-unsigned int element_id_count;
-
-Element* selected_element;
 Array editor_elements;
 
 Array selected_elements_id;

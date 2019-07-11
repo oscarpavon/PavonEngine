@@ -18,16 +18,14 @@
 
 #include "skeletal_editor.h"
 
+#include "../Engine/level.h"
 
 ModelArray editor_models;
-
-bool can_draw;
 
 ModelArray LOD_models;
 
 CameraElement camera_in_editor;
 
-Model* selected_model;
 
 void update_viewport_size(){
     update_text_renderer_window_size();
@@ -57,7 +55,7 @@ void editor_message(const char* message){
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 }
 
-void add_element(){
+void new_empty_element(){
     Element new_element;
     memset(&new_element,0,sizeof(struct Element));
 
@@ -77,7 +75,7 @@ void add_element(){
     select_last_element();
 }
 
-void add_empty_model(){
+void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
     add_model_to_array(&editor_models,new_model);
@@ -87,20 +85,21 @@ void add_empty_model(){
 
 void add_editor_native_element(const char* native_element_name){
     if( strcmp("Camera", native_element_name) == 0 ){
-        add_empty_model();
-        add_element();
+        new_empty_model();
+        new_empty_element();
         selected_model->draw = false;
         strcpy(selected_element->name, "Camera01");
         selected_element->type = ELEMENT_TYPE_CAMERA;
-        can_draw = true;
+        
     }else if ( strcmp("Player Start", native_element_name) == 0 )
     {
-        add_empty_model();
-        add_element();
+        new_empty_model();
+        new_empty_element();
         selected_model->draw = false;
         strcpy(selected_element->name, "PlayerStart01");
         selected_element->type = ELEMENT_TYPE_PLAYER_START;
-        can_draw = true;
+        player_start = selected_element;
+        
     }else if ( strcmp("Camera", native_element_name) == 0 )
     {
         
@@ -109,7 +108,7 @@ void add_editor_native_element(const char* native_element_name){
 
 void add_editor_element(const char* model_gltf_path){
     if(model_gltf_path == NULL){
-        printf("Error to load, null path (add_editor_element - 50\n");
+        printf("Error to load, null path (add_editor_element\n");
         return;
     }
     struct Model new_model[3];
@@ -156,16 +155,14 @@ void add_editor_element(const char* model_gltf_path){
     
     add_model_to_array(&editor_models,new_model[0]);
 
-    add_element();
+    new_empty_element();
 
     strcpy(selected_element->model_path,model_path);
     
     if(model0->LOD_count >= 1){
         selected_element->has_LOD  = true;
-    }
-    
-    can_draw = true;
-    
+    }  
+
     printf("model loaded and shader created \n");
 }
 
@@ -222,88 +219,24 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
 
 }
 
-
-void set_selected_element_transform(vec3 position, versor rotation){
-    glm_translate(selected_element->model->model_mat, position);
-    glm_vec3_add(selected_element->position,position,selected_element->position);
-
-    mat4 model_rot_mat;
-    glm_quat_mat4(rotation,model_rot_mat);
-
-    glm_mul(selected_element->model->model_mat, model_rot_mat, selected_element->model->model_mat);
-
-    glm_quat_copy(rotation, selected_element->rotation);
-}
-
 void update_camera_aspect_ratio(){
     glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
 }
 
 Array load_elements;
-#define CAMERA__ELEMENT_ID 300
-void add_loaded_elements_to_editor(){
-    init_model_array(&editor_models,load_elements.count);
-    for(int i = 0; i < load_elements.count; i++){
-        Element* element = &load_elements.data[i*load_elements.element_bytes_size];
-        if(element->duplicated_of_id==-1 && element->id != CAMERA__ELEMENT_ID){
-            add_editor_element(element->model_path);        
-            add_editor_texture(element->texture_path);
-        }else if(element->id != CAMERA__ELEMENT_ID){            //Duplicated element
-            Model new_model;
-            memset(&new_model,0,sizeof(struct Model));
-            add_model_to_array(&editor_models,new_model);
 
-            struct Model* from = &editor_models.models[element->duplicated_of_id];
-            struct Model* model_copy = &editor_models.models[editor_models.count-1];   
-            memmove(model_copy,from,sizeof(struct Model));                    
+void load_level_in_editor(const char* name){
+    char* level_folder = "../Game/levels/";
+    char save_name[50];
+    memset(save_name,0,sizeof(save_name));
+    strcat(save_name, level_folder);
+    strcat(save_name,name);
+    strcat(save_name,".lvl");
+    printf("%s\n",save_name);
 
-            element_id_count++;
-            Element new_element;
-            memcpy(&new_element, element, sizeof(struct Element));
-            if(element->duplicated_of_id > -1)
-                new_element.model = &editor_models.models[editor_models.count-1];            
-            new_element.id = element_id_count;
-            new_element.duplicated_of_id = element->duplicated_of_id;
-
-            add_element_to_array(&editor_elements,&new_element);
-            selected_element = get_element_from_array(&editor_elements,editor_elements.count-1);
-        }
-        if(element->id != CAMERA__ELEMENT_ID && element->duplicated_of_id == -1){
-            set_selected_element_transform(element->position,element->rotation);
-        }else if(element->id != CAMERA__ELEMENT_ID && element->duplicated_of_id > -1){
-            glm_translate(selected_element->model->model_mat, element->position);
-        }
-        if(element->id == CAMERA__ELEMENT_ID){
-            glm_vec3_copy(element->position,camera_position);
-            update_look_at();
-        }
-    }
-}
-
-void load_level_in_editor(const char* name){    
-
-    FILE* level_file = fopen(name,"r");
-
-    if(level_file == NULL){
-        printf("Level not found: %s\n",name);
-        return;
-    }
-    int return_number = 0;
-
-    fseek(level_file, 0, SEEK_END);
-    long file_size = ftell(level_file);
-    rewind (level_file);
-
-    char file_buffer[file_size];
-
-    fread(file_buffer,sizeof(char), file_size, level_file);
-
-    fclose(level_file);
-
-    load_level_elements_from_json(file_buffer,file_size, &load_elements);
-
-    add_loaded_elements_to_editor();
+    load_level_to_elements_array(save_name, &load_elements);   
     
+    add_loaded_elements(&load_elements, &editor_models, &editor_elements);
     clean_array(&load_elements);
     
 }
@@ -386,9 +319,7 @@ void init_editor(){
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    init_text_renderer();
-
-    can_draw = false;
+    init_text_renderer();    
     
     init_array(&selected_elements_id,sizeof(unsigned short int));
 
@@ -446,8 +377,10 @@ void update_editor(){
 
     check_elements_camera_distance_for_LOD();
     assign_LOD_mesh();
-    if(can_draw)
+    
+    draw_elements(&editor_elements);  
         draw_elements(&editor_elements);  
+    draw_elements(&editor_elements);  
       
 
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -456,9 +389,6 @@ void update_editor(){
 
     text_renderer_loop();
 
-    editor_message("editor message");
+    editor_message("editor message");    
 
-    
-
-   
 }

@@ -18,10 +18,10 @@ struct android_app* app;
 #include "camera.h"
 
 typedef enum ElementType{
-    ELEMENT_TYPE_CAMERA,
-    ELEMENT_TYPE_PLAYER_START,
-    ELEMENT_TYPE_COLLIDER,
-    ELEMENT_TYPE_MODEL
+    ELEMENT_TYPE_CAMERA = 1,
+    ELEMENT_TYPE_PLAYER_START = 2,
+    ELEMENT_TYPE_COLLIDER = 3,
+    ELEMENT_TYPE_MODEL = 4
 }ElementType;
 
 typedef struct Element{
@@ -58,6 +58,10 @@ void init_model(struct Model* new_model);
 
 void update_editor(); 
 
+void set_selected_element_transform(vec3 position, versor rotation);
+
+void set_element_position(Element* element, vec3 position);
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
@@ -65,5 +69,11 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(main_camera.projection , main_camera.view, projection_view);
     glm_mul(projection_view , model , mvp_out);
 }
+
+unsigned int element_id_count;
+Element* selected_element;
+Model* selected_model;
+Element* player1;
+Element* player_start;
 
 #endif //PAVON_MOBILE_ENGINE_H

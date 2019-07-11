@@ -20,6 +20,17 @@
 #include <unistd.h>
 
 
+void set_selected_element_transform(vec3 position, versor rotation){
+    glm_translate(selected_element->model->model_mat, position);
+    glm_vec3_add(selected_element->position,position,selected_element->position);
+
+    mat4 model_rot_mat;
+    glm_quat_mat4(rotation,model_rot_mat);
+
+    glm_mul(selected_element->model->model_mat, model_rot_mat, selected_element->model->model_mat);
+
+    glm_quat_copy(rotation, selected_element->rotation);
+}
 
 void draw_simgle_model(struct Model * new_model){
     GLenum error ;
@@ -233,6 +244,11 @@ void init_models(ModelArray* array){
         free(new_model->index_array.indices);
     }
 
+}
+
+void set_element_position(Element* element, vec3 position){
+    glm_mat4_identity(element->model->model_mat);
+    glm_translate(element->model->model_mat,position);
 }
 
 void compiles_standard_shaders(){

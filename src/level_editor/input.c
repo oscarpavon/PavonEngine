@@ -64,9 +64,18 @@ void parse_command(const char* command){
         load_level_in_editor(&command[3]);
         printf("Level loaded\n");
     }
+    if(command[1] == 'q'){
+        //quit
+    }
     if(command[1] == 'r'){        
         reload_editor();
         printf("reload\n");
+    }
+    if(command[1] == 's'){ //set
+        if(command[3] == 'p'){//player
+            player1 = selected_element;
+            player1->model->draw = false;
+        }
     }
     if(command[1] == 'h'){        
         selected_element->has_HLOD = true;
@@ -355,6 +364,9 @@ void change_to_editor_mode(EditorMode mode){
     case EDITOR_ROTATE_MODE:
         editor_mode_show_text = "Rotate Mode";
         break;
+    case EDITOR_PLAY_MODE:
+        editor_mode_show_text = "Play Mode";
+        break;
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;
         break;
@@ -595,12 +607,14 @@ void default_mode(){
     }
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
-        printf("playing \n");
-        play_game_standalone();
+        printf("editor play mode \n");
+        change_to_editor_mode(EDITOR_PLAY_MODE);
     }
 
     if(key__released(&input.P,GLFW_MOD_CONTROL)){
         //TODO: open game in new window
+        printf("playing \n");
+        play_game_standalone();
     }
   
     if(key_released(&input.X)){
@@ -655,7 +669,24 @@ void rotate_input_mode(){
     }
 }
 
-
+void input_mode_play(){
+    if(key_released(&input.ESC)){
+        if(player1 != NULL)
+            player1->model->draw = false;
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+    }
+    if(player1 != NULL){
+        if(player_start == NULL){
+            printf("No player start\n");
+            return;
+        }
+        player1->model->draw = true;
+        set_element_position(player1,player_start->position);
+    }else{
+        printf("No player selected\n");
+        return;
+    }
+}
 
 void update_input(){
     switch (editor_mode)
@@ -674,6 +705,9 @@ void update_input(){
         break;
     case EDITOR_TEXT_INPUT_MODE:
         text_input_mode();
+        break;
+    case EDITOR_PLAY_MODE:
+        input_mode_play();
         break;
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;

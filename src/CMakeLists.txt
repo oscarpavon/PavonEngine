@@ -15,6 +15,7 @@ set(engine_source
         object_select.c
         engine.c
         skeletal.c
+        Engine/level.c
 )
 
 set (game_source

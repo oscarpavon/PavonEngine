@@ -42,7 +42,7 @@ void draw_gizmos(){
                 draw_simgle_model(actual_gizmo);
                 
             }
-            if(element->type == ELEMENT_TYPE_CAMERA){
+            if(element->type == ELEMENT_TYPE_PLAYER_START){
                 Model* actual_gizmo = &gizmos.models[3];
                 if(selected_element != NULL){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
