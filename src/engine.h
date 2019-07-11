@@ -17,14 +17,22 @@ struct android_app* app;
 #include <cglm.h>
 #include "camera.h"
 
+typedef enum ElementType{
+    ELEMENT_TYPE_CAMERA,
+    ELEMENT_TYPE_PLAYER_START,
+    ELEMENT_TYPE_COLLIDER,
+    ELEMENT_TYPE_MODEL
+}ElementType;
+
 typedef struct Element{
     unsigned int id;
-    char* name;
+    ElementType type;
+    char name[20];
     vec3 position;
     versor rotation;
     struct Model* model;
-    char* model_path;
-    char* texture_path;
+    char model_path[20];
+    char texture_path[20];
     short int duplicated_of_id;
     bool selected;
     bool has_HLOD;

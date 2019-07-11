@@ -107,9 +107,11 @@ void draw_elements(Array *elements){
     GLfloat white[4] = {1, 1, 1, 1};
     GLfloat red[4] = {1, 0, 0, 1};
 
-    for(size_t i = 0; i < elements->count ; i++) {
-        GLenum error ;
+    for(size_t i = 0; i < elements->count ; i++) {                
         Element* element = get_element_from_array(elements,i);
+        if(element->model->draw == false)
+            continue;
+
         struct Model *new_model;
         struct Model *LOD0 = element->model;
         new_model = LOD0;
@@ -120,6 +122,7 @@ void draw_elements(Array *elements){
             //new_model = LOD0->HLOD;
         }
         
+        GLenum error;
         glUseProgram(new_model->shader);
         
         GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
@@ -140,13 +143,15 @@ void draw_elements(Array *elements){
         update_mvp(LOD0->model_mat, mvp);
 
         GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
+        if(mvp_uniform == -1){
+            printf("MVP uniform not found\n");
+        }
     
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
         
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("draw error\n");
-            LOGW("Error %08x \n",error);
+            LOGW("[X] Send matrix error, Error %08x \n",error);
         }
 
         glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
@@ -164,8 +169,7 @@ void draw_elements(Array *elements){
 
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("draw error\n");
-            LOGW("Error %08x \n",error);
+            LOGW("[X] Draw elements, Error %08x \n",error);
         }
     }
 

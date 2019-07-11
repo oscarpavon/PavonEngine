@@ -22,8 +22,6 @@ GLuint uniform_text_color_location;
 
 FT_GlyphSlot g;
 
-TextColumn* dir_text_column;
-
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -180,9 +178,6 @@ void list_directory_files(TextMenu* menu){
   
 }
 
-
-
-
 void draw_directory_files(){
     FT_Set_Pixel_Sizes(face, 0, 20);    
    
@@ -229,15 +224,15 @@ void init_text_shader(){
     //uniform_text_color_location =  glGetUniformLocation(text_shader_id,"color");
 
 }
-void add_element_text_menu_action(TextMenu* menu){
+void menu_action_add_element(TextMenu* menu){
     add_editor_element(menu->text_for_action);
 }
 
-void add_texture_to_element_menu_action(TextMenu* menu){
+void menu_action_add_texture_to_element(TextMenu* menu){
     add_editor_texture(menu->text_for_action);
 }
 
-void menu_show_editor_element_list(TextMenu* menu){
+void menu_action_select_element(TextMenu* menu){
     printf("Selected element\n");
     int id = menu->actual_element_select;
     Element* element = NULL;
@@ -264,90 +259,9 @@ void menu_show_editor_element_list(TextMenu* menu){
     }
 }
 
-void init_text_renderer(){
-    FT_Library ft;
-
-    if(FT_Init_FreeType(&ft)) {
-        fprintf(stderr, "Could not init freetype library\n");
-
-    }    
-
-    if(FT_New_Face(ft, "DejaVuSerif.ttf", 0, &face)) {
-        fprintf(stderr, "Could not open font\n");    
-    }  
-    
-
-    g = face->glyph;
-
-    FT_Set_Pixel_Sizes(face, 0, 20);
-
-    init_text_shader();
-    create_text_texture_buffer();
-    
-        
-    mark_id = 0;
-
-    memset(&add_element_menu,0,sizeof(TextMenu));
-    memset(&add_texture_menu,0,sizeof(TextMenu));
-    memset(&editor_element_list_menu,0,sizeof(TextMenu));
-
-    add_element_menu.execute_function = &add_element_text_menu_action;
-    add_element_menu.type = MENU_TYPE_ADD_MODEL;
-
-    add_texture_menu.type = MENU_TYPE_ADD_TEXTURE;
-    add_texture_menu.execute_function = &add_texture_to_element_menu_action;
-
-    editor_element_list_menu.execute_function = &menu_show_editor_element_list;
-
-    pixel_size_x = 2.0 / camera_width_screen;
-    pixel_size_y = 2.0 / camera_heigth_screen;
-
-    
-}
-void update_text_renderer_window_size(){
-    pixel_size_x = 2.0 / camera_width_screen;
-    pixel_size_y = 2.0 / camera_heigth_screen;
-}
-void draw_editor_mode(){
-    FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
-}
-
-void update_text_menu(TextMenu* menu){
-    if(menu->execute){
-        if(menu->type == MENU_TYPE_ADD_MODEL)
-            draw_directory_file_type(DIRECTORY_MODELS);
-        else if(menu->type == MENU_TYPE_ADD_TEXTURE)
-            draw_directory_file_type(DIRECTORY_TEXTURES);
-        
-        if(menu->element_selected){
-            menu->execute_function(menu);
-            menu->execute = false;
-            menu->show = false;
-            menu->element_selected = false;
-        }
-    }   
-}
-void draw_editor_elements_text_list(){
-    float text_size = 12;
-    set_text_size(text_size);
-
-     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
-        const char* name = element->model_path;
-        if(element->model_path == NULL)
-            name = "no_name";
-        int y_pos = i*text_size+text_size;
-        if(i == 0){
-            y_pos = text_size;
-        }
-        bool can_mark = false;
-        if(editor_element_list_menu.actual_element_select == i)
-            can_mark = true;
-
-        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
-    }
-       
+void menu_action_add_editor_native_element(TextMenu* menu){
+    add_editor_native_element(menu->text_for_action);
+    printf("Add editor native element: %s\n",menu->text_for_action);
 }
 
 void draw_native_editor_elments(TextMenu* menu){
@@ -356,10 +270,44 @@ void draw_native_editor_elments(TextMenu* menu){
 
     int native_editor_element_count = 3;
 
+    const char* elements_names[3] = { {"Camera"} , {"Player Start"}, {"Collider"} };
+
     for(int i = 0; i < native_editor_element_count; i++){
-     
-        const char* name = "Camera";
+        
+        const char* name = elements_names[i];
        
+        int y_pos = i*text_size+text_size;
+        if(i == 0){
+            y_pos = text_size;
+        }
+        bool can_mark = false;
+        if(menu->actual_element_select == i)
+            can_mark = true;
+
+        if(menu->actual_element_select == i && menu->element_selected){
+           strcpy(menu->text_for_action,name);
+        }
+            
+        
+        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+    }
+    
+}
+
+void draw_editor_elements_text_list(TextMenu* menu){
+    float text_size = 12;
+    set_text_size(text_size);
+
+     for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        char* name = element->model_path;
+        if( strcmp(element->model_path,"") == 0){
+            if(strcmp(element->name,"") == 0)
+                name = "no_name";
+            else
+                name = element->name;
+        }
+            
         int y_pos = i*text_size+text_size;
         if(i == 0){
             y_pos = text_size;
@@ -373,6 +321,85 @@ void draw_native_editor_elments(TextMenu* menu){
        
 }
 
+void init_text_renderer(){
+    FT_Library ft;
+
+    if(FT_Init_FreeType(&ft)) {
+        fprintf(stderr, "Could not init freetype library\n");
+    }
+
+    if(FT_New_Face(ft, "DejaVuSerif.ttf", 0, &face)) {
+        fprintf(stderr, "Could not open font\n");    
+    }
+
+    g = face->glyph;
+
+    FT_Set_Pixel_Sizes(face, 0, 20);
+
+    init_text_shader();
+    create_text_texture_buffer();
+    
+    pixel_size_x = 2.0 / camera_width_screen;
+    pixel_size_y = 2.0 / camera_heigth_screen;
+
+    mark_id = 0;
+
+    memset(&add_element_menu,0,sizeof(TextMenu));
+    memset(&add_texture_menu,0,sizeof(TextMenu));
+    memset(&menu_editor_element_list,0,sizeof(TextMenu));
+
+    /*Text Menu functions */
+    add_element_menu.execute_function = &menu_action_add_element;
+    add_element_menu.type = MENU_TYPE_ADD_MODEL;
+
+    add_texture_menu.type = MENU_TYPE_ADD_TEXTURE;
+    add_texture_menu.execute_function = &menu_action_add_texture_to_element;
+
+    menu_editor_element_list.execute_function = &menu_action_select_element;
+    menu_editor_element_list.draw_text_funtion = &draw_editor_elements_text_list;
+
+    menu_add_native_editor_element.execute_function = &menu_action_add_editor_native_element;
+    menu_add_native_editor_element.draw_text_funtion = &draw_native_editor_elments;
+
+    
+}
+
+void update_text_renderer_window_size(){
+    pixel_size_x = 2.0 / camera_width_screen;
+    pixel_size_y = 2.0 / camera_heigth_screen;
+}
+
+void draw_editor_mode(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+}
+
+void update_text_menu(TextMenu* menu){
+    if(menu->execute){
+        if(menu->draw_text_funtion != NULL)
+            menu->draw_text_funtion(menu);
+
+        if(menu->type == MENU_TYPE_ADD_MODEL)
+            draw_directory_file_type(DIRECTORY_MODELS);
+        else if(menu->type == MENU_TYPE_ADD_TEXTURE)
+            draw_directory_file_type(DIRECTORY_TEXTURES);
+        
+        if(menu->element_selected){
+            menu->execute = false;
+            menu->show = false;
+            menu->element_selected = false;
+
+            if(menu->execute_function == NULL){
+                printf("Menu execute function not assigned\n");    
+                return;
+            }
+
+            menu->execute_function(menu);
+            
+        }
+    }   
+}
+
 void text_renderer_loop(){ 
     
     draw_editor_mode();
@@ -381,13 +408,8 @@ void text_renderer_loop(){
 
     update_text_menu(&add_element_menu);
 
-    update_text_menu(&editor_element_list_menu);
+    update_text_menu(&menu_editor_element_list);
 
-    update_text_menu(&editor_add_native_element_menu);
+    update_text_menu(&menu_add_native_editor_element);
 
-    if(editor_element_list_menu.show)   
-        draw_editor_elements_text_list();
-    
-    if(editor_add_native_element_menu.show)
-        draw_native_editor_elments(&editor_add_native_element_menu);
 }

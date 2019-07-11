@@ -324,8 +324,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       size_t size = get_token_size(token);
       char text[size+1];
       memcpy(&text,&js[token->start],size);
-      text[size] = '\0';
-      model->model_path = malloc(size+1);
+      text[size] = '\0';      
       strcpy(model->model_path, text);    
     }
 
@@ -334,8 +333,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       size_t size = get_token_size(token);
       char text[size+1];
       memcpy(&text,&js[token->start],size);
-      text[size] = '\0';
-      model->texture_path = malloc(size+1);
+      text[size] = '\0';      
       strcpy(model->texture_path, text); 
       
       element_id++;        

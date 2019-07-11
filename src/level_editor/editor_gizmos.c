@@ -1,7 +1,7 @@
 #include "editor_gizmos.h"
 #include "../shader.h"
 
-ModelArray gizmos;
+
 
 void load_editor_element(const char* path_model, const char* color_texture_path){   
 
@@ -32,6 +32,27 @@ void draw_gizmos(){
         draw_skeletal_bones();
 
     if(can_draw_gizmos){
+        for(int i = 0; i< editor_elements.count ; i++){
+            Element* element = get_element_from_array(&editor_elements,i);
+            if(element->type == ELEMENT_TYPE_CAMERA){
+                Model* actual_gizmo = &gizmos.models[2];
+                if(selected_element != NULL){
+                    glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
+                }
+                draw_simgle_model(actual_gizmo);
+                
+            }
+            if(element->type == ELEMENT_TYPE_CAMERA){
+                Model* actual_gizmo = &gizmos.models[3];
+                if(selected_element != NULL){
+                    glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
+                }
+                draw_simgle_model(actual_gizmo);
+                
+            }
+        }
+        
+        glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = &gizmos.models[0];
             if(selected_element != NULL){
@@ -47,6 +68,7 @@ void draw_gizmos(){
             draw_simgle_model(actual_gizmo);
         }
         
+        
     }    
 }
 
@@ -55,7 +77,8 @@ void init_gizmos(){
     
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
     load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
-    load_editor_element("editor/camera.gltf", "editor/rotate_gizmo.png");
+    load_editor_element("editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_editor_element("editor/player_start.gltf", "editor/player_start_gizmo.jpg");
 
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;

@@ -34,6 +34,8 @@ typedef struct Model{
     struct Model* HLOD;
     bool has_HLOD;
     bool change_to_HLOD;
+    
+    bool draw;
 }Model;
 
 struct Geometry{

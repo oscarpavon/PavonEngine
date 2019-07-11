@@ -596,6 +596,7 @@ void default_mode(){
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
         printf("playing \n");
+        play_game_standalone();
     }
 
     if(key__released(&input.P,GLFW_MOD_CONTROL)){
@@ -623,11 +624,11 @@ void default_mode(){
     }
            
     input_text_menu(&add_element_menu,&input.A,NULL);
-    input_text_menu(&editor_element_list_menu,&input.L,NULL);
+    input_text_menu(&menu_editor_element_list,&input.L,NULL);
     input_text_menu(&add_texture_menu,&input.T,NULL); 
 
     
-    input_text_menu(&editor_add_native_element_menu, &input.E,GLFW_MOD_SHIFT);
+    input_text_menu(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
     
 }
 

@@ -22,20 +22,10 @@ void text_renderer_loop();
 void update_text_renderer_window_size();
 
 FT_Face face;
+
 static inline void set_text_size(float size){
     FT_Set_Pixel_Sizes(face, 0, size);  
 }
-
-
-typedef struct{
-    bool selected;
-    const char* text;    
-}TextElement;
-
-typedef struct {
-    int count;    
-    TextElement *elements;
-}TextColumn;
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,
@@ -43,6 +33,7 @@ typedef enum{
 }TextMenuType;
 
 typedef void(*ExecuteFunction)(struct TextMenu*);
+typedef void(*DrawFunction)(struct TextMenu*);
 
 typedef struct TextMenu{
     bool show;
@@ -50,6 +41,7 @@ typedef struct TextMenu{
     bool execute;
     unsigned int actual_element_select;
     ExecuteFunction execute_function;
+    DrawFunction draw_text_funtion;
     TextMenuType type;
     unsigned short int element_count;
     char text_for_action[30];   
@@ -58,9 +50,9 @@ typedef struct TextMenu{
 
 TextMenu add_element_menu;
 TextMenu add_texture_menu;
-TextMenu editor_element_list_menu;
+TextMenu menu_editor_element_list;
 
-TextMenu editor_add_native_element_menu;
+TextMenu menu_add_native_editor_element;
 
 int mark_id;
 

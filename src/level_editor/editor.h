@@ -56,6 +56,10 @@ void update_camera_aspect_ratio();
 
 void duplicate_selected_element();
 
+void add_editor_native_element(const char* native_element_name);
+
+void play_game_standalone();
+
 char* editor_mode_show_text;
 
 enum EditorMode editor_mode;

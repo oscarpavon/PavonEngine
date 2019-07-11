@@ -57,3 +57,6 @@ app/.externalNativeBuild
 app/build
 build
 *.iml
+.externalNativeBuild
+local.properties
+src/Game/assets
