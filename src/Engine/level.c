@@ -36,8 +36,8 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
                 return;
             }
                 
-            add_editor_element(element->model_path);        
-            add_editor_texture(element->texture_path);
+            add_element_with_model_path(element->model_path);        
+            add_texture_to_selected_element_with_image_path(element->texture_path);
 
         }else if(element->id != CAMERA__ELEMENT_ID){            //Duplicated elements
             new_empty_model();

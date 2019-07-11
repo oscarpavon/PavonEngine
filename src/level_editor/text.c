@@ -225,11 +225,11 @@ void init_text_shader(){
 
 }
 void menu_action_add_element(TextMenu* menu){
-    add_editor_element(menu->text_for_action);
+    add_element_with_model_path(menu->text_for_action);
 }
 
 void menu_action_add_texture_to_element(TextMenu* menu){
-    add_editor_texture(menu->text_for_action);
+    add_texture_to_selected_element_with_image_path(menu->text_for_action);
 }
 
 void menu_action_select_element(TextMenu* menu){

@@ -66,66 +66,6 @@ void add_editor_native_element(const char* native_element_name){
     }
 }
 
-void add_editor_element(const char* model_gltf_path){
-    if(model_gltf_path == NULL){
-        printf("Error to load, null path (add_editor_element\n");
-        return;
-    }
-    struct Model new_model[3];
-    memset(new_model,0,sizeof(new_model));
-
-    const char* model_path = model_gltf_path;
-    int result = load_model(model_path,new_model);
-    if(result==-1){
-        return;
-    }    
-    
-
-    struct Model* model0 = &new_model[0];
-  
-    glm_mat4_identity(model0->model_mat);   
-
-    model0->shader = glCreateProgram();
-
-    glAttachShader(model0->shader, standart_vertex_shader);
-    glAttachShader(model0->shader, editor_standard_fragment_shader);
-    glLinkProgram(model0->shader);
-
-    init_model(model0);
-    model0->actual_LOD = 0;
-    model0->change_LOD = false;
-    model0->draw = true;
-    
-
-    if(new_model[0].LOD_count >= 1){
-        for(int i = 0; i < new_model[0].LOD_count; i++){
-            glm_mat4_identity(new_model[i+1].model_mat);  
-            init_model(&new_model[i+1]);
-            new_model[i+1].shader = model0->shader;
-            add_model_to_array(&LOD_models,new_model[i+1]);
-        }
-    }
-    if(new_model[0].has_HLOD){
-        glm_mat4_identity(new_model[2].model_mat);  
-        init_model(&new_model[2]);
-        new_model[2].shader = model0->shader;
-        add_model_to_array(&LOD_models,new_model[2]);
-        new_model->HLOD = &LOD_models.models[LOD_models.count-1];
-    }
-    
-    add_model_to_array(&editor_models,new_model[0]);
-
-    new_empty_element();
-
-    strcpy(selected_element->model_path,model_path);
-    
-    if(model0->LOD_count >= 1){
-        selected_element->has_LOD  = true;
-    }  
-
-    printf("model loaded and shader created \n");
-}
-
 
 void clean_element(Element* element){    
     if(element->model->skeletal != NULL){
@@ -145,22 +85,6 @@ void clean_editor(){
     clean_skeletal_editor();
 }
 
-void add_editor_texture(const char* image_path){
-
-    if(selected_element == NULL){
-        printf("No element selected\n"); 
-        return;
-    }
-    if(image_path == NULL){
-        printf("Error to load, null path (add_editor_texture - 154\n");
-        return;
-    }
-
-    selected_element->model->texture.image = load_image(image_path);
-    load_model_texture_to_gpu(selected_element->model);
-    strcpy(selected_element->texture_path,image_path);
-    
-}
 
 void rotate_editor_element(Element* element, float angle, vec3 axis){
    
@@ -264,18 +188,22 @@ void reload_editor(){
 }
 
 void init_editor(){
+    actual_model_array = &editor_models;
+    actual_elements_array = &editor_elements;
+    actual_LOD_models_array = &LOD_models;
+    actual_standard_shader = editor_standard_fragment_shader;
+
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
     init_vec3(0,3,0, camera_position);
     update_look_at();
 
     init_model_array(&editor_models, 1);
- 
+    init_model_array(&LOD_models,1);
 
     init_array(&editor_elements,sizeof(Element));
 
     init_gizmos();
-
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
@@ -291,15 +219,11 @@ void init_editor(){
 
     init_input();
 
-    camera_velocity = 0.04;
-
-    init_model_array(&LOD_models,1);
+    camera_velocity = 0.04;    
 
     init_skeletal_editor();
-
-    actual_model_array = &editor_models;
-    actual_elements_array = &editor_elements;
     
+
 }
 
 
@@ -333,6 +257,9 @@ void assign_LOD_mesh(){
     }
 }
 
+void init_game_in_editor(){
+    
+}
 
 void update_editor(){
     glClearColor(1,0.5,0,1);

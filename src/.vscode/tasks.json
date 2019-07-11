@@ -8,6 +8,14 @@
             "problemMatcher": [
                 "$gcc"
             ]
+        },
+        {
+            "label": "make Game",
+            "type": "shell",
+            "command": "cd build && cmake --build ./ --config Debug --target Game -- -j 16",
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }

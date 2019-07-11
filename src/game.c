@@ -29,8 +29,8 @@ void init_camera_local_transform(){
     glm_mat4_mul(camera_local_mat_position, main_camera.view, tranlate_dot_rot);
 
 }
-void init_game(){
-    
+
+void init_game(){    
     glm_rotate(player1->model->model_mat,180, (vec3){0,0,1});
     init_camera_local_transform();
 }

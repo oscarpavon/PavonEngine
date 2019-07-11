@@ -40,10 +40,6 @@ void get_elements_in_editor_map();
 
 void deselect_all();
 
-extern void add_editor_element(const char* path_to_element);
-
-void add_editor_texture(const char* image_path);
-
 void change_to_editor_mode(EditorMode mode);
 
 void clean_editor();

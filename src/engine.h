@@ -70,6 +70,9 @@ extern void new_empty_model();
 
 extern void select_last_element();
 
+void add_element_with_model_path(const char* model_gltf_path);
+void add_texture_to_selected_element_with_image_path(const char* image_path);
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
@@ -86,5 +89,7 @@ Element* player_start;
 
 ModelArray* actual_model_array;
 Array* actual_elements_array;
+ModelArray* actual_LOD_models_array;
+GLuint actual_standard_shader;
 
 #endif //PAVON_MOBILE_ENGINE_H

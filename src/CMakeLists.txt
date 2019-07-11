@@ -41,7 +41,13 @@ if(NOT ANDROID)
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
 
+
+        
         add_executable(Game ${engine_source} Game/main.c level_editor/windows.c ${game_source})        
+        set_target_properties( Game
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../Game/build"
+        )
 
         target_link_libraries(Editor        
                 glfw

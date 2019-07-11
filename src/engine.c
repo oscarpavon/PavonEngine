@@ -53,9 +53,89 @@ void new_empty_model(){
     glm_mat4_identity(selected_model->model_mat);
 }
 
+void add_texture_to_selected_element_with_image_path(const char* image_path){
+
+    if(selected_element == NULL){
+        printf("No element selected\n"); 
+        return;
+    }
+    if(image_path == NULL){
+        printf("Error to load, null path (add_editor_texture - 154\n");
+        return;
+    }
+
+    selected_element->model->texture.image = load_image(image_path);
+    load_model_texture_to_gpu(selected_element->model);
+    strcpy(selected_element->texture_path,image_path);
+    
+}
+
+void add_element_with_model_path(const char* model_gltf_path){
+    if(model_gltf_path == NULL){
+        printf("Error to load, null path (add_editor_element\n");
+        return;
+    }
+
+    struct Model new_model[3];
+    memset(new_model,0,sizeof(new_model));
+
+    
+    int result = load_model(model_gltf_path,new_model);
+    if(result==-1){
+        return;
+    }    
+    
+
+    struct Model* model0 = &new_model[0];
+  
+    glm_mat4_identity(model0->model_mat);   
+
+    model0->shader = glCreateProgram();
+
+    glAttachShader(model0->shader, standart_vertex_shader);
+    glAttachShader(model0->shader, actual_standard_shader);
+    glLinkProgram(model0->shader);
+
+    init_model(model0);
+    model0->actual_LOD = 0;
+    model0->change_LOD = false;
+    model0->draw = true;
+    
+
+    if(new_model[0].LOD_count >= 1){
+        for(int i = 0; i < new_model[0].LOD_count; i++){
+            glm_mat4_identity(new_model[i+1].model_mat);  
+            init_model(&new_model[i+1]);
+            new_model[i+1].shader = model0->shader;
+            add_model_to_array(actual_LOD_models_array,new_model[i+1]);
+        }
+    }
+    if(new_model[0].has_HLOD){
+        glm_mat4_identity(new_model[2].model_mat);  
+        init_model(&new_model[2]);
+        new_model[2].shader = model0->shader;
+        add_model_to_array(actual_LOD_models_array,new_model[2]);
+        new_model->HLOD = &actual_LOD_models_array->models[actual_LOD_models_array->count-1];
+    }
+    
+    add_model_to_array(actual_model_array,new_model[0]);
+
+    new_empty_element();
+
+    strcpy(selected_element->model_path,model_gltf_path);
+    
+    if(model0->LOD_count >= 1){
+        selected_element->has_LOD  = true;
+    }  
+
+    printf("model loaded and shader created \n");
+}
+
 void update_viewport_size(){
+    #ifdef EDITOR
     update_text_renderer_window_size();
     update_camera_aspect_ratio();
+    #endif // EDITOR    
 }
 
 void set_selected_element_transform(vec3 position, versor rotation){
@@ -307,6 +387,8 @@ void init_engine(){
 
 
 }
+ModelArray models;
+Array elements;
 
 void init_game_engine(){
     should_close = false;    
@@ -317,15 +399,25 @@ void init_game_engine(){
 
     glEnable(GL_DEPTH_TEST);
     
+    element_id_count = 0;   
+
+    init_model_array(&models, 1);
+    init_array(&elements,sizeof(Element));
+    actual_model_array = &models;
+    actual_elements_array = &elements;
+    //actual_LOD_models_array = &LOD_models;
+    actual_standard_shader = standart_fragment_shader;
+
+    
 }
 
 void engine_loop(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  
-    draw_gui();
-    
+    draw_elements(actual_elements_array); 
+    draw_gui();   
+
 
 }
 

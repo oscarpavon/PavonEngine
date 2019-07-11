@@ -11,12 +11,22 @@ int main(){
     glfwSwapBuffers(main_window.window);
     
     init_engine();  
+    init_game_engine();
+    //init_game();
+
+    Array load_elements;
+    init_array(&load_elements,sizeof(Element));
+    load_level_to_elements_array("../levels/level.lvl", &load_elements);   
+    
+    add_loaded_elements(&load_elements, actual_model_array, actual_elements_array);
+    clean_array(&load_elements);
 
     while (!glfwWindowShouldClose(main_window.window))
     {
         update_envents();
    
-   
+        engine_loop();
+        
         glfwSwapBuffers(main_window.window);
     }   
     
