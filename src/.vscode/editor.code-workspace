@@ -26,7 +26,11 @@
 			"initializer_list": "c",
 			"utility": "c",
 			"skeletal_editor.h": "c",
-			"skeletal.h": "c"
+			"skeletal.h": "c",
+			"cstdbool": "cpp",
+			"text.h": "c",
+			"freetype.h": "c",
+			"stdbool.h": "c"
 		}
 	}
 }

@@ -1,8 +1,9 @@
 #ifndef EDITOR_TEXT_H
 #define EDITOR_TEXT_H
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+
+#include <freetype2/ft2build.h>
+#include <freetype2/freetype/freetype.h>
 
 #include <stdbool.h>
 #include "../vector.h"

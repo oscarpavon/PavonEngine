@@ -4,7 +4,7 @@
         {
             "label": "make",
             "type": "shell",
-            "command": "cd build && make Editor",
+            "command": "cd build && ninja",
             "problemMatcher": [
                 "$gcc"
             ]

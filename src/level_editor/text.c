@@ -326,12 +326,14 @@ void init_text_renderer(){
 
     if(FT_Init_FreeType(&ft)) {
         fprintf(stderr, "Could not init freetype library\n");
+        return;
     }
 
-    if(FT_New_Face(ft, "DejaVuSerif.ttf", 0, &face)) {
+    if(FT_New_Face(ft, "../assets/editor/DejaVuSerif.ttf", 0, &face)) {
         fprintf(stderr, "Could not open font\n");    
+        return;
     }
-
+   
     g = face->glyph;
 
     FT_Set_Pixel_Sizes(face, 0, 20);

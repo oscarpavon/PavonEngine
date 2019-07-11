@@ -48,6 +48,7 @@ void load_file(const char* path, File* output){
     FILE* file = fopen(new_path,"r");
     if(file == NULL){
         printf("error to load: %s\n", new_path);
+        return;
     }
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
