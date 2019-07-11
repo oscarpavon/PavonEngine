@@ -60,6 +60,8 @@ void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
 
+void update_viewport_size();
+
 char* editor_mode_show_text;
 
 enum EditorMode editor_mode;

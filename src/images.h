@@ -15,7 +15,7 @@ typedef struct texture{
 }Texture;
 
 Image load_image(const char* path);
-Image load_image_with_format(const char* path, GLint format);
+int load_image_with_format(const char* path, GLint format, Image* out_image);
 void free_image(Image*);
 
 #endif

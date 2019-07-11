@@ -25,7 +25,7 @@ typedef struct file{
 
 
 
-void load_file(const char* path, File* output);
+int load_file(const char* path, File* output);
 void close_file(File* file);
 #endif // !FILE_LOADER_H
 

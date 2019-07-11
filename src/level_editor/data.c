@@ -55,6 +55,9 @@ void save_camera_editor_camera_transform(FILE* new_file){
 
 void create_save_data_backup(){
     FILE* level_file = fopen("new_level.lvl","r");
+    if(level_file == NULL)
+        return;
+        
     fseek(level_file, 0, SEEK_END);
     long file_size = ftell(level_file);
     rewind (level_file);
@@ -70,9 +73,16 @@ void create_save_data_backup(){
     fclose(level_file);
 }
 void save_data(const char* name){   
+    char* level_folder = "../Game/levels/";
+    char save_name[50];
+    memset(save_name,0,sizeof(save_name));
+    strcat(save_name, level_folder);
+    strcat(save_name,name);
+    strcat(save_name,".lvl");
+    printf("%s\n",save_name);
 
     create_save_data_backup();
-    FILE* new_file = fopen(name,"w+");
+    FILE* new_file = fopen(save_name,"w+");
     save_level_info(new_file);   
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);

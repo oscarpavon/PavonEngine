@@ -23,10 +23,12 @@ Image load_image(const char* path){
     return new_image;
 }
 
-Image load_image_with_format(const char* path, GLint format){
+int load_image_with_format(const char* path, GLint format, Image* out_image){
     File new_file;
 
-    load_file(path,&new_file);
+    int result = load_file(path,&new_file);
+    if(result == -1)
+        return -1;
 
     Image new_image;
 
@@ -43,7 +45,8 @@ Image load_image_with_format(const char* path, GLint format){
     new_image.heigth = (unsigned short)height;
     new_image.width = (unsigned short)width;
     new_image.pixels_data = decoded;
-    return new_image;
+    memcpy(out_image,&new_image,sizeof(Image));
+    return 0;
 }
 
 void free_image(Image* image){

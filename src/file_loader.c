@@ -24,7 +24,7 @@ const char* get_path(const char* path){
 }
 
 
-void load_file(const char* path, File* output){
+int load_file(const char* path, File* output){
 #ifdef ANDROID
     AAsset* file =  AAssetManager_open(assets_manager,path,AASSET_MODE_BUFFER);
     if(!file){
@@ -48,7 +48,7 @@ void load_file(const char* path, File* output){
     FILE* file = fopen(new_path,"r");
     if(file == NULL){
         printf("error to load: %s\n", new_path);
-        return;
+        return -1;
     }
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);

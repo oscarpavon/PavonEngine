@@ -21,4 +21,6 @@ void init_game();
 
 void update_game();
 
+void update_viewport_size();
+
 #endif //PAVON_MOBILE_GAME_H

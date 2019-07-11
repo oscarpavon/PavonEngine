@@ -30,7 +30,8 @@
 			"cstdbool": "cpp",
 			"text.h": "c",
 			"freetype.h": "c",
-			"stdbool.h": "c"
+			"stdbool.h": "c",
+			"game.h": "c"
 		}
 	}
 }

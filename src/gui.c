@@ -215,7 +215,11 @@ void init_gui(){
 void draw_logo(){
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Image logo_image = load_image_with_format("white_logo.png",GL_RGBA);
+    Image logo_image;
+    int result =  load_image_with_format("white_logo.png",GL_RGBA, &logo_image);
+    if(result == -1)
+        return;
+        
     GLuint logo_texture_id;
     glGenTextures(1, &logo_texture_id);
     glBindTexture(GL_TEXTURE_2D, logo_texture_id);

@@ -11,16 +11,19 @@ set(engine_source
         images.c
         input.c        
         gui.c
-        shader.c
-        game.c
+        shader.c        
         object_select.c
         engine.c
         skeletal.c
 )
 
+set (game_source
+        game.c
+)
+
 if(NOT ANDROID)
 
-        set(CMAKE_BUILD_TYPE Debug)
+        #set(CMAKE_BUILD_TYPE Debug)
 
         set(editor_sources 
         level_editor/main.c
@@ -37,7 +40,7 @@ if(NOT ANDROID)
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
 
-        add_executable(Game ${engine_source} Game/main.c level_editor/windows.c)        
+        add_executable(Game ${engine_source} Game/main.c level_editor/windows.c ${game_source})        
 
         target_link_libraries(Editor        
                 glfw

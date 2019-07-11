@@ -29,8 +29,13 @@ CameraElement camera_in_editor;
 
 Model* selected_model;
 
+void update_viewport_size(){
+    update_text_renderer_window_size();
+    update_camera_aspect_ratio();
+}
+
 void play_game_standalone(){
-    int exit_status = system("st sh /home/pavon/sources/pavon-mobile/src/level_editor/compile_game.sh");
+    int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
 
 void deselect_all(){

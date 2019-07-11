@@ -15,6 +15,10 @@ void handle_camera_rotation(){
 }
 mat4 tranlate_dot_rot;
 
+void update_viewport_size(){
+
+}
+
 void init_camera_local_transform(){
     mat4 camera_local_mat_position;
     glm_mat4_identity(camera_local_mat_position);

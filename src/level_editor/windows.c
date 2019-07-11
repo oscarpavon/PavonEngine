@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "text.h"
 #include "editor.h"
+#include "../game.h"
+
 void create_window(Window *win){
   
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -31,8 +33,6 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
     camera_heigth_screen = height;
     camera_width_screen = width;
 
-    #ifdef EDITOR
-        update_text_renderer_window_size();
-        update_camera_aspect_ratio();
-    #endif // EDITOR 
+    update_viewport_size();
+
 }
