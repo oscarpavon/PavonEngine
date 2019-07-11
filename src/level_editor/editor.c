@@ -38,44 +38,9 @@ void deselect_all(){
     }
 }
 
-void select_last_element(){
-    if(selected_element != NULL)
-        selected_element->selected = false;
-    selected_element = (Element*)get_element_from_array(&editor_elements,editor_elements.count-1);
-    selected_element->selected = true;
-}
-
 void editor_message(const char* message){
     set_text_size(12);
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
-}
-
-void new_empty_element(){
-    Element new_element;
-    memset(&new_element,0,sizeof(struct Element));
-
-    new_element.duplicated_of_id = -1;
-    new_element.model = &editor_models.models[element_id_count];
-    new_element.id = element_id_count;
-    new_element.type = ELEMENT_TYPE_MODEL;
-
-    glm_vec3_copy((vec3){0,0,0}, new_element.position);
-    
-    glm_quat_identity(new_element.rotation);    
-
-    element_id_count++;
-    
-    add_element_to_array(&editor_elements,&new_element);
-
-    select_last_element();
-}
-
-void new_empty_model(){
-    Model new_model;
-    memset(&new_model,0,sizeof(Model));
-    add_model_to_array(&editor_models,new_model);
-    selected_model = &editor_models.models[editor_models.count-1];
-    glm_mat4_identity(selected_model->model_mat);
 }
 
 void add_editor_native_element(const char* native_element_name){
@@ -331,6 +296,9 @@ void init_editor(){
     init_model_array(&LOD_models,1);
 
     init_skeletal_editor();
+
+    actual_model_array = &editor_models;
+    actual_elements_array = &editor_elements;
     
 }
 

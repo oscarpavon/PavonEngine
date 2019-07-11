@@ -8,6 +8,7 @@
 #endif // EDITOR
 
 #define CAMERA__ELEMENT_ID 300
+
 void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array* editor_elements){
     init_model_array(editor_models,load_elements->count);
     for(int i = 0; i < load_elements->count; i++){

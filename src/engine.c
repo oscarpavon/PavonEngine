@@ -16,8 +16,42 @@
 #include "model.h"
 #include "level.h"
 
-
 #include <unistd.h>
+
+void select_last_element(){
+    if(selected_element != NULL)
+        selected_element->selected = false;
+    selected_element = get_element_from_array(actual_elements_array,actual_elements_array->count-1);
+    selected_element->selected = true;
+}
+
+void new_empty_element(){
+    Element new_element;
+    memset(&new_element,0,sizeof(struct Element));
+
+    new_element.duplicated_of_id = -1;
+    new_element.model = &actual_model_array->models[element_id_count];
+    new_element.id = element_id_count;
+    new_element.type = ELEMENT_TYPE_MODEL;
+
+    glm_vec3_copy((vec3){0,0,0}, new_element.position);
+    
+    glm_quat_identity(new_element.rotation);    
+
+    element_id_count++;
+    
+    add_element_to_array(actual_elements_array,&new_element);
+
+    select_last_element();
+}
+
+void new_empty_model(){
+    Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    add_model_to_array(actual_model_array,new_model);
+    selected_model = &actual_model_array->models[actual_model_array->count-1];
+    glm_mat4_identity(selected_model->model_mat);
+}
 
 void update_viewport_size(){
     update_text_renderer_window_size();

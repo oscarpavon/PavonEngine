@@ -40,7 +40,7 @@ void get_elements_in_editor_map();
 
 void deselect_all();
 
-void add_editor_element(const char* path_to_element);
+extern void add_editor_element(const char* path_to_element);
 
 void add_editor_texture(const char* image_path);
 
@@ -61,10 +61,6 @@ void duplicate_selected_element();
 void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
-
-void new_empty_element();
-
-void new_empty_model();
 
 char* editor_mode_show_text;
 

@@ -4,7 +4,7 @@
             "name": "Editor",
             "intelliSenseMode": "gcc-x64",
             "cStandard": "c11",
-            "defines": [],
+            "defines": ["EDITOR"],
             "includePath": [
                 "/usr/include/cglm"
             ]
