@@ -14,6 +14,8 @@
 #include <GLES2/gl2.h>
 #include "images.h"
 
+#include "engine.h"
+
 
 typedef unsigned short int ui_size;
 
@@ -24,6 +26,8 @@ GLuint gui_vertex_buffer_id = -1;
 VertexArray gui_vertex_array;
 
 GLuint logo_texture_id;
+
+Array buttons;
 
 void compile_shaders(){
     vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
@@ -95,7 +99,7 @@ void update_button_matrix(GLuint shader_id, vec2 size, vec2 position){
 
 }
 
-void draw_button(){
+void draw_buttons(){
 
     for(size_t i = 0; i < buttons.count ; i++){
 
@@ -120,7 +124,7 @@ void draw_button(){
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("draw error\n");
+        LOGW("buttons error\n");
         LOGW("Error %08x \n",error);
     }
 
@@ -183,11 +187,11 @@ void init_gui_element_geometry(){
 }
 void init_gui(){
 
-    init_gui_element_geometry();
+    //init_gui_element_geometry();
 
-    compile_shaders();
+    //compile_shaders();
 
-    create_vertex_buffer();
+    //create_vertex_buffer();
 
     button1.relative_to = 50;
     init_button(&button1, 600, 100, 35,35);
@@ -210,8 +214,9 @@ void init_gui(){
 
     create_gui_shaders();
 
-
+    actual_buttons_array = &buttons;
 }
+
 GLuint logo_shader;
 
 void create_logo_shader(){
@@ -301,8 +306,9 @@ void draw_loading_screen(){
 
 void draw_gui(){
     glCullFace(GL_FRONT);
-    draw_button();
-    draw_logo_image();
+    draw_buttons();
+
+    //draw_logo_image();
     
     check_if_pressed(&button1);
     check_if_pressed(&back_button);
@@ -312,4 +318,18 @@ void draw_gui(){
     //virtual_joystick.position[1] = touch_position_y;
 
     glCullFace(GL_BACK);
+}
+
+void new_empty_button(){
+    Button new_button;
+
+    init_button(&new_button, 400, 300, 35,35);
+
+    add_element_to_array(actual_buttons_array,&new_button);
+
+    Button* button = get_element_from_array(actual_buttons_array,actual_buttons_array->count-1);
+    button->shader = glCreateProgram();
+    glAttachShader( button->shader, vert_shader);
+    glAttachShader( button->shader, frag_shader);
+    glLinkProgram( button->shader);
 }

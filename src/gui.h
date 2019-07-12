@@ -2,8 +2,8 @@
 // Created by pavon on 6/23/19.
 //
 
-#ifndef PAVONTHEGAME_GUI_H
-#define PAVONTHEGAME_GUI_H
+#ifndef ENGINE_GUI_H
+#define ENGINE_GUI_H
 
 #include "utils.h"
 #include "vector.h"
@@ -36,7 +36,6 @@ Button shoot_button;
 Button back_button;
 Button virtual_joystick;
 
-Array buttons;
 
 void init_gui();
 void draw_button();
@@ -44,4 +43,6 @@ void draw_gui();
 void draw_loading_screen();
 void update_button_matrix(GLuint shader_id, vec2 size, vec2 position);
 
-#endif //PAVONTHEGAME_GUI_H
+void new_empty_button();
+
+#endif //ENGINE_GUI_H

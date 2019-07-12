@@ -397,6 +397,7 @@ void init_engine(){
 
     //sleep(2);
 
+    init_gui();
 
 }
 ModelArray models;
@@ -407,7 +408,7 @@ void init_game_engine(){
 
     init_camera();
 
-    init_gui();    
+        
     
     element_id_count = 0;   
 

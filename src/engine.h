@@ -95,5 +95,6 @@ ModelArray* actual_model_array;
 Array* actual_elements_array;
 ModelArray* actual_LOD_models_array;
 GLuint actual_standard_shader;
+Array* actual_buttons_array;
 
 #endif //PAVON_MOBILE_ENGINE_H

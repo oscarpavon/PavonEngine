@@ -62,14 +62,26 @@ void parse_command(const char* command){
         change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
     }
     
-    if(command[1] == 'w'){
-        save_data(&command[3]);
-        printf("Level saved: %s\n",&command[3]);
+    if(editor_mode == EDITOR_MODE_GUI_EDITOR){
+         if(command[1] == 'w'){
+            
+            printf("GUI saved: %s\n",&command[3]);
+        }
+        if(command[1] == 'o'){        
+            
+            printf("GUI loaded\n");
+        }
+    }else{
+        if(command[1] == 'w'){
+            save_data(&command[3]);
+            printf("Level saved: %s\n",&command[3]);
+        }
+        if(command[1] == 'o'){        
+            load_level_in_editor(&command[3]);
+            printf("Level loaded\n");
+        }
     }
-    if(command[1] == 'o'){        
-        load_level_in_editor(&command[3]);
-        printf("Level loaded\n");
-    }
+    
     if(command[1] == 'q'){
         //quit
     }
@@ -723,7 +735,7 @@ void input_gui_editor(){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         
     if(key__released(&input.A,NULL)){
-        
+        new_empty_button();
     }
 }
 

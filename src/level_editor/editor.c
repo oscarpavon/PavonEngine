@@ -280,6 +280,9 @@ void update_editor(){
 
     draw_gizmos();
 
+    if(editor_mode == EDITOR_MODE_GUI_EDITOR)
+        draw_gui();
+
     text_renderer_loop();
 
     editor_message("editor message");    
