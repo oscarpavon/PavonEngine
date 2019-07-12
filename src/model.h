@@ -49,6 +49,4 @@ void init_model();
 int load_model(const char* path, struct Model*);
 
 
-void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element);
-
 #endif // !MODEL_H

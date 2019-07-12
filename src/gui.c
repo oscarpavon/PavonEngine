@@ -187,30 +187,7 @@ void init_gui_element_geometry(){
 }
 void init_gui(){
 
-    //init_gui_element_geometry();
-
-    //compile_shaders();
-
-    //create_vertex_buffer();
-
-    button1.relative_to = 50;
-    init_button(&button1, 600, 100, 35,35);
-
-
-    back_button.relative_to = 50;
-    init_button(&back_button, 600, 300, 35,35);
-
-
-    virtual_joystick.relative_to = POSITION_RELATIVE_LEFT_BOTTON;
-    init_button(&virtual_joystick,300,300,50,50);
-
-
-
     init_array(&buttons, sizeof(Button));
-    add_element_to_array(&buttons,&button1);
-    add_element_to_array(&buttons,&shoot_button);
-    add_element_to_array(&buttons,&back_button);
-    add_element_to_array(&buttons,&virtual_joystick);
 
     create_gui_shaders();
 
@@ -310,12 +287,7 @@ void draw_gui(){
 
     //draw_logo_image();
     
-    check_if_pressed(&button1);
-    check_if_pressed(&back_button);
-    check_if_pressed(&virtual_joystick);
-
-    //virtual_joystick.position[0] = touch_position_x;
-    //virtual_joystick.position[1] = touch_position_y;
+    //check_if_pressed(&button1);   
 
     glCullFace(GL_BACK);
 }

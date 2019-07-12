@@ -45,17 +45,5 @@ void update_player_camera(){
 }
 
 void update_game(){
-    update_player_camera();
-    if(button1.pressed){
-        glm_translate(player1->model->model_mat, (vec3){0,-0.01,0});
-    }
-    if(back_button.pressed){
-        glm_translate(player1->model->model_mat, (vec3){0,0.01,0});
-    }
-    if(virtual_joystick.pressed){
-        virtual_joystick.position[0] = touch_position_x;
-        virtual_joystick.position[1] = touch_position_y;
-        LOGW("joystic pressed");
-    }
-
+    update_player_camera(); 
 }

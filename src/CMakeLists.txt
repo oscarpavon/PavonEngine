@@ -16,6 +16,8 @@ set(engine_source
         engine.c
         skeletal.c
         Engine/level.c
+        third_party/jsmn.c
+        Engine/files_parser.c
 )
 
 set (game_source

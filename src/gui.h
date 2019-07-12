@@ -31,10 +31,7 @@ typedef struct Menu{
     Array buttons;
 }Menu;
 
-Button button1;
-Button shoot_button;
-Button back_button;
-Button virtual_joystick;
+
 
 
 void init_gui();

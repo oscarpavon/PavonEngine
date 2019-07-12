@@ -690,8 +690,11 @@ void input_mode_play(){
 }
 
 void input_gui_editor(){
-    if(key_released(&input.ESC))
+    if(key_released(&input.ESC)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        clean_array(actual_buttons_array);
+    }
+        
         
     if(key__released(&input.A,NULL)){
         new_empty_button();
