@@ -58,6 +58,10 @@ unsigned short int character_count = 0;
 
 
 void parse_command(const char* command){
+    if(strcmp(&command[1],"gui") == 0){
+        change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
+    }
+    
     if(command[1] == 'w'){
         save_data(&command[3]);
         printf("Level saved: %s\n",&command[3]);
@@ -126,7 +130,8 @@ void text_input_mode(){
         parse_command(command_text_buffer);
         character_count = 0;
         memset(command_text_buffer,0,sizeof(command_text_buffer));
-        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        if(editor_mode != EDITOR_CHANGING_MODE_MODE)
+            change_to_editor_mode(EDITOR_DEFAULT_MODE);
     }
     if(key_released(&input.BACKSPACE)){
         character_count--;
@@ -367,6 +372,9 @@ void change_to_editor_mode(EditorMode mode){
         break;
     case EDITOR_ROTATE_MODE:
         editor_mode_show_text = "Rotate Mode";
+        break;
+    case EDITOR_MODE_GUI_EDITOR:
+        editor_mode_show_text = "GUI Editor";
         break;
     case EDITOR_PLAY_MODE:
         if(game_initialized == false)
@@ -710,6 +718,15 @@ void input_mode_play(){
     
 }
 
+void input_gui_editor(){
+    if(key_released(&input.ESC))
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        
+    if(key__released(&input.A,NULL)){
+        
+    }
+}
+
 void update_input(){
     switch (editor_mode)
     {    
@@ -730,6 +747,9 @@ void update_input(){
         break;
     case EDITOR_PLAY_MODE:
         input_mode_play();
+        break;
+    case EDITOR_MODE_GUI_EDITOR:
+        input_gui_editor();
         break;
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;

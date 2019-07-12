@@ -31,7 +31,8 @@
 			"text.h": "c",
 			"freetype.h": "c",
 			"stdbool.h": "c",
-			"game.h": "c"
+			"game.h": "c",
+			"utils.h": "c"
 		}
 	}
 }

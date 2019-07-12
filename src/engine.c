@@ -407,9 +407,7 @@ void init_game_engine(){
 
     init_camera();
 
-    init_gui();
-
-    glEnable(GL_DEPTH_TEST);
+    init_gui();    
     
     element_id_count = 0;   
 
@@ -426,6 +424,7 @@ void init_game_engine(){
 void engine_loop(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
 
     draw_elements(actual_elements_array); 
     draw_gui();   

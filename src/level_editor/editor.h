@@ -23,7 +23,8 @@ typedef enum EditorMode{
     EDITOR_NAVIGATE_MODE,
     EDITOR_CHANGING_MODE_MODE,
     EDITOR_TEXT_INPUT_MODE,
-    EDITOR_PLAY_MODE
+    EDITOR_PLAY_MODE,
+    EDITOR_MODE_GUI_EDITOR
 }EditorMode;
 
 void init_editor();

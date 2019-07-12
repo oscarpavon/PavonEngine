@@ -20,9 +20,10 @@ typedef unsigned short int ui_size;
 GLuint vert_shader;
 GLuint frag_shader;
 
-static GLuint vertex_buffer_id;
-VertexArray vertex_array;
+GLuint gui_vertex_buffer_id = -1;
+VertexArray gui_vertex_array;
 
+GLuint logo_texture_id;
 
 void compile_shaders(){
     vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
@@ -107,7 +108,7 @@ void draw_button(){
 
         update_button_matrix(button->shader, button->size, button->position);
 
-        glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
 
         glEnableVertexAttribArray(0);
 
@@ -127,10 +128,11 @@ void draw_button(){
 }
 
 void create_vertex_buffer(){
-    glGenBuffers(1,&vertex_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-    glBufferData(GL_ARRAY_BUFFER, vertex_array.count * sizeof(struct Vertex) , vertex_array.vertices, GL_STATIC_DRAW);
-    free(vertex_array.vertices);
+    glGenBuffers(1,&gui_vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, gui_vertex_array.count * sizeof(struct Vertex) , gui_vertex_array.vertices, GL_STATIC_DRAW);
+    free(gui_vertex_array.vertices);
+    gui_vertex_array.vertices = NULL;
 
 }
 
@@ -173,11 +175,11 @@ void init_gui_element_geometry(){
     vert4.uv[1] = 0;
 
 
-    init_vertex_array(&vertex_array, 1);
-    add_vextex_to_array(&vertex_array,vert1);
-    add_vextex_to_array(&vertex_array,vert2);
-    add_vextex_to_array(&vertex_array,vert3);
-    add_vextex_to_array(&vertex_array,vert4);
+    init_vertex_array(&gui_vertex_array, 1);
+    add_vextex_to_array(&gui_vertex_array,vert1);
+    add_vextex_to_array(&gui_vertex_array,vert2);
+    add_vextex_to_array(&gui_vertex_array,vert3);
+    add_vextex_to_array(&gui_vertex_array,vert4);
 }
 void init_gui(){
 
@@ -208,19 +210,62 @@ void init_gui(){
 
     create_gui_shaders();
 
+
+}
+GLuint logo_shader;
+
+void create_logo_shader(){
+    logo_shader = glCreateProgram();
+    glAttachShader( logo_shader, vert_shader);
+    glAttachShader( logo_shader, frag_shader);
+    glLinkProgram( logo_shader);
+}
+
+void draw_logo_image(){
+    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Button load_screen_button;
+
+    load_screen_button.relative_to = 400;
+    init_button(&load_screen_button,camera_width_screen/2 , camera_heigth_screen / 2, 250, 250);
+
+    Button* button = &load_screen_button;
+
+    button->shader = logo_shader;
+
+    glUseProgram(button->shader);
+    glBindTexture(GL_TEXTURE_2D,logo_texture_id);
+
+    update_button_matrix(button->shader, button->size, button->position);
+
+    glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+    GLenum error = glGetError();
+    if(error != GL_NO_ERROR){
+        LOGW("draw logo\n");
+        LOGW("Error %08x \n",error);
+    }
+
+    //glDisable(GL_BLEND);
 }
 
 
-
 void draw_logo(){
-    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Image logo_image;
     int result =  load_image_with_format("white_logo.png",GL_RGBA, &logo_image);
     if(result == -1)
         return;
         
-    GLuint logo_texture_id;
+    
     glGenTextures(1, &logo_texture_id);
     glBindTexture(GL_TEXTURE_2D, logo_texture_id);
 
@@ -243,34 +288,9 @@ void draw_logo(){
 
     create_vertex_buffer();
 
-    Button load_screen_button;
+    create_logo_shader();
 
-    load_screen_button.relative_to = 400;
-    init_button(&load_screen_button,camera_width_screen/2 , camera_heigth_screen / 2, 250, 250);
-
-    Button* button = &load_screen_button;
-
-    button->shader = glCreateProgram();
-    glAttachShader( button->shader, vert_shader);
-    glAttachShader( button->shader, frag_shader);
-    glLinkProgram( button->shader);
-
-    glUseProgram(button->shader);
-    glBindTexture(GL_TEXTURE_2D,logo_texture_id);
-
-    update_button_matrix(button->shader, button->size, button->position);
-
-    glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-    glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-    glDisable(GL_BLEND);
+    draw_logo_image();
 }
 
 void draw_loading_screen(){
@@ -280,11 +300,16 @@ void draw_loading_screen(){
 }
 
 void draw_gui(){
+    glCullFace(GL_FRONT);
     draw_button();
+    draw_logo_image();
+    
     check_if_pressed(&button1);
     check_if_pressed(&back_button);
     check_if_pressed(&virtual_joystick);
 
-    virtual_joystick.position[0] = touch_position_x;
-    virtual_joystick.position[1] = touch_position_y;
+    //virtual_joystick.position[0] = touch_position_x;
+    //virtual_joystick.position[1] = touch_position_y;
+
+    glCullFace(GL_BACK);
 }
