@@ -7,6 +7,8 @@
 #include "../level_editor/editor.h"
 #endif // EDITOR
 
+#include "../file_loader.h"
+
 #define CAMERA__ELEMENT_ID 300
 
 void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array* editor_elements){
@@ -86,25 +88,14 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
 
 void load_level_to_elements_array(const char* name, Array* load_elements){    
 
-    FILE* level_file = fopen(name,"r");
-
-    if(level_file == NULL){
+    File level_file;
+    if( load_file(name, &level_file) == -1){
+        
         printf("Level not found: %s\n",name);
-        return;
-    }
-    int return_number = 0;
-
-    fseek(level_file, 0, SEEK_END);
-    long file_size = ftell(level_file);
-    rewind (level_file);
-
-    char file_buffer[file_size];
-
-    fread(file_buffer,sizeof(char), file_size, level_file);
-
-    fclose(level_file);
-
-    load_level_elements_from_json(file_buffer,file_size, load_elements);
-
     
+    }
+
+    load_level_elements_from_json(level_file.data , level_file.size_in_bytes , load_elements);
+
+    close_file(&level_file);
 }

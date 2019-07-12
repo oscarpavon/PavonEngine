@@ -305,3 +305,16 @@ void new_empty_button(){
     glAttachShader( button->shader, frag_shader);
     glLinkProgram( button->shader);
 }
+
+void load_gui(const char* name){
+    File level_file;
+    if( load_file(name, &level_file) == -1){
+        
+        printf("Level not found: %s\n",name);
+    
+    }
+
+    parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);
+
+    close_file(&level_file);
+}

@@ -154,7 +154,7 @@ void new_save_element(SaveDataFunction function){
 void save_gui_data(const char* gui_name){
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
-    strcat(save_name, level_folder);
+    strcat(save_name, gui_folder);
     strcat(save_name,gui_name);
     strcat(save_name,".gui");   
 

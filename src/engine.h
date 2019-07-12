@@ -16,6 +16,8 @@ struct android_app* app;
 
 #include <cglm.h>
 #include "camera.h"
+#include "file_loader.h"
+#include "Engine/files_parser.h"
 
 typedef enum ElementType{
     ELEMENT_TYPE_CAMERA = 1,

@@ -42,4 +42,6 @@ void update_button_matrix(GLuint shader_id, vec2 size, vec2 position);
 
 void new_empty_button();
 
+void load_gui(const char* name);
+
 #endif //ENGINE_GUI_H

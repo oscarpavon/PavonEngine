@@ -19,6 +19,8 @@
 
 #include "editor_mode.h"
 
+#include "../gui.h"
+
 float horizontalAngle = 0;
 float verticalAngle = 0;
 
@@ -65,7 +67,8 @@ void parse_command(const char* command){
             save_gui_data(&command[3]);
             printf("GUI saved: %s\n",&command[3]);
         }
-        if(command[1] == 'o'){        
+        if(command[1] == 'o'){
+            load_gui(&command[3]);       
             printf("GUI loaded\n");
         }
     }else{
@@ -366,86 +369,95 @@ float move_object_value = 0.02;
 bool grid_translate = false;
 
 void grab_mode(){
-    input_change_mode();
+    if(editor_mode == EDITOR_DEFAULT_MODE){
+        input_change_mode();
 
-    draw_rotate_gizmo = false;
-    draw_translate_gizmo = true;   
-    
-
-    if(!grid_translate){
-        if(key_released(&input.KEY_1)){
-            grid_translate = true;
-        } 
+        draw_rotate_gizmo = false;
+        draw_translate_gizmo = true;   
         
-        if(input.W.pressed){
-            vec3 move = {0,-move_object_value,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(input.S.pressed){
-            vec3 move = {0,move_object_value,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(input.D.pressed){
-            vec3 move = {-move_object_value,0,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(input.A.pressed){
-            vec3 move = {move_object_value,0,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
 
-        }
-        if(input.E.pressed){
-            vec3 move = {0,0,move_object_value};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(input.Q.pressed){
-            vec3 move = {0,0,-move_object_value};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(key_released(&input.I)){
-            move_object_value += 0.04;
-        }
-        if(key_released(&input.O)){
-            move_object_value -= 0.04;
-        }
-    }else{
-        if(key_released(&input.KEY_1)){
-            grid_translate = false;
-        } 
-        
-        if(key_released(&input.D)){
-            vec3 move = {move_object_value,0,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(key_released(&input.A)){
-            vec3 move = {-move_object_value,0,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(key_released(&input.S)){
-            vec3 move = {0,-move_object_value,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(key_released(&input.W)){
-            vec3 move = {0,move_object_value,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
-        }
-        if(key_released(&input.I)){
-            move_object_value += 2.4;
-        }
-        if(key_released(&input.O)){
-            move_object_value = 24;
+        if(!grid_translate){
+            if(key_released(&input.KEY_1)){
+                grid_translate = true;
+            } 
+            
+            if(input.W.pressed){
+                vec3 move = {0,-move_object_value,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(input.S.pressed){
+                vec3 move = {0,move_object_value,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(input.D.pressed){
+                vec3 move = {-move_object_value,0,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(input.A.pressed){
+                vec3 move = {move_object_value,0,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+
+            }
+            if(input.E.pressed){
+                vec3 move = {0,0,move_object_value};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(input.Q.pressed){
+                vec3 move = {0,0,-move_object_value};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(key_released(&input.I)){
+                move_object_value += 0.04;
+            }
+            if(key_released(&input.O)){
+                move_object_value -= 0.04;
+            }
+        }else{
+            if(key_released(&input.KEY_1)){
+                grid_translate = false;
+            } 
+            
+            if(key_released(&input.D)){
+                vec3 move = {move_object_value,0,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(key_released(&input.A)){
+                vec3 move = {-move_object_value,0,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(key_released(&input.S)){
+                vec3 move = {0,-move_object_value,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(key_released(&input.W)){
+                vec3 move = {0,move_object_value,0};
+                glm_translate(selected_element->model->model_mat, move);
+                glm_vec3_add(selected_element->position,move,selected_element->position);
+            }
+            if(key_released(&input.I)){
+                move_object_value += 2.4;
+            }
+            if(key_released(&input.O)){
+                move_object_value = 24;
+            }
         }
     }
+    if(editor_mode == EDITOR_MODE_GUI_EDITOR){
+        if(input.W.pressed){
+            Button* button = get_element_from_array(actual_buttons_array,0);
+            glm_vec3_add(button->position, (vec2){0,0.2}, button->position);
+        }
+    }
+    
 }
 
 float rotate_value = 100;
@@ -699,6 +711,10 @@ void input_gui_editor(){
     if(key__released(&input.A,NULL)){
         new_empty_button();
     }
+
+    if(key_released(&input.G)){
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
+    }
 }
 
 void update_input(){
@@ -736,6 +752,15 @@ void update_input(){
     {
     case EDITOR_SUB_MODE_TEXT_INPUT:
         text_input_mode();
+        break;
+    case EDITOR_SUB_MODE_GRAB:
+        grab_mode();            
+        break;
+    case EDITOR_SUB_MODE_SCALE:
+       
+        break;
+    case EDITOR_SUB_MODE_ROTATE:
+        
         break;
     case EDITOR_SUB_MODE_NULL:
         break;

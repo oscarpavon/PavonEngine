@@ -13,6 +13,18 @@ void change_to_editor_sub_mode(EditorMode mode){
             editor_sub_mode_text = "Text Input";
             editor_sub_mode = mode;
             break;
+        case EDITOR_SUB_MODE_GRAB:
+            editor_sub_mode_text = "Grab";
+            editor_sub_mode = mode;
+            break;
+        case EDITOR_SUB_MODE_SCALE:
+            editor_sub_mode_text = "Scale";
+            editor_sub_mode = mode;
+            break;
+        case EDITOR_SUB_MODE_ROTATE:
+            editor_sub_mode_text = "Rotate";
+            editor_sub_mode = mode;
+            break;
         case EDITOR_SUB_MODE_NULL:
             editor_sub_mode_text = "";
             editor_sub_mode = mode;
