@@ -14,6 +14,7 @@
 #include "vector.h"
 
 typedef struct Model{
+    int id;
     VertexArray vertex_array;
     IndexArray index_array;
 

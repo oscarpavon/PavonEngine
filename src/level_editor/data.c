@@ -27,15 +27,22 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
 
     switch (selected_element->type)
     {
+    case ELEMENT_TYPE_MODEL:
+        break;
     case ELEMENT_TYPE_PLAYER_START:
         new_text_primitive_token("type",ELEMENT_TYPE_PLAYER_START);
         break;
     case ELEMENT_TYPE_CAMERA:
         new_text_primitive_token("type",ELEMENT_TYPE_CAMERA);
         break;
+    case ELEMENT_TYPE_PLAYER_CONTROLLER:
+        new_text_primitive_token("type",ELEMENT_TYPE_PLAYER_CONTROLLER);
+        new_text_primitive_token("model_id",player1->model->id);
+        break;
     default:
         break;
     }
+
     fputs("\t\"pos\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f],\n",selected_element->position[0] , selected_element->position[1] , selected_element->position[2]);
     fputs("\t\"rot\" : ", new_file);

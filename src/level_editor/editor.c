@@ -44,6 +44,7 @@ void editor_message(const char* message){
 }
 
 void add_editor_native_element(const char* native_element_name){
+    
     if( strcmp("Camera", native_element_name) == 0 ){
         new_empty_model();
         new_empty_element();
@@ -59,10 +60,15 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "PlayerStart01");
         selected_element->type = ELEMENT_TYPE_PLAYER_START;
         player_start = selected_element;
+        selected_element = NULL;
+        selected_model = NULL;
         
-    }else if ( strcmp("Camera", native_element_name) == 0 )
+    }else if ( strcmp("Player Controller", native_element_name) == 0 )
     {
-        
+        new_empty_element();
+        selected_element->model = selected_model;
+        strcpy(selected_element->name, "Player1");
+        selected_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
     }
 }
 
@@ -191,7 +197,7 @@ void init_editor(){
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     actual_LOD_models_array = &LOD_models;
-    actual_standard_shader = editor_standard_fragment_shader;
+    
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
@@ -223,7 +229,7 @@ void init_editor(){
 
     init_skeletal_editor();
     
-
+    actual_standard_shader = editor_standard_fragment_shader;
 }
 
 

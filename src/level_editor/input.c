@@ -77,6 +77,7 @@ void parse_command(const char* command){
         if(command[3] == 'p'){//player
             player1 = selected_element;
             player1->model->draw = false;
+            add_editor_native_element("Player Controller");
         }
     }
     if(command[1] == 'h'){        
@@ -343,6 +344,7 @@ void input_change_mode(){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
     }
 }
+bool game_initialized = false;
 void change_to_editor_mode(EditorMode mode){
     if(editor_mode == mode){
         editor_mode = EDITOR_CHANGING_MODE_MODE;
@@ -367,7 +369,9 @@ void change_to_editor_mode(EditorMode mode){
         editor_mode_show_text = "Rotate Mode";
         break;
     case EDITOR_PLAY_MODE:
-        init_game();
+        if(game_initialized == false)
+            init_game();
+        game_initialized = true;
         editor_mode_show_text = "Play Mode";
         break;
     case EDITOR_CHANGING_MODE_MODE:
@@ -685,7 +689,7 @@ void input_mode_play(){
     if(key_released(&input.ESC)){
         if(player1 != NULL)
             player1->model->draw = false;
-            
+
         player_in_start_position = false;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
     }

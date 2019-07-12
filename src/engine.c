@@ -49,8 +49,14 @@ void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
     add_model_to_array(actual_model_array,new_model);
+
+    if(selected_element != NULL)//for element garbage model pointer after reallocation
+        selected_element->model = &actual_model_array->models[selected_element->model_id];
+
     selected_model = &actual_model_array->models[actual_model_array->count-1];
     glm_mat4_identity(selected_model->model_mat);
+    selected_model->id = model_id_count;
+    model_id_count++;
 }
 
 void add_texture_to_selected_element_with_image_path(const char* image_path){
@@ -85,10 +91,10 @@ void add_element_with_model_path(const char* model_gltf_path){
         return;
     }    
     
-
-    struct Model* model0 = &new_model[0];
-  
-    glm_mat4_identity(model0->model_mat);   
+    new_empty_model();
+    memcpy(&selected_model->index_array,&new_model[0].index_array,sizeof(IndexArray));
+    memcpy(&selected_model->vertex_array,&new_model[0].vertex_array,sizeof(VertexArray));
+    struct Model* model0 = selected_model;     
 
     model0->shader = glCreateProgram();
 
@@ -116,11 +122,11 @@ void add_element_with_model_path(const char* model_gltf_path){
         new_model[2].shader = model0->shader;
         add_model_to_array(actual_LOD_models_array,new_model[2]);
         new_model->HLOD = &actual_LOD_models_array->models[actual_LOD_models_array->count-1];
-    }
+    }    
     
-    add_model_to_array(actual_model_array,new_model[0]);
-
     new_empty_element();
+    selected_element->model = selected_model;
+    selected_element->model_id = selected_model->id;
 
     strcpy(selected_element->model_path,model_gltf_path);
     
@@ -197,8 +203,14 @@ void draw_elements(Array *elements){
 
     for(size_t i = 0; i < elements->count ; i++) {                
         Element* element = get_element_from_array(elements,i);
+        if(element->model == NULL)
+            continue;
         if(element->model->draw == false)
             continue;
+        if(element->model->id > model_id_count){
+            printf("Posible gargabe model pointer , model not draw\n ");
+            continue;
+        } 
 
         struct Model *new_model;
         struct Model *LOD0 = element->model;

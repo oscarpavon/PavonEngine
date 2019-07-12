@@ -56,6 +56,8 @@ void draw_gizmos(){
         if(draw_translate_gizmo){
             Model* actual_gizmo = &gizmos.models[0];
             if(selected_element != NULL){
+                if(selected_element->model == NULL)
+                    return;
                 glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
             }
             draw_simgle_model(actual_gizmo);

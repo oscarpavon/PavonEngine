@@ -21,7 +21,8 @@ typedef enum ElementType{
     ELEMENT_TYPE_CAMERA = 1,
     ELEMENT_TYPE_PLAYER_START = 2,
     ELEMENT_TYPE_COLLIDER = 3,
-    ELEMENT_TYPE_MODEL = 4
+    ELEMENT_TYPE_MODEL = 4,
+    ELEMENT_TYPE_PLAYER_CONTROLLER = 5
 }ElementType;
 
 typedef struct Element{
@@ -37,6 +38,7 @@ typedef struct Element{
     bool selected;
     bool has_HLOD;
     bool has_LOD;
+    unsigned int model_id;
 }Element;
 
 typedef struct PlayerStart{
@@ -82,6 +84,8 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
 }
 
 unsigned int element_id_count;
+unsigned int model_id_count;
+
 Element* selected_element;
 Model* selected_model;
 Element* player1;

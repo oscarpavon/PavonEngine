@@ -13,18 +13,38 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
     init_model_array(editor_models,load_elements->count);
     for(int i = 0; i < load_elements->count; i++){
         Element* element = &load_elements->data[i*load_elements->element_bytes_size];
-        if(element->type == ELEMENT_TYPE_PLAYER_START){
+        switch (element->type)
+        {
+        case ELEMENT_TYPE_PLAYER_START:{
             new_empty_model();
             new_empty_element();
+            selected_element->type = element->type;
             selected_model->draw = false;
-            strcpy(selected_element->name, "PlayerStart01");
-            selected_element->type = ELEMENT_TYPE_PLAYER_START;
+            strcpy(selected_element->name, "PlayerStart01");            
             glm_vec3_copy(element->position,selected_element->position);
             glm_vec4_copy(element->rotation,selected_element->rotation);
             glm_translate(selected_model->model_mat,selected_element->position);
             player_start = selected_element;
             continue;
+            break;
+        }            
+            
+        case ELEMENT_TYPE_PLAYER_CONTROLLER:{
+            new_empty_model();
+            new_empty_element();
+            selected_model->draw = false;
+            selected_element->type = element->type;
+            strcpy(selected_element->name, "Player");
+            selected_element->model = &actual_model_array->models[element->model_id];           
+            selected_element->model_id = element->model_id;
+            player1 = selected_element;
+            continue;
+            break;
         }
+        
+        default:
+            break;
+        }        
 
         if(element->duplicated_of_id==-1 && element->id != CAMERA__ELEMENT_ID){
             if( strcmp(element->model_path, "") == 0){

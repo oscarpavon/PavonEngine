@@ -308,28 +308,29 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 
     if (jsoneq(js, token-1, "type") == 0){     
       
-      if(get_token_primitive_value(token) == ELEMENT_TYPE_PLAYER_START){
+      switch (get_token_primitive_value(token))
+      {
+      case ELEMENT_TYPE_PLAYER_START:
         actual_element->type = ELEMENT_TYPE_PLAYER_START;
+        break;
+      case ELEMENT_TYPE_PLAYER_CONTROLLER:
+        actual_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
+      default:
+        break;
       }
+
       
     }
-
-    if (jsoneq(js, token-1, "id") == 0){
-       
-      size_t size = get_token_size(token);
-      char text[size+1];
-      memcpy(&text,&js[token->start],size);
-      text[size] = '\0';
-      unsigned int model_id = atoi(text);
-      memcpy(&actual_element->id, &model_id, sizeof(unsigned int));
+    if (jsoneq(js, token-1, "model_id") == 0){
+      actual_element->model_id = get_token_primitive_value(token);
     }
+
+    if (jsoneq(js, token-1, "id") == 0){       
+      actual_element->id = get_token_primitive_value(token);
+    }
+
     if (jsoneq(js, token-1, "copy") == 0){
-      size_t size = get_token_size(token);
-      char text[size+1];
-      memcpy(&text,&js[token->start],size);
-      text[size] = '\0';
-      unsigned int model_id = atoi(text);
-      memcpy(&actual_element->duplicated_of_id, &model_id, sizeof(unsigned int));
+      actual_element->duplicated_of_id = get_token_primitive_value(token);
       element_id++;
     }
 

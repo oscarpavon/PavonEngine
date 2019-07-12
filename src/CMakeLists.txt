@@ -40,7 +40,7 @@ if(NOT ANDROID)
         add_executable(Editor ${editor_sources} ${engine_source} ${game_source})
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
-
+        target_compile_definitions(Editor PRIVATE EDITOR)
 
         
         add_executable(Game ${engine_source} Game/main.c level_editor/windows.c ${game_source})        
