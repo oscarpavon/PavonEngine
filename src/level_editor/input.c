@@ -17,10 +17,7 @@
 
 #include "../game.h"
 
-bool move_camera;
-
-
-EditorMode mode_to_change;
+#include "editor_mode.h"
 
 float horizontalAngle = 0;
 float verticalAngle = 0;
@@ -65,15 +62,15 @@ void parse_command(const char* command){
     if(editor_mode == EDITOR_MODE_GUI_EDITOR){
          if(command[1] == 'w'){
             
+            save_gui_data(&command[3]);
             printf("GUI saved: %s\n",&command[3]);
         }
         if(command[1] == 'o'){        
-            
             printf("GUI loaded\n");
         }
     }else{
         if(command[1] == 'w'){
-            save_data(&command[3]);
+            save_level_data(&command[3]);
             printf("Level saved: %s\n",&command[3]);
         }
         if(command[1] == 'o'){        
@@ -119,13 +116,31 @@ void parse_characters(unsigned char character){
     if(character == ':'){
         printf("Command mode\n");
         command_text_buffer[character_count] = character;
-        character_count++;
-        change_to_editor_mode(EDITOR_TEXT_INPUT_MODE);
+        character_count++;        
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+        return;
     }
-    if(editor_mode == EDITOR_TEXT_INPUT_MODE){
+    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
         command_text_buffer[character_count] = character;
         character_count++;
     }
+}
+
+void text_input_mode(){
+    if(key_released(&input.ENTER)){
+        parse_command(command_text_buffer);
+        character_count = 0;
+        memset(command_text_buffer,0,sizeof(command_text_buffer));
+        
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+    }
+    if(key_released(&input.BACKSPACE)){
+        character_count--;
+        command_text_buffer[character_count] = '\0';
+    }
+    set_text_size(12);
+    render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
+
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint){
@@ -137,22 +152,6 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
     parse_characters(character[0]);
 }
 
-void text_input_mode(){
-    if(key_released(&input.ENTER)){
-        parse_command(command_text_buffer);
-        character_count = 0;
-        memset(command_text_buffer,0,sizeof(command_text_buffer));
-        if(editor_mode != EDITOR_CHANGING_MODE_MODE)
-            change_to_editor_mode(EDITOR_DEFAULT_MODE);
-    }
-    if(key_released(&input.BACKSPACE)){
-        character_count--;
-        command_text_buffer[character_count] = '\0';
-    }
-    set_text_size(12);
-    render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
-
-}
 
 void camera_mouse_control(float yaw, float pitch){
     vec3 front;
@@ -318,7 +317,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			if(action == GLFW_PRESS){
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
-                move_camera = false;
+                move_camera_input = false;
                 mouse_navigate_control = false;
                 change_to_editor_mode(EDITOR_DEFAULT_MODE);
 				
@@ -331,7 +330,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		if (button == GLFW_MOUSE_BUTTON_LEFT ){
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
-                move_camera = true;
+                move_camera_input = true;
                 mouse_navigate_control = true;
                 change_to_editor_mode(EDITOR_NAVIGATE_MODE);
 			
@@ -360,49 +359,6 @@ void input_change_mode(){
     if(key_released(&input.V)){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
     }
-}
-bool game_initialized = false;
-void change_to_editor_mode(EditorMode mode){
-    if(editor_mode == mode){
-        editor_mode = EDITOR_CHANGING_MODE_MODE;
-        change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        return;
-    }
-    editor_mode = EDITOR_CHANGING_MODE_MODE;
-    mode_to_change = mode;
-    switch (mode)
-    {    
-    case EDITOR_DEFAULT_MODE:
-        editor_mode_show_text = "Default Mode";
-        break;
-    case EDITOR_NAVIGATE_MODE:
-        editor_mode_show_text = "Navigate Mode";
-        move_camera = true;
-        break;
-    case EDITOR_GRAB_MODE:
-        editor_mode_show_text = "Grab Mode";
-        break;
-    case EDITOR_ROTATE_MODE:
-        editor_mode_show_text = "Rotate Mode";
-        break;
-    case EDITOR_MODE_GUI_EDITOR:
-        editor_mode_show_text = "GUI Editor";
-        break;
-    case EDITOR_PLAY_MODE:
-        if(game_initialized == false)
-            init_game();
-        game_initialized = true;
-        editor_mode_show_text = "Play Mode";
-        break;
-    case EDITOR_CHANGING_MODE_MODE:
-        editor_mode = mode_to_change;
-        break;
-    case EDITOR_TEXT_INPUT_MODE:
-        editor_mode_show_text = "Text Input";
-    default:
-        break;
-    } 
-    memset(&input,0,sizeof(Input));
 }
 
 
@@ -491,6 +447,7 @@ void grab_mode(){
         }
     }
 }
+
 float rotate_value = 100;
 
 void navigate_mode(){
@@ -580,6 +537,7 @@ void navigate_mode(){
     }
     
 }
+
 void input_text_menu(TextMenu* menu, Key* open_key, int mods){
     if(mods == NULL){
         if( key_released(open_key) ){
@@ -695,6 +653,7 @@ void rotate_input_mode(){
         rotate_editor_element(selected_element, 5, (vec3){0,0,1});
     }
 }
+
 bool player_in_start_position = false;
 void input_mode_play(){
 
@@ -740,35 +699,47 @@ void input_gui_editor(){
 }
 
 void update_input(){
-    switch (editor_mode)
-    {    
-    case EDITOR_DEFAULT_MODE:
-        default_mode();
-        break;
-    case EDITOR_NAVIGATE_MODE:
-        navigate_mode();
-        break;
-    case EDITOR_GRAB_MODE:
-        grab_mode();
-        break;
-    case EDITOR_ROTATE_MODE:
-        rotate_input_mode();
-        break;
-    case EDITOR_TEXT_INPUT_MODE:
+    if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
+        switch (editor_mode)
+        {    
+        case EDITOR_DEFAULT_MODE:
+            default_mode();
+            break;
+        case EDITOR_NAVIGATE_MODE:
+            navigate_mode();
+            break;
+        case EDITOR_GRAB_MODE:
+            grab_mode();
+            break;
+        case EDITOR_ROTATE_MODE:
+            rotate_input_mode();
+            break;
+        case EDITOR_PLAY_MODE:
+            input_mode_play();
+            break;
+        case EDITOR_MODE_GUI_EDITOR:
+            input_gui_editor();
+            break;
+        case EDITOR_CHANGING_MODE_MODE:
+            editor_mode = mode_to_change;
+            break;
+        default:
+            break;
+        } 
+
+    }
+    
+    switch (editor_sub_mode)
+    {
+    case EDITOR_SUB_MODE_TEXT_INPUT:
         text_input_mode();
         break;
-    case EDITOR_PLAY_MODE:
-        input_mode_play();
+    case EDITOR_SUB_MODE_NULL:
         break;
-    case EDITOR_MODE_GUI_EDITOR:
-        input_gui_editor();
-        break;
-    case EDITOR_CHANGING_MODE_MODE:
-        editor_mode = mode_to_change;
-        break;
+
     default:
         break;
-    } 
+    }
    
 }
 

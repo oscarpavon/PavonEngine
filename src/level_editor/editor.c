@@ -220,8 +220,10 @@ void init_editor(){
     element_id_count = 0;    
 
     editor_mode = EDITOR_DEFAULT_MODE;
-
+    editor_sub_mode = EDITOR_SUB_MODE_NULL;
+    
     editor_mode_show_text = "Default Mode";
+    editor_sub_mode_text = "";
 
     init_input();
 

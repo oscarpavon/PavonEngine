@@ -14,7 +14,6 @@
 
 #include "editor_gizmos.h"
 
-
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -22,9 +21,10 @@ typedef enum EditorMode{
     EDITOR_ROTATE_MODE,
     EDITOR_NAVIGATE_MODE,
     EDITOR_CHANGING_MODE_MODE,
-    EDITOR_TEXT_INPUT_MODE,
     EDITOR_PLAY_MODE,
-    EDITOR_MODE_GUI_EDITOR
+    EDITOR_MODE_GUI_EDITOR,
+    EDITOR_SUB_MODE_TEXT_INPUT,
+    EDITOR_SUB_MODE_NULL
 }EditorMode;
 
 void init_editor();
@@ -60,8 +60,10 @@ void add_editor_native_element(const char* native_element_name);
 void play_game_standalone();
 
 char* editor_mode_show_text;
+char* editor_sub_mode_text;
 
 enum EditorMode editor_mode;
+enum EditorMode editor_sub_mode;
 
 float camera_velocity;
 

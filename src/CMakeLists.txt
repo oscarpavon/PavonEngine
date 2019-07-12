@@ -24,6 +24,9 @@ set (game_source
 
 if(NOT ANDROID)
 
+
+       add_compile_options (-fdiagnostics-color=always)
+
         #set(CMAKE_BUILD_TYPE Debug)
 
         set(editor_sources 
@@ -35,6 +38,7 @@ if(NOT ANDROID)
         level_editor/skeletal_editor.c
         level_editor/data.c
         level_editor/editor_gizmos.c
+        level_editor/editor_mode.c
         )
 
         add_executable(Editor ${editor_sources} ${engine_source} ${game_source})

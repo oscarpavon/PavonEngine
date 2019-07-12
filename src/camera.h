@@ -28,4 +28,6 @@ versor camera_rotation;
 void init_camera();
 void update_look_at();
 
+bool move_camera_input;
+
 #endif //PAVONTHEGAME_CAMERA_H

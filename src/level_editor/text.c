@@ -376,6 +376,11 @@ void draw_editor_mode(){
     render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 }
 
+void draw_editor_sub_mode(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text(editor_sub_mode_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-40) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+}
+
 void update_text_menu(TextMenu* menu){
     if(menu->execute){
         if(menu->draw_text_funtion != NULL)
@@ -405,6 +410,9 @@ void update_text_menu(TextMenu* menu){
 void text_renderer_loop(){ 
     
     draw_editor_mode();
+    if(editor_sub_mode != EDITOR_SUB_MODE_NULL){
+        draw_editor_sub_mode();
+    }
     
     update_text_menu(&add_texture_menu);
 
