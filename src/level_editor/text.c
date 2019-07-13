@@ -208,7 +208,7 @@ void create_text_texture_buffer(){
 }
 
 void init_text_shader(){
-    text_fragment_shader = compile_shader(text_fragment_shader_source,GL_FRAGMENT_SHADER);
+    text_fragment_shader = compile_shader(fragment_shader_colorized,GL_FRAGMENT_SHADER);
     text_vertex_shader = compile_shader(text_vertex_shader_source,GL_VERTEX_SHADER);
 
     text_shader_id = glCreateProgram();

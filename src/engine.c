@@ -18,6 +18,44 @@
 
 #include <unistd.h>
 
+void update_draw_vertices(GLuint shader, GLuint buffer){
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    glUseProgram(shader);
+
+    mat4 mvp;
+    glm_mat4_identity(mvp);
+
+    mat4 model;
+    glm_mat4_identity(model);
+    update_mvp(model, mvp);
+
+    GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
+    if(mvp_uniform == -1){
+        printf("MVP uniform not found\n");
+        return;
+    }
+
+    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
+    
+    GLenum error;
+    error = glGetError();
+    if(error != GL_NO_ERROR){
+        LOGW("[X] Send matrix error, Error %08x \n",error);
+    }
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+}
+
+void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id){
+    glGenBuffers(1,id);
+    GLuint id_copy;
+    memcpy(&id_copy,id,sizeof(GLuint));
+    glBindBuffer(GL_ARRAY_BUFFER,id_copy);
+    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->vertices, GL_STATIC_DRAW);
+
+}
+
 void select_last_element(){
     if(selected_element != NULL)
         selected_element->selected = false;
@@ -223,8 +261,10 @@ void draw_elements(Array *elements){
         }
         
         GLenum error;
-        glUseProgram(new_model->shader);
         
+        update_draw_vertices(new_model->shader,new_model->vertex_buffer_id);
+
+        glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
         GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
         if(element->selected){            
             
@@ -233,32 +273,13 @@ void draw_elements(Array *elements){
         {
            glUniform4fv(uniform_color, 1, white);
         }
-        
-        
-        glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
-      
-        mat4 mvp;
-        glm_mat4_identity(mvp);
-        
-        update_mvp(LOD0->model_mat, mvp);
 
-        GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
-        if(mvp_uniform == -1){
-            printf("MVP uniform not found\n");
-        }
-    
-        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
-        
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("[X] Send matrix error, Error %08x \n",error);
+            LOGW("[X] Send unifrom color error, Error %08x \n",error);
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
-    
-        glEnableVertexAttribArray(0);        
-    
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);    
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));

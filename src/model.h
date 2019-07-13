@@ -40,8 +40,7 @@ typedef struct Model{
 }Model;
 
 struct Geometry{
-    unsigned int vertex_count;
-    struct Vertex* vertices;
+    VertexArray vertex_array;
 };
 
 

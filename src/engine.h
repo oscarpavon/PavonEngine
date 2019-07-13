@@ -68,6 +68,9 @@ void set_element_position(Element* element, vec3 position);
 
 void update_viewport_size();
 
+void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id);
+void update_draw_vertices(GLuint shader, GLuint buffer);
+
 extern void new_empty_element();
 
 extern void new_empty_model();
@@ -99,4 +102,10 @@ ModelArray* actual_LOD_models_array;
 GLuint actual_standard_shader;
 Array* actual_buttons_array;
 
+
+static inline init_shader(GLuint shader, GLuint vertex_shader, GLuint fragment_shader){
+    glAttachShader(shader, vertex_shader);
+    glAttachShader(shader, fragment_shader);
+    glLinkProgram(shader);
+}
 #endif //PAVON_MOBILE_ENGINE_H

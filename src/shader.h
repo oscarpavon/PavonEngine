@@ -32,7 +32,7 @@ precision mediump float; \
 //end";
 
 
-static const char*  text_fragment_shader_source = "#version 100 \n\
+static const char*  fragment_shader_colorized = "#version 100 \n\
     precision mediump float;                    \
    uniform sampler2D texture_sampler;           \
    varying vec2 v_TexCoord;                     \
