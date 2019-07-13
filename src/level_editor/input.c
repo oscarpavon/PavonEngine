@@ -155,16 +155,23 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
     parse_characters(character[0]);
 }
 
-
-void camera_mouse_control(float yaw, float pitch){
+bool first_camera_rotate = true;
+vec3 init_front;
+void camera_rotate_control(float yaw, float pitch){
     vec3 front;
-    
+
     front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
     front[1] = sin(glm_rad(pitch));
     front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
 
-    
+    if(first_camera_rotate == true){
+        glm_vec3_copy(camera_front,init_front);
+        glm_vec3_mul(init_front,(vec3){0,5,0},init_front);
+        first_camera_rotate = false;
+    }
+    //glm_vec3_add(init_front,front,front);
 
+    //glm_vec3_rotate(front,45,(vec3){0,0,1});    
     glm_normalize(front);
 
     glm_vec3_copy(front, camera_front);
@@ -183,7 +190,7 @@ void mouse_movement_control(float xpos, float ypos){
     horizontalAngle *= 0.05;
     verticalAngle *= 0.05;
 
-    camera_mouse_control(0, horizontalAngle);
+    camera_rotate_control(0, horizontalAngle);
     
 
 }
@@ -489,7 +496,7 @@ void navigate_mode(){
         update_look_at();
     }
     if(input.J.pressed){
-        horizontalAngle += 800/2 - rotate_value ;
+        horizontalAngle += camera_width_screen/2 - rotate_value ;
         rotate_value -= 30;
         if(rotate_value < -10000){
             rotate_value = -100;
@@ -499,11 +506,11 @@ void navigate_mode(){
 
         horizontalAngle *= 0.05;
         verticalAngle *= 0.05;
-
-        camera_mouse_control(0, horizontalAngle);
+        
+        camera_rotate_control(0, horizontalAngle);
     }
     if(input.K.pressed){
-         horizontalAngle += 800/2 - rotate_value ;
+         horizontalAngle += camera_width_screen/2 - rotate_value ;
         rotate_value += 30;
         if(rotate_value > 10000){
             rotate_value = 100;
@@ -514,7 +521,7 @@ void navigate_mode(){
         horizontalAngle *= 0.05;
         verticalAngle *= 0.05;
 
-        camera_mouse_control(0, horizontalAngle);
+        camera_rotate_control(0, horizontalAngle);
     }
 
     if(input.W.pressed){

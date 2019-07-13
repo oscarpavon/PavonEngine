@@ -24,9 +24,6 @@ ModelArray editor_models;
 
 ModelArray LOD_models;
 
-CameraElement camera_in_editor;
-
-
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
@@ -51,6 +48,20 @@ void add_editor_native_element(const char* native_element_name){
         selected_model->draw = false;
         strcpy(selected_element->name, "Camera01");
         selected_element->type = ELEMENT_TYPE_CAMERA;
+        ElementComponent camera_component;
+        memset(&camera_component,0,sizeof(ElementComponent));
+        add_element_to_array(&components,&camera_component);
+        ElementComponent * component = get_element_from_array(&components,0);
+        selected_element->components = component;
+        component->id = 0;
+        component->bytes_size = sizeof(CameraComponent);
+        component->data = malloc(component->bytes_size);
+        CameraComponent* camera = component->data;
+        glm_vec3_copy((vec3){0,1,0},camera->front);
+        glm_mat4_copy(main_camera.projection,camera->projection);
+        vec3 look_pos;
+        glm_vec3_add(selected_element->position, camera->front, look_pos);
+        glm_lookat(selected_element->position, look_pos, camera_up , camera->view);
         
     }else if ( strcmp("Player Start", native_element_name) == 0 )
     {
@@ -201,7 +212,7 @@ void init_editor(){
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
-    init_vec3(0,6,2, camera_position);
+    init_vec3(-6,0,2, camera_position);
     update_look_at();
 
     init_model_array(&editor_models, 1);

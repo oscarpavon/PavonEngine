@@ -12,10 +12,12 @@ typedef struct camera {
     mat4 view;
 }Camera;
 
-typedef struct CameraElement{
-    vec3 position;
-    versor rotation;
-}CameraElement;
+typedef struct CameraComponent{
+    mat4 projection;
+    mat4 view;
+    vec3 front;
+    vec3 up;
+}CameraComponent;
 
 Camera main_camera;
 vec3 camera_up;
@@ -29,5 +31,7 @@ void init_camera();
 void update_look_at();
 
 bool move_camera_input;
+
+float camera_rotate_angle;
 
 #endif //PAVONTHEGAME_CAMERA_H

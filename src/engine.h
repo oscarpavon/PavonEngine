@@ -19,6 +19,17 @@ struct android_app* app;
 #include "file_loader.h"
 #include "Engine/files_parser.h"
 
+typedef enum ElementComponentType{
+    ELEMENT_COMPONENT_TYPE_CAMERA
+}ElementComponentType;
+
+typedef struct ElementComponent{
+    ElementComponentType type;
+    unsigned int id;
+    unsigned short int bytes_size;
+    void* data;
+}ElementComponent;
+
 typedef enum ElementType{
     ELEMENT_TYPE_CAMERA = 1,
     ELEMENT_TYPE_PLAYER_START = 2,
@@ -41,6 +52,8 @@ typedef struct Element{
     bool has_HLOD;
     bool has_LOD;
     unsigned int model_id;
+    unsigned int components_count;
+    ElementComponent* components;
 }Element;
 
 typedef struct PlayerStart{
@@ -76,6 +89,7 @@ void update_viewport_size();
 
 void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id);
 void update_draw_vertices(GLuint shader, GLuint buffer);
+void update_gpu_vertex_data(VertexArray* array, GLuint id);
 
 extern void new_empty_element();
 
@@ -96,6 +110,7 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
 
 unsigned int element_id_count;
 unsigned int model_id_count;
+unsigned int components_id_count;
 
 Element* selected_element;
 Model* selected_model;
@@ -114,4 +129,7 @@ static inline init_shader(GLuint shader, GLuint vertex_shader, GLuint fragment_s
     glAttachShader(shader, fragment_shader);
     glLinkProgram(shader);
 }
+
+Array components;
+
 #endif //PAVON_MOBILE_ENGINE_H

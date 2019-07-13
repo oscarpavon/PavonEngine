@@ -14,4 +14,6 @@ bool can_draw_skeletal_bones;
 
 ModelArray gizmos;
 
+Element* selected_camera;
+
 #endif

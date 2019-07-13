@@ -56,6 +56,12 @@ void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id){
 
 }
 
+void update_gpu_vertex_data(VertexArray* array, GLuint id){
+    glBindBuffer(GL_ARRAY_BUFFER,id);
+    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->vertices, GL_STATIC_DRAW);
+
+}
+
 void select_last_element(){
     if(selected_element != NULL)
         selected_element->selected = false;
@@ -419,6 +425,9 @@ void init_engine(){
     //sleep(2);
 
     init_gui();
+
+    init_array(&components,sizeof(ElementComponent));
+    components_id_count = 0;
 
 }
 ModelArray models;

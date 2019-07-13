@@ -6,10 +6,17 @@
 bool game_initialized = false;
 
 void change_to_editor_sub_mode(EditorMode mode){    
+    if(editor_mode != EDITOR_DEFAULT_MODE && mode == EDITOR_SUB_MODE_GRAB){
+        change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        return;
+    }
+        
+
     if(editor_sub_mode == mode){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
         return;
-    }
+    }    
+
     switch (mode)
     { 
         case EDITOR_SUB_MODE_TEXT_INPUT:
@@ -35,6 +42,9 @@ void change_to_editor_sub_mode(EditorMode mode){
     }
 }
 void change_to_editor_mode(EditorMode mode){
+    if(editor_sub_mode != EDITOR_SUB_MODE_NULL)
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+
     if(editor_mode == mode){
         editor_mode = EDITOR_CHANGING_MODE_MODE;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);

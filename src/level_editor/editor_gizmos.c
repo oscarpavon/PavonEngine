@@ -64,6 +64,14 @@ void init_line_vertices(DebugLine* line){
 
 }
 
+void update_line_vertices(DebugLine* line){
+    struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};
+    struct Vertex vert2 = {{line->end[0],line->end[1], line->end[2]},{0,0}};
+
+    memcpy(&line->vertex_array.vertices[0], &vert, sizeof(struct Vertex));
+    memcpy(&line->vertex_array.vertices[1], &vert2, sizeof(struct Vertex));
+}
+
 void init_line(DebugLine* line){
     init_line_vertices(line);
     line->shader = glCreateProgram();
@@ -105,12 +113,41 @@ void draw_grid_lines(){
     }
 
 }
+void draw_camera_direction(){
+    if(selected_element != NULL && selected_element->type == ELEMENT_TYPE_CAMERA){
+        vec3 direction;
+        CameraComponent* camera = get_element_from_array(&components,0);
+        vec3 look_pos;
+        glm_vec3_add(selected_element->position, camera->front, look_pos);        
+        glm_vec3_sub(look_pos,selected_element->position,direction);
+
+        DebugLine* line = get_element_from_array(&debug_objects,2);
+        glm_vec3_copy(selected_element->position,line->start);
+        
+        vec3 front_dir;
+        glm_vec3_copy((vec3){0,-1,0},front_dir);
+
+        vec3 direction_len;
+        glm_vec3_mul((vec3){2,2,2},front_dir,direction_len);
+
+        vec3 pos2;
+        glm_vec3_add(selected_element->position,direction_len,pos2);
+        
+        glm_vec3_copy(pos2,line->end);
+        update_line_vertices(line);
+        update_gpu_vertex_data(&line->vertex_array,line->vertex_buffer_id);
+    }
+    
+    
+}
 
 void draw_gizmos(){
     if(can_draw_skeletal_bones)   
         draw_skeletal_bones();
 
     if(can_draw_gizmos){
+        draw_camera_direction();
+
         draw_grid_lines();
 
         for(int i = 0; i< editor_elements.count ; i++){
@@ -174,4 +211,6 @@ void init_gizmos(){
     add_debug_line((vec3){0,0,5},(vec3){0,0,-5});
     add_debug_line((vec3){0,5,0},(vec3){0,-5,0});
     add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
+
+    add_debug_line((vec3){1,1,1},(vec3){0,1,0});
 }
