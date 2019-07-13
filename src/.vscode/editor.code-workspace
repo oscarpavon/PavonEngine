@@ -38,7 +38,8 @@
 			"istream": "c",
 			"ostream": "c",
 			"type_traits": "c",
-			"tuple": "c"
+			"tuple": "c",
+			"time.h": "c"
 		}
 	}
 }

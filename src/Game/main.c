@@ -28,10 +28,9 @@ int main(){
         update_envents();
    
         update_game();
-        engine_loop();
         
-     
-       
+        engine_loop();      
+    
         glfwSwapBuffers(main_window.window);
     }   
     

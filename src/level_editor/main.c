@@ -27,10 +27,19 @@ int main(){
     {
         update_envents();
 
+        struct timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
         update_editor();
         update_input();
    
         glfwSwapBuffers(main_window.window);
+
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+
+        struct timespec result = diff(time1,time2);
+        frame_time = result.tv_nsec / 1000000;        
     }
     clean_editor();
     

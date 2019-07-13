@@ -62,6 +62,8 @@ void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
 
+struct timespec diff(struct timespec start, struct timespec end);
+
 char* editor_mode_show_text;
 char* editor_sub_mode_text;
 

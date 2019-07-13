@@ -94,8 +94,8 @@ void save_level_info(FILE* new_file){
 }
 
 void header_info(){
-    new_text_primitive_token("type",actual_data_type);
     new_text_primitive_token("elements",element_id_count+1);
+    new_text_primitive_token("type",actual_data_type);
     new_text_primitive_token("tokens",token_count);
     
 }

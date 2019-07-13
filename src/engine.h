@@ -19,6 +19,9 @@ struct android_app* app;
 #include "file_loader.h"
 #include "Engine/files_parser.h"
 
+
+#include <time.h>
+
 typedef enum ElementComponentType{
     ELEMENT_COMPONENT_TYPE_CAMERA
 }ElementComponentType;
@@ -131,5 +134,7 @@ static inline init_shader(GLuint shader, GLuint vertex_shader, GLuint fragment_s
 }
 
 Array components;
+
+float frame_time;
 
 #endif //PAVON_MOBILE_ENGINE_H

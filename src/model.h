@@ -17,7 +17,9 @@ typedef struct Model{
     int id;
     VertexArray vertex_array;
     IndexArray index_array;
-
+    vec3 min;
+    vec3 max;
+    
     GLuint vertex_buffer_id;
     GLuint index_buffer_id;
 
@@ -37,6 +39,9 @@ typedef struct Model{
     bool change_to_HLOD;
     
     bool draw;
+
+    
+
 }Model;
 
 struct Geometry{

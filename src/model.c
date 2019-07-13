@@ -14,6 +14,35 @@ IndexArray* actual_index_array;
 struct Model* actual_model;
 bool model_loaded = false;
 
+
+void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){ 
+
+    for(size_t v = 0 ; v < data->accessors[0].count ; v++){
+            struct Vertex vertex;
+            vertex.uv[0] = 0;
+            vertex.uv[1] = 0;
+            cgltf_accessor_read_float(&data->accessors[0],v,&vertex.postion[0],3);
+            add_vextex_to_array(out_vertex_array,vertex);
+    }
+
+  if(data->accessors[0].has_min){
+    vec3 min;
+    memcpy(&min[0],&data->accessors[0].min[0],sizeof(float));
+    memcpy(&min[1],&data->accessors[0].min[1],sizeof(float));
+    memcpy(&min[2],&data->accessors[0].min[2],sizeof(float));
+    glm_vec3_copy(min,actual_model->min);
+  }
+  if(data->accessors[0].has_max){
+    vec3 max;
+    memcpy(&max[0],&data->accessors[0].max[0],sizeof(float));
+    memcpy(&max[1],&data->accessors[0].max[1],sizeof(float));
+    memcpy(&max[2],&data->accessors[0].max[2],sizeof(float));
+    memcpy(max,actual_model->max,sizeof(vec3));
+    glm_vec3_copy(max,actual_model->max);
+  }
+}
+
+
 void load_uv(cgltf_data* data, VertexArray* out_vertex_array){
 
 
@@ -32,9 +61,8 @@ void load_indices(cgltf_data* data, IndexArray* index_array){
         add_index_to_array(index_array,index);
     }
 
-
-
 }
+
 void read_accesor_vertex(cgltf_accessor* accessor){
   for(size_t v = 0 ; v < accessor->count ; v++){
     struct Vertex vertex;
@@ -84,18 +112,6 @@ void load_primitive(cgltf_primitive* primitive){
 void load_mesh(cgltf_mesh* mesh){
   load_primitive(&mesh->primitives[0]);
   model_loaded = true;
-}
-
-void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){ 
-
-    for(size_t v = 0 ; v < data->accessors[0].count ; v++){
-            struct Vertex vertex;
-            vertex.uv[0] = 0;
-            vertex.uv[1] = 0;
-            cgltf_accessor_read_float(&data->accessors[0],v,&vertex.postion[0],3);
-            add_vextex_to_array(out_vertex_array,vertex);
-    }
-
 }
 
 void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_to_store){
@@ -218,6 +234,8 @@ int load_model(const char* path , struct Model* model){
     close_file(&new_file);
     return 0;
   }  
+  
+  //load_mesh(data->nodes[0].mesh);
 
   load_primitives(data,&model->vertex_array);
   load_indices(data, &model->index_array);

@@ -24,6 +24,19 @@ ModelArray editor_models;
 
 ModelArray LOD_models;
 
+struct timespec diff(struct timespec start, struct timespec end)
+{
+    struct timespec temp;
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        temp.tv_sec = end.tv_sec-start.tv_sec-1;
+        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+    } else {
+        temp.tv_sec = end.tv_sec-start.tv_sec;
+        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    return temp;
+}
+
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
@@ -127,6 +140,10 @@ void update_camera_aspect_ratio(){
 Array load_elements;
 
 void load_level_in_editor(const char* name){
+    struct timespec time1, time2;
+    int temp;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
     char* level_folder = "../Game/levels/";
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
@@ -140,6 +157,11 @@ void load_level_in_editor(const char* name){
     add_loaded_elements(&load_elements, &editor_models, &editor_elements);
     clean_array(&load_elements);
     
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+
+    struct timespec result = diff(time1,time2);
+    long millisecond = result.tv_nsec / 1000000;
+    printf("Level loading time: %ld ms\n",millisecond);
 }
 
 void duplicate_selected_element(){

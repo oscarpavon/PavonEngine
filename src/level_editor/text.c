@@ -407,9 +407,21 @@ void update_text_menu(TextMenu* menu){
     }   
 }
 
+void draw_frame_time(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text("Frame:" , 0 + ((camera_width_screen/2)-200) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    char buf[5]; 
+  
+    gcvt(frame_time, 6, buf);
+    render_text(buf , 0 + ((camera_width_screen/2)-150) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    render_text("ms" , 0 + ((camera_width_screen/2)-140) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+
+}
+
 void text_renderer_loop(){ 
     
     draw_editor_mode();
+    draw_frame_time();
     if(editor_sub_mode != EDITOR_SUB_MODE_NULL){
         draw_editor_sub_mode();
     }
