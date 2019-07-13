@@ -3,7 +3,11 @@
 #define JSMN_HEADER
 #include "../third_party/jsmn.h"
 #include "../engine.h"
+#include "../level_editor/data.h"
 
+int header_size = 0;
+DataType actual_data_type;
+unsigned int elements_count = 0;
 
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
@@ -13,7 +17,6 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   return -1;
 }
 
-#define LEVEL_HEADER_SIZE 24
 static inline size_t get_token_size(jsmntok_t *t){
   size_t length = t->end - t->start;
   return length;
@@ -70,7 +73,24 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 	}
 
 	if (token->type == JSMN_PRIMITIVE) {
-
+    if (jsoneq(js, token-1, "elements") == 0){
+      elements_count = get_token_primitive_value(token);
+    }
+    if(actual_data_type == DATA_TYPE_HEADER){
+      if (jsoneq(js, token-1, "type") == 0){ 
+          unsigned int type = get_token_primitive_value(token);
+          switch (type)
+          {
+          case DATA_TYPE_LEVEL:
+            actual_data_type = type;
+            break;
+          case DATA_TYPE_GUI:
+            actual_data_type = type;
+          default:
+            break;
+          } 
+      }
+    }
     if (jsoneq(js, token-1, "type") == 0){     
       
       switch (get_token_primitive_value(token))
@@ -179,29 +199,32 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 }
 
 
-int parse_elements_count(const char* json_file){
+int parse_header(const char* json_file){
+  actual_json_file = json_file;
+  actual_data_type = DATA_TYPE_HEADER;
+  for(int i = 0; i < 100 ; i++){
+    if(json_file[i] == '}'){
+      break;
+    }
+    header_size++;
+  }
+  header_size += 2;
+  printf("Json Header size: %i\n",header_size);
+
   jsmn_parser parser;
   jsmn_init(&parser);
 
-  jsmntok_t level_info_tokens[3];
-  int model_count = 0;
-  jsmn_parse(&parser,json_file,22,level_info_tokens,3);
+  jsmntok_t header_tokens[20];
 
-  jsmntok_t* count_model_token = &level_info_tokens[2];
-  size_t size = get_token_size(count_model_token);
-  char text[size+1];
-  memcpy(&text,&json_file[count_model_token->start],size);
-  text[size] = '\0';
-  unsigned int model_id = atoi(text);
+  int token_parsed = jsmn_parse(&parser,json_file,header_size,header_tokens,20);
+  
+  dump(actual_json_file,header_tokens,token_parsed,0);
 
-  int model_count_result = 0;
-  memcpy(&model_count_result, &model_id, sizeof(unsigned int));
-  printf("Elements count: %i\n",model_count_result);
-  return model_count_result;
+  return 0;
 }
 
 void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
-  int elements_count = parse_elements_count(json_file);
+  parse_header(json_file);
   int token_count = elements_count *(2+3+4+2+2+1+1);//id + id_num + pos + array + 3 pos + rot + 4 rot + path + textur + textur + model path  
   
   jsmn_parser parser;
@@ -211,14 +234,15 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   
 
 
-  char* models_json_file = malloc(json_file_size-LEVEL_HEADER_SIZE);
-  memset(models_json_file,0,json_file_size-LEVEL_HEADER_SIZE);
-  models_json_file[json_file_size-LEVEL_HEADER_SIZE] = '\0';
+  char* models_json_file = malloc(json_file_size-header_size);
+  memset(models_json_file,0,json_file_size-header_size);
+  models_json_file[json_file_size-header_size] = '\0';
 
-  memcpy(models_json_file,json_file+LEVEL_HEADER_SIZE,json_file_size-LEVEL_HEADER_SIZE);
+  memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  //printf("%s\n", models_json_file);  
+  //printf("%s\n", models_json_file);
 
+  actual_json_file = models_json_file;
   Element elements[elements_count];
   memset(elements,0,sizeof(elements));
   _elements_array = &elements[0];
@@ -226,7 +250,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
       elements[i].duplicated_of_id = -1;
   }
 
-  int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-LEVEL_HEADER_SIZE , tokens,max_tokens);
+  int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-header_size , tokens,max_tokens);
 
   init_array(out_element,sizeof(Element));   
 
@@ -244,5 +268,5 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 }
 
 void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* out_element){
-    
+    parse_header(json_file);
 }

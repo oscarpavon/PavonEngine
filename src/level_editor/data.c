@@ -1,8 +1,11 @@
+#include "data.h"
 #include "editor.h"
 #include "../camera.h"
 #include "../gui.h"
 
 FILE* actual_file;
+DataType actual_data_type;
+
 int add_array_of_numbers(int count){
     
     return 0;
@@ -29,7 +32,14 @@ void new_text_vec3_token(const char* text,vec3 vec){
 
 void new_text_vec2_token(const char* text,vec2 vec){
     fprintf(actual_file,"\t\"%s\" : [%f , %f ],\n", text ,vec[0] , vec[1]);
-    token_count += 5;
+    token_count += 4;
+}
+
+void new_save_element(SaveDataFunction function){
+    fputs("{\n", actual_file);
+    function();
+    fputs("},\n",actual_file);
+    token_count++;
 }
 
 void add_element_to_save_data(FILE* new_file, Element* selected_element, int index){
@@ -83,6 +93,17 @@ void save_level_info(FILE* new_file){
     fputs("\n},\n",new_file);
 }
 
+void header_info(){
+    new_text_primitive_token("type",actual_data_type);
+    new_text_primitive_token("elements",element_id_count+1);
+    new_text_primitive_token("tokens",token_count);
+    
+}
+void save_header_info(){
+    SaveDataFunction save = &header_info;
+    new_save_element(save);
+}
+
 void save_camera_editor_camera_transform(FILE* new_file){     
     fputs(",\n", new_file);
     fputs("{\n\t\"type\" : ", new_file);
@@ -125,8 +146,12 @@ void save_level_data(const char* level_name){
     strcat(save_name,".lvl");    
 
     create_save_data_backup();
+
     FILE* new_file = fopen(save_name,"w+");
-    save_level_info(new_file);   
+    actual_file = new_file;
+    actual_data_type = DATA_TYPE_LEVEL;
+    save_header_info();
+
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         add_element_to_save_data(new_file,element,i);
@@ -145,11 +170,7 @@ void save_buttons_data(){
     }
 }
 
-void new_save_element(SaveDataFunction function){
-    fputs("{\n", actual_file);
-    function();
-    fputs("}",actual_file);
-}
+
 
 void save_gui_data(const char* gui_name){
     char save_name[50];
@@ -160,6 +181,9 @@ void save_gui_data(const char* gui_name){
 
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
+    actual_data_type = DATA_TYPE_GUI;
+    
+    save_header_info();
     
     SaveDataFunction save = &save_buttons_data;
     new_save_element(save);

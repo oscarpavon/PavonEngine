@@ -310,8 +310,8 @@ void load_gui(const char* name){
     File level_file;
     if( load_file(name, &level_file) == -1){
         
-        printf("Level not found: %s\n",name);
-    
+        printf("GUI file not found: %s\n",name);
+        return;
     }
 
     parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);

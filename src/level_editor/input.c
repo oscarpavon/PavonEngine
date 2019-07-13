@@ -353,7 +353,7 @@ void init_input(){
 }
 void input_change_mode(){
     if(key_released(&input.G)){
-        change_to_editor_mode(EDITOR_GRAB_MODE);
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
     }
 
     if(key_released(&input.R)){
@@ -600,7 +600,7 @@ void default_mode(){
         deselect_all(); 
     }
     if(key_released(&input.S)){
-        get_element_status(selected_element);
+        //get_element_status(selected_element);
     }
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){

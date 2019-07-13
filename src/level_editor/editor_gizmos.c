@@ -70,6 +70,27 @@ void init_line(DebugLine* line){
     init_shader(line->shader, standart_vertex_shader,standart_fragment_shader);
 }
 
+void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){ 
+
+	// Get near and far from the Projection matrix.
+	const double near = proj[11] / (proj[10] - 1.0);
+	const double far = proj[11] / (1.0 + proj[10]);
+
+	// Get the sides of the near plane.
+	const double nLeft = near * (proj[2] - 1.0) / proj[0];
+	const double nRight = near * (1.0 + proj[2]) / proj[0];
+	const double nTop = near * (1.0 + proj[6]) / proj[5];
+	const double nBottom = near * (proj[6] - 1.0) / proj[5];
+
+	// Get the sides of the far plane.
+	const double fLeft = far * (proj[2] - 1.0) / proj[0];
+	const double fRight = far * (1.0 + proj[2]) / proj[0];
+	const double fTop = far * (1.0 + proj[6]) / proj[5];
+	const double fBottom = far * (proj[6] - 1.0) / proj[5];
+  
+
+}
+
 void draw_grid_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
         DebugLine* line = get_element_from_array(&debug_objects,i);

@@ -201,7 +201,7 @@ void init_editor(){
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
-    init_vec3(0,3,0, camera_position);
+    init_vec3(0,6,2, camera_position);
     update_look_at();
 
     init_model_array(&editor_models, 1);

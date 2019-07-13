@@ -48,6 +48,12 @@ typedef struct PlayerStart{
     versor rotation; 
 }PlayerStart;
 
+typedef enum DataType{
+    DATA_TYPE_LEVEL = 0,
+    DATA_TYPE_GUI = 1,
+    DATA_TYPE_HEADER = 2
+}DataType;
+
 void init_engine();
 void engine_loop();
 void init_game_engine();

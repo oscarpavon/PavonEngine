@@ -33,7 +33,12 @@
 			"stdbool.h": "c",
 			"game.h": "c",
 			"utils.h": "c",
-			"typeinfo": "c"
+			"typeinfo": "c",
+			"functional": "c",
+			"istream": "c",
+			"ostream": "c",
+			"type_traits": "c",
+			"tuple": "c"
 		}
 	}
 }
