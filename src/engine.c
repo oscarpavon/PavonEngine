@@ -372,7 +372,8 @@ void init_model(struct Model* new_model){
                     new_model->index_array.count * sizeof(unsigned short int),
                     new_model->index_array.indices , GL_STATIC_DRAW);
 
-    free(new_model->vertex_array.vertices);
+    //free(new_model->vertex_array.vertices);
+    free_to_marker(memory_marker);
     free(new_model->index_array.indices);
     new_model->vertex_array.vertices = NULL;
     new_model->index_array.indices = NULL;

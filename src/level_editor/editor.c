@@ -113,6 +113,8 @@ void clean_editor(){
     free(editor_elements.data);
 
     clean_skeletal_editor();
+
+    clear_engine_memory();
 }
 
 
@@ -227,6 +229,7 @@ void reload_editor(){
 }
 
 void init_editor(){
+    
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     actual_LOD_models_array = &LOD_models;

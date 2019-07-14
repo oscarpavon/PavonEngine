@@ -3,6 +3,9 @@
 
 #include "utils.h"
 
+#include "Engine/memory.h"
+
+
 void init_array(Array * array, size_t element_bytes_size){
     array->count = 0;
     array->data = malloc(element_bytes_size);
@@ -14,7 +17,12 @@ void init_array(Array * array, size_t element_bytes_size){
 
 int init_vertex_array(VertexArray* array, size_t size){
     array->count = 0;
-    array->vertices = calloc(size,sizeof(struct Vertex));
+    //array->vertices = calloc(size,sizeof(struct Vertex));
+    array->vertices = allocate_memory(sizeof(struct Vertex));
+    if(array->vertices == NULL){
+        printf("Memory not allocated ERROR\n");
+        return -1;
+    }
     array->size = sizeof(struct Vertex) * size;
     return 0;
 }
@@ -152,10 +160,15 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
 
     array->count++;
     array->size += sizeof(struct Vertex);
-    array->vertices = realloc(array->vertices,sizeof(struct Vertex) * array->size);
+    //array->vertices = realloc(array->vertices,sizeof(struct Vertex) * array->size);
+     struct Vertex* allocated_vertex = allocate_memory(sizeof(struct Vertex));
+    if(allocated_vertex== NULL){
+        printf("Memory not allocated ERROR\n");
+    }
     if(!array->vertices){
         printf("array no allocated\n");
     }
+    //memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));
     memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));
     //array->vertices2[array->count-1] = vertex;
    

@@ -18,6 +18,7 @@ struct android_app* app;
 #include "camera.h"
 #include "file_loader.h"
 #include "Engine/files_parser.h"
+#include "Engine/memory.h"
 
 
 #include <time.h>

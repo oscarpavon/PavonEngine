@@ -135,7 +135,8 @@ void create_vertex_buffer(){
     glGenBuffers(1,&gui_vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, gui_vertex_array.count * sizeof(struct Vertex) , gui_vertex_array.vertices, GL_STATIC_DRAW);
-    free(gui_vertex_array.vertices);
+    free_to_marker(memory_marker);
+    //free(gui_vertex_array.vertices);
     gui_vertex_array.vertices = NULL;
 
 }
