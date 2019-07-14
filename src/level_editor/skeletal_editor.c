@@ -23,7 +23,8 @@ void create_skeletal_vertices_bones_gizmo(){
 
 void init_skeletal_gizmo(){
     Skeletal* skeletal = selected_element->model->skeletal;
-
+    if(skeletal == NULL)
+        return;
     int vertex_count = skeletal->joints_count;
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));

@@ -13,6 +13,12 @@ void init_array(Array * array, size_t element_bytes_size){
     array->element_bytes_size = element_bytes_size;
 }
 
+void init_array_with_count(Array * array, size_t element_bytes_size, int count){
+    array->count = 0;
+    array->data = malloc(element_bytes_size * count);
+    array->actual_bytes_size = element_bytes_size * count;
+    array->element_bytes_size = element_bytes_size;
+}
 
 
 int init_vertex_array(VertexArray* array, size_t size){

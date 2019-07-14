@@ -602,7 +602,7 @@ void default_mode(){
        duplicate_selected_element();
        printf("duplicated \n"); 
     }
-    if(input.ALT.pressed && key_released(&input.A)){
+    if(key__released(&input.A,GLFW_MOD_ALT)){
         printf("deselect all \n");
         deselect_all(); 
     }
@@ -641,7 +641,7 @@ void default_mode(){
         can_draw_skeletal_bones = true;
     }
            
-    input_text_menu(&add_element_menu,&input.A,NULL);
+    input_text_menu(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
     input_text_menu(&menu_editor_element_list,&input.L,NULL);
     input_text_menu(&add_texture_menu,&input.T,NULL); 
 

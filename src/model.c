@@ -132,7 +132,6 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
   memcpy(new_node.rotation, in_node->rotation, sizeof(versor));
   
   memcpy(new_node.translation, in_node->translation, sizeof(vec3));
-  new_node.name = malloc(strlen(in_node->name));
   strcpy(new_node.name,in_node->name);
 
   memcpy(&store_nodes[index_to_store],&new_node,sizeof(Node)); 

@@ -37,6 +37,7 @@ typedef struct Array{
 }Array;
 
 void init_array(Array* array, size_t element_bytes_size);
+void init_array_with_count(Array * array, size_t element_bytes_size, int count);
 void add_element_to_array(Array* array, void* element);
 void remove_element_from_array(Array* array);
 
