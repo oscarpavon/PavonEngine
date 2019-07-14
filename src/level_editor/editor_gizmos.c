@@ -6,6 +6,8 @@ GLuint color_fragment_shader;
 void load_editor_element(const char* path_model, const char* color_texture_path){   
 
     struct Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    
     load_model(path_model,&new_model);
     glm_mat4_identity(new_model.model_mat);   
 
@@ -50,6 +52,7 @@ void add_debug_line(vec3 start, vec3 end){
     glm_vec3_copy(end,pnew_line->end);
 
 }
+
 bool bounding_box_initialized = false;
 void init_selected_object_bounding_box_vertices(){
     if(bounding_box_initialized == false && selected_element != NULL) {
@@ -140,12 +143,22 @@ void init_selected_object_bounding_box_vertices(){
         bounding_box_initialized = true;
     }
 }
+void update_bounding_vertices_array(Model* model){
+    for(int i = 0; i < bounding_boxes.models[0].vertex_array.count ; i++){
+        vec3 new_vertex_pos;
+        struct Vertex* vertex = &bounding_boxes.models[0].vertex_array.vertices[i];
+        glm_vec3_rotate_m4(model->model_mat,vertex->postion,vertex->postion);
+    }
+}
+
 
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
-         Model* model = &bounding_boxes.models[bounding_boxes.count-1];
-        update_draw_vertices(model->shader, model->vertex_buffer_id);
-        GLint uniform_color = glGetUniformLocation(model->shader,"color");
+        Model* bounding_model = &bounding_boxes.models[bounding_boxes.count-1];
+        update_bounding_vertices_array(selected_element->model);
+        //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
+        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id);
+        GLint uniform_color = glGetUniformLocation(bounding_model->shader,"color");
         
         glUniform4fv(uniform_color, 1, (vec4){0.6,1,0,1});
         GLenum error;
@@ -153,7 +166,7 @@ void draw_bounding_box(){
         if(error != GL_NO_ERROR){
             LOGW("[X] Send uniform error, Error %08x \n",error);
         }
-        glDrawArrays(GL_LINES, 0, model->vertex_array.count);
+        glDrawArrays(GL_LINES, 0, bounding_model->vertex_array.count);
         return;
     }
     init_selected_object_bounding_box_vertices();
@@ -172,6 +185,7 @@ void init_line_vertices(DebugLine* line){
     init_static_gpu_vertex_buffer(&line->vertex_array,&line->vertex_buffer_id);
 
 }
+
 
 void update_line_vertices(DebugLine* line){
     struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};

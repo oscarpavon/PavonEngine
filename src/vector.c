@@ -29,7 +29,7 @@ int init_vertex_array(VertexArray* array, size_t size){
 
 int init_index_array(IndexArray* array, size_t size){
     array->count = 0;
-    array->indices = calloc(size,sizeof(unsigned short int));
+    array->indices = allocate_stack_memory(&indices, size * sizeof(unsigned short int) ) ;
     array->size = sizeof(unsigned short int) * size;
     return 0;
 }
@@ -143,7 +143,11 @@ void add_index_to_array(IndexArray* array, unsigned short int value){
     
     array->count++;
     array->size += sizeof(unsigned short int);
-    array->indices = realloc(array->indices,sizeof(unsigned short int) * array->size);
+    
+    /* void* realocated = realloc(array->indices,array->size);
+    if(realocated != NULL)
+        array->indices = realocated; */
+
     if(!array->indices){
         printf("array no allocated\n");
     }

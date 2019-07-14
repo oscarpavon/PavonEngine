@@ -93,10 +93,22 @@ void load_attribute(cgltf_attribute* attribute){
   default:
     break;
   }
+
+  if(attribute->data->has_min){
+    
+    glm_vec3_copy(attribute->data->min,actual_model->min);
+    
+  }
+  if(attribute->data->has_max){
+    
+    glm_vec3_copy(attribute->data->max,actual_model->max);
+    
+  }
 }
 
 
 void load_primitive(cgltf_primitive* primitive){
+  
   for(unsigned short int i = 0; i < primitive->attributes_count; i++){
     load_attribute(&primitive->attributes[i]);
   }
@@ -105,7 +117,9 @@ void load_primitive(cgltf_primitive* primitive){
 }
 
 void load_mesh(cgltf_mesh* mesh){
-  load_primitive(&mesh->primitives[0]);
+  for(int i = 0; i < mesh->primitives_count ; i++){
+    load_primitive(&mesh->primitives[i]);
+  }  
   model_loaded = true;
 }
 
@@ -123,6 +137,16 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
 
   memcpy(&store_nodes[index_to_store],&new_node,sizeof(Node)); 
 
+  if(in_node->mesh != NULL)
+      load_mesh(in_node->mesh);
+
+  if(in_node->skin != NULL){
+    Skeletal* skeletal = malloc(sizeof(Skeletal));
+    skeletal->joints_count = in_node->skin->joints_count;  
+    skeletal->joints = &store_nodes[index_to_store];
+    actual_model->skeletal = skeletal;
+  }
+   
   for(int i = 0; i < in_node->children_count; i++){ 
     Node* parent = &store_nodes[index_to_store];    
     load_node( parent, in_node->children[i],store_nodes,index_to_store+1);
@@ -232,14 +256,21 @@ int load_model(const char* path , struct Model* model){
     return 0;
   }  
   
+  Node* nodes = malloc(sizeof(Node) * data->scene->nodes_count);
+
+  memset(nodes,0,sizeof(Node) * data->scene->nodes_count);  
+  
+  for(int i = 0; i < data->scene->nodes_count ; i++){
+    load_node(NULL, data->scene->nodes[i],nodes,0);
+  }
   //load_mesh(data->nodes[0].mesh);
 
-  load_primitives(data,&model->vertex_array);
-  load_indices(data, &model->index_array);
+  //load_primitives(data,&model->vertex_array);
+  //load_indices(data, &model->index_array);
   load_uv(data,&model->vertex_array);
 
   if(data->skins){
-    load_joints(data);
+    //load_joints(data);
     
   }
   

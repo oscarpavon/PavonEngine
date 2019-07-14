@@ -25,10 +25,12 @@ void update_draw_vertices(GLuint shader, GLuint buffer){
 
     mat4 mvp;
     glm_mat4_identity(mvp);
-
+    
+    
     mat4 model;
     glm_mat4_identity(model);
     update_mvp(model, mvp);
+  
 
     GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
     if(mvp_uniform == -1){
@@ -125,20 +127,22 @@ void add_element_with_model_path(const char* model_gltf_path){
         return;
     }
 
-    struct Model new_model[3];
-    memset(new_model,0,sizeof(new_model));
+    struct Model models[3];
+    memset(models,0,sizeof(models));
 
     
-    int result = load_model(model_gltf_path,new_model);
+    int result = load_model(model_gltf_path,models);
     if(result==-1){
         return;
     }    
     
     new_empty_model();
-    memcpy(&selected_model->index_array,&new_model[0].index_array,sizeof(IndexArray));
-    memcpy(&selected_model->vertex_array,&new_model[0].vertex_array,sizeof(VertexArray));
-    memcpy(&selected_model->min,&new_model[0].min,sizeof(vec3));
-    memcpy(&selected_model->max,&new_model[0].max,sizeof(vec3));
+    memcpy(&selected_model->index_array,&models[0].index_array,sizeof(IndexArray));
+    memcpy(&selected_model->vertex_array,&models[0].vertex_array,sizeof(VertexArray));
+    memcpy(&selected_model->min,&models[0].min,sizeof(vec3));
+    memcpy(&selected_model->max,&models[0].max,sizeof(vec3));
+    selected_model->skeletal = models[0].skeletal;
+
     struct Model* model0 = selected_model;     
 
     model0->shader = glCreateProgram();
@@ -153,20 +157,20 @@ void add_element_with_model_path(const char* model_gltf_path){
     model0->draw = true;
     
 
-    if(new_model[0].LOD_count >= 1){
-        for(int i = 0; i < new_model[0].LOD_count; i++){
-            glm_mat4_identity(new_model[i+1].model_mat);  
-            init_model(&new_model[i+1]);
-            new_model[i+1].shader = model0->shader;
-            add_model_to_array(actual_LOD_models_array,new_model[i+1]);
+    if(models[0].LOD_count >= 1){
+        for(int i = 0; i < models[0].LOD_count; i++){
+            glm_mat4_identity(models[i+1].model_mat);  
+            init_model(&models[i+1]);
+            models[i+1].shader = model0->shader;
+            add_model_to_array(actual_LOD_models_array,models[i+1]);
         }
     }
-    if(new_model[0].has_HLOD){
-        glm_mat4_identity(new_model[2].model_mat);  
-        init_model(&new_model[2]);
-        new_model[2].shader = model0->shader;
-        add_model_to_array(actual_LOD_models_array,new_model[2]);
-        new_model->HLOD = &actual_LOD_models_array->models[actual_LOD_models_array->count-1];
+    if(models[0].has_HLOD){
+        glm_mat4_identity(models[2].model_mat);  
+        init_model(&models[2]);
+        models[2].shader = model0->shader;
+        add_model_to_array(actual_LOD_models_array,models[2]);
+        models->HLOD = &actual_LOD_models_array->models[actual_LOD_models_array->count-1];
     }    
     
     new_empty_element();
@@ -269,17 +273,38 @@ void draw_elements(Array *elements){
         
         GLenum error;
         
-        update_draw_vertices(new_model->shader,new_model->vertex_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, new_model->vertex_buffer_id);
+
+        glUseProgram(new_model->shader);
+
+        mat4 mvp;
+        glm_mat4_identity(mvp);
+        
+        update_mvp(new_model->model_mat, mvp);
+
+
+        GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
+        if(mvp_uniform == -1){
+            printf("MVP uniform not found\n");
+            return;
+        }
+
+        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
+
+        error = glGetError();
+        if(error != GL_NO_ERROR){
+            LOGW("[X] Send matrix error, Error %08x \n",error);
+        }
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
 
         glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
         GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
-        if(element->selected){            
-            
+        if(element->selected)          
             glUniform4fv(uniform_color, 1, red);
-        }else
-        {
+        else
            glUniform4fv(uniform_color, 1, white);
-        }
+        
 
         error = glGetError();
         if(error != GL_NO_ERROR){
@@ -374,8 +399,8 @@ void init_model(struct Model* new_model){
                     new_model->index_array.indices , GL_STATIC_DRAW);
 
     //free(new_model->vertex_array.vertices);
-    free_to_marker(memory_marker);
-    free(new_model->index_array.indices);
+    free_to_marker(previous_marker);
+    //free(new_model->index_array.indices);
     new_model->vertex_array.vertices = NULL;
     new_model->index_array.indices = NULL;
 }
@@ -400,7 +425,7 @@ void init_models(ModelArray* array){
                      new_model->index_array.indices , GL_STATIC_DRAW);
 
         free(new_model->vertex_array.vertices);
-        free(new_model->index_array.indices);
+        //free(new_model->index_array.indices);
     }
 
 }

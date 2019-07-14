@@ -12,7 +12,7 @@ void change_to_editor_sub_mode(EditorMode mode){
     }
         
 
-    if(editor_sub_mode == mode){
+    if(editor_sub_mode == mode && mode != EDITOR_SUB_MODE_NULL){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
         return;
     }    
