@@ -97,6 +97,7 @@ void update_gpu_vertex_data(VertexArray* array, GLuint id);
 
 extern void new_empty_element();
 
+/*Create new model in actual model array and you can use selected_model after */
 extern void new_empty_model();
 
 extern void select_last_element();

@@ -39,7 +39,9 @@
 			"ostream": "c",
 			"type_traits": "c",
 			"tuple": "c",
-			"time.h": "c"
+			"time.h": "c",
+			"limits": "c",
+			"algorithm": "c"
 		}
 	}
 }

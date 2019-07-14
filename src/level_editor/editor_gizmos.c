@@ -28,6 +28,7 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
 }
 
 Array debug_objects;
+ModelArray bounding_boxes;
 
 typedef struct DebugLine{
     bool initialized;
@@ -48,6 +49,114 @@ void add_debug_line(vec3 start, vec3 end){
     glm_vec3_copy(start,pnew_line->start);
     glm_vec3_copy(end,pnew_line->end);
 
+}
+bool bounding_box_initialized = false;
+void init_selected_object_bounding_box_vertices(){
+    if(bounding_box_initialized == false && selected_element != NULL) {
+        actual_model_array = &bounding_boxes;
+
+        Model new_model;
+        memset(&new_model,0,sizeof(Model));
+        add_model_to_array(actual_model_array,new_model);
+        selected_model = &actual_model_array->models[actual_model_array->count-1];
+        glm_mat4_identity(selected_model->model_mat);
+        selected_model->id = model_id_count;
+        
+       
+        init_vertex_array(&selected_model->vertex_array,1);
+
+        struct Vertex min;
+        
+        struct Vertex max;
+
+        memset(&min,0,sizeof(struct Vertex));
+        memset(&max,0,sizeof(struct Vertex));
+
+        glm_vec3_copy(selected_element->model->min, min.postion);
+        glm_vec3_copy(selected_element->model->max, max.postion);
+
+
+        struct Vertex vert3;
+        glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
+        
+        struct Vertex vert4;
+        glm_vec3_copy((vec3){max.postion[0],min.postion[1],max.postion[2]},vert4.postion);
+
+        struct Vertex vert5;
+        glm_vec3_copy((vec3){max.postion[0],max.postion[1],min.postion[2]},vert5.postion);
+
+        struct Vertex vert6;
+        glm_vec3_copy((vec3){min.postion[0],min.postion[1],max.postion[2]},vert6.postion);
+        
+        struct Vertex vert7;
+        glm_vec3_copy((vec3){max.postion[0],min.postion[1],min.postion[2]},vert7.postion);
+        
+        struct Vertex vert8;
+        glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
+
+        add_vextex_to_array(&selected_model->vertex_array,min);
+        add_vextex_to_array(&selected_model->vertex_array,vert7);
+
+        add_vextex_to_array(&selected_model->vertex_array,vert6);
+        add_vextex_to_array(&selected_model->vertex_array,min);
+
+        add_vextex_to_array(&selected_model->vertex_array,vert4);
+        add_vextex_to_array(&selected_model->vertex_array,vert6);
+
+        add_vextex_to_array(&selected_model->vertex_array,vert7);
+        add_vextex_to_array(&selected_model->vertex_array,vert4);
+
+
+        add_vextex_to_array(&selected_model->vertex_array,vert8);
+        add_vextex_to_array(&selected_model->vertex_array,vert6);
+
+        add_vextex_to_array(&selected_model->vertex_array,min);
+        add_vextex_to_array(&selected_model->vertex_array,vert3);
+
+
+        add_vextex_to_array(&selected_model->vertex_array,vert8);
+        add_vextex_to_array(&selected_model->vertex_array,vert3);
+
+        add_vextex_to_array(&selected_model->vertex_array,vert7);
+        add_vextex_to_array(&selected_model->vertex_array,vert5);
+
+         add_vextex_to_array(&selected_model->vertex_array,vert8);
+        add_vextex_to_array(&selected_model->vertex_array,max);
+        
+        add_vextex_to_array(&selected_model->vertex_array,max);
+        add_vextex_to_array(&selected_model->vertex_array,vert5);
+        
+        add_vextex_to_array(&selected_model->vertex_array,vert5);
+        add_vextex_to_array(&selected_model->vertex_array,vert3);
+
+        add_vextex_to_array(&selected_model->vertex_array,max);
+        add_vextex_to_array(&selected_model->vertex_array,vert4);
+
+        init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
+
+        selected_model->shader = glCreateProgram();
+        init_shader(selected_model->shader, standart_vertex_shader,color_fragment_shader);
+
+        bounding_box_initialized = true;
+    }
+}
+
+void draw_bounding_box(){
+    if(bounding_box_initialized == true){
+         Model* model = &bounding_boxes.models[bounding_boxes.count-1];
+        update_draw_vertices(model->shader, model->vertex_buffer_id);
+        GLint uniform_color = glGetUniformLocation(model->shader,"color");
+        
+        glUniform4fv(uniform_color, 1, (vec4){0.6,1,0,1});
+        GLenum error;
+        error = glGetError();
+        if(error != GL_NO_ERROR){
+            LOGW("[X] Send uniform error, Error %08x \n",error);
+        }
+        glDrawArrays(GL_LINES, 0, model->vertex_array.count);
+        return;
+    }
+    init_selected_object_bounding_box_vertices();
 }
 
 void init_line_vertices(DebugLine* line){
@@ -165,6 +274,7 @@ void draw_gizmos(){
         draw_skeletal_bones();
 
     if(can_draw_gizmos){
+        draw_bounding_box();
         draw_camera_direction();
 
         draw_grid_lines();
@@ -214,6 +324,8 @@ void draw_gizmos(){
 void init_gizmos(){
     init_model_array(&gizmos,1);   
     
+    init_model_array(&bounding_boxes,1);
+
     init_array(&debug_objects, sizeof(DebugLine));
 
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");

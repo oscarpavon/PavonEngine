@@ -88,7 +88,6 @@ void new_empty_element(){
 
     select_last_element();
 }
-
 void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
@@ -138,6 +137,8 @@ void add_element_with_model_path(const char* model_gltf_path){
     new_empty_model();
     memcpy(&selected_model->index_array,&new_model[0].index_array,sizeof(IndexArray));
     memcpy(&selected_model->vertex_array,&new_model[0].vertex_array,sizeof(VertexArray));
+    memcpy(&selected_model->min,&new_model[0].min,sizeof(vec3));
+    memcpy(&selected_model->max,&new_model[0].max,sizeof(vec3));
     struct Model* model0 = selected_model;     
 
     model0->shader = glCreateProgram();

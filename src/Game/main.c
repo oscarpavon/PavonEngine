@@ -3,7 +3,7 @@
 #include "../engine.h"
 
 int main(){
-
+    init_engine_memory();
     Window main_window;
     create_window(&main_window);  
       

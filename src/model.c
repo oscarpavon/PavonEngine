@@ -16,30 +16,25 @@ bool model_loaded = false;
 
 
 void load_primitives(cgltf_data* data, VertexArray* out_vertex_array){ 
-
-    for(size_t v = 0 ; v < data->accessors[0].count ; v++){
-            struct Vertex vertex;
-            vertex.uv[0] = 0;
-            vertex.uv[1] = 0;
-            cgltf_accessor_read_float(&data->accessors[0],v,&vertex.postion[0],3);
-            add_vextex_to_array(out_vertex_array,vertex);
-    }
-
   if(data->accessors[0].has_min){
-    vec3 min;
-    memcpy(&min[0],&data->accessors[0].min[0],sizeof(float));
-    memcpy(&min[1],&data->accessors[0].min[1],sizeof(float));
-    memcpy(&min[2],&data->accessors[0].min[2],sizeof(float));
-    glm_vec3_copy(min,actual_model->min);
+    
+    glm_vec3_copy(data->accessors[0].min,actual_model->min);
+    
   }
   if(data->accessors[0].has_max){
-    vec3 max;
-    memcpy(&max[0],&data->accessors[0].max[0],sizeof(float));
-    memcpy(&max[1],&data->accessors[0].max[1],sizeof(float));
-    memcpy(&max[2],&data->accessors[0].max[2],sizeof(float));
-    memcpy(max,actual_model->max,sizeof(vec3));
-    glm_vec3_copy(max,actual_model->max);
+    
+    glm_vec3_copy(data->accessors[0].max,actual_model->max);
+    
   }
+
+  for(size_t v = 0 ; v < data->accessors[0].count ; v++){
+    struct Vertex vertex;
+    vertex.uv[0] = 0;
+    vertex.uv[1] = 0;
+    cgltf_accessor_read_float(&data->accessors[0],v,&vertex.postion[0],3);
+    add_vextex_to_array(out_vertex_array,vertex);
+  }
+
 }
 
 
@@ -218,6 +213,8 @@ int load_model(const char* path , struct Model* model){
     return -1;
   }
   cgltf_load_buffers(&options,data,new_file.path);
+  close_file(&new_file);
+
   in_model_array = model;
   actual_vertex_array = &model->vertex_array;
   actual_index_array = &model->index_array;
@@ -231,7 +228,7 @@ int load_model(const char* path , struct Model* model){
     LOGW("gltf loaded with LODs. \n");
     in_model_array = NULL;
     cgltf_free(data);
-    close_file(&new_file);
+    
     return 0;
   }  
   
@@ -249,7 +246,7 @@ int load_model(const char* path , struct Model* model){
   LOGW("gltf loaded. \n");
 
   cgltf_free(data);
-  close_file(&new_file);
+  
   return 0;
 }
 
