@@ -43,6 +43,15 @@ static const char*  fragment_shader_colorized = "#version 100 \n\
     }\
 //end";
 
+static const char*  color_shader_src = "#version 100 \n\
+    precision mediump float;                    \
+   uniform vec4 color;                     \
+    void main()\
+    {\
+        gl_FragColor = color;\
+    }\
+//end";
+
 
 
 static const char* text_vertex_shader_source = "#version 100 \n \

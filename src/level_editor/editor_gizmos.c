@@ -1,7 +1,7 @@
 #include "editor_gizmos.h"
 #include "../shader.h"
 
-
+GLuint color_fragment_shader;
 
 void load_editor_element(const char* path_model, const char* color_texture_path){   
 
@@ -34,7 +34,7 @@ typedef struct DebugLine{
     vec3 start;
     vec3 end;
     float duration;
-    vec4 color;
+    vec4 color;    
     VertexArray vertex_array;
     GLuint vertex_buffer_id;
     GLuint shader;
@@ -75,7 +75,9 @@ void update_line_vertices(DebugLine* line){
 void init_line(DebugLine* line){
     init_line_vertices(line);
     line->shader = glCreateProgram();
-    init_shader(line->shader, standart_vertex_shader,standart_fragment_shader);
+    init_shader(line->shader, standart_vertex_shader,color_fragment_shader);
+    glm_vec4_copy((vec4){1,1,1,1},line->color);
+   
 }
 
 void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){ 
@@ -102,15 +104,32 @@ void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){
 void draw_grid_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
         DebugLine* line = get_element_from_array(&debug_objects,i);
-        if(line->initialized == true){
+        if(line->initialized == true){            
             update_draw_vertices(line->shader, line->vertex_buffer_id);
-            glLineWidth(1);   
+            glLineWidth(1);            
+            GLint uniform_color = glGetUniformLocation(line->shader,"color");
+            
+            glUniform4fv(uniform_color, 1, line->color);
+            GLenum error;
+            error = glGetError();
+            if(error != GL_NO_ERROR){
+                LOGW("[X] Send uniform error, Error %08x \n",error);
+            }
             glDrawArrays(GL_LINES, 0, line->vertex_array.count);
             continue;
         }          
         init_line(line);
         line->initialized = true;
     }
+    DebugLine* line;
+    line = get_element_from_array(&debug_objects,0);
+    glm_vec4_copy((vec4){0,0,1,1},line->color);
+
+    line = get_element_from_array(&debug_objects,2);
+    glm_vec4_copy((vec4){1,0,0,1},line->color);
+
+    line = get_element_from_array(&debug_objects,1);
+    glm_vec4_copy((vec4){0,1,0,1},line->color);
 
 }
 void draw_camera_direction(){
@@ -202,6 +221,8 @@ void init_gizmos(){
     load_editor_element("editor/camera.gltf", "editor/camera_gizmo.jpg");
     load_editor_element("editor/player_start.gltf", "editor/player_start_gizmo.jpg");
 
+    color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
+
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
 
@@ -213,4 +234,17 @@ void init_gizmos(){
     add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
 
     add_debug_line((vec3){1,1,1},(vec3){0,1,0});
+
+    for(int i = 1; i < 6; i++){
+        for(int o = 1; o < 6; o++){
+            add_debug_line((vec3){i,o,0},(vec3){-i,o,0});
+            add_debug_line((vec3){o,i,0},(vec3){o,-i,0});
+            
+            add_debug_line((vec3){i,-o,0},(vec3){-i,-o,0});
+            add_debug_line((vec3){-o,i,0},(vec3){-o,-i,0});
+        }
+        
+    }
+
+    
 }
