@@ -35,9 +35,9 @@ void new_text_vec2_token(const char* text,vec2 vec){
     token_count += 4;
 }
 
-void new_save_element(SaveDataFunction function){
+void new_save_element(SaveDataFunction function, int data_id){
     fputs("{\n", actual_file);
-    function();
+    function(data_id);
     fputs("},\n",actual_file);
     token_count++;
 }
@@ -93,15 +93,15 @@ void save_level_info(FILE* new_file){
     fputs("\n},\n",new_file);
 }
 
-void header_info(){
-    new_text_primitive_token("elements",element_id_count+1);
+void header_info(int i){
+    new_text_primitive_token("elements",element_id_count);
     new_text_primitive_token("type",actual_data_type);
     new_text_primitive_token("tokens",token_count);
     
 }
 void save_header_info(){
     SaveDataFunction save = &header_info;
-    new_save_element(save);
+    new_save_element(save,0);
 }
 
 void save_camera_editor_camera_transform(FILE* new_file){     
@@ -150,6 +150,8 @@ void save_level_data(const char* level_name){
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
     actual_data_type = DATA_TYPE_LEVEL;
+    element_id_count += 1; //editor camera
+
     save_header_info();
 
     for(int i = 0; i < editor_elements.count ; i++){
@@ -162,12 +164,13 @@ void save_level_data(const char* level_name){
     printf("Saved to %s\n",save_name);
 }
 
-void save_buttons_data(){
-    Button* button = get_element_from_array(actual_buttons_array,0);
+void save_buttons_data(int id){    
+    Button* button = get_element_from_array(actual_buttons_array,id);
     if(button != NULL){
         new_text_vec2_token("pos",button->position);
         new_text_vec2_token("size",button->size);
-    }
+    }   
+    
 }
 
 
@@ -182,11 +185,15 @@ void save_gui_data(const char* gui_name){
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
     actual_data_type = DATA_TYPE_GUI;
-    
+    element_id_count = actual_buttons_array->count;
+
     save_header_info();
     
     SaveDataFunction save = &save_buttons_data;
-    new_save_element(save);
+    for(int i = 0; i < actual_buttons_array->count ; i++){
+         new_save_element(save,i);
+    }
+   
 
     fclose(new_file);
 

@@ -33,8 +33,10 @@ typedef enum{
     MENU_TYPE_ADD_TEXTURE    
 }TextMenuType;
 
-typedef void(*ExecuteFunction)(struct TextMenu*);
-typedef void(*DrawFunction)(struct TextMenu*);
+typedef struct TextMenu TextMenu;
+
+typedef void(*ExecuteFunction)(TextMenu*);
+typedef void(*DrawFunction)(TextMenu*);
 
 typedef struct TextMenu{
     bool show;
@@ -45,6 +47,7 @@ typedef struct TextMenu{
     DrawFunction draw_text_funtion;
     TextMenuType type;
     unsigned short int element_count;
+    unsigned short int text_size;
     char text_for_action[30];   
 }TextMenu;
 
@@ -54,6 +57,8 @@ TextMenu menu_add_texture;
 TextMenu menu_editor_element_list;
 
 TextMenu menu_add_native_editor_element;
+
+TextMenu menu_show_gui_elements;
 
 int mark_id;
 

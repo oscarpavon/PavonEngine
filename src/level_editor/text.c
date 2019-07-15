@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "../file_loader.h"
 #include "editor.h"
+#include "../gui.h"
 
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
@@ -90,6 +91,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
     glEnable(GL_CULL_FACE); 
     
 }
+
 unsigned short int directory_show_type = 50;
 
 #include <dirent.h> 
@@ -241,7 +243,7 @@ void menu_action_select_element(TextMenu* menu){
         add_element_to_array(&selected_elements_id,&selected_element->id);
     }   
 
-    element = (Element*)get_element_from_array(&editor_elements,id);
+    element = get_element_from_array(&editor_elements,id);
     element->selected = true;
     selected_element = element;
     if(input.SHIFT.pressed){
@@ -261,7 +263,7 @@ void menu_action_add_editor_native_element(TextMenu* menu){
     printf("Add editor native element: %s\n",menu->text_for_action);
 }
 
-void draw_native_editor_elments(TextMenu* menu){
+void menu_action_draw_native_editor_elments(TextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
 
@@ -291,10 +293,24 @@ void draw_native_editor_elments(TextMenu* menu){
     
 }
 
-void draw_editor_elements_text_list(TextMenu* menu){
+void draw_element_text_list(TextMenu* menu, const char* text, int i){
+    if(text == NULL)
+        return;
+    int y_pos = i*menu->text_size+menu->text_size;
+    if(i == 0){
+        y_pos = menu->text_size;
+    }
+    bool can_mark = false;
+    if(menu->actual_element_select == i)
+        can_mark = true;
+
+    render_text(text, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+}
+
+void menu_action_draw_editor_elements(TextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
-
+    menu->text_size  = text_size;
      for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_element_from_array(&editor_elements,i);
         char* name = element->model_path;
@@ -304,18 +320,21 @@ void draw_editor_elements_text_list(TextMenu* menu){
             else
                 name = element->name;
         }
-            
-        int y_pos = i*text_size+text_size;
-        if(i == 0){
-            y_pos = text_size;
-        }
-        bool can_mark = false;
-        if(menu->actual_element_select == i)
-            can_mark = true;
-
-        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+        draw_element_text_list(menu,name,i);
     }
        
+}
+void menu_action_select_gui_element(TextMenu* menu){
+    selected_button = get_element_from_array(actual_buttons_array,menu->actual_element_select);    
+}
+
+void menu_action_draw_gui_elements(TextMenu* menu){
+    menu->text_size = 12;
+    for (int i = 0; i < actual_buttons_array->count ; i++)
+    {
+        Button* button = get_element_from_array(actual_buttons_array,i);
+        draw_element_text_list(menu,button->name,i);
+    }
 }
 
 void init_text_renderer(){
@@ -355,11 +374,13 @@ void init_text_renderer(){
     menu_add_texture.execute_function = &menu_action_add_texture_to_element;
 
     menu_editor_element_list.execute_function = &menu_action_select_element;
-    menu_editor_element_list.draw_text_funtion = &draw_editor_elements_text_list;
+    menu_editor_element_list.draw_text_funtion = &menu_action_draw_editor_elements;
 
     menu_add_native_editor_element.execute_function = &menu_action_add_editor_native_element;
-    menu_add_native_editor_element.draw_text_funtion = &draw_native_editor_elments;
+    menu_add_native_editor_element.draw_text_funtion = &menu_action_draw_native_editor_elments;
 
+    menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
+    menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
     
 }
 
@@ -430,5 +451,7 @@ void text_renderer_loop(){
     update_text_menu(&menu_editor_element_list);
 
     update_text_menu(&menu_add_native_editor_element);
+
+    update_text_menu(&menu_show_gui_elements);
 
 }

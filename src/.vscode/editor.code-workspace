@@ -43,7 +43,8 @@
 			"limits": "c",
 			"algorithm": "c",
 			"vector": "c",
-			"types.h": "c"
+			"types.h": "c",
+			"editor_mode.h": "c"
 		}
 	}
 }

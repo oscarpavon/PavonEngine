@@ -30,7 +30,7 @@ void add_element_to_array(Array* array, void* element){
         return;
     }
     if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
-        printf("Array need realocation\n");//TODO: realocation engine memory
+        printf("Array need reallocation\n");//TODO: realocation engine memory
     }
     size_t offset = array->actual_bytes_size;
     array->count++;
@@ -41,6 +41,18 @@ void add_element_to_array(Array* array, void* element){
     //array->data = array->data+(offset);
 
 }
+
+void *get_element_from_array(Array* array,int index){
+    size_t offset = array->element_bytes_size;
+    if(index == 0)
+        return &array->data[0];
+    if(index > array->count){
+        printf("Element out of ranger, array count: %i",array->count);
+        return NULL;
+    }         
+    return &array->data[0] + (index*offset);
+}
+
 
 int init_vertex_array(VertexArray* array, size_t size){
     array->count = 0;
@@ -107,16 +119,6 @@ void remove_element_from_array(Array* array){
     
 }
 
-void *get_element_from_array(Array* array,int index){
-    size_t offset = array->element_bytes_size;
-    if(index == 0)
-        return &array->data[0];
-    if(index > array->count){
-        printf("Element out of ranger, array count: %i",array->count);
-        return NULL;
-    }         
-    return &array->data[0] + (index*offset);
-}
 
 void add_index_to_array(IndexArray* array, unsigned short int value){
     if(array->count == 0){

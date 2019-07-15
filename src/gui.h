@@ -15,6 +15,7 @@
 
 
 typedef struct Button{
+    char name[20];
     bool pressed;
     bool released;
 

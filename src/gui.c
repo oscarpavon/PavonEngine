@@ -140,6 +140,10 @@ void create_vertex_buffer(){
 }
 
 void init_button(Button* button, float position_x , float position_y , float size_x, float size_y){
+    char name[] = "NewButton";
+    memset(button->name, 0, strlen(button->name));
+    memcpy(button->name,name,strlen(name));
+    
     button->position[0] = position_x;
 
     button->size[0] = size_x;
@@ -186,7 +190,7 @@ void init_gui_element_geometry(){
 }
 void init_gui(){
 
-    init_array(&buttons, sizeof(Button));
+    init_array_with_count(&buttons, sizeof(Button),20);
 
     create_gui_shaders();
 
@@ -301,8 +305,14 @@ void new_empty_button(){
 }
 
 void load_gui(const char* name){
+    char save_name[50];
+    memset(save_name,0,sizeof(save_name));
+    strcat(save_name, gui_folder);
+    strcat(save_name,name);
+    strcat(save_name,".gui");
+
     File level_file;
-    if( load_file(name, &level_file) == -1){
+    if( load_file(save_name, &level_file) == -1){
         
         printf("GUI file not found: %s\n",name);
         return;
@@ -311,4 +321,9 @@ void load_gui(const char* name){
     parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);
 
     close_file(&level_file);
+
+    for(int i = 0; i < buttons.count; i++){
+        Button* button = get_element_from_array(&buttons,i);
+        button->shader = create_engine_shader(vert_shader,frag_shader);
+    }
 }

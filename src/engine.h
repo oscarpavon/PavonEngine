@@ -19,9 +19,12 @@ struct android_app* app;
 #include "file_loader.h"
 #include "Engine/files_parser.h"
 #include "Engine/memory.h"
-
+#include "gui.h"
 
 #include <time.h>
+
+static const char* const level_folder = "../Game/levels/";
+static const char* const gui_folder = "../assets/gui/";
 
 typedef enum ElementComponentType{
     ELEMENT_COMPONENT_TYPE_CAMERA
@@ -118,6 +121,7 @@ unsigned int model_id_count;
 unsigned int components_id_count;
 
 Element* selected_element;
+Button* selected_button;
 Model* selected_model;
 Element* player1;
 Element* player_start;

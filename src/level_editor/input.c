@@ -460,7 +460,7 @@ void grab_mode(){
     }
     if(editor_mode == EDITOR_MODE_GUI_EDITOR){
         if(input.W.pressed){
-            Button* button = get_element_from_array(actual_buttons_array,0);
+            Button* button = selected_button;
             glm_vec3_add(button->position, (vec2){0,0.2}, button->position);
         }
     }
@@ -709,6 +709,8 @@ void input_mode_play(){
 }
 
 void input_gui_editor(){
+    open_text_menu_key(&menu_show_gui_elements,&input.L,NULL);
+
     if(key_released(&input.ESC)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         clean_array(actual_buttons_array);

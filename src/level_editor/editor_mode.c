@@ -5,11 +5,23 @@
 
 bool game_initialized = false;
 
-void change_to_editor_sub_mode(EditorMode mode){    
-    if(editor_mode != EDITOR_DEFAULT_MODE && mode == EDITOR_SUB_MODE_GRAB){
-        change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        return;
-    }
+void change_to_editor_sub_mode(EditorMode mode){
+    switch (editor_mode)
+    {
+    case EDITOR_DEFAULT_MODE:
+        
+        break;
+    case EDITOR_MODE_GUI_EDITOR:
+        
+        break;
+    default:
+        if(editor_mode != EDITOR_DEFAULT_MODE && mode == EDITOR_SUB_MODE_GRAB){
+            change_to_editor_mode(EDITOR_DEFAULT_MODE);
+            return;
+        }
+        break;
+    }    
+    
         
 
     if(editor_sub_mode == mode && mode != EDITOR_SUB_MODE_NULL){
