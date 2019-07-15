@@ -32,8 +32,9 @@ int main(){
         int temp;
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-        update_editor();
         update_input();
+        update_editor();
+        
    
         glfwSwapBuffers(main_window.window);
 

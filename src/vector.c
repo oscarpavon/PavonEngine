@@ -9,7 +9,7 @@
 void init_array(Array * array, size_t element_bytes_size){
     array->count = 0;
     array->data = malloc(element_bytes_size);
-    array->actual_bytes_size = element_bytes_size;
+    array->actual_bytes_size = 0;
     array->element_bytes_size = element_bytes_size;
     array->bytes_capacity = element_bytes_size;
 }
@@ -17,13 +17,14 @@ void init_array(Array * array, size_t element_bytes_size){
 void init_array_with_count(Array * array, size_t element_bytes_size, int count){
     array->count = 0;
     array->data = allocate_stack_memory_alignmed(element_bytes_size * count,16);
-    array->actual_bytes_size = element_bytes_size * array->count ;
+    array->actual_bytes_size = 0;
     array->element_bytes_size = element_bytes_size;
     array->bytes_capacity = element_bytes_size * count;
 }
 
 void add_element_to_array(Array* array, void* element){
     if(array->count == 0){
+        array->actual_bytes_size += array->element_bytes_size;
         memcpy(array->data,element,array->element_bytes_size);
         array->count++;
         return;
@@ -37,7 +38,7 @@ void add_element_to_array(Array* array, void* element){
     
     memcpy(array->data+(offset),element,array->element_bytes_size);
 
-    array->data = array->data+(offset);
+    //array->data = array->data+(offset);
 
 }
 

@@ -252,7 +252,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-header_size , tokens,max_tokens);
 
-  init_array(out_element,sizeof(Element));   
+  init_array_with_count(out_element,sizeof(Element),elements_count);   
 
   dump(models_json_file,tokens,number_of_tokens_readed,0);
 

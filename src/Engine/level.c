@@ -63,7 +63,7 @@ void add_loaded_elements(Array* load_elements, Array* editor_models, Array* edit
 
         }else if(element->id != CAMERA__ELEMENT_ID){            //Duplicated elements
             new_empty_model();
-            struct Model* from = get_element_from_array(editor_models,element->duplicated_of_id);             
+            struct Model* from = get_element_from_array(editor_models,editor_models->count-1);             
             memmove(selected_model,from,sizeof(struct Model));              
             new_empty_element();
             glm_vec3_copy(element->position,selected_element->position);

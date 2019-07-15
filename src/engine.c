@@ -445,13 +445,27 @@ void init_engine(){
     
     compiles_standard_shaders();
 
-    //sleep(2);
-
     init_gui();
 
     init_array(&components,sizeof(ElementComponent));
     components_id_count = 0;
 
+    Array test_numbers;
+    init_array_with_count(&test_numbers,sizeof(int), 3);
+    int a = 1;
+    int b = 2;
+    int c = 3;
+    add_element_to_array(&test_numbers,&a);
+    add_element_to_array(&test_numbers,&b);
+    //add_element_to_array(&test_numbers,&c);
+
+    for (size_t i = 0; i < test_numbers.count; i++)
+    {
+        int* element = get_element_from_array(&test_numbers,i);
+        int number;
+        memcpy(&number,element,sizeof(int));
+        printf("Number: %i\n",number);
+    }
 }
 Array models;
 Array elements;

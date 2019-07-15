@@ -156,7 +156,7 @@ void load_level_in_editor(const char* name){
     load_level_to_elements_array(save_name, &load_elements);   
     
     add_loaded_elements(&load_elements, &editor_models, &editor_elements);
-    clean_array(&load_elements);
+    //clean_array(&load_elements);
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
