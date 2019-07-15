@@ -2,8 +2,8 @@
 // Created by pavon on 6/24/19.
 //
 
-#ifndef PAVON_MOBILE_ENGINE_H
-#define PAVON_MOBILE_ENGINE_H
+#ifndef PAVON_ENGINE_H
+#define PAVON_ENGINE_H
 
 #include "vector.h"
 
@@ -75,10 +75,10 @@ void init_engine();
 void engine_loop();
 void init_game_engine();
 
-void init_models(ModelArray* array);
+void init_models(Array* array);
 void draw_elements(Array* elements);
 void draw_simgle_model(struct Model * new_model);
-void load_models_texture_to_gpu(ModelArray* models_array);
+void load_models_texture_to_gpu(Array* models_array);
 void load_model_texture_to_gpu(struct Model*);
 
 void init_model(struct Model* new_model);
@@ -122,21 +122,25 @@ Model* selected_model;
 Element* player1;
 Element* player_start;
 
-ModelArray* actual_model_array;
+Array* actual_model_array;
 Array* actual_elements_array;
-ModelArray* actual_LOD_models_array;
-GLuint actual_standard_shader;
+Array* actual_LOD_models_array;
+GLuint actual_standard_fragment_shader;
 Array* actual_buttons_array;
 
-
-static inline init_shader(GLuint shader, GLuint vertex_shader, GLuint fragment_shader){
-    glAttachShader(shader, vertex_shader);
-    glAttachShader(shader, fragment_shader);
-    glLinkProgram(shader);
-}
 
 Array components;
 
 float frame_time;
 
-#endif //PAVON_MOBILE_ENGINE_H
+static int shader_count = 0;
+GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
+    shader_count++;
+    GLuint new_shader = glCreateProgram();
+    glAttachShader(new_shader, vertex);
+    glAttachShader(new_shader, fragment);
+    glLinkProgram(new_shader);
+    return new_shader;
+}
+
+#endif //PAVON_ENGINE_H

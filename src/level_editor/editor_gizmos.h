@@ -12,7 +12,7 @@ bool draw_translate_gizmo;
 bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
 
-ModelArray gizmos;
+Array gizmos;
 
 Element* selected_camera;
 

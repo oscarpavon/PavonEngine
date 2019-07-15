@@ -144,6 +144,7 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
     skeletal->joints_count = in_node->skin->joints_count;  
     skeletal->joints = &store_nodes[index_to_store];
     actual_model->skeletal = skeletal;
+    printf("Skin loaded\n");
   }
    
   for(int i = 0; i < in_node->children_count; i++){ 

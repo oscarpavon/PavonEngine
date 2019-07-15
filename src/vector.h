@@ -33,6 +33,7 @@ typedef struct Array{
     size_t actual_bytes_size;
     size_t count;
     size_t element_bytes_size;
+    size_t bytes_capacity;
     void * data;
 }Array;
 
@@ -41,7 +42,6 @@ void init_array_with_count(Array * array, size_t element_bytes_size, int count);
 void add_element_to_array(Array* array, void* element);
 void remove_element_from_array(Array* array);
 
-int init_model_array(ModelArray* array, size_t size);
 void remove_last_element_from_model_array(ModelArray* array);
 
 int init_vertex_array(VertexArray* array, size_t size);
@@ -49,7 +49,6 @@ int init_index_array(IndexArray* array, size_t size);
 
 void add_vextex_to_array(VertexArray*, struct Vertex);
 void add_index_to_array(IndexArray*, unsigned short int);
-void add_model_to_array(ModelArray*, struct Model);
 
 void *get_element_from_array(Array*,int index);
 

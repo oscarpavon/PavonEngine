@@ -364,7 +364,7 @@ void input_change_mode(){
     }
 
     if(key_released(&input.R)){
-        change_to_editor_mode(EDITOR_ROTATE_MODE);
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
     }
     if(key_released(&input.V)){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
@@ -557,7 +557,7 @@ void navigate_mode(){
     
 }
 
-void input_text_menu(TextMenu* menu, Key* open_key, int mods){
+void open_text_menu_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == NULL){
         if( key_released(open_key) ){
             menu->execute = true;
@@ -598,7 +598,7 @@ void default_mode(){
 
     input_change_mode();
 
-    if(input.SHIFT.pressed && key_released(&input.D)){
+    if(key__released(&input.D,GLFW_MOD_ALT)){
        duplicate_selected_element();
        printf("duplicated \n"); 
     }
@@ -641,12 +641,12 @@ void default_mode(){
         can_draw_skeletal_bones = true;
     }
            
-    input_text_menu(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
-    input_text_menu(&menu_editor_element_list,&input.L,NULL);
-    input_text_menu(&add_texture_menu,&input.T,NULL); 
+    open_text_menu_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
+    open_text_menu_key(&menu_editor_element_list,&input.L,NULL);
+    open_text_menu_key(&menu_add_texture,&input.T,GLFW_MOD_SHIFT); 
 
     
-    input_text_menu(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
+    open_text_menu_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
     
 }
 
@@ -738,7 +738,7 @@ void update_input(){
             grab_mode();
             break;
         case EDITOR_ROTATE_MODE:
-            rotate_input_mode();
+            //rotate_input_mode();
             break;
         case EDITOR_PLAY_MODE:
             input_mode_play();
@@ -764,10 +764,10 @@ void update_input(){
         grab_mode();            
         break;
     case EDITOR_SUB_MODE_SCALE:
-       
+        
         break;
     case EDITOR_SUB_MODE_ROTATE:
-        
+        rotate_input_mode();
         break;
     case EDITOR_SUB_MODE_NULL:
         break;

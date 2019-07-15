@@ -50,7 +50,7 @@ typedef struct TextMenu{
 
 
 TextMenu add_element_menu;
-TextMenu add_texture_menu;
+TextMenu menu_add_texture;
 TextMenu menu_editor_element_list;
 
 TextMenu menu_add_native_editor_element;

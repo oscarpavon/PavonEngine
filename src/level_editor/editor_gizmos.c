@@ -11,11 +11,7 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
     load_model(path_model,&new_model);
     glm_mat4_identity(new_model.model_mat);   
 
-    new_model.shader = glCreateProgram();
-    
-    glAttachShader(new_model.shader, standart_vertex_shader);
-    glAttachShader(new_model.shader, standart_fragment_shader);
-    glLinkProgram(new_model.shader);
+    new_model.shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 
     glUseProgram(new_model.shader);
 
@@ -25,12 +21,12 @@ void load_editor_element(const char* path_model, const char* color_texture_path)
 
     load_model_texture_to_gpu(&new_model);
 
-    add_model_to_array(&gizmos,new_model);  
+    add_element_to_array(&gizmos,&new_model);  
 
 }
 
 Array debug_objects;
-ModelArray bounding_boxes;
+Array bounding_boxes;
 
 typedef struct DebugLine{
     bool initialized;
@@ -60,8 +56,8 @@ void init_selected_object_bounding_box_vertices(){
 
         Model new_model;
         memset(&new_model,0,sizeof(Model));
-        add_model_to_array(actual_model_array,new_model);
-        selected_model = &actual_model_array->models[actual_model_array->count-1];
+        add_element_to_array(actual_model_array,&new_model);
+        selected_model = get_element_from_array(actual_model_array,actual_model_array->count-1);
         glm_mat4_identity(selected_model->model_mat);
         selected_model->id = model_id_count;
         
@@ -137,16 +133,16 @@ void init_selected_object_bounding_box_vertices(){
 
         init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
 
-        selected_model->shader = glCreateProgram();
-        init_shader(selected_model->shader, standart_vertex_shader,color_fragment_shader);
+        selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
 
         bounding_box_initialized = true;
     }
 }
 void update_bounding_vertices_array(Model* model){
-    for(int i = 0; i < bounding_boxes.models[0].vertex_array.count ; i++){
+    Model* box = get_element_from_array(&bounding_boxes,0);
+    for(int i = 0; i < box->vertex_array.count ; i++){
         vec3 new_vertex_pos;
-        struct Vertex* vertex = &bounding_boxes.models[0].vertex_array.vertices[i];
+        struct Vertex* vertex = &box->vertex_array.vertices[i];
         glm_vec3_rotate_m4(model->model_mat,vertex->postion,vertex->postion);
     }
 }
@@ -154,7 +150,7 @@ void update_bounding_vertices_array(Model* model){
 
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
-        Model* bounding_model = &bounding_boxes.models[bounding_boxes.count-1];
+        Model* bounding_model = get_element_from_array(&bounding_boxes,bounding_boxes.count-1);
         update_bounding_vertices_array(selected_element->model);
         //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id);
@@ -197,8 +193,7 @@ void update_line_vertices(DebugLine* line){
 
 void init_line(DebugLine* line){
     init_line_vertices(line);
-    line->shader = glCreateProgram();
-    init_shader(line->shader, standart_vertex_shader,color_fragment_shader);
+    line->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader); 
     glm_vec4_copy((vec4){1,1,1,1},line->color);
    
 }
@@ -288,7 +283,7 @@ void draw_gizmos(){
         draw_skeletal_bones();
 
     if(can_draw_gizmos){
-        draw_bounding_box();
+        //draw_bounding_box();
         draw_camera_direction();
 
         draw_grid_lines();
@@ -296,7 +291,7 @@ void draw_gizmos(){
         for(int i = 0; i< editor_elements.count ; i++){
             Element* element = get_element_from_array(&editor_elements,i);
             if(element->type == ELEMENT_TYPE_CAMERA){
-                Model* actual_gizmo = &gizmos.models[2];
+                Model* actual_gizmo = get_element_from_array(&gizmos,2);
                 if(selected_element != NULL){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
                 }
@@ -304,7 +299,7 @@ void draw_gizmos(){
                 
             }
             if(element->type == ELEMENT_TYPE_PLAYER_START){
-                Model* actual_gizmo = &gizmos.models[3];
+                Model* actual_gizmo = get_element_from_array(&gizmos,3);
                 if(selected_element != NULL){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
                 }
@@ -315,7 +310,7 @@ void draw_gizmos(){
         
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
-            Model* actual_gizmo = &gizmos.models[0];
+            Model* actual_gizmo = get_element_from_array(&gizmos,0);
             if(selected_element != NULL){
                 if(selected_element->model == NULL)
                     return;
@@ -324,7 +319,7 @@ void draw_gizmos(){
             draw_simgle_model(actual_gizmo);
         }
         if(draw_rotate_gizmo){
-            Model* actual_gizmo = &gizmos.models[1];
+            Model* actual_gizmo = get_element_from_array(&gizmos,1);
             if(selected_element != NULL){
                 glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
             }
@@ -336,11 +331,11 @@ void draw_gizmos(){
 }
 
 void init_gizmos(){
-    init_model_array(&gizmos,1);   
+    init_array_with_count(&gizmos,sizeof(Model),6);   
     
-    init_model_array(&bounding_boxes,1);
+    init_array_with_count(&bounding_boxes,sizeof(Model),6);
 
-    init_array(&debug_objects, sizeof(DebugLine));
+    init_array_with_count(&debug_objects, sizeof(DebugLine),1000);
 
     load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
     load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");

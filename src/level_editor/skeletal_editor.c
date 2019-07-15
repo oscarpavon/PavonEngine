@@ -87,11 +87,8 @@ void init_skeletal_editor(){
 
     skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
 
-    skelta_gizmo_shader = glCreateProgram();
+    skelta_gizmo_shader = create_engine_shader(standart_vertex_shader,skeletal_blue_shader); 
     
-    glAttachShader(skelta_gizmo_shader, standart_vertex_shader);
-    glAttachShader(skelta_gizmo_shader, skeletal_blue_shader);
-    glLinkProgram(skelta_gizmo_shader);
 }
 
 void clean_skeletal_editor(){

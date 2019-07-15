@@ -188,7 +188,7 @@ void draw_directory_file_type(unsigned short int type){
     FT_Set_Pixel_Sizes(face, 0, 20);    
     directory_show_type = type;
     if(type == DIRECTORY_TEXTURES)
-        list_directory_files(&add_texture_menu);
+        list_directory_files(&menu_add_texture);
     else if(type == DIRECTORY_MODELS)
         list_directory_files(&add_element_menu);
 }
@@ -211,10 +211,7 @@ void init_text_shader(){
     text_fragment_shader = compile_shader(fragment_shader_colorized,GL_FRAGMENT_SHADER);
     text_vertex_shader = compile_shader(text_vertex_shader_source,GL_VERTEX_SHADER);
 
-    text_shader_id = glCreateProgram();
-    glAttachShader(text_shader_id, text_vertex_shader);
-    glAttachShader(text_shader_id, text_fragment_shader);
-    glLinkProgram(text_shader_id);
+    text_shader_id = create_engine_shader(text_vertex_shader,text_fragment_shader);
 
     glGenBuffers(1, &text_vertex_buffer_id);
     glEnableVertexAttribArray(0);
@@ -347,15 +344,15 @@ void init_text_renderer(){
     mark_id = 0;
 
     memset(&add_element_menu,0,sizeof(TextMenu));
-    memset(&add_texture_menu,0,sizeof(TextMenu));
+    memset(&menu_add_texture,0,sizeof(TextMenu));
     memset(&menu_editor_element_list,0,sizeof(TextMenu));
 
     /*Text Menu functions */
     add_element_menu.execute_function = &menu_action_add_element;
     add_element_menu.type = MENU_TYPE_ADD_MODEL;
 
-    add_texture_menu.type = MENU_TYPE_ADD_TEXTURE;
-    add_texture_menu.execute_function = &menu_action_add_texture_to_element;
+    menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
+    menu_add_texture.execute_function = &menu_action_add_texture_to_element;
 
     menu_editor_element_list.execute_function = &menu_action_select_element;
     menu_editor_element_list.draw_text_funtion = &draw_editor_elements_text_list;
@@ -426,7 +423,7 @@ void text_renderer_loop(){
         draw_editor_sub_mode();
     }
     
-    update_text_menu(&add_texture_menu);
+    update_text_menu(&menu_add_texture);
 
     update_text_menu(&add_element_menu);
 

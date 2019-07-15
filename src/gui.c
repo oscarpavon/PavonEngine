@@ -41,10 +41,8 @@ void create_gui_shaders(){
 
         Button *button = &buttons.data[0] + (i * offset);
 
-        button->shader = glCreateProgram();
-        glAttachShader( button->shader, vert_shader);
-        glAttachShader( button->shader, frag_shader);
-        glLinkProgram( button->shader);
+        button->shader = create_engine_shader(vert_shader,frag_shader);
+      
     }
 
 
@@ -198,10 +196,8 @@ void init_gui(){
 GLuint logo_shader;
 
 void create_logo_shader(){
-    logo_shader = glCreateProgram();
-    glAttachShader( logo_shader, vert_shader);
-    glAttachShader( logo_shader, frag_shader);
-    glLinkProgram( logo_shader);
+    logo_shader = create_engine_shader(vert_shader,frag_shader);
+
 }
 
 void draw_logo_image(){
@@ -301,10 +297,7 @@ void new_empty_button(){
     add_element_to_array(actual_buttons_array,&new_button);
 
     Button* button = get_element_from_array(actual_buttons_array,actual_buttons_array->count-1);
-    button->shader = glCreateProgram();
-    glAttachShader( button->shader, vert_shader);
-    glAttachShader( button->shader, frag_shader);
-    glLinkProgram( button->shader);
+    button->shader = create_engine_shader(vert_shader,frag_shader);
 }
 
 void load_gui(const char* name){

@@ -20,9 +20,9 @@
 
 #include "../Engine/level.h"
 
-ModelArray editor_models;
+Array editor_models;
 
-ModelArray LOD_models;
+Array LOD_models;
 
 struct timespec diff(struct timespec start, struct timespec end)
 {
@@ -110,8 +110,7 @@ void clean_editor(){
         clean_element(element);
         
     }
-    free(editor_elements.data);
-
+    
     clean_skeletal_editor();
 
     clear_engine_memory();
@@ -178,13 +177,13 @@ void duplicate_selected_element(){
     new_model.has_HLOD = false;
     new_model.HLOD = NULL;
     new_model.change_to_HLOD = false;
-    add_model_to_array(&editor_models,new_model);
+    add_element_to_array(&editor_models,&new_model);
     
     element_id_count++;
     
     memcpy(&new_element, selected_element, sizeof(struct Element));
 
-    new_element.model = &editor_models.models[editor_models.count-1];
+    new_element.model = get_element_from_array(&editor_models,editor_models.count-1);
     new_element.id = element_id_count;
     new_element.has_HLOD = false;
 
@@ -223,7 +222,7 @@ void remove_selected_element(){
 
 void reload_editor(){
     element_id_count = 0;
-    clean_model_array(&editor_models);
+    
     clean_array(&editor_elements);   
     
 }
@@ -240,10 +239,10 @@ void init_editor(){
     init_vec3(-6,0,2, camera_position);
     update_look_at();
 
-    init_model_array(&editor_models, 1);
-    init_model_array(&LOD_models,1);
+    init_array_with_count(&editor_models, sizeof(Model),100);
+    init_array_with_count(&LOD_models,sizeof(Model),100);
 
-    init_array(&editor_elements,sizeof(Element));
+    init_array_with_count(&editor_elements,sizeof(Element),100);
 
     init_gizmos();
 
@@ -251,7 +250,7 @@ void init_editor(){
 
     init_text_renderer();    
     
-    init_array(&selected_elements_id,sizeof(unsigned short int));
+    init_array_with_count(&selected_elements_id,sizeof(unsigned short int),100);
 
     element_id_count = 0;    
 
@@ -267,7 +266,7 @@ void init_editor(){
 
     init_skeletal_editor();
     
-    actual_standard_shader = editor_standard_fragment_shader;
+    actual_standard_fragment_shader = editor_standard_fragment_shader;
 }
 
 
@@ -294,9 +293,9 @@ void check_elements_camera_distance_for_LOD(){
 
 void assign_LOD_mesh(){
     for(int i = 0; i < editor_models.count ; i++){
-        struct Model* model = &editor_models.models[i];
+        struct Model* model = get_element_from_array(&editor_models,i);
         if(model->change_LOD){
-            model->LOD = &LOD_models.models[model->actual_LOD];
+            model->LOD = &LOD_models.data[model->actual_LOD];
         }
     }
 }

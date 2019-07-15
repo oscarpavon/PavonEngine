@@ -11,10 +11,10 @@
 
 #define CAMERA__ELEMENT_ID 300
 
-void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array* editor_elements){
-    init_model_array(editor_models,load_elements->count);
+void add_loaded_elements(Array* load_elements, Array* editor_models, Array* editor_elements){
+    init_array_with_count(editor_models,sizeof(Model),load_elements->count);
     for(int i = 0; i < load_elements->count; i++){
-        Element* element = &load_elements->data[i*load_elements->element_bytes_size];
+        Element* element = get_element_from_array(load_elements,i);
         switch (element->type)
         {
         case ELEMENT_TYPE_PLAYER_START:{
@@ -37,7 +37,7 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
             selected_model->draw = false;
             selected_element->type = element->type;
             strcpy(selected_element->name, "Player");
-            selected_element->model = &actual_model_array->models[element->model_id];           
+            selected_element->model = get_element_from_array(actual_elements_array,element->model_id);          
             selected_element->model_id = element->model_id;
             player1 = selected_element;
             continue;
@@ -63,7 +63,7 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
 
         }else if(element->id != CAMERA__ELEMENT_ID){            //Duplicated elements
             new_empty_model();
-            struct Model* from = &editor_models->models[element->duplicated_of_id];             
+            struct Model* from = get_element_from_array(editor_models,element->duplicated_of_id);             
             memmove(selected_model,from,sizeof(struct Model));              
             new_empty_element();
             glm_vec3_copy(element->position,selected_element->position);
@@ -71,7 +71,7 @@ void add_loaded_elements(Array* load_elements, ModelArray* editor_models, Array*
             selected_element->duplicated_of_id = element->duplicated_of_id;        
 
             if(element->duplicated_of_id > -1)
-                selected_element->model = &editor_models->models[editor_models->count-1];            
+                selected_element->model = get_element_from_array(editor_models,i);            
                         
         }
         if(element->id != CAMERA__ELEMENT_ID && element->duplicated_of_id == -1){

@@ -1,6 +1,7 @@
 #include "memory.h"
 #include <stdlib.h>
 
+
 void init_engine_memory(){
     engine_memory = malloc(INIT_MEMORY);
     actual_free_memory = INIT_MEMORY;
@@ -10,7 +11,13 @@ void init_engine_memory(){
     indices.available = 10000;
     indices.used = 0;
     indices.marker = 0;
+
+    engine_stack_memory.memory = allocate_memory(60000);
+    engine_stack_memory.available = 60000;
+    engine_stack_memory.used = 0;
+    engine_stack_memory.marker = 0;
 }
+
 
 void* allocate_stack_memory(StackMemory* stack, int bytes_size){
     if(stack->available > bytes_size){
@@ -24,6 +31,8 @@ void* allocate_stack_memory(StackMemory* stack, int bytes_size){
     printf("ERROR allocating stack memory\n");
     return NULL;
 }
+
+
 
 void free_stack_to_market(StackMemory* stack){
     stack->used += stack->marker;
@@ -42,6 +51,18 @@ void* allocate_memory(int size){
     }   
     printf("ERROR engine memory\n");
     return NULL;
+}
+
+void* allocate_stack_memory_alignmed(int bytes_size, int alignment){
+    int expanded_size_bytes = bytes_size + alignment;
+    unsigned long int raw_memory = allocate_memory(expanded_size_bytes);
+
+    int mask = (alignment - 1);
+    unsigned long int misalignment = (raw_memory & mask);
+    unsigned long int adjustment = alignment - misalignment;
+
+    unsigned long int aligned_adress = raw_memory + adjustment;
+    return (void*)aligned_adress;
 }
 
 void clear_engine_memory(){

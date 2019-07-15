@@ -6,9 +6,6 @@
 #define PAVON_MOBILE_GAME_H
 
 #include "model.h"
-#include "level.h"
-
-Level new_level;
 
 void init_game();
 

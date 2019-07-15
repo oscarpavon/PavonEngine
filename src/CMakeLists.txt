@@ -6,7 +6,6 @@ set(engine_source
         model.c
         vector.c
         file_loader.c
-        level.c
         camera.c
         images.c
         input.c        

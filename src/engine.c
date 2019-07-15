@@ -14,9 +14,10 @@
 
 #include "vector.h"
 #include "model.h"
-#include "level.h"
 
 #include <unistd.h>
+
+
 
 void update_draw_vertices(GLuint shader, GLuint buffer){
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -76,7 +77,7 @@ void new_empty_element(){
     memset(&new_element,0,sizeof(struct Element));
 
     new_element.duplicated_of_id = -1;
-    new_element.model = &actual_model_array->models[element_id_count];
+    new_element.model = get_element_from_array(actual_model_array,element_id_count);
     new_element.id = element_id_count;
     new_element.type = ELEMENT_TYPE_MODEL;
 
@@ -93,12 +94,10 @@ void new_empty_element(){
 void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
-    add_model_to_array(actual_model_array,new_model);
+    add_element_to_array(actual_model_array,&new_model);
 
-    if(selected_element != NULL)//for element garbage model pointer after reallocation
-        selected_element->model = &actual_model_array->models[selected_element->model_id];
-
-    selected_model = &actual_model_array->models[actual_model_array->count-1];
+    selected_model = get_element_from_array(actual_model_array,actual_model_array->count-1);
+        
     glm_mat4_identity(selected_model->model_mat);
     selected_model->id = model_id_count;
     model_id_count++;
@@ -145,11 +144,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     struct Model* model0 = selected_model;     
 
-    model0->shader = glCreateProgram();
-
-    glAttachShader(model0->shader, standart_vertex_shader);
-    glAttachShader(model0->shader, actual_standard_shader);
-    glLinkProgram(model0->shader);
+    model0->shader = create_engine_shader(standart_vertex_shader,actual_standard_fragment_shader);
 
     init_model(model0);
     model0->actual_LOD = 0;
@@ -162,15 +157,16 @@ void add_element_with_model_path(const char* model_gltf_path){
             glm_mat4_identity(models[i+1].model_mat);  
             init_model(&models[i+1]);
             models[i+1].shader = model0->shader;
-            add_model_to_array(actual_LOD_models_array,models[i+1]);
+            add_element_to_array(actual_LOD_models_array,&models[i+1]);
         }
     }
     if(models[0].has_HLOD){
         glm_mat4_identity(models[2].model_mat);  
         init_model(&models[2]);
         models[2].shader = model0->shader;
-        add_model_to_array(actual_LOD_models_array,models[2]);
-        models->HLOD = &actual_LOD_models_array->models[actual_LOD_models_array->count-1];
+        add_element_to_array(actual_LOD_models_array,&models[2]);
+        models->HLOD = get_element_from_array(actual_LOD_models_array,actual_LOD_models_array->count-1);
+        
     }    
     
     new_empty_element();
@@ -352,9 +348,9 @@ void load_model_texture_to_gpu(struct Model * model){
         LOGW("Error %08x \n",error);
     }
 }
-void load_models_texture_to_gpu(ModelArray* models_array){
+void load_models_texture_to_gpu(Array* models_array){
     for(size_t i = 0; i < models_array->count ; i++) {
-        struct Model *model = &models_array->models[i];
+        struct Model *model = get_element_from_array(&models_array,i);
 
 
         glGenTextures(1, &model->texture.id);
@@ -405,10 +401,10 @@ void init_model(struct Model* new_model){
     new_model->index_array.indices = NULL;
 }
 
-void init_models(ModelArray* array){
+void init_models(Array* array){
     for(size_t i = 0; i < array->count ; i++){
 
-        struct Model* new_model = &array->models[i];
+        struct Model* new_model = get_element_from_array(array,i);
 
         VertexArray vertex_array = new_model->vertex_array;
 
@@ -457,7 +453,7 @@ void init_engine(){
     components_id_count = 0;
 
 }
-ModelArray models;
+Array models;
 Array elements;
 
 void init_game_engine(){
@@ -469,12 +465,12 @@ void init_game_engine(){
     
     element_id_count = 0;   
 
-    init_model_array(&models, 1);
-    init_array(&elements,sizeof(Element));
+    init_array_with_count(&models, sizeof(Model),100);
+    init_array_with_count(&elements,sizeof(Element),100);
     actual_model_array = &models;
     actual_elements_array = &elements;
     //actual_LOD_models_array = &LOD_models;
-    actual_standard_shader = standart_fragment_shader;
+    actual_standard_fragment_shader = standart_fragment_shader;
 
     
 }

@@ -41,7 +41,9 @@
 			"tuple": "c",
 			"time.h": "c",
 			"limits": "c",
-			"algorithm": "c"
+			"algorithm": "c",
+			"vector": "c",
+			"types.h": "c"
 		}
 	}
 }

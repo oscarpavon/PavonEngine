@@ -11,15 +11,35 @@ void init_array(Array * array, size_t element_bytes_size){
     array->data = malloc(element_bytes_size);
     array->actual_bytes_size = element_bytes_size;
     array->element_bytes_size = element_bytes_size;
+    array->bytes_capacity = element_bytes_size;
 }
 
 void init_array_with_count(Array * array, size_t element_bytes_size, int count){
     array->count = 0;
-    array->data = malloc(element_bytes_size * count);
-    array->actual_bytes_size = element_bytes_size * count;
+    array->data = allocate_stack_memory_alignmed(element_bytes_size * count,16);
+    array->actual_bytes_size = element_bytes_size * array->count ;
     array->element_bytes_size = element_bytes_size;
+    array->bytes_capacity = element_bytes_size * count;
 }
 
+void add_element_to_array(Array* array, void* element){
+    if(array->count == 0){
+        memcpy(array->data,element,array->element_bytes_size);
+        array->count++;
+        return;
+    }
+    if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
+        printf("Array need realocation\n");//TODO: realocation engine memory
+    }
+    size_t offset = array->actual_bytes_size;
+    array->count++;
+    array->actual_bytes_size += array->element_bytes_size;
+    
+    memcpy(array->data+(offset),element,array->element_bytes_size);
+
+    array->data = array->data+(offset);
+
+}
 
 int init_vertex_array(VertexArray* array, size_t size){
     array->count = 0;
@@ -40,28 +60,6 @@ int init_index_array(IndexArray* array, size_t size){
     return 0;
 }
 
-int init_model_array(ModelArray* array, size_t size){
-    if(array->capacity != 0){
-        void* temp = realloc(array->models, sizeof(struct Model) * (size+array->capacity));
-        array->models = temp;
-        array->size = sizeof(struct Model) * (size + array->capacity);
-        array->capacity = size + array->capacity;
-        return 0;
-    }
-    array->count = 0;
-    array->models = malloc(sizeof(struct Model) * size);
-    array->size = sizeof(struct Model) * size;
-    array->capacity = size;
-    return 0;
-}
-
-void clean_model_array(ModelArray* array){
-    array->count = 0;
-    free(array->models);
-    array->models = calloc(1,sizeof(struct Model));
-    array->size = sizeof(struct Model);
-}
-
 void clean_array(Array* array){
     array->count = 0;
     free(array->data);
@@ -69,27 +67,6 @@ void clean_array(Array* array){
     array->actual_bytes_size = array->element_bytes_size;
     
 }
-
-void add_model_to_array(ModelArray* array, struct Model model){
-    if(array->count == 0){
-        memcpy(array->models,&model,sizeof(struct Model));
-        array->count++;
-        return;
-    }
-    if(array->count < array->capacity ){
-        array->count++;
-        memcpy(&array->models[array->count-1],&model,sizeof(struct Model));    
-        return;
-    }
-    array->count++;
-    array->size += sizeof(struct Model);
-    array->models = realloc(array->models,sizeof(struct Model) * array->size);
-    if(!array->models){
-        printf("array no allocated\n");
-    }
-    memcpy(&array->models[array->count-1],&model,sizeof(struct Model));
-}
-
 
 void remove_last_element_from_model_array(ModelArray* array){
     if(array->count==1){
@@ -148,15 +125,8 @@ void add_index_to_array(IndexArray* array, unsigned short int value){
     }
     
     array->count++;
-    array->size += sizeof(unsigned short int);
-    
-    /* void* realocated = realloc(array->indices,array->size);
-    if(realocated != NULL)
-        array->indices = realocated; */
+    array->size += sizeof(unsigned short int);    
 
-    if(!array->indices){
-        printf("array no allocated\n");
-    }
     memcpy(&array->indices[array->count-1],&value,sizeof(unsigned short int));
     
 }
@@ -169,39 +139,16 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
     }
 
     array->count++;
-    array->size += sizeof(struct Vertex);
-    //array->vertices = realloc(array->vertices,sizeof(struct Vertex) * array->size);
-     struct Vertex* allocated_vertex = allocate_memory(sizeof(struct Vertex));
+    array->size += sizeof(struct Vertex);   
+    
+    struct Vertex* allocated_vertex = allocate_memory(sizeof(struct Vertex));
     if(allocated_vertex== NULL){
         printf("Memory not allocated ERROR\n");
     }
     if(!array->vertices){
         printf("array no allocated\n");
     }
-    //memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));
-    memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));
-    //array->vertices2[array->count-1] = vertex;
-   
+    memcpy(&array->vertices[array->count-1],&vertex,sizeof(struct Vertex));   
 }
 
 
-void add_element_to_array(Array* array, void* element){
-    if(array->count == 0){
-        memcpy(array->data,element,array->element_bytes_size);
-        array->count++;
-        return;
-    }
-    size_t offset = array->actual_bytes_size;
-    array->count++;
-    array->actual_bytes_size += array->element_bytes_size;
-    void* buffer;
-    buffer = realloc(array->data, array->actual_bytes_size);
-    if(!buffer){
-        LOGW("array no allocated\n");
-    }
-    memcpy(buffer+(offset),element,array->element_bytes_size);
-
-    array->data = buffer;
-
-
-}
