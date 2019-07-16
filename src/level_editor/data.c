@@ -167,8 +167,11 @@ void save_level_data(const char* level_name){
 void save_buttons_data(int id){    
     Button* button = get_element_from_array(actual_buttons_array,id);
     if(button != NULL){
+        new_text_token("name",button->name);
         new_text_vec2_token("pos",button->position);
         new_text_vec2_token("size",button->size);
+        //new_text_primitive_token("relative",button->relative_to);
+        new_text_primitive_token("function_id",button->action_function_id);
     }   
     
 }
@@ -188,12 +191,12 @@ void save_gui_data(const char* gui_name){
     element_id_count = actual_buttons_array->count;
 
     save_header_info();
-    
+    fputs("{\n", new_file);
     SaveDataFunction save = &save_buttons_data;
     for(int i = 0; i < actual_buttons_array->count ; i++){
          new_save_element(save,i);
     }
-   
+    fputs("\n}", new_file);
 
     fclose(new_file);
 

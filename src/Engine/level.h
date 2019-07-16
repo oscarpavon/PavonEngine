@@ -3,7 +3,7 @@
 #define ENGINE_LEVEL_H
 #include "../vector.h"
 
-void load_level_to_elements_array(const char* name, Array* load_elements);
+int load_level_to_elements_array(const char* name, Array* load_elements);
 void add_loaded_elements(Array* load_elements, Array* editor_models, Array* editor_elements);
 
 #endif //ENGINE_LEVEL_H

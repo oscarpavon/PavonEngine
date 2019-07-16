@@ -30,9 +30,15 @@ void init_camera_local_transform(){
 
 }
 
+void move_player_forward(){
+    printf("Action pointer work\n");
+}
+
 void init_game(){    
     glm_rotate(player1->model->model_mat,180, (vec3){0,0,1});
     init_camera_local_transform();
+
+    add_action_function(&move_player_forward);
 }
 
 

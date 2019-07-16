@@ -193,7 +193,7 @@ void check_LOD(cgltf_data* data){
             actual_vertex_array = &actual_model->vertex_array;
 
             printf("Found LOD1\n");            
-            load_mesh(data->nodes[i].mesh);
+            //load_mesh(data->nodes[i].mesh);
  
             break;
           }
@@ -210,7 +210,7 @@ void check_LOD(cgltf_data* data){
             init_vertex_array(&actual_model->vertex_array,1);
             actual_index_array = &actual_model->index_array;
             actual_vertex_array = &actual_model->vertex_array;            
-            load_mesh(data->nodes[i].mesh);
+            //load_mesh(data->nodes[i].mesh);
             in_model_array->has_HLOD = true;
              
           }

@@ -12,7 +12,6 @@
 int32_t handle_input(struct android_app* app, AInputEvent* event);
 #endif //def ANDROID
 
-
 float touch_position_x;
 float touch_position_y;
 

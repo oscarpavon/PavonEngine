@@ -58,7 +58,8 @@ void check_if_pressed(struct Button* button){
     if(minx <= touch_position_x && maxy >= touch_position_y){
         if(miny <= touch_position_y && maxx >= touch_position_x){
             button->pressed = true;
-            //LOGW("button pressed");
+            LOGW("button pressed\n");
+            
         }
     }else{
         button->pressed = false;
@@ -117,6 +118,8 @@ void draw_buttons(){
         glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
 
         glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+        
     }
 
 
@@ -282,6 +285,17 @@ void draw_loading_screen(){
     draw_logo();
 }
 
+void update_user_iterface_status(){
+     for(size_t i = 0; i < buttons.count ; i++){
+         Button* button = get_element_from_array(&buttons,i);
+         check_if_pressed(button);
+         if(button->pressed){
+             ActionPointer* action_pointer = get_element_from_array(&actions_pointers,button->action_function_id);
+             action_pointer->action();
+         }
+     }
+}
+
 void draw_gui(){
     glCullFace(GL_FRONT);
     draw_buttons();
@@ -302,6 +316,8 @@ void new_empty_button(){
 
     Button* button = get_element_from_array(actual_buttons_array,actual_buttons_array->count-1);
     button->shader = create_engine_shader(vert_shader,frag_shader);
+    button->action_function_id = 0;
+    button->pressed = false;
 }
 
 void load_gui(const char* name){
@@ -325,5 +341,6 @@ void load_gui(const char* name){
     for(int i = 0; i < buttons.count; i++){
         Button* button = get_element_from_array(&buttons,i);
         button->shader = create_engine_shader(vert_shader,frag_shader);
+        button->pressed = false;
     }
 }

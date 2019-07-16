@@ -21,6 +21,8 @@
 
 #include "../gui.h"
 
+#include "../input.h"
+
 float horizontalAngle = 0;
 float verticalAngle = 0;
 
@@ -55,8 +57,13 @@ unsigned char command_text_buffer[100];
 bool activate_text_input_mode = false;
 unsigned short int character_count = 0;
 
+char first_char_command;
+char* command_array_pointer;
+char* argument_array_pointer;
 
 void parse_command(const char* command){
+    first_char_command = command[1];
+
     if(strcmp(&command[1],"gui") == 0){
         change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
     }
@@ -71,6 +78,12 @@ void parse_command(const char* command){
             load_gui(&command[3]);       
             printf("GUI loaded\n");
         }
+        if(first_char_command == 's'){
+            if(command[2] == 'n'){
+                strcpy(selected_button->name,&command[4]);
+            }
+        }
+
     }else{
         if(command[1] == 'w'){
             save_level_data(&command[3]);
@@ -178,6 +191,9 @@ void camera_rotate_control(float yaw, float pitch){
 
     update_look_at();
 }
+bool left_click = false;
+float actual_mouse_position_x;
+float actual_mouse_position_y;
 
 void mouse_movement_control(float xpos, float ypos){
     
@@ -192,12 +208,16 @@ void mouse_movement_control(float xpos, float ypos){
 
     camera_rotate_control(0, horizontalAngle);
     
-
+     
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
 	if(mouse_navigate_control)
         mouse_movement_control(xpos, ypos);
+
+    actual_mouse_position_x = xpos;
+    actual_mouse_position_y = ypos;
+         
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -323,21 +343,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
 
-		if (button == GLFW_MOUSE_BUTTON_RIGHT ){
+		if (button ==  GLFW_MOUSE_BUTTON_LEFT ){
 			if(action == GLFW_PRESS){
 				
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
                 move_camera_input = false;
                 mouse_navigate_control = false;
-                change_to_editor_mode(EDITOR_DEFAULT_MODE);
-				
+                //change_to_editor_mode(EDITOR_DEFAULT_MODE);
+				left_click = true;
+                touch_position_x = actual_mouse_position_x;
+                touch_position_y = actual_mouse_position_y;
 			}
 			if(action == GLFW_RELEASE){
-			
+                left_click = false;
+                touch_position_x = -1;
+                touch_position_y = -1;
 			}
 
 		}
-		if (button == GLFW_MOUSE_BUTTON_LEFT ){
+		if (button == GLFW_MOUSE_BUTTON_RIGHT ){
 			if(action == GLFW_PRESS){
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
                 move_camera_input = true;
@@ -374,20 +398,36 @@ void input_change_mode(){
 
 float move_object_value = 0.02;
 bool grid_translate = false;
-
+vec2 move_ui_element_value;//per pixel
+float move_ui_element_value_per_axis = 0.6;
 void grab_mode(){
-    if(editor_mode == EDITOR_DEFAULT_MODE){
-        input_change_mode();
+    draw_translate_gizmo = true;
+    draw_rotate_gizmo = false;
 
-        draw_rotate_gizmo = false;
-        draw_translate_gizmo = true;   
-        
+    if(key_released(&input.KEY_1)){
+        grid_translate = true;
+    }
+    if(!grid_translate){
+        if(key_released(&input.I)){
+            if(editor_mode == EDITOR_DEFAULT_MODE)
+                move_object_value += 0.04;
 
-        if(!grid_translate){
-            if(key_released(&input.KEY_1)){
-                grid_translate = true;
-            } 
-            
+            if(editor_mode == EDITOR_MODE_GUI_EDITOR)
+                move_ui_element_value_per_axis += 0.1;
+        }
+        if(key_released(&input.O)){
+            if(editor_mode == EDITOR_DEFAULT_MODE)
+                move_object_value -= 0.04;
+
+            if(editor_mode == EDITOR_MODE_GUI_EDITOR)
+                move_ui_element_value_per_axis -= 0.1;
+        }
+    }
+    input_change_mode();
+
+    if(editor_mode == EDITOR_DEFAULT_MODE){     
+
+        if(!grid_translate){            
             if(input.W.pressed){
                 vec3 move = {0,-move_object_value,0};
                 glm_translate(selected_element->model->model_mat, move);
@@ -419,12 +459,7 @@ void grab_mode(){
                 glm_translate(selected_element->model->model_mat, move);
                 glm_vec3_add(selected_element->position,move,selected_element->position);
             }
-            if(key_released(&input.I)){
-                move_object_value += 0.04;
-            }
-            if(key_released(&input.O)){
-                move_object_value -= 0.04;
-            }
+            
         }else{
             if(key_released(&input.KEY_1)){
                 grid_translate = false;
@@ -458,10 +493,28 @@ void grab_mode(){
             }
         }
     }
+
     if(editor_mode == EDITOR_MODE_GUI_EDITOR){
+        
         if(input.W.pressed){
-            Button* button = selected_button;
-            glm_vec3_add(button->position, (vec2){0,0.2}, button->position);
+            move_ui_element_value[0] = 0;
+            move_ui_element_value[1] = move_ui_element_value_per_axis;
+            glm_vec3_sub(selected_button->position, move_ui_element_value, selected_button->position);
+        }
+        if(input.S.pressed){
+            move_ui_element_value[0] = 0;
+            move_ui_element_value[1] = move_ui_element_value_per_axis;            
+            glm_vec3_add(selected_button->position, move_ui_element_value, selected_button->position);
+        }
+        if(input.D.pressed){
+            move_ui_element_value[1] = 0;
+            move_ui_element_value[0] = move_ui_element_value_per_axis;             
+            glm_vec3_add(selected_button->position, move_ui_element_value, selected_button->position);
+        }
+        if(input.A.pressed){
+            move_ui_element_value[1] = 0;
+            move_ui_element_value[0] = move_ui_element_value_per_axis;            
+            glm_vec3_sub(selected_button->position, move_ui_element_value, selected_button->position);
         }
     }
     
@@ -557,7 +610,7 @@ void navigate_mode(){
     
 }
 
-void open_text_menu_key(TextMenu* menu, Key* open_key, int mods){
+void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == NULL){
         if( key_released(open_key) ){
             menu->execute = true;
@@ -593,6 +646,7 @@ void open_text_menu_key(TextMenu* menu, Key* open_key, int mods){
 }
 
 void default_mode(){
+
     draw_rotate_gizmo = false;
     draw_translate_gizmo = false;
 
@@ -641,12 +695,12 @@ void default_mode(){
         can_draw_skeletal_bones = true;
     }
            
-    open_text_menu_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
-    open_text_menu_key(&menu_editor_element_list,&input.L,NULL);
-    open_text_menu_key(&menu_add_texture,&input.T,GLFW_MOD_SHIFT); 
+    can_open_text_menu_with_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
+    can_open_text_menu_with_key(&menu_editor_element_list,&input.L,NULL);
+    can_open_text_menu_with_key(&menu_add_texture,&input.T,GLFW_MOD_SHIFT); 
 
     
-    open_text_menu_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
+    can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
     
 }
 
@@ -674,8 +728,9 @@ void rotate_input_mode(){
 }
 
 bool player_in_start_position = false;
-void input_mode_play(){
 
+void input_mode_play(){
+  
     update_game();
 
     if(input.W.pressed){
@@ -709,11 +764,11 @@ void input_mode_play(){
 }
 
 void input_gui_editor(){
-    open_text_menu_key(&menu_show_gui_elements,&input.L,NULL);
+    can_open_text_menu_with_key(&menu_show_gui_elements,&input.L,NULL);
 
     if(key_released(&input.ESC)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        clean_array(actual_buttons_array);
+        //clean_array(actual_buttons_array);
     }
         
         

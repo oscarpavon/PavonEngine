@@ -107,6 +107,10 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       printf("Elements from header count: %i\n",elements_count);
       
     }
+
+    if (jsoneq(js, token-1, "function_id") == 0){
+      actual_button->action_function_id = get_token_primitive_value(token);      
+    }
     
     if (jsoneq(js, token-1, "type") == 0){     
       
@@ -157,6 +161,12 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
           } 
       }
       return 1;
+    }
+
+    if (jsoneq(js, token, "name") == 0) {  
+      char text[20];
+      get_token_string(text,token+1);      
+      strcpy(actual_button->name, text);
     }   
 
     if (jsoneq(js, token, "path") == 0) {     
@@ -179,7 +189,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 		return 1;
 	} 
   else if (token->type == JSMN_OBJECT) {
-     if(actual_data_type == DATA_TYPE_GUI){
+    if(actual_data_type == DATA_TYPE_GUI){
        if(object_zero == true){
         object_zero = false;
       }else
@@ -240,8 +250,9 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
               j += dump(js, token+1+j, count-j, indent+1);                 
 
             }
-            glm_vec3_copy(pos,actual_button->position);
-                        
+            actual_button->position[0] = pos[0];
+            actual_button->position[1] = pos[1];
+                     
         }
         if (jsoneq(js, token-1, "size") == 0) {
             vec2 size;
@@ -253,9 +264,11 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
               j += dump(js, token+1+j, count-j, indent+1);                 
 
             }
-            glm_vec3_copy(size,actual_button->size);
+            actual_button->size[0] = size[0];
+            actual_button->size[1] = size[1];
         }
       }
+
       for (i = 0; i < token->size; i++) {             
 
         j += dump(js, token+1+j, count-j, indent+1);     
@@ -311,7 +324,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  //printf("%s\n", models_json_file);
+  printf("%s\n", models_json_file);
 
   actual_json_file = models_json_file;
 
@@ -342,9 +355,9 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* out_element){
   parse_header(json_file);
 
-  int token_count = elements_count * 4;
+  int token_count = elements_count * 8;
 
-   jsmn_parser parser;
+  jsmn_parser parser;
   int max_tokens = token_count+30;
   jsmntok_t tokens[max_tokens];
   jsmn_init(&parser);
@@ -355,7 +368,7 @@ void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* 
 
   memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  //printf("%s\n", models_json_file);
+  printf("%s\n", models_json_file);
 
   actual_json_file = models_json_file;
 

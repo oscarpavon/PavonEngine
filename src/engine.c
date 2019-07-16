@@ -466,6 +466,10 @@ void init_engine(){
         memcpy(&number,element,sizeof(int));
         printf("Number: %i\n",number);
     }
+
+
+    action_pointer_id_count = 0;
+    init_array_with_count(&actions_pointers,sizeof(ActionPointer),20);
 }
 Array models;
 Array elements;
@@ -500,3 +504,10 @@ void engine_loop(){
 
 }
 
+void add_action_function(void(*f)(void)){
+    ActionPointer new_action;
+    new_action.id = action_pointer_id_count;
+    new_action.action = f;
+    add_element_to_array(&actions_pointers,&new_action);
+    action_pointer_id_count++;    
+}

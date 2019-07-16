@@ -153,7 +153,9 @@ void load_level_in_editor(const char* name){
     strcat(save_name,".lvl");
     printf("%s\n",save_name);
 
-    load_level_to_elements_array(save_name, &load_elements);   
+    int level_result = load_level_to_elements_array(save_name, &load_elements);
+    if(level_result != 0)
+        return;   
     
     add_loaded_elements(&load_elements, &editor_models, &editor_elements);
     //clean_array(&load_elements);
@@ -317,8 +319,12 @@ void update_editor(){
 
     draw_gizmos();
 
-    if(editor_mode == EDITOR_MODE_GUI_EDITOR)
-        draw_gui();
+    if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
+         update_user_iterface_status();
+         draw_gui();
+         
+    }
+       
 
     text_renderer_loop();
 

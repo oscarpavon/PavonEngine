@@ -311,12 +311,31 @@ void draw_gizmos(){
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = get_element_from_array(&gizmos,0);
-            if(selected_element != NULL){
-                if(selected_element->model == NULL)
-                    return;
-                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+            if(editor_mode == EDITOR_DEFAULT_MODE){                
+                if(selected_element != NULL){
+                    if(selected_element->model == NULL)
+                        return;
+                    glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+                }
+                draw_simgle_model(actual_gizmo);
             }
-            draw_simgle_model(actual_gizmo);
+            if(editor_mode == EDITOR_MODE_GUI_EDITOR){
+                if(selected_button == NULL)
+                    return;
+                glUseProgram(actual_gizmo->shader);
+                update_button_matrix(actual_gizmo->shader, selected_button->size, selected_button->position);
+                glBindTexture(GL_TEXTURE_2D, actual_gizmo->texture.id);
+                glBindBuffer(GL_ARRAY_BUFFER,actual_gizmo->vertex_buffer_id);
+
+                glEnableVertexAttribArray(0);
+
+                glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,actual_gizmo->index_buffer_id);
+
+                glDrawElements(GL_TRIANGLES, actual_gizmo->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
+
+            }
         }
         if(draw_rotate_gizmo){
             Model* actual_gizmo = get_element_from_array(&gizmos,1);

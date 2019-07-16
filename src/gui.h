@@ -25,6 +25,8 @@ typedef struct Button{
     vec2 original_position;
 
     GLuint shader;
+
+    int action_function_id;
 }Button;
 
 
@@ -40,6 +42,7 @@ void draw_button();
 void draw_gui();
 void draw_loading_screen();
 void update_button_matrix(GLuint shader_id, vec2 size, vec2 position);
+void update_user_iterface_status();
 
 void new_empty_button();
 
