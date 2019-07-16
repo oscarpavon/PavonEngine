@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+set(components
+        Engine/components/components.c
+        )
+
 set(engine_source 
         model.c
         vector.c
@@ -18,7 +22,10 @@ set(engine_source
         third_party/jsmn.c
         Engine/files_parser.c
         Engine/memory.c
+        ${components}
 )
+
+
 
 set (game_source
         game.c

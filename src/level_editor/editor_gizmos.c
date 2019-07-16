@@ -3,28 +3,6 @@
 
 GLuint color_fragment_shader;
 
-void load_editor_element(const char* path_model, const char* color_texture_path){   
-
-    struct Model new_model;
-    memset(&new_model,0,sizeof(Model));
-    
-    load_model(path_model,&new_model);
-    glm_mat4_identity(new_model.model_mat);   
-
-    new_model.shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
-
-    glUseProgram(new_model.shader);
-
-    new_model.texture.image = load_image(color_texture_path);
-
-    init_model(&new_model);
-
-    load_model_texture_to_gpu(&new_model);
-
-    add_element_to_array(&gizmos,&new_model);  
-
-}
-
 Array debug_objects;
 Array bounding_boxes;
 
@@ -356,10 +334,11 @@ void init_gizmos(){
 
     init_array_with_count(&debug_objects, sizeof(DebugLine),1000);
 
-    load_editor_element("editor/transform.gltf","editor/transform_gizmo.jpg");
-    load_editor_element("editor/rotate.gltf", "editor/rotate_gizmo.png");
-    load_editor_element("editor/camera.gltf", "editor/camera_gizmo.jpg");
-    load_editor_element("editor/player_start.gltf", "editor/player_start_gizmo.jpg");
+    load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
+    load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");
+    load_model_to_array(&gizmos,"editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_model_to_array(&gizmos,"editor/player_start.gltf", "editor/player_start_gizmo.jpg");
+    
 
     color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 

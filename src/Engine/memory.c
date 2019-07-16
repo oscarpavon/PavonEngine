@@ -12,10 +12,10 @@ void init_engine_memory(){
     indices.used = 0;
     indices.marker = 0;
 
-    engine_stack_memory.memory = allocate_memory(60000);
-    engine_stack_memory.available = 60000;
-    engine_stack_memory.used = 0;
-    engine_stack_memory.marker = 0;
+    created_components.memory = allocate_memory(6000);
+    created_components.available = 6000;
+    created_components.used = 0;
+    created_components.marker = 0;
 }
 
 

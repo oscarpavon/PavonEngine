@@ -93,6 +93,12 @@ void add_editor_native_element(const char* native_element_name){
         selected_element->model = selected_model;
         strcpy(selected_element->name, "Player1");
         selected_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
+    }else if ( strcmp("Sphere", native_element_name) == 0 ){
+        new_empty_element();
+        SphereComponent sphere;
+        init_sphere_component(&sphere);
+        add_component_to_selected_element(sizeof(sphere), &sphere);
+
     }
 }
 

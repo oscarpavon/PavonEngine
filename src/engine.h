@@ -24,6 +24,12 @@ struct android_app* app;
 
 #include <time.h>
 
+#include "shader.h"
+
+#include "Engine/components/components.h"
+
+#define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
+
 static const char* const level_folder = "../Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
@@ -65,6 +71,8 @@ extern void select_last_element();
 void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
+void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
@@ -91,6 +99,7 @@ Array* actual_buttons_array;
 
 
 Array components;
+Array engine_native_models;
 
 float frame_time;
 

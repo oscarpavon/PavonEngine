@@ -40,6 +40,8 @@ StackMemory vertex_memory;
 StackMemory indices;
 StackMemory engine_stack_memory;
 
+StackMemory created_components;
+
 PoolMemory arrays_memory;
 
 #endif

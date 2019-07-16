@@ -269,7 +269,7 @@ void menu_action_draw_native_editor_elments(TextMenu* menu){
 
     int native_editor_element_count = 3;
 
-    const char* elements_names[3] = { {"Camera"} , {"Player Start"}, {"Collider"} };
+    const char* elements_names[6] = { {"Camera"} , {"Player Start"}, {"Collider"} , {"Sphere"}, {"Cube"}, {"Cillinder"}};
 
     for(int i = 0; i < native_editor_element_count; i++){
         

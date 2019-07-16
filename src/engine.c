@@ -447,7 +447,9 @@ void init_engine(){
 
     init_gui();
 
-    init_array(&components,sizeof(ElementComponent));
+    init_array_with_count(&engine_native_models,sizeof(Model),10);
+
+    init_array_with_count(&components,sizeof(ElementComponent),100);
     components_id_count = 0;
 
     Array test_numbers;
@@ -470,6 +472,9 @@ void init_engine(){
 
     action_pointer_id_count = 0;
     init_array_with_count(&actions_pointers,sizeof(ActionPointer),20);
+
+
+    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
 }
 Array models;
 Array elements;
@@ -477,9 +482,7 @@ Array elements;
 void init_game_engine(){
     should_close = false;    
 
-    init_camera();
-
-        
+    init_camera();        
     
     element_id_count = 0;   
 
@@ -510,4 +513,26 @@ void add_action_function(void(*f)(void)){
     new_action.action = f;
     add_element_to_array(&actions_pointers,&new_action);
     action_pointer_id_count++;    
+}
+
+void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path){   
+
+    struct Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    
+    load_model(path_model,&new_model);
+    glm_mat4_identity(new_model.model_mat);   
+
+    new_model.shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
+
+    glUseProgram(new_model.shader);
+
+    new_model.texture.image = load_image(color_texture_path);
+
+    init_model(&new_model);
+
+    load_model_texture_to_gpu(&new_model);
+
+    add_element_to_array(array,&new_model);  
+
 }
