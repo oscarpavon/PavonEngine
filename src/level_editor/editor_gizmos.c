@@ -131,7 +131,9 @@ void draw_bounding_box(){
         Model* bounding_model = get_element_from_array(&bounding_boxes,bounding_boxes.count-1);
         update_bounding_vertices_array(selected_element->model);
         //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
-        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id);
+        mat4 model;
+        glm_mat4_identity(model);
+        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id, model);
         GLint uniform_color = glGetUniformLocation(bounding_model->shader,"color");
         
         glUniform4fv(uniform_color, 1, (vec4){0.6,1,0,1});
@@ -200,8 +202,10 @@ void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){
 void draw_grid_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
         DebugLine* line = get_element_from_array(&debug_objects,i);
-        if(line->initialized == true){            
-            update_draw_vertices(line->shader, line->vertex_buffer_id);
+        if(line->initialized == true){
+            mat4 model;
+            glm_mat4_identity(model);            
+            update_draw_vertices(line->shader, line->vertex_buffer_id,model);
             glLineWidth(1);            
             GLint uniform_color = glGetUniformLocation(line->shader,"color");
             
@@ -259,12 +263,14 @@ void draw_camera_direction(){
 void draw_gizmos(){
     if(can_draw_skeletal_bones)   
         draw_skeletal_bones();
+    
+    draw_grid_lines();
 
     if(can_draw_gizmos){
         //draw_bounding_box();
         draw_camera_direction();
 
-        draw_grid_lines();
+        
 
         for(int i = 0; i< editor_elements.count ; i++){
             Element* element = get_element_from_array(&editor_elements,i);
@@ -328,11 +334,11 @@ void draw_gizmos(){
 }
 
 void init_gizmos(){
-    init_array_with_count(&gizmos,sizeof(Model),6);   
+    init_array_with_count(&gizmos,sizeof(Model),10);   
     
-    init_array_with_count(&bounding_boxes,sizeof(Model),6);
+    init_array_with_count(&bounding_boxes,sizeof(Model),10);
 
-    init_array_with_count(&debug_objects, sizeof(DebugLine),1000);
+    init_array_with_count(&debug_objects, sizeof(DebugLine),300);
 
     load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
     load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");

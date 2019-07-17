@@ -21,12 +21,22 @@ void init_engine_memory(){
 
 void* allocate_stack_memory(StackMemory* stack, int bytes_size){
     if(stack->available > bytes_size){
-        stack->used += bytes_size;
-        stack->available -= bytes_size;
-        void* allocated_memory = &stack->memory[stack->marker];
+
+        int expanded_size_bytes = bytes_size + 16;
+        unsigned long int raw_memory = &stack->memory[stack->marker];
+
+        int mask = (16 - 1);
+        unsigned long int misalignment = (raw_memory & mask);
+        unsigned long int adjustment = 16 - misalignment;
+
+        unsigned long int aligned_adress = raw_memory + adjustment;
+
+        stack->used += expanded_size_bytes;
+        stack->available -= expanded_size_bytes;
+        //void* allocated_memory = &stack->memory[stack->marker];
         stack->previous_marker = stack->marker;
-        stack->marker += bytes_size;
-        return allocated_memory;
+        stack->marker += expanded_size_bytes;
+        return (void*)aligned_adress;
     }   
     printf("ERROR allocating stack memory\n");
     return NULL;

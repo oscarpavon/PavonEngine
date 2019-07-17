@@ -96,7 +96,7 @@ void parse_command(const char* command){
     }
     
     if(command[1] == 'q'){
-        //quit
+        exit(0);
     }
     if(command[1] == 'r'){        
         reload_editor();
@@ -110,8 +110,8 @@ void parse_command(const char* command){
         }
     }
     if(command[1] == 'h'){        
-        selected_element->has_HLOD = true;
-        printf("HLOD added\n");
+       /*  selected_element->has_HLOD = true;
+        printf("HLOD added\n"); */
     }
     if(command[1] == 'd'){ 
         unsigned int duplicate_count = atoi(&command[3]); 

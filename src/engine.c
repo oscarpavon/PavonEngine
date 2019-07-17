@@ -18,24 +18,22 @@
 #include <unistd.h>
 
 
+#include <signal.h>
 
-void update_draw_vertices(GLuint shader, GLuint buffer){
+
+void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glUseProgram(shader);
 
-    mat4 mvp;
-    glm_mat4_identity(mvp);
-    
-    
-    mat4 model;
-    glm_mat4_identity(model);
-    update_mvp(model, mvp);
-  
+    mat4 mvp;      
+    update_mvp(matrix, mvp);  
 
     GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
     if(mvp_uniform == -1){
         printf("MVP uniform not found\n");
+        raise(SIGINT);
+        exit(-1);
         return;
     }
 
@@ -77,7 +75,7 @@ void new_empty_element(){
     memset(&new_element,0,sizeof(struct Element));
 
     new_element.duplicated_of_id = -1;
-    new_element.model = get_element_from_array(actual_model_array,element_id_count);
+    //new_element.model = get_element_from_array(actual_model_array,element_id_count);
     new_element.id = element_id_count;
     new_element.type = ELEMENT_TYPE_MODEL;
 
@@ -130,14 +128,14 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     struct Model models[3];
     memset(models,0,sizeof(models));
-
     
-    int result = load_model(model_gltf_path,models);
-    if(result==-1){
+    
+    if( load_model(model_gltf_path,models ) == -1){
         return;
     }    
-    
+
     new_empty_model();
+
     memcpy(&selected_model->index_array,&models[0].index_array,sizeof(IndexArray));
     memcpy(&selected_model->vertex_array,&models[0].vertex_array,sizeof(VertexArray));
     memcpy(&selected_model->min,&models[0].min,sizeof(vec3));
@@ -146,40 +144,23 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     struct Model* model0 = selected_model;     
 
-    model0->shader = create_engine_shader(standart_vertex_shader,actual_standard_fragment_shader);
+    model0->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
-    init_model(model0);
-    model0->actual_LOD = 0;
-    model0->change_LOD = false;
-    model0->draw = true;
-    
-
-    if(models[0].LOD_count >= 1){
-        for(int i = 0; i < models[0].LOD_count; i++){
-            glm_mat4_identity(models[i+1].model_mat);  
-            init_model(&models[i+1]);
-            models[i+1].shader = model0->shader;
-            add_element_to_array(actual_LOD_models_array,&models[i+1]);
-        }
-    }
-    if(models[0].has_HLOD){
-        glm_mat4_identity(models[2].model_mat);  
-        init_model(&models[2]);
-        models[2].shader = model0->shader;
-        add_element_to_array(actual_LOD_models_array,&models[2]);
-        models->HLOD = get_element_from_array(actual_LOD_models_array,actual_LOD_models_array->count-1);
-        
-    }    
+    init_model_gl_buffers(model0);   
     
     new_empty_element();
-    selected_element->model = selected_model;
-    selected_element->model_id = selected_model->id;
+    
+    strcpy(selected_element->name, "New Element");
+    TransformComponent transform;
+    init_transfrom_component(&transform);
+    add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+
+
+    StaticMeshComponent mesh_component;
+    mesh_component.model = selected_model;
+    add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
 
     strcpy(selected_element->model_path,model_gltf_path);
-    
-    if(model0->LOD_count >= 1){
-        selected_element->has_LOD  = true;
-    }  
 
     printf("model loaded and shader created \n");
 }
@@ -204,31 +185,8 @@ void set_selected_element_transform(vec3 position, versor rotation){
 }
 
 void draw_simgle_model(struct Model * new_model){
-    GLenum error ;
-    glUseProgram(new_model->shader);
-    glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
-    
-    mat4 mvp;
-    glm_mat4_identity(mvp);
-    
-    update_mvp(new_model->model_mat, mvp);
-
-    GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
-
-    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
-    
-    error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOGW("draw error\n");
-        LOGW("Error %08x \n",error);
-    }
-
-    glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
-
-
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+    glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+    update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
@@ -237,6 +195,7 @@ void draw_simgle_model(struct Model * new_model){
 
     glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
+    GLenum error;
     error = glGetError();
     if(error != GL_NO_ERROR){
         LOGW("draw error\n");
@@ -245,6 +204,14 @@ void draw_simgle_model(struct Model * new_model){
 }
 
 void draw_elements(Array *elements){
+    for(size_t i = 0; i < elements->count ; i++) { 
+        Model** model = get_element_from_array(elements,i);
+        
+        draw_simgle_model(model[0]);
+    }
+    clean_array(elements);
+    return;
+    
     GLfloat white[4] = {1, 1, 1, 1};
     GLfloat red[4] = {1, 0, 0, 1};
 
@@ -252,51 +219,24 @@ void draw_elements(Array *elements){
         Element* element = get_element_from_array(elements,i);
         if(element->model == NULL)
             continue;
-        if(element->model->draw == false)
-            continue;
         if(element->model->id > model_id_count){
             printf("Posible gargabe model pointer , model not draw\n ");
             continue;
         } 
+        if(element->model->draw == false)
+            continue;
+        
 
         struct Model *new_model;
         struct Model *LOD0 = element->model;
-        new_model = LOD0;
-        if(new_model->change_LOD){
-            new_model = new_model->LOD;          
-        }
-        if(LOD0->change_to_HLOD){
-            //new_model = LOD0->HLOD;
-        }
+        new_model = LOD0;     
         
         GLenum error;
-        
-        glBindBuffer(GL_ARRAY_BUFFER, new_model->vertex_buffer_id);
-
-        glUseProgram(new_model->shader);
-
-        mat4 mvp;
-        glm_mat4_identity(mvp);
-        
-        update_mvp(new_model->model_mat, mvp);
-
-
-        GLint mvp_uniform =  glGetUniformLocation(new_model->shader,"MVP");
-        if(mvp_uniform == -1){
-            printf("MVP uniform not found\n");
-            return;
-        }
-
-        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
-
-        error = glGetError();
-        if(error != GL_NO_ERROR){
-            LOGW("[X] Send matrix error, Error %08x \n",error);
-        }
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
         glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
+        
+        update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
+
+        
         GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
         if(element->selected)          
             glUniform4fv(uniform_color, 1, red);
@@ -306,11 +246,9 @@ void draw_elements(Array *elements){
 
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("[X] Send unifrom color error, Error %08x \n",error);
+            LOGW("[X] Send unifrom COLOR error, Error %08x \n",error);
+
         }
-
-        glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);    
-
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
 
@@ -380,15 +318,13 @@ void load_models_texture_to_gpu(Array* models_array){
     }
 }
 
-void init_model(struct Model* new_model){    
+void init_model_gl_buffers(struct Model* new_model){    
 
     VertexArray vertex_array = new_model->vertex_array;
-
 
     glGenBuffers(1,&new_model->vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, vertex_array.count * sizeof(struct Vertex) , vertex_array.vertices, GL_STATIC_DRAW);
-
 
     glGenBuffers(1,&new_model->index_buffer_id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
@@ -396,9 +332,7 @@ void init_model(struct Model* new_model){
                     new_model->index_array.count * sizeof(unsigned short int),
                     new_model->index_array.indices , GL_STATIC_DRAW);
 
-    //free(new_model->vertex_array.vertices);
-    free_to_marker(previous_marker);
-    //free(new_model->index_array.indices);
+    free_to_marker(previous_marker); 
     new_model->vertex_array.vertices = NULL;
     new_model->index_array.indices = NULL;
 }
@@ -473,6 +407,8 @@ void init_engine(){
     action_pointer_id_count = 0;
     init_array_with_count(&actions_pointers,sizeof(ActionPointer),20);
 
+    init_array_with_count(&frame_draw_elements,sizeof(void*),300);
+
 }
 Array models;
 Array elements;
@@ -527,7 +463,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
     new_model.texture.image = load_image(color_texture_path);
 
-    init_model(&new_model);
+    init_model_gl_buffers(&new_model);
 
     load_model_texture_to_gpu(&new_model);
 
@@ -536,7 +472,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 }
 
 void update_translation(vec3 translation){
-    glm_translate(selected_element->model->model_mat, translation);
+    //glm_translate(selected_element->model->model_mat, translation);
     glm_vec3_add(selected_element->position,translation,selected_element->position);
     if(selected_element->transform != NULL){
         glm_translate(selected_element->transform->model_matrix, translation);

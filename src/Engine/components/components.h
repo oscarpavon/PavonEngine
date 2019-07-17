@@ -14,12 +14,14 @@ typedef enum ComponentType{
     TRASNFORM_COMPONENT,
     SPHERE_COMPONENT,
     CAMERA_COMPONENT,
-    CUBE_COMPONENT
+    CUBE_COMPONENT,
+    STATIC_MESH_COMPONENT
 }ComponentType;
 
 
 typedef struct ComponentDefinition{
     ComponentType type;
+    Element* parent;
     unsigned int id;
     unsigned short int bytes_size;
     void* data;
@@ -37,6 +39,10 @@ typedef struct TransformComponent{
     vec3 scale;
     mat4 model_matrix;
 }TransformComponent;
+
+typedef struct StaticMeshComponent{    
+    Model* model;
+}StaticMeshComponent;
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type);
 void init_sphere_component(SphereComponent* component);

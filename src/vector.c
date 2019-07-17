@@ -20,7 +20,7 @@ void init_array_with_count(Array * array, size_t element_bytes_size, int count){
     }else{
         printf("Array ready initialized\n");
         return;
-    }
+    }  
     array->count = 0;
     array->data = allocate_stack_memory_alignmed(element_bytes_size * count,16);
     array->actual_bytes_size = 0;
@@ -38,7 +38,7 @@ void add_element_to_array(Array* array, void* element){
         return;
     }
     if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
-        printf("Array need reallocation\n");//TODO: realocation engine memory
+        printf("Array need reallocation\n");//TODO: reallocation engine memory
     }
     size_t offset = array->actual_bytes_size;
     array->count++;
@@ -58,6 +58,10 @@ void *get_element_from_array(Array* array,int index){
     return &array->data[0] + (index*offset);
 }
 
+void clean_array(Array* array){
+    array->count = 0;    
+    array->actual_bytes_size = 0;
+}
 
 int init_vertex_array(VertexArray* array, size_t size){
     array->count = 0;
@@ -78,13 +82,7 @@ int init_index_array(IndexArray* array, size_t size){
     return 0;
 }
 
-void clean_array(Array* array){
-    array->count = 0;
-    free(array->data);
-    array->data = malloc(array->element_bytes_size);
-    array->actual_bytes_size = array->element_bytes_size;
-    
-}
+
 
 void remove_last_element_from_model_array(ModelArray* array){
     if(array->count==1){

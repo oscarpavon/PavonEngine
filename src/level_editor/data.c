@@ -72,10 +72,10 @@ void add_element_to_save_data(FILE* new_file, Element* selected_element, int ind
     new_text_vec3_token("pos",selected_element->position);
     new_text_vec4_token("rot",selected_element->rotation);
     
-    if(selected_element->has_HLOD){
+    /* if(selected_element->has_HLOD){
         fputs("\t\"elements\" : ", new_file);
 
-    }
+    } */
     
     if(selected_element->duplicated_of_id > -1){
         new_text_primitive_token("copy",selected_element->duplicated_of_id);

@@ -109,8 +109,7 @@ void add_editor_native_element(const char* native_element_name){
 
 void clean_element(Element* element){    
     if(element->model->skeletal != NULL){
-        free(element->model->skeletal->joints);
-        free(element->model->skeletal);        
+             
     }
 }
 
@@ -249,12 +248,7 @@ void init_editor(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
     init_vec3(-6,0,2, camera_position);
-    update_look_at();
-
-    init_array_with_count(&editor_models, sizeof(Model),100);
-    init_array_with_count(&LOD_models,sizeof(Model),100);
-
-    init_array_with_count(&editor_elements,sizeof(Element),100);
+    update_look_at();   
 
     init_gizmos();
 
@@ -263,6 +257,11 @@ void init_editor(){
     init_text_renderer();    
     
     init_array_with_count(&selected_elements_id,sizeof(unsigned short int),100);
+    init_array_with_count(&LOD_models,sizeof(Model),10);
+    init_array_with_count(&editor_elements,sizeof(Element),100);
+    init_array_with_count(&editor_models, sizeof(Model),100);
+    init_array_with_count(&engine_native_models,sizeof(Model),10);
+    
 
     element_id_count = 0;    
 
@@ -278,13 +277,9 @@ void init_editor(){
 
     init_skeletal_editor();
     
-    actual_standard_fragment_shader = editor_standard_fragment_shader;
-
-
-    init_array_with_count(&engine_native_models,sizeof(Model),10);
+    
+    actual_standard_fragment_shader = editor_standard_fragment_shader;    
     load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
-    Model* spher = get_element_from_array(&engine_native_models,0);
-
 }
 
 
@@ -326,8 +321,8 @@ void update_elements_components(){
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = get_element_from_array(&editor_elements,i);
         if(element->components_count > 0){
-            for(int i = 0; i < element->components_count ; i++){
-                ComponentDefinition* component = get_element_from_array(&element->components,i);
+            for(int o = 0; o < element->components_count ; o++){
+                ComponentDefinition* component = get_element_from_array(&element->components,o);
                 update_component(component);
             }
         }
@@ -338,16 +333,22 @@ void update_editor(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    check_elements_camera_distance_for_LOD();
-    assign_LOD_mesh();
+    //check_elements_camera_distance_for_LOD();
+    //assign_LOD_mesh();
     
-    draw_elements(&editor_elements);
+    for(size_t i = 0; i < editor_elements.count ; i++) { 
+   /*    Element* element = get_element_from_array(&editor_elements,i);
+      Model* draw_model = element->model;
+      add_element_to_array(&frame_draw_elements,&draw_model); */
+    }
 
     update_elements_components();
+
+    draw_elements(&frame_draw_elements);
     
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    draw_gizmos();
+    //draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
          update_user_iterface_status();
@@ -358,6 +359,6 @@ void update_editor(){
 
     text_renderer_loop();
 
-    editor_message("editor message");    
+    editor_message("editor message");       
 
 }
