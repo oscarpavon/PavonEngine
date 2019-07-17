@@ -39,7 +39,7 @@ typedef struct Model{
     bool change_to_HLOD;
     
     bool draw;
-
+    
     
 
 }Model;

@@ -430,34 +430,27 @@ void grab_mode(){
         if(!grid_translate){            
             if(input.W.pressed){
                 vec3 move = {0,-move_object_value,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(input.S.pressed){
                 vec3 move = {0,move_object_value,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(input.D.pressed){
                 vec3 move = {-move_object_value,0,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(input.A.pressed){
                 vec3 move = {move_object_value,0,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
-
+                update_translation(move);
             }
             if(input.E.pressed){
                 vec3 move = {0,0,move_object_value};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(input.Q.pressed){
                 vec3 move = {0,0,-move_object_value};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             
         }else{
@@ -646,7 +639,9 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
 }
 
 void default_mode(){
-
+    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
+        return;
+        
     draw_rotate_gizmo = false;
     draw_translate_gizmo = false;
 

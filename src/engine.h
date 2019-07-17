@@ -61,17 +61,20 @@ void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id);
 void update_draw_vertices(GLuint shader, GLuint buffer);
 void update_gpu_vertex_data(VertexArray* array, GLuint id);
 
-extern void new_empty_element();
+void new_empty_element();
 
 /*Create new model in actual model array and you can use selected_model after */
-extern void new_empty_model();
+void new_empty_model();
 
-extern void select_last_element();
+void select_last_element();
 
 void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
+
+void update_translation(vec3 translation);
+
 
 bool should_close;
 

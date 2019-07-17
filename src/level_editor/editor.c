@@ -61,11 +61,11 @@ void add_editor_native_element(const char* native_element_name){
         selected_model->draw = false;
         strcpy(selected_element->name, "Camera01");
         selected_element->type = ELEMENT_TYPE_CAMERA;
-        ElementComponent camera_component;
-        memset(&camera_component,0,sizeof(ElementComponent));
+        ComponentDefinition camera_component;
+        memset(&camera_component,0,sizeof(ComponentDefinition));
         add_element_to_array(&components,&camera_component);
-        ElementComponent * component = get_element_from_array(&components,0);
-        selected_element->components = component;
+        ComponentDefinition * component = get_element_from_array(&components,0);
+        //selected_element->components = component;
         component->id = 0;
         component->bytes_size = sizeof(CameraComponent);
         component->data = malloc(component->bytes_size);
@@ -95,10 +95,14 @@ void add_editor_native_element(const char* native_element_name){
         selected_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
     }else if ( strcmp("Sphere", native_element_name) == 0 ){
         new_empty_element();
+        strcpy(selected_element->name, "Sphere");
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
         SphereComponent sphere;
+        memset(&sphere,0,sizeof(SphereComponent));
         init_sphere_component(&sphere);
-        add_component_to_selected_element(sizeof(sphere), &sphere);
-
+        add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
     }
 }
 
@@ -275,6 +279,12 @@ void init_editor(){
     init_skeletal_editor();
     
     actual_standard_fragment_shader = editor_standard_fragment_shader;
+
+
+    init_array_with_count(&engine_native_models,sizeof(Model),10);
+    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
+    Model* spher = get_element_from_array(&engine_native_models,0);
+
 }
 
 
@@ -312,6 +322,18 @@ void init_game_in_editor(){
     
 }
 
+void update_elements_components(){
+    for(int i = 0; i < editor_elements.count ; i++){
+        Element* element = get_element_from_array(&editor_elements,i);
+        if(element->components_count > 0){
+            for(int i = 0; i < element->components_count ; i++){
+                ComponentDefinition* component = get_element_from_array(&element->components,i);
+                update_component(component);
+            }
+        }
+    }
+}
+
 void update_editor(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -319,7 +341,9 @@ void update_editor(){
     check_elements_camera_distance_for_LOD();
     assign_LOD_mesh();
     
-    draw_elements(&editor_elements);  
+    draw_elements(&editor_elements);
+
+    update_elements_components();
     
     glClear(GL_DEPTH_BUFFER_BIT);
 

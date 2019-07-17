@@ -262,16 +262,14 @@ void menu_action_add_editor_native_element(TextMenu* menu){
     add_editor_native_element(menu->text_for_action);
     printf("Add editor native element: %s\n",menu->text_for_action);
 }
+#define EDITOR_NATIVE_ELEMETN_COUNT 6
+const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = { {"Camera"} , {"Player Start"}, {"Collider"} , {"Sphere"}, {"Cube"}, {"Cillinder"}};
 
 void menu_action_draw_native_editor_elments(TextMenu* menu){
     float text_size = 12;
-    set_text_size(text_size);
+    set_text_size(text_size);   
 
-    int native_editor_element_count = 3;
-
-    const char* elements_names[6] = { {"Camera"} , {"Player Start"}, {"Collider"} , {"Sphere"}, {"Cube"}, {"Cillinder"}};
-
-    for(int i = 0; i < native_editor_element_count; i++){
+    for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
         
         const char* name = elements_names[i];
        

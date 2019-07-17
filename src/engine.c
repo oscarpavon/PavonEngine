@@ -87,6 +87,8 @@ void new_empty_element(){
 
     element_id_count++;
     
+    init_array_with_count(&new_element.components,sizeof(ComponentDefinition),6);
+
     add_element_to_array(actual_elements_array,&new_element);
 
     select_last_element();
@@ -445,11 +447,9 @@ void init_engine(){
     
     compiles_standard_shaders();
 
-    init_gui();
+    init_gui();    
 
-    init_array_with_count(&engine_native_models,sizeof(Model),10);
-
-    init_array_with_count(&components,sizeof(ElementComponent),100);
+    init_array_with_count(&components,sizeof(ComponentDefinition),100);
     components_id_count = 0;
 
     Array test_numbers;
@@ -473,8 +473,6 @@ void init_engine(){
     action_pointer_id_count = 0;
     init_array_with_count(&actions_pointers,sizeof(ActionPointer),20);
 
-
-    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
 }
 Array models;
 Array elements;
@@ -535,4 +533,12 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
     add_element_to_array(array,&new_model);  
 
+}
+
+void update_translation(vec3 translation){
+    glm_translate(selected_element->model->model_mat, translation);
+    glm_vec3_add(selected_element->position,translation,selected_element->position);
+    if(selected_element->transform != NULL){
+        glm_translate(selected_element->transform->model_matrix, translation);
+    }
 }

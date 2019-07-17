@@ -15,11 +15,19 @@ void init_array(Array * array, size_t element_bytes_size){
 }
 
 void init_array_with_count(Array * array, size_t element_bytes_size, int count){
+    if(array->initialized != true){
+       
+    }else{
+        printf("Array ready initialized\n");
+        return;
+    }
     array->count = 0;
     array->data = allocate_stack_memory_alignmed(element_bytes_size * count,16);
     array->actual_bytes_size = 0;
     array->element_bytes_size = element_bytes_size;
     array->bytes_capacity = element_bytes_size * count;
+    array->initialized = true;
+    array->element_capacity = count;
 }
 
 void add_element_to_array(Array* array, void* element){
@@ -37,9 +45,6 @@ void add_element_to_array(Array* array, void* element){
     array->actual_bytes_size += array->element_bytes_size;
     
     memcpy(array->data+(offset),element,array->element_bytes_size);
-
-    //array->data = array->data+(offset);
-
 }
 
 void *get_element_from_array(Array* array,int index){

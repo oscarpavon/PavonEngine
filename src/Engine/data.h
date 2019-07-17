@@ -1,13 +1,6 @@
-typedef enum ElementComponentType{
-    ELEMENT_COMPONENT_TYPE_CAMERA
-}ElementComponentType;
 
-typedef struct ElementComponent{
-    ElementComponentType type;
-    unsigned int id;
-    unsigned short int bytes_size;
-    void* data;
-}ElementComponent;
+typedef struct TransformComponent TransformComponent;
+typedef struct ComponentDefinition ComponentDefinition;
 
 typedef enum ElementType{
     ELEMENT_TYPE_CAMERA = 1,
@@ -32,7 +25,8 @@ typedef struct Element{
     bool has_LOD;
     unsigned int model_id;
     unsigned int components_count;
-    ElementComponent* components;
+    Array components;
+    TransformComponent* transform;
 }Element;
 
 typedef struct PlayerStart{

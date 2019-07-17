@@ -30,6 +30,8 @@ typedef struct model_array{
 
 
 typedef struct Array{
+    bool initialized;
+    int element_capacity;
     size_t actual_bytes_size;
     size_t count;
     size_t element_bytes_size;
