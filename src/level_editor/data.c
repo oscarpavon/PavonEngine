@@ -155,7 +155,7 @@ void save_level_data(const char* level_name){
     save_header_info();
 
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        Element* element = (Element*)get_from_array(&editor_elements,i);
         add_element_to_save_data(new_file,element,i);
     }
     save_camera_editor_camera_transform(new_file);
@@ -165,7 +165,7 @@ void save_level_data(const char* level_name){
 }
 
 void save_buttons_data(int id){    
-    Button* button = get_element_from_array(actual_buttons_array,id);
+    Button* button = get_from_array(actual_buttons_array,id);
     if(button != NULL){
         new_text_token("name",button->name);
         new_text_vec2_token("pos",button->position);

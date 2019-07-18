@@ -23,7 +23,7 @@ GLuint vert_shader;
 GLuint frag_shader;
 
 GLuint gui_vertex_buffer_id = -1;
-VertexArray gui_vertex_array;
+Array gui_vertex_array;
 
 GLuint logo_texture_id;
 
@@ -135,10 +135,11 @@ void draw_buttons(){
 void create_vertex_buffer(){
     glGenBuffers(1,&gui_vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
-    glBufferData(GL_ARRAY_BUFFER, gui_vertex_array.count * sizeof(struct Vertex) , gui_vertex_array.vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, gui_vertex_array.count * sizeof(struct Vertex) , gui_vertex_array.data, GL_STATIC_DRAW);
     free_to_marker(previous_marker);
     //free(gui_vertex_array.vertices);
-    gui_vertex_array.vertices = NULL;
+    
+    //gui_vertex_array.vertices = NULL;
 
 }
 
@@ -185,15 +186,15 @@ void init_gui_element_geometry(){
     vert4.uv[1] = 0;
 
 
-    init_vertex_array(&gui_vertex_array, 1);
-    add_vextex_to_array(&gui_vertex_array,vert1);
-    add_vextex_to_array(&gui_vertex_array,vert2);
-    add_vextex_to_array(&gui_vertex_array,vert3);
-    add_vextex_to_array(&gui_vertex_array,vert4);
+    init_array(&gui_vertex_array, sizeof(Vertex),4);
+    add_to_array(&gui_vertex_array,&vert1);
+    add_to_array(&gui_vertex_array,&vert2);
+    add_to_array(&gui_vertex_array,&vert3);
+    add_to_array(&gui_vertex_array,&vert4);
 }
 void init_gui(){
 
-    init_array_with_count(&buttons, sizeof(Button),20);
+    init_array(&buttons, sizeof(Button),20);
 
     create_gui_shaders();
 
@@ -287,10 +288,10 @@ void draw_loading_screen(){
 
 void update_user_iterface_status(){
      for(size_t i = 0; i < buttons.count ; i++){
-         Button* button = get_element_from_array(&buttons,i);
+         Button* button = get_from_array(&buttons,i);
          check_if_pressed(button);
          if(button->pressed){
-             ActionPointer* action_pointer = get_element_from_array(&actions_pointers,button->action_function_id);
+             ActionPointer* action_pointer = get_from_array(&actions_pointers,button->action_function_id);
              action_pointer->action();
          }
      }
@@ -312,9 +313,9 @@ void new_empty_button(){
 
     init_button(&new_button, 400, 300, 35,35);
 
-    add_element_to_array(actual_buttons_array,&new_button);
+    add_to_array(actual_buttons_array,&new_button);
 
-    Button* button = get_element_from_array(actual_buttons_array,actual_buttons_array->count-1);
+    Button* button = get_from_array(actual_buttons_array,actual_buttons_array->count-1);
     button->shader = create_engine_shader(vert_shader,frag_shader);
     button->action_function_id = 0;
     button->pressed = false;
@@ -339,7 +340,7 @@ void load_gui(const char* name){
     close_file(&level_file);
 
     for(int i = 0; i < buttons.count; i++){
-        Button* button = get_element_from_array(&buttons,i);
+        Button* button = get_from_array(&buttons,i);
         button->shader = create_engine_shader(vert_shader,frag_shader);
         button->pressed = false;
     }

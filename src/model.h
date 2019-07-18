@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "utils.h"
-#include "vector.h"
+
 #include <GLES2/gl2.h>
 
 #include <cglm.h>
@@ -11,12 +11,12 @@
 
 #include "skeletal.h"
 
-#include "vector.h"
+#include "Engine/array.h"
 
 typedef struct Model{
     int id;
-    VertexArray vertex_array;
-    IndexArray index_array;
+    Array vertex_array;
+    Array index_array;
     vec3 min;
     vec3 max;
     
@@ -38,15 +38,13 @@ typedef struct Model{
     bool has_HLOD;
     bool change_to_HLOD;
     
-    bool draw;
-    
-    
+    bool draw;  
 
 }Model;
 
 struct LoadGeometry{
-    VertexArray vertex_array;
-    IndexArray index_array;
+    Array vertex_array;
+    Array index_array;
 };
 
 

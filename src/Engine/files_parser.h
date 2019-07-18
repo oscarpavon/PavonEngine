@@ -2,7 +2,7 @@
 #define ENGINE_FILES_PARSER
 
 #include <stddef.h>
-#include "../vector.h"
+#include "array.h"
 
 void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element);
 

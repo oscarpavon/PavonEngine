@@ -6,7 +6,7 @@
 #include <freetype2/freetype/freetype.h>
 
 #include <stdbool.h>
-#include "../vector.h"
+#include "../Engine/array.h"
 
 
 #define DIRECTORY_MODELS 0

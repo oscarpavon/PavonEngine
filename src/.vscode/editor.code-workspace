@@ -44,7 +44,8 @@
 			"algorithm": "c",
 			"vector": "c",
 			"types.h": "c",
-			"editor_mode.h": "c"
+			"editor_mode.h": "c",
+			"array.h": "c"
 		}
 	}
 }

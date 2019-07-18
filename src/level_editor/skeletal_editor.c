@@ -34,7 +34,7 @@ void update_joints_vertex(){
     }
 
     for(int i = 0; i < vertex_count ; i++){
-        add_vextex_to_array(&skeletal_bones_gizmo_geometry.vertex_array,vertices[i]);
+        add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
     }
 }
 
@@ -47,7 +47,8 @@ void init_skeletal_gizmo(){
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));
 
-    
+    init_array(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),20);
+    //init_array(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
     for(int i = 0; i < skeletal->joints_count ; i++){
        
         mat4 local;        
@@ -59,17 +60,17 @@ void init_skeletal_gizmo(){
 
         if(skeletal->joints[i].parent != NULL){
             if(i == 2){
-                add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,i-1);
+                add_to_array(&skeletal_bones_gizmo_geometry.index_array,i-1);
             }else if(i >= 3){
-                add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,skeletal->joints[i].parent->id);
+                add_to_array(&skeletal_bones_gizmo_geometry.index_array,skeletal->joints[i].parent->id);
             }
         }
-        add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,i);
+        add_to_array(&skeletal_bones_gizmo_geometry.index_array,i);
        
     }
    
     for(int i = 0; i < vertex_count ; i++){
-        add_vextex_to_array(&skeletal_bones_gizmo_geometry.vertex_array,vertices[i]);
+        add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
     }
  
 }
@@ -98,8 +99,7 @@ void draw_skeletal_bones(){
 
 
 void init_skeletal_editor(){
-    init_vertex_array(&skeletal_bones_gizmo_geometry.vertex_array,1);
-    init_index_array(&skeletal_bones_gizmo_geometry.index_array,1);
+       
     assign_nodes_indices(selected_element->model->skeletal);
     init_skeletal_gizmo();
     init_static_gpu_vertex_buffer(&skeletal_bones_gizmo_geometry.vertex_array,&skeletal_gizmo_vertices_buffer_id);

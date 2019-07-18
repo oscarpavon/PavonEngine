@@ -15,7 +15,7 @@ int main(){
     
 
     Array load_elements;
-    init_array(&load_elements,sizeof(Element));
+    init_array(&load_elements,sizeof(Element), 10);
     load_level_to_elements_array("../levels/player.lvl", &load_elements);   
     
     add_loaded_elements(&load_elements, actual_model_array, actual_elements_array);

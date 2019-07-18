@@ -6,7 +6,7 @@
 #define ENGINE_GUI_H
 
 #include "utils.h"
-#include "vector.h"
+#include "Engine/array.h"
 #include <GLES2/gl2.h>
 
 

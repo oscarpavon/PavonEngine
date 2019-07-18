@@ -10,14 +10,14 @@ void add_component_to_selected_element(int component_byte_size, void* new_compon
     new_element_component.data = allocate_stack_memory_alignmed(component_byte_size,16);//;allocate_stack_memory(&created_components,component_byte_size);
     memcpy(new_element_component.data,new_component,component_byte_size);
 
-    add_element_to_array(&selected_element->components,&new_element_component);    
+    add_to_array(&selected_element->components,&new_element_component);    
     
     selected_element->components_count++;   
 }
 
 void init_sphere_component(SphereComponent* component){
     new_empty_model();
-    Model* sphere_model = get_element_from_array(&engine_native_models,0);
+    Model* sphere_model = get_from_array(&engine_native_models,0);
     memcpy(selected_model,sphere_model,sizeof(Model));
     selected_model->id = model_id_count-1;
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
@@ -26,7 +26,7 @@ void init_sphere_component(SphereComponent* component){
 
 void init_cube_component(CubeComponent* component){
     new_empty_model();
-    Model* cube_model = get_element_from_array(&engine_native_models,1);
+    Model* cube_model = get_from_array(&engine_native_models,1);
     memcpy(selected_model,cube_model,sizeof(Model));
     selected_model->id = model_id_count-1;
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
@@ -45,13 +45,13 @@ void update_component(ComponentDefinition* element_component){
     case SPHERE_COMPONENT:{
         SphereComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_element_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&frame_draw_elements,&component->model);
         break;
     }
      case CUBE_COMPONENT:{
         CubeComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_element_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&frame_draw_elements,&component->model);
         break;
     }
     case TRASNFORM_COMPONENT:{
@@ -62,7 +62,7 @@ void update_component(ComponentDefinition* element_component){
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_element_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&frame_draw_elements,&component->model);
         break;
     }      
     default:

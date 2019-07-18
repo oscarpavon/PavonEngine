@@ -10,7 +10,7 @@ Array bounding_boxes;
 typedef struct Grid{
     bool initialized;
     vec2 size;    
-    VertexArray vertex_array;
+    Array vertex_array;
     GLuint vertex_buffer_id;
     GLuint shader;
 }Grid;
@@ -24,7 +24,7 @@ typedef struct DebugLine{
     vec3 end;
     float duration;
     vec4 color;    
-    VertexArray vertex_array;
+    Array vertex_array;
     GLuint vertex_buffer_id;
     GLuint shader;
 }DebugLine;
@@ -32,8 +32,8 @@ typedef struct DebugLine{
 void add_debug_line(vec3 start, vec3 end){
     DebugLine new_line;
     memset(&new_line,0,sizeof(DebugLine));
-    add_element_to_array(&debug_objects, &new_line);
-    DebugLine* pnew_line = get_element_from_array(&debug_objects,debug_objects.count-1);
+    add_to_array(&debug_objects, &new_line);
+    DebugLine* pnew_line = get_from_array(&debug_objects,debug_objects.count-1);
     glm_vec3_copy(start,pnew_line->start);
     glm_vec3_copy(end,pnew_line->end);
 
@@ -46,13 +46,14 @@ void init_selected_object_bounding_box_vertices(){
 
         Model new_model;
         memset(&new_model,0,sizeof(Model));
-        add_element_to_array(actual_model_array,&new_model);
-        selected_model = get_element_from_array(actual_model_array,actual_model_array->count-1);
+        add_to_array(actual_model_array,&new_model);
+        selected_model = get_from_array(actual_model_array,actual_model_array->count-1);
         glm_mat4_identity(selected_model->model_mat);
         selected_model->id = model_id_count;
         
        
-        init_vertex_array(&selected_model->vertex_array,1);
+        init_array(&selected_model->vertex_array,sizeof(Vertex),50);
+        
 
         struct Vertex min;
         
@@ -80,60 +81,60 @@ void init_selected_object_bounding_box_vertices(){
         struct Vertex vert7;
         glm_vec3_copy((vec3){max.postion[0],min.postion[1],min.postion[2]},vert7.postion);
         
-        struct Vertex vert8;
-        glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
+       struct Vertex vert8;
+       glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
 
-        add_vextex_to_array(&selected_model->vertex_array,min);
-        add_vextex_to_array(&selected_model->vertex_array,vert7);
+       add_to_array(&selected_model->vertex_array,&min);
+       add_to_array(&selected_model->vertex_array,&vert7);
 
-        add_vextex_to_array(&selected_model->vertex_array,vert6);
-        add_vextex_to_array(&selected_model->vertex_array,min);
+       add_to_array(&selected_model->vertex_array,&vert6);
+       add_to_array(&selected_model->vertex_array,&min);
 
-        add_vextex_to_array(&selected_model->vertex_array,vert4);
-        add_vextex_to_array(&selected_model->vertex_array,vert6);
+       add_to_array(&selected_model->vertex_array,&vert4);
+       add_to_array(&selected_model->vertex_array,&vert6);
 
-        add_vextex_to_array(&selected_model->vertex_array,vert7);
-        add_vextex_to_array(&selected_model->vertex_array,vert4);
-
-
-        add_vextex_to_array(&selected_model->vertex_array,vert8);
-        add_vextex_to_array(&selected_model->vertex_array,vert6);
-
-        add_vextex_to_array(&selected_model->vertex_array,min);
-        add_vextex_to_array(&selected_model->vertex_array,vert3);
+       add_to_array(&selected_model->vertex_array,&vert7);
+       add_to_array(&selected_model->vertex_array,&vert4);
 
 
-        add_vextex_to_array(&selected_model->vertex_array,vert8);
-        add_vextex_to_array(&selected_model->vertex_array,vert3);
+       add_to_array(&selected_model->vertex_array,&vert8);
+       add_to_array(&selected_model->vertex_array,&vert6);
 
-        add_vextex_to_array(&selected_model->vertex_array,vert7);
-        add_vextex_to_array(&selected_model->vertex_array,vert5);
+       add_to_array(&selected_model->vertex_array,&min);
+       add_to_array(&selected_model->vertex_array,&vert3);
 
-         add_vextex_to_array(&selected_model->vertex_array,vert8);
-        add_vextex_to_array(&selected_model->vertex_array,max);
-        
-        add_vextex_to_array(&selected_model->vertex_array,max);
-        add_vextex_to_array(&selected_model->vertex_array,vert5);
-        
-        add_vextex_to_array(&selected_model->vertex_array,vert5);
-        add_vextex_to_array(&selected_model->vertex_array,vert3);
 
-        add_vextex_to_array(&selected_model->vertex_array,max);
-        add_vextex_to_array(&selected_model->vertex_array,vert4);
+       add_to_array(&selected_model->vertex_array,&vert8);
+       add_to_array(&selected_model->vertex_array,&vert3);
 
-        init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
+       add_to_array(&selected_model->vertex_array,&vert7);
+       add_to_array(&selected_model->vertex_array,&vert5);
 
-        selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+        add_to_array(&selected_model->vertex_array,&vert8);
+       add_to_array(&selected_model->vertex_array,&max);
+    
+       add_to_array(&selected_model->vertex_array,&max);
+       add_to_array(&selected_model->vertex_array,&vert5);
+       
+       add_to_array(&selected_model->vertex_array,&vert5);
+       add_to_array(&selected_model->vertex_array,&vert3);
 
-        bounding_box_initialized = true;
-    }
+       add_to_array(&selected_model->vertex_array,&max);
+       add_to_array(&selected_model->vertex_array,&vert4);
+
+       init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
+
+       selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+       bounding_box_initialized = true;
+   }
+
 }
 
 void update_bounding_vertices_array(Model* model){
-    Model* box = get_element_from_array(&bounding_boxes,0);
+    Model* box = get_from_array(&bounding_boxes,0);
     for(int i = 0; i < box->vertex_array.count ; i++){
         vec3 new_vertex_pos;
-        struct Vertex* vertex = &box->vertex_array.vertices[i];
+        struct Vertex* vertex = get_from_array(&box->vertex_array,i);
         glm_vec3_rotate_m4(model->model_mat,vertex->postion,vertex->postion);
     }
 }
@@ -141,7 +142,7 @@ void update_bounding_vertices_array(Model* model){
 
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
-        Model* bounding_model = get_element_from_array(&bounding_boxes,bounding_boxes.count-1);
+        Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
         update_bounding_vertices_array(selected_element->model);
         //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         mat4 model;
@@ -162,14 +163,14 @@ void draw_bounding_box(){
 }
 
 void init_line_vertices(DebugLine* line){
-    init_vertex_array(&line->vertex_array, 2);
+    init_array(&line->vertex_array, sizeof(Vertex),2);
 
     struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};
     struct Vertex vert2 = {{line->end[0],line->end[1], line->end[2]},{0,0}};
 
 
-    add_vextex_to_array(&line->vertex_array, vert);
-    add_vextex_to_array(&line->vertex_array, vert2);
+    add_to_array(&line->vertex_array, &vert);
+    add_to_array(&line->vertex_array, &vert2);
 
     init_static_gpu_vertex_buffer(&line->vertex_array,&line->vertex_buffer_id);
 
@@ -180,8 +181,9 @@ void update_line_vertices(DebugLine* line){
     struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};
     struct Vertex vert2 = {{line->end[0],line->end[1], line->end[2]},{0,0}};
 
-    memcpy(&line->vertex_array.vertices[0], &vert, sizeof(struct Vertex));
-    memcpy(&line->vertex_array.vertices[1], &vert2, sizeof(struct Vertex));
+    Vertex* vertices = get_from_array(&line->vertex_array,0);
+    memcpy(&vertices[0], &vert, sizeof(struct Vertex));
+    memcpy(&vertices[1], &vert2, sizeof(struct Vertex));
 }
 
 void init_line(DebugLine* line){
@@ -214,7 +216,7 @@ void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){
 
 void draw_grid_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
-        DebugLine* line = get_element_from_array(&debug_objects,i);
+        DebugLine* line = get_from_array(&debug_objects,i);
         if(line->initialized == true){
             mat4 model;
             glm_mat4_identity(model);            
@@ -235,25 +237,25 @@ void draw_grid_lines(){
         line->initialized = true;
     }
     DebugLine* line;
-    line = get_element_from_array(&debug_objects,0);
+    line = get_from_array(&debug_objects,0);
     glm_vec4_copy((vec4){0,0,1,1},line->color);
 
-    line = get_element_from_array(&debug_objects,2);
+    line = get_from_array(&debug_objects,2);
     glm_vec4_copy((vec4){1,0,0,1},line->color);
 
-    line = get_element_from_array(&debug_objects,1);
+    line = get_from_array(&debug_objects,1);
     glm_vec4_copy((vec4){0,1,0,1},line->color);
 
 }
 void draw_camera_direction(){
     if(selected_element != NULL && selected_element->type == ELEMENT_TYPE_CAMERA){
         vec3 direction;
-        CameraComponent* camera = get_element_from_array(&components,0);
+        CameraComponent* camera = get_from_array(&components,0);
         vec3 look_pos;
         glm_vec3_add(selected_element->position, camera->front, look_pos);        
         glm_vec3_sub(look_pos,selected_element->position,direction);
 
-        DebugLine* line = get_element_from_array(&debug_objects,2);
+        DebugLine* line = get_from_array(&debug_objects,2);
         glm_vec3_copy(selected_element->position,line->start);
         
         vec3 front_dir;
@@ -274,7 +276,7 @@ void draw_camera_direction(){
 }
 
 void init_grid_greometry(){
-    init_vertex_array(&new_grid.vertex_array, 100);
+    init_array(&new_grid.vertex_array, sizeof(Vertex), 500);
 
     for(int i = 1; i < 6; i++){
         for(int o = 1; o < 6; o++){
@@ -307,14 +309,14 @@ void init_grid_greometry(){
             add_debug_line((vec3){i,-o,0},(vec3){-i,-o,0});
             add_debug_line((vec3){-o,i,0},(vec3){-o,-i,0}); */
 
-            add_vextex_to_array(&new_grid.vertex_array,vertex1);
-            add_vextex_to_array(&new_grid.vertex_array,vertex2);
-            add_vextex_to_array(&new_grid.vertex_array,vertex3);
-            add_vextex_to_array(&new_grid.vertex_array,vertex4);
-            add_vextex_to_array(&new_grid.vertex_array,vertex5);
-            add_vextex_to_array(&new_grid.vertex_array,vertex6);
-            add_vextex_to_array(&new_grid.vertex_array,vertex7);
-            add_vextex_to_array(&new_grid.vertex_array,vertex8);
+            add_to_array(&new_grid.vertex_array,&vertex1);
+            add_to_array(&new_grid.vertex_array,&vertex2);
+            add_to_array(&new_grid.vertex_array,&vertex3);
+            add_to_array(&new_grid.vertex_array,&vertex4);
+            add_to_array(&new_grid.vertex_array,&vertex5);
+            add_to_array(&new_grid.vertex_array,&vertex6);
+            add_to_array(&new_grid.vertex_array,&vertex7);
+            add_to_array(&new_grid.vertex_array,&vertex8);
         }
         
     }
@@ -348,9 +350,9 @@ void draw_gizmos(){
         
 
         for(int i = 0; i< editor_elements.count ; i++){
-            Element* element = get_element_from_array(&editor_elements,i);
+            Element* element = get_from_array(&editor_elements,i);
             if(element->type == ELEMENT_TYPE_CAMERA){
-                Model* actual_gizmo = get_element_from_array(&gizmos,2);
+                Model* actual_gizmo = get_from_array(&gizmos,2);
                 if(selected_element != NULL){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
                 }
@@ -358,7 +360,7 @@ void draw_gizmos(){
                 
             }
             if(element->type == ELEMENT_TYPE_PLAYER_START){
-                Model* actual_gizmo = get_element_from_array(&gizmos,3);
+                Model* actual_gizmo = get_from_array(&gizmos,3);
                 if(selected_element != NULL){
                     glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
                 }
@@ -369,7 +371,7 @@ void draw_gizmos(){
         
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
-            Model* actual_gizmo = get_element_from_array(&gizmos,0);
+            Model* actual_gizmo = get_from_array(&gizmos,0);
             if(editor_mode == EDITOR_DEFAULT_MODE){                
                 if(selected_element != NULL){
                     if(selected_element->model == NULL)
@@ -397,7 +399,7 @@ void draw_gizmos(){
             }
         }
         if(draw_rotate_gizmo){
-            Model* actual_gizmo = get_element_from_array(&gizmos,1);
+            Model* actual_gizmo = get_from_array(&gizmos,1);
             if(selected_element != NULL){
                 glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
             }
@@ -409,11 +411,11 @@ void draw_gizmos(){
 }
 
 void init_gizmos(){
-    init_array_with_count(&gizmos,sizeof(Model),10);   
+    init_array(&gizmos,sizeof(Model),10);   
     
-    init_array_with_count(&bounding_boxes,sizeof(Model),10);
+    init_array(&bounding_boxes,sizeof(Model),10);
 
-    init_array_with_count(&debug_objects, sizeof(DebugLine),300);
+    init_array(&debug_objects, sizeof(DebugLine),300);
 
     load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
     load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");

@@ -90,9 +90,9 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
     if(previos_id != button_id){
       Button new_button;
       memset(&new_button,0,sizeof(Button));
-      add_element_to_array(actual_array,&new_button);
+      add_to_array(actual_array,&new_button);
       previos_id = button_id;
-      actual_button = get_element_from_array(actual_array,button_id);      
+      actual_button = get_from_array(actual_array,button_id);      
     }
     
   }
@@ -337,13 +337,13 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
       elements[i].duplicated_of_id = -1;
   }  
 
-  init_array_with_count(out_element,sizeof(Element),elements_count);   
+  init_array(out_element,sizeof(Element),elements_count);   
 
   dump(models_json_file,tokens,number_of_tokens_readed,0);
 
   
   for(int i = 0; i < elements_count; i++){
-    add_element_to_array(out_element,&elements[i]);
+    add_to_array(out_element,&elements[i]);
   }
  
 

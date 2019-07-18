@@ -8,7 +8,6 @@ set(components
 
 set(engine_source 
         model.c
-        vector.c
         file_loader.c
         camera.c
         images.c
@@ -22,6 +21,7 @@ set(engine_source
         third_party/jsmn.c
         Engine/files_parser.c
         Engine/memory.c
+        Engine/array.c
         ${components}
 )
 

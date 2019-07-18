@@ -240,18 +240,18 @@ void menu_action_select_element(TextMenu* menu){
         if(selected_element != NULL)
             selected_element->selected = false;
     }else{
-        add_element_to_array(&selected_elements_id,&selected_element->id);
+        add_to_array(&selected_elements_id,&selected_element->id);
     }   
 
-    element = get_element_from_array(&editor_elements,id);
+    element = get_from_array(&editor_elements,id);
     element->selected = true;
     selected_element = element;
     if(input.SHIFT.pressed){
-        add_element_to_array(&selected_elements_id,&selected_element->id);
+        add_to_array(&selected_elements_id,&selected_element->id);
     }
 
     for(int i = 0 ; i < selected_elements_id.count ; i++){
-        unsigned short int *id = get_element_from_array(&selected_elements_id,i);
+        unsigned short int *id = get_from_array(&selected_elements_id,i);
         unsigned short int id_number;
         memcpy(&id_number,id,sizeof(unsigned short int));
         printf("seleteted: %i\n", id_number);
@@ -310,7 +310,7 @@ void menu_action_draw_editor_elements(TextMenu* menu){
     set_text_size(text_size);
     menu->text_size  = text_size;
      for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        Element* element = (Element*)get_from_array(&editor_elements,i);
         char* name = element->model_path;
         if( strcmp(element->model_path,"") == 0){
             if(strcmp(element->name,"") == 0)
@@ -323,14 +323,14 @@ void menu_action_draw_editor_elements(TextMenu* menu){
        
 }
 void menu_action_select_gui_element(TextMenu* menu){
-    selected_button = get_element_from_array(actual_buttons_array,menu->actual_element_select);    
+    selected_button = get_from_array(actual_buttons_array,menu->actual_element_select);    
 }
 
 void menu_action_draw_gui_elements(TextMenu* menu){
     menu->text_size = 12;
     for (int i = 0; i < actual_buttons_array->count ; i++)
     {
-        Button* button = get_element_from_array(actual_buttons_array,i);
+        Button* button = get_from_array(actual_buttons_array,i);
         draw_element_text_list(menu,button->name,i);
     }
 }

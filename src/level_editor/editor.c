@@ -6,7 +6,7 @@
 #include "../shader.h"
 
 #include <string.h>
-#include "../vector.h"
+#include "../Engine/array.h"
 
 #include "../engine.h"
 
@@ -43,7 +43,7 @@ void play_game_standalone(){
 
 void deselect_all(){
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = get_element_from_array(&editor_elements,i);
+        Element* element = get_from_array(&editor_elements,i);
         element->selected = false;
     }
 }
@@ -63,8 +63,8 @@ void add_editor_native_element(const char* native_element_name){
         selected_element->type = ELEMENT_TYPE_CAMERA;
         ComponentDefinition camera_component;
         memset(&camera_component,0,sizeof(ComponentDefinition));
-        add_element_to_array(&components,&camera_component);
-        ComponentDefinition * component = get_element_from_array(&components,0);
+        add_to_array(&components,&camera_component);
+        ComponentDefinition * component = get_from_array(&components,0);
         //selected_element->components = component;
         component->id = 0;
         component->bytes_size = sizeof(CameraComponent);
@@ -126,7 +126,7 @@ void clean_element(Element* element){
 
 void clean_editor(){
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        Element* element = (Element*)get_from_array(&editor_elements,i);
         clean_element(element);
         
     }
@@ -199,13 +199,13 @@ void duplicate_selected_element(){
     new_model.has_HLOD = false;
     new_model.HLOD = NULL;
     new_model.change_to_HLOD = false;
-    add_element_to_array(&editor_models,&new_model);
+    add_to_array(&editor_models,&new_model);
     
     element_id_count++;
     
     memcpy(&new_element, selected_element, sizeof(struct Element));
 
-    new_element.model = get_element_from_array(&editor_models,editor_models.count-1);
+    new_element.model = get_from_array(&editor_models,editor_models.count-1);
     new_element.id = element_id_count;
     new_element.has_HLOD = false;
 
@@ -214,7 +214,7 @@ void duplicate_selected_element(){
     else
         new_element.duplicated_of_id = selected_element->id;
 
-    add_element_to_array(&editor_elements,&new_element);
+    add_to_array(&editor_elements,&new_element);
     
     select_last_element();
 }
@@ -223,7 +223,7 @@ void get_elements_in_editor_map(){
     printf("Elements count: %i\n", editor_elements.count);
 
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_element_from_array(&editor_elements,i);
+        Element* element = (Element*)get_from_array(&editor_elements,i);
         printf("Element name: %s\n", element->model_path);
     }
   
@@ -235,10 +235,10 @@ void get_element_status(Element* element){
 }
 
 void remove_selected_element(){
-    remove_last_element_from_model_array(&editor_models);
+    //remove_last_element_from_model_array(&editor_models);
     clean_element(selected_element);
     selected_element = NULL;
-    remove_element_from_array(&editor_elements);
+   // remove_element_from_array(&editor_elements);
     element_id_count--;
 }
 
@@ -267,11 +267,11 @@ void init_editor(){
 
     init_text_renderer();    
     
-    init_array_with_count(&selected_elements_id,sizeof(unsigned short int),100);
-    init_array_with_count(&LOD_models,sizeof(Model),10);
-    init_array_with_count(&editor_elements,sizeof(Element),100);
-    init_array_with_count(&editor_models, sizeof(Model),100);
-    init_array_with_count(&engine_native_models,sizeof(Model),10);
+    init_array(&selected_elements_id,sizeof(unsigned short int),100);
+    init_array(&LOD_models,sizeof(Model),10);
+    init_array(&editor_elements,sizeof(Element),100);
+    init_array(&editor_models, sizeof(Model),100);
+    init_array(&engine_native_models,sizeof(Model),10);
     
 
     element_id_count = 0;    
@@ -297,7 +297,7 @@ void init_editor(){
 
 void check_elements_camera_distance_for_LOD(){
     for(int i = 0; i< editor_elements.count ; i++){
-        Element* element = get_element_from_array(&editor_elements,i);
+        Element* element = get_from_array(&editor_elements,i);
         if(element->has_LOD){
             float camera_distance = glm_vec3_distance(element->position, camera_position);
             //printf("Camera Distance: %f\n",camera_distance);
@@ -318,7 +318,7 @@ void check_elements_camera_distance_for_LOD(){
 
 void assign_LOD_mesh(){
     for(int i = 0; i < editor_models.count ; i++){
-        struct Model* model = get_element_from_array(&editor_models,i);
+        struct Model* model = get_from_array(&editor_models,i);
         if(model->change_LOD){
             model->LOD = &LOD_models.data[model->actual_LOD];
         }
@@ -331,10 +331,10 @@ void init_game_in_editor(){
 
 void update_elements_components(){
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = get_element_from_array(&editor_elements,i);
+        Element* element = get_from_array(&editor_elements,i);
         if(element->components_count > 0){
             for(int o = 0; o < element->components_count ; o++){
-                ComponentDefinition* component = get_element_from_array(&element->components,o);
+                ComponentDefinition* component = get_from_array(&element->components,o);
                 update_component(component);
             }
         }
@@ -349,9 +349,9 @@ void update_editor(){
     //assign_LOD_mesh();
     
     for(size_t i = 0; i < editor_elements.count ; i++) { 
-   /*    Element* element = get_element_from_array(&editor_elements,i);
+   /*    Element* element = get_from_array(&editor_elements,i);
       Model* draw_model = element->model;
-      add_element_to_array(&frame_draw_elements,&draw_model); */
+      add_to_array(&frame_draw_elements,&draw_model); */
     }
 
     update_elements_components();

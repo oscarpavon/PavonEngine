@@ -7,7 +7,7 @@
 #include <cglm/cglm.h>
 #endif // ANDROID
 
-#include "vector.h"
+#include "Engine/array.h"
 #include "model.h"
 
 struct Node;

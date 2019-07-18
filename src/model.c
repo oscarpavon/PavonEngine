@@ -16,18 +16,19 @@ cgltf_animation_sampler* current_sampler;
 Array nodes;
 bool copy_nodes = false;
 
-VertexArray* actual_vertex_array;
-IndexArray* actual_index_array;
+Array* actual_vertex_array;
+Array* actual_index_array;
 Array* current_array;
 struct Model* actual_model;
 bool model_loaded = false;
 
 
 void read_accessor_indices(cgltf_accessor* accessor){
-    for(size_t i = 0 ; i < accessor->count ; i++){
-        unsigned short int index= cgltf_accessor_read_index(accessor,i);
-        add_index_to_array(actual_index_array,index);
-    }
+  init_array(actual_index_array,sizeof(unsigned short int),accessor->count);
+  for(size_t i = 0 ; i < accessor->count ; i++){
+      unsigned short int index = cgltf_accessor_read_index(accessor,i);
+      add_to_array(actual_index_array,&index);
+  }
 }
 
 void read_accessor(cgltf_accessor* accessor){
@@ -35,16 +36,17 @@ void read_accessor(cgltf_accessor* accessor){
   {
   case cgltf_type_vec2:
     for(size_t i = 0 ; i < accessor->count ; i++){
-        cgltf_accessor_read_float(accessor, i, &actual_vertex_array->vertices[i].uv[0], 2);
+        Vertex* vertex = get_from_array(actual_vertex_array,i);
+        cgltf_accessor_read_float(accessor, i, &vertex->uv[0], 2);
     }
     break;
   case cgltf_type_vec3:
-    init_vertex_array(actual_vertex_array,accessor->count);
+    init_array(actual_vertex_array,sizeof(Vertex),accessor->count+1000);
     for(size_t v = 0 ; v < accessor->count ; v++){
       struct Vertex vertex;
       memset(&vertex,0,sizeof(struct Vertex));
       cgltf_accessor_read_float(accessor,v,&vertex.postion[0],3);
-      add_vextex_to_array(actual_vertex_array,vertex);
+      add_to_array(actual_vertex_array,&vertex);
     }
     break;
   case cgltf_type_vec4:
@@ -52,7 +54,7 @@ void read_accessor(cgltf_accessor* accessor){
     for(int i = 0 ; i < accessor->count ; i++){
       vec4 quaternion;      
       cgltf_accessor_read_float(accessor, i, quaternion , 4);
-      add_element_to_array(current_array,quaternion);      
+      add_to_array(current_array,quaternion);      
     }
     
     break;
@@ -61,7 +63,7 @@ void read_accessor(cgltf_accessor* accessor){
     for(int i = 0 ; i < accessor->count ; i++){
       float number;      
       cgltf_accessor_read_float(accessor, i, &number, 1);
-      add_element_to_array(current_array,&number);
+      add_to_array(current_array,&number);
     }
     
     break;
@@ -136,7 +138,7 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
     memcpy(new_node.translation,in_node->translation,sizeof(vec3));
     memcpy(new_node.rotation, in_node->rotation, sizeof(vec4));
 
-    add_element_to_array(&nodes,&new_node);
+    add_to_array(&nodes,&new_node);
   }
 
   if(in_node->mesh != NULL)
@@ -145,14 +147,14 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
   if(in_node->skin != NULL){
     Skeletal* skeletal = malloc(sizeof(Skeletal));
     skeletal->joints_count = in_node->skin->joints_count;
-    Node* joints = get_element_from_array(&nodes,index_to_store+1);
+    Node* joints = get_from_array(&nodes,index_to_store+1);
     skeletal->joints = joints;
     actual_model->skeletal = skeletal;
     printf("Skin loaded\n");
   }
   
   for(int i = 0; i < in_node->children_count; i++){ 
-    Node* parent = get_element_from_array(&nodes,index_to_store);    
+    Node* parent = get_from_array(&nodes,index_to_store);    
     load_node( parent, in_node->children[i],store_nodes,index_to_store+1);
   }
 
@@ -177,33 +179,17 @@ void check_LOD(cgltf_data* data){
             break;
           }
           if(strcmp("LOD1",&name[n]+1) == 0){
-            actual_model->LOD_count++;
-            actual_model = actual_model+1;
-            init_index_array(&actual_model->index_array,1);
-            init_vertex_array(&actual_model->vertex_array,1);
-            actual_index_array = &actual_model->index_array;
-            actual_vertex_array = &actual_model->vertex_array;
-
-            printf("Found LOD1\n");            
-            //load_mesh(data->nodes[i].mesh);
+            
  
             break;
           }
           
           if(strcmp("LOD3",&name[n]+1) == 0){
-            printf("Found LOD2\n");
-            //load_mesh(data->nodes[i].mesh);
+           
             break;
           }
           if(strcmp("HLOD",&name[n]+1) == 0){
-            actual_model = actual_model+1;
-            printf("Found HLOD\n");
-            init_index_array(&actual_model->index_array,1);
-            init_vertex_array(&actual_model->vertex_array,1);
-            actual_index_array = &actual_model->index_array;
-            actual_vertex_array = &actual_model->vertex_array;            
-            //load_mesh(data->nodes[i].mesh);
-            in_model_array->has_HLOD = true;
+           
              
           }
         }
@@ -215,8 +201,8 @@ void check_LOD(cgltf_data* data){
 
 void load_current_sampler_to_channel(AnimationChannel* channel){
   AnimationSampler sampler;
-  init_array_with_count(&sampler.inputs,sizeof(float),current_sampler->input->count);
-  init_array_with_count(&sampler.outputs_vec4,sizeof(vec4),current_sampler->output->count);
+  init_array(&sampler.inputs,sizeof(float),current_sampler->input->count);
+  init_array(&sampler.outputs_vec4,sizeof(vec4),current_sampler->output->count);
   current_array = &sampler.inputs;
   read_accessor(current_sampler->input);
   current_array = &sampler.outputs_vec4;
@@ -226,7 +212,7 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
 
 Node* get_node_by_name(Array* array, const char* name){
   for( int i = 0; i < array->count ; i++ ){
-    Node* node = get_element_from_array(array,i);
+    Node* node = get_from_array(array,i);
     if( strcmp( node->name , name ) == 0){
       return node;
     }
@@ -295,10 +281,7 @@ int load_model(const char* path , struct Model* model){
   actual_vertex_array = &model->vertex_array;
   actual_index_array = &model->index_array;
   actual_model = model;
-
-  //init_vertex_array(actual_vertex_array,1);
-  init_index_array(actual_index_array,1);
-
+  
   //check_LOD(data);
 
   if(model_loaded){
@@ -310,7 +293,7 @@ int load_model(const char* path , struct Model* model){
   }  
   
   if(data->skins_count >= 1){
-    init_array_with_count(&nodes,sizeof(Node),data->nodes_count+1);
+    init_array(&nodes,sizeof(Node),data->nodes_count+1);
     memset(nodes.data,0,sizeof(Node) * data->nodes_count);
     copy_nodes = true; 
   }
@@ -327,11 +310,15 @@ int load_model(const char* path , struct Model* model){
     }
   }
 
-  LOGW("gltf loaded. \n");
+  LOGW("gltf loaded: %s. \n",path);
 
   cgltf_free(data);
   current_data = NULL;
-  
+  in_model_array = NULL;
+  actual_vertex_array = NULL;
+  actual_index_array = NULL;
+  actual_model = NULL;
+
   return 0;
 }
 
