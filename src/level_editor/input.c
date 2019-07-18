@@ -104,8 +104,7 @@ void parse_command(const char* command){
     }
     if(command[1] == 's'){ //set
         if(command[3] == 'p'){//player
-            player1 = selected_element;
-            player1->model->draw = false;
+            player1 = selected_element;            
             add_editor_native_element("Player Controller");
         }
     }
@@ -460,23 +459,19 @@ void grab_mode(){
             
             if(key_released(&input.D)){
                 vec3 move = {move_object_value,0,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(key_released(&input.A)){
                 vec3 move = {-move_object_value,0,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(key_released(&input.S)){
                 vec3 move = {0,-move_object_value,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(key_released(&input.W)){
                 vec3 move = {0,move_object_value,0};
-                glm_translate(selected_element->model->model_mat, move);
-                glm_vec3_add(selected_element->position,move,selected_element->position);
+                update_translation(move);
             }
             if(key_released(&input.I)){
                 move_object_value += 2.4;
@@ -713,12 +708,24 @@ void rotate_input_mode(){
     if(key_released(&input.X)){
 
     }
-    if(key_released(&input.J)){
-       rotate_editor_element(selected_element, -5, (vec3){0,0,1});
+    if(input.SHIFT.pressed){
+        if(key_released(&input.J)){
+            rotate_editor_element(selected_element, -5, (vec3){0,0,1});
+        }
+        if(key_released(&input.K)){
+            
+            rotate_editor_element(selected_element, 5, (vec3){0,0,1});
+        }
     }
-    if(key_released(&input.K)){
-        
-        rotate_editor_element(selected_element, 5, (vec3){0,0,1});
+    else{
+        float rotate_value = 1;
+        if(input.J.pressed){
+            rotate_editor_element(selected_element, -rotate_value, (vec3){0,0,1});
+        }
+        if(input.K.pressed){
+            
+            rotate_editor_element(selected_element, rotate_value, (vec3){0,0,1});
+        }
     }
 }
 
@@ -730,8 +737,7 @@ void input_mode_play(){
 
     if(input.W.pressed){
         vec3 move = {0,-move_object_value,0};
-        glm_translate(selected_element->model->model_mat, move);
-        glm_vec3_add(selected_element->position,move,selected_element->position);
+        update_translation(move);
     }
 
     if(key_released(&input.ESC)){
@@ -746,8 +752,8 @@ void input_mode_play(){
             if(player_start == NULL){
                 printf("No player start\n");
                 return;
-            }
-            player1->model->draw = true;
+            }            
+            
             set_element_position(player1,player_start->position);
             player_in_start_position = true;
         }else{

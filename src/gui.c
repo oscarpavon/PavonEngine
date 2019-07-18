@@ -292,6 +292,10 @@ void update_user_iterface_status(){
          check_if_pressed(button);
          if(button->pressed){
              ActionPointer* action_pointer = get_from_array(&actions_pointers,button->action_function_id);
+             if(action_pointer->action == NULL){
+                 printf("No button action added\n");
+                 return;
+             }
              action_pointer->action();
          }
      }

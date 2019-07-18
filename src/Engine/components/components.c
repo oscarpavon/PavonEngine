@@ -69,3 +69,16 @@ void update_component(ComponentDefinition* element_component){
         break;
     }
 }
+
+void* get_component_from_selected_element(ComponentType type){
+
+    if(selected_element->components_count > 0){
+        for(int i = 0; i< selected_element->components_count ; i++){       
+            ComponentDefinition* component = get_from_array(&selected_element->components,i);
+            if(component->type == type){
+                return &component->data[0];
+            }           
+        }        
+    }
+    return NULL;
+}

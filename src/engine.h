@@ -91,6 +91,8 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 }
 
+bool game_initialized;
+
 unsigned int element_id_count;
 unsigned int model_id_count;
 unsigned int components_id_count;

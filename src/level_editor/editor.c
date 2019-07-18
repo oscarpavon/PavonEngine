@@ -55,36 +55,34 @@ void editor_message(const char* message){
 
 void add_editor_native_element(const char* native_element_name){
     
-    if( strcmp("Camera", native_element_name) == 0 ){
-        new_empty_model();
-        new_empty_element();
-        selected_model->draw = false;
+    if( strcmp("Camera", native_element_name) == 0 ){        
+        new_empty_element();        
         strcpy(selected_element->name, "Camera01");
-        selected_element->type = ELEMENT_TYPE_CAMERA;
-        ComponentDefinition camera_component;
-        memset(&camera_component,0,sizeof(ComponentDefinition));
-        add_to_array(&components,&camera_component);
-        ComponentDefinition * component = get_from_array(&components,0);
-        //selected_element->components = component;
-        component->id = 0;
-        component->bytes_size = sizeof(CameraComponent);
-        component->data = malloc(component->bytes_size);
-        CameraComponent* camera = component->data;
-        glm_vec3_copy((vec3){0,1,0},camera->front);
-        glm_mat4_copy(main_camera.projection,camera->projection);
+        selected_element->type = ELEMENT_TYPE_CAMERA;        
+        
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+
+        CameraComponent camera_component;
+        glm_vec3_copy((vec3){0,1,0},camera_component.front);
+        glm_mat4_copy(main_camera.projection,camera_component.projection);
         vec3 look_pos;
-        glm_vec3_add(selected_element->position, camera->front, look_pos);
-        glm_lookat(selected_element->position, look_pos, camera_up , camera->view);
+        glm_vec3_add(selected_element->position, camera_component.front, look_pos);
+        glm_lookat(selected_element->position, look_pos, camera_up , camera_component.view);
+
+        add_component_to_selected_element(sizeof(CameraComponent), &camera_component, CAMERA_COMPONENT);
         
     }else if ( strcmp("Player Start", native_element_name) == 0 )
-    {
-        new_empty_model();
+    {        
         new_empty_element();
-        selected_model->draw = false;
-        strcpy(selected_element->name, "PlayerStart01");
-        selected_element->type = ELEMENT_TYPE_PLAYER_START;
+        strcpy(selected_element->name, "PlayerStart01");        
+        selected_element->type = ELEMENT_TYPE_PLAYER_START;        
         player_start = selected_element;
-        selected_element = NULL;
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);        
+        
         selected_model = NULL;
         
     }else if ( strcmp("Player Controller", native_element_name) == 0 )
@@ -150,8 +148,9 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
     mat4 model_rot_mat;
     glm_quat_mat4(new_rot_quat,model_rot_mat);
 
-    glm_mul(element->model->model_mat, model_rot_mat, element->model->model_mat);
-
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    if(transform)
+        glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
 }
 
 void update_camera_aspect_ratio(){

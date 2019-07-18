@@ -25,7 +25,7 @@ void init_array(Array * array, size_t element_bytes_size, int count){
 
 void add_to_array(Array* array, void* element){
     if(array->initialized == false){
-        printf("Array not inilized\n");
+        printf("Array not initialized\n");
         raise(SIGINT);
         return;
     }
@@ -47,6 +47,11 @@ void add_to_array(Array* array, void* element){
 }
 
 void *get_from_array(Array* array,int index){
+    if(array->initialized == false){
+        printf("Array not initialized\n");
+        raise(SIGINT);
+        return NULL;
+    }
     size_t offset = array->element_bytes_size;
     if(index == 0)
         return &array->data[0];

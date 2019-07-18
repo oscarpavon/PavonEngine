@@ -58,5 +58,6 @@ void init_sphere_component(SphereComponent* component);
 void init_cube_component(CubeComponent* component);
 void update_component(ComponentDefinition*);
 void init_transfrom_component(TransformComponent* component);
+void* get_component_from_selected_element(ComponentType type);
 
 #endif

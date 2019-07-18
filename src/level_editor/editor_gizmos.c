@@ -214,7 +214,7 @@ void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){
 
 }
 
-void draw_grid_lines(){
+void draw_axis_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
         DebugLine* line = get_from_array(&debug_objects,i);
         if(line->initialized == true){
@@ -295,19 +295,11 @@ void init_grid_greometry(){
             glm_vec3_copy((vec3){o,i,0}, vertex3.postion);
             glm_vec3_copy((vec3){o,-i,0}, vertex4.postion);
 
-
             glm_vec3_copy((vec3){i,-o,0}, vertex5.postion);
             glm_vec3_copy((vec3){-i,-o,0}, vertex6.postion);
 
             glm_vec3_copy((vec3){-o,i,0}, vertex7.postion);
             glm_vec3_copy((vec3){-o,-i,0}, vertex8.postion);
-
-
-          /*   add_debug_line((vec3){i,o,0},(vec3){-i,o,0});
-            add_debug_line((vec3){o,i,0},(vec3){o,-i,0});
-            
-            add_debug_line((vec3){i,-o,0},(vec3){-i,-o,0});
-            add_debug_line((vec3){-o,i,0},(vec3){-o,-i,0}); */
 
             add_to_array(&new_grid.vertex_array,&vertex1);
             add_to_array(&new_grid.vertex_array,&vertex2);
@@ -322,7 +314,7 @@ void init_grid_greometry(){
     }
 
     init_static_gpu_vertex_buffer(&new_grid.vertex_array,&new_grid.vertex_buffer_id);
-    new_grid.shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
+    new_grid.shader = create_engine_shader(standart_vertex_shader,color_fragment_shader); 
 
 }
 
@@ -331,7 +323,10 @@ void draw_grid(){
     glm_mat4_identity(model);            
     update_draw_vertices(new_grid.shader, new_grid.vertex_buffer_id,model);
     glLineWidth(1);            
-    
+    GLint uniform_color = glGetUniformLocation(new_grid.shader,"color");
+    vec4 color = {0,0,0,1};
+    glUniform4fv(uniform_color, 1, color);
+
     glDrawArrays(GL_LINES, 0, new_grid.vertex_array.count);
 }
 
@@ -339,13 +334,13 @@ void draw_gizmos(){
     if(can_draw_skeletal_bones)   
         draw_skeletal_bones();
     
-    //draw_grid_lines();
+    draw_axis_lines();
 
     draw_grid();
 
     if(can_draw_gizmos){
         //draw_bounding_box();
-        draw_camera_direction();
+        //draw_camera_direction();
 
         
 
@@ -354,7 +349,9 @@ void draw_gizmos(){
             if(element->type == ELEMENT_TYPE_CAMERA){
                 Model* actual_gizmo = get_from_array(&gizmos,2);
                 if(selected_element != NULL){
-                    glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
+                    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+                    if(transform)
+                        glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
                 }
                 draw_simgle_model(actual_gizmo);
                 
@@ -362,7 +359,9 @@ void draw_gizmos(){
             if(element->type == ELEMENT_TYPE_PLAYER_START){
                 Model* actual_gizmo = get_from_array(&gizmos,3);
                 if(selected_element != NULL){
-                    glm_mat4_copy(element->model->model_mat, actual_gizmo->model_mat);
+                    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+                    if(transform)
+                        glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
                 }
                 draw_simgle_model(actual_gizmo);
                 
@@ -374,9 +373,9 @@ void draw_gizmos(){
             Model* actual_gizmo = get_from_array(&gizmos,0);
             if(editor_mode == EDITOR_DEFAULT_MODE){                
                 if(selected_element != NULL){
-                    if(selected_element->model == NULL)
-                        return;
-                    glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+                    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+                    if(transform)
+                        glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
                 }
                 draw_simgle_model(actual_gizmo);
             }
@@ -401,7 +400,9 @@ void draw_gizmos(){
         if(draw_rotate_gizmo){
             Model* actual_gizmo = get_from_array(&gizmos,1);
             if(selected_element != NULL){
-                glm_mat4_copy(selected_element->model->model_mat, actual_gizmo->model_mat);
+                TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+                if(transform)
+                    glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
             }
             draw_simgle_model(actual_gizmo);
         }
@@ -435,7 +436,7 @@ void init_gizmos(){
     add_debug_line((vec3){0,5,0},(vec3){0,-5,0});
     add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
 
-    add_debug_line((vec3){1,1,1},(vec3){0,1,0});
+    //add_debug_line((vec3){1,1,1},(vec3){0,1,0});
 
     init_grid_greometry();
 

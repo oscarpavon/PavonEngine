@@ -3,7 +3,7 @@
 #include "../game.h"
 #include "../camera.h"
 
-bool game_initialized = false;
+
 
 void change_to_editor_sub_mode(EditorMode mode){
     switch (editor_mode)
@@ -85,6 +85,10 @@ void change_to_editor_mode(EditorMode mode){
     case EDITOR_PLAY_MODE:
         if(game_initialized == false)
             init_game();
+        if(game_initialized == false){
+            change_to_editor_mode(EDITOR_DEFAULT_MODE);
+            return;
+        }            
         game_initialized = true;
         editor_mode_show_text = "Play Mode";
         break;

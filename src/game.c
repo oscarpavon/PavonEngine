@@ -34,17 +34,28 @@ void move_player_forward(){
     printf("Action pointer work\n");
 }
 
-void init_game(){    
-    glm_rotate(player1->model->model_mat,180, (vec3){0,0,1});
+void init_game(){
+    if(player1 == NULL){
+        printf("No current player configured\n");
+        game_initialized = false;
+        return;
+    }
+    selected_element = player1;
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    if(transform)
+        glm_rotate(transform->model_matrix,180, (vec3){0,0,1});    
+    
     init_camera_local_transform();
 
     add_action_function(&move_player_forward);
+
+    game_initialized = true;
 }
 
 
 void update_player_camera(){
     mat4 inverse_player_matrix;
-    glm_mat4_inv(player1->model->model_mat, inverse_player_matrix);
+    glm_mat4_inv(player1->transform->model_matrix, inverse_player_matrix);
 
     glm_mat4_mul(tranlate_dot_rot,inverse_player_matrix,main_camera.view);
 

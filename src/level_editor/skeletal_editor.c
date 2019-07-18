@@ -48,7 +48,7 @@ void init_skeletal_gizmo(){
     memset(vertices,0,sizeof(vertices));
 
     init_array(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),20);
-    //init_array(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
+    init_array(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
     for(int i = 0; i < skeletal->joints_count ; i++){
        
         mat4 local;        
@@ -60,12 +60,12 @@ void init_skeletal_gizmo(){
 
         if(skeletal->joints[i].parent != NULL){
             if(i == 2){
-                add_to_array(&skeletal_bones_gizmo_geometry.index_array,i-1);
+                add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i-1);
             }else if(i >= 3){
-                add_to_array(&skeletal_bones_gizmo_geometry.index_array,skeletal->joints[i].parent->id);
+                add_to_array(&skeletal_bones_gizmo_geometry.index_array,&skeletal->joints[i].parent->id);
             }
         }
-        add_to_array(&skeletal_bones_gizmo_geometry.index_array,i);
+        add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i);
        
     }
    

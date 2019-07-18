@@ -341,9 +341,9 @@ void init_model_gl_buffers(struct Model* new_model){
     //new_model->index_array.data = NULL;
 }
 
-void set_element_position(Element* element, vec3 position){
-    glm_mat4_identity(element->model->model_mat);
-    glm_translate(element->model->model_mat,position);
+void set_element_position(Element* element, vec3 position){    
+    glm_mat4_identity(element->transform->model_matrix);
+    glm_translate(element->transform->model_matrix,position);
 }
 
 void compiles_standard_shaders(){
