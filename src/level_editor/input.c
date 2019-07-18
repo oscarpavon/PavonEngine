@@ -686,7 +686,7 @@ void default_mode(){
 
     }
     if(key_released(&input.KEY_2)){
-        init_skeletal_gizmo();
+        init_skeletal_editor();
         can_draw_skeletal_bones = true;
     }
            

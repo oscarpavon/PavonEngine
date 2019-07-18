@@ -246,7 +246,7 @@ int load_model(const char* path , struct Model* model){
   init_vertex_array(actual_vertex_array,1);
   init_index_array(actual_index_array,1);
 
-  check_LOD(data);
+  //check_LOD(data);
 
   if(model_loaded){
     LOGW("gltf loaded with LODs. \n");
@@ -256,24 +256,18 @@ int load_model(const char* path , struct Model* model){
     return 0;
   }  
   
-  Node* nodes = malloc(sizeof(Node) * data->scene->nodes_count);
+  //Node nodes[data->nodes_count];
+  Node* nodes = malloc(sizeof(Node) * data->nodes_count);
 
-  memset(nodes,0,sizeof(Node) * data->scene->nodes_count);  
+ // memset(nodes,0,sizeof(nodes));  
+  memset(nodes,0,sizeof(Node) * data->nodes_count);  
   
   for(int i = 0; i < data->scene->nodes_count ; i++){
     load_node(NULL, data->scene->nodes[i],nodes,0);
   }
-  //load_mesh(data->nodes[0].mesh);
-
-  //load_primitives(data,&model->vertex_array);
-  //load_indices(data, &model->index_array);
+ 
   load_uv(data,&model->vertex_array);
 
-  if(data->skins){
-    //load_joints(data);
-    
-  }
-  
   LOGW("gltf loaded. \n");
 
   cgltf_free(data);

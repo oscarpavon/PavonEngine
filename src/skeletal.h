@@ -12,6 +12,7 @@
 
 struct Node;
 typedef struct Node{
+    int id;
     char name[15];
     struct Node* parent;
     vec3 translation;

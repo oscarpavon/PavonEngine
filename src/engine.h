@@ -42,7 +42,10 @@ void engine_loop();
 void init_game_engine();
 
 void init_models(Array* array);
-/* Draw array of engine elements, if in editor ther shader need color multiplication uniform! */
+
+/* Draw array of engine elements, 
+if in editor the shader need color multiplication uniform otherwise 
+it not show it becouse color is multiplied per 0 ! */
 void draw_elements(Array* elements);
 void draw_simgle_model(struct Model * new_model);
 void load_models_texture_to_gpu(Array* models_array);
@@ -59,6 +62,7 @@ void set_element_position(Element* element, vec3 position);
 void update_viewport_size();
 
 void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id);
+void init_static_gpu_index_buffer(IndexArray* array, GLuint *id);
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix);
 void update_gpu_vertex_data(VertexArray* array, GLuint id);
 

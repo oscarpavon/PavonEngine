@@ -3,25 +3,21 @@
 #include "../engine.h"
 #include "editor.h"
 
-struct Geometry skeletal_bones_gizmo_geometry;
+struct LoadGeometry skeletal_bones_gizmo_geometry;
 GLuint skeletal_gizmo_vertices_buffer_id;
+GLuint skeletal_gizmo_index_buffer_id;
 
-
-void create_skeletal_vertices_bones_gizmo(){
-    
-    
-    int vertex_count = 1;
-    struct Vertex vertices[vertex_count];
-    memset(vertices,0,sizeof(vertices));
-
-    struct Vertex vert = {{0,0,0},{0,0}};
-    memcpy(vertices,&vert,sizeof(struct Vertex));
-
-    add_vextex_to_array(&skeletal_bones_gizmo_geometry.vertex_array,vertices[0]);
-    
+void assign_nodes_indices(Skeletal* skeletal){
+    int vertex_count = skeletal->joints_count;
+    int index = 0;
+    for(int i = 0; i < skeletal->joints_count ; i++){
+        skeletal->joints[i].id = index;       
+        index++;
+    }
 }
 
 void init_skeletal_gizmo(){
+
     Skeletal* skeletal = selected_element->model->skeletal;
     if(skeletal == NULL)
         return;
@@ -29,14 +25,25 @@ void init_skeletal_gizmo(){
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));
 
+    
     for(int i = 0; i < skeletal->joints_count ; i++){
+       
         mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
-        glm_mat4_mul(selected_element->model->model_mat, local, local);
-        struct Vertex vert = { { local[3][0],local[3][1],local[3][2] } ,{0,0}};
-        //struct Vertex vert = { { skeletal->joints[i].translation[0] ,skeletal->joints[i].translation[1] ,skeletal->joints[i].translation[2]} ,{0,0}};
+        mat4 global;
+        glm_mat4_mul(selected_element->model->model_mat, local, global);
+        struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
         memcpy(&vertices[i],&vert,sizeof(struct Vertex));
 
+        if(skeletal->joints[i].parent != NULL){
+            if(i == 2){
+                add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,i-1);
+            }else if(i >= 3){
+                add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,skeletal->joints[i].parent->id);
+            }
+        }
+        add_index_to_array(&skeletal_bones_gizmo_geometry.index_array,i);
+       
     }
    
     for(int i = 0; i < vertex_count ; i++){
@@ -48,28 +55,16 @@ void init_skeletal_gizmo(){
 GLuint skelta_gizmo_shader;
 
 void draw_skeletal_bones(){
-    glBindBuffer(GL_ARRAY_BUFFER, skeletal_gizmo_vertices_buffer_id);
-
-    glUseProgram(skelta_gizmo_shader);
-
-    mat4 mvp;
-    glm_mat4_identity(mvp);
-
     mat4 model;
     glm_mat4_identity(model);
-    update_mvp(model, mvp);
-
-    GLint mvp_uniform =  glGetUniformLocation(skelta_gizmo_shader,"MVP");
-
-    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+    update_draw_vertices(skelta_gizmo_shader,skeletal_gizmo_vertices_buffer_id,model);
     
-    glLineWidth(10);
+    glLineWidth(2);
    
 	glDrawArrays(GL_POINTS, 0, skeletal_bones_gizmo_geometry.vertex_array.count);
-    
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo_index_buffer_id);
+    glDrawElements(GL_LINES,skeletal_bones_gizmo_geometry.index_array.count,GL_UNSIGNED_SHORT,(void*)0);
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
@@ -82,8 +77,14 @@ void draw_skeletal_bones(){
 
 void init_skeletal_editor(){
     init_vertex_array(&skeletal_bones_gizmo_geometry.vertex_array,1);
-    create_skeletal_vertices_bones_gizmo();
+    init_index_array(&skeletal_bones_gizmo_geometry.index_array,1);
+    assign_nodes_indices(selected_element->model->skeletal);
+    init_skeletal_gizmo();
     init_static_gpu_vertex_buffer(&skeletal_bones_gizmo_geometry.vertex_array,&skeletal_gizmo_vertices_buffer_id);
+    init_static_gpu_index_buffer(&skeletal_bones_gizmo_geometry.index_array,&skeletal_gizmo_index_buffer_id);
+    
+
+
 
     skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
 

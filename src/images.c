@@ -7,7 +7,9 @@
 Image load_image(const char* path){
     File new_file;
 
-    load_file(path,&new_file);
+    if( load_file(path,&new_file) == -1 ){
+        exit(-1);
+    }
 
     Image new_image;
 

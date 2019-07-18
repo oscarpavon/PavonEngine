@@ -104,6 +104,17 @@ void add_editor_native_element(const char* native_element_name){
         init_sphere_component(&sphere);
         add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
     }
+    else if ( strcmp("Cube", native_element_name) == 0 ){
+        new_empty_element();
+        strcpy(selected_element->name, "Cube");
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+        CubeComponent cube;
+        memset(&cube,0,sizeof(SphereComponent));
+        init_cube_component(&cube);
+        add_component_to_selected_element(sizeof(CubeComponent), &cube, CUBE_COMPONENT);
+    }
 }
 
 
@@ -275,11 +286,12 @@ void init_editor(){
 
     camera_velocity = 0.04;    
 
-    init_skeletal_editor();
+    //init_skeletal_editor();
     
     
     actual_standard_fragment_shader = editor_standard_fragment_shader;    
     load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
 }
 
 
@@ -348,7 +360,7 @@ void update_editor(){
     
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    //draw_gizmos();
+    draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
          update_user_iterface_status();

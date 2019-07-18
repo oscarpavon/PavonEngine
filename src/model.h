@@ -44,8 +44,9 @@ typedef struct Model{
 
 }Model;
 
-struct Geometry{
+struct LoadGeometry{
     VertexArray vertex_array;
+    IndexArray index_array;
 };
 
 

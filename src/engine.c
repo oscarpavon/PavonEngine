@@ -57,6 +57,14 @@ void init_static_gpu_vertex_buffer(VertexArray* array, GLuint *id){
 
 }
 
+void init_static_gpu_index_buffer(IndexArray* array, GLuint *id){
+    glGenBuffers(1,id);
+    GLuint id_copy;
+    memcpy(&id_copy,id,sizeof(GLuint));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_copy);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->indices, GL_STATIC_DRAW);
+}
+
 void update_gpu_vertex_data(VertexArray* array, GLuint id){
     glBindBuffer(GL_ARRAY_BUFFER,id);
     glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->vertices, GL_STATIC_DRAW);
@@ -149,6 +157,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     init_model_gl_buffers(model0);   
     
     new_empty_element();
+    selected_element->model = selected_model;
     
     strcpy(selected_element->name, "New Element");
     TransformComponent transform;
@@ -332,7 +341,7 @@ void init_model_gl_buffers(struct Model* new_model){
                     new_model->index_array.count * sizeof(unsigned short int),
                     new_model->index_array.indices , GL_STATIC_DRAW);
 
-    free_to_marker(previous_marker); 
+    //free_to_marker(previous_marker); 
     new_model->vertex_array.vertices = NULL;
     new_model->index_array.indices = NULL;
 }

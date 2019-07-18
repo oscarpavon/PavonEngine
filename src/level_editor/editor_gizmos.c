@@ -6,6 +6,18 @@ GLuint color_fragment_shader;
 Array debug_objects;
 Array bounding_boxes;
 
+
+typedef struct Grid{
+    bool initialized;
+    vec2 size;    
+    VertexArray vertex_array;
+    GLuint vertex_buffer_id;
+    GLuint shader;
+}Grid;
+
+
+Grid new_grid;
+
 typedef struct DebugLine{
     bool initialized;
     vec3 start;
@@ -116,6 +128,7 @@ void init_selected_object_bounding_box_vertices(){
         bounding_box_initialized = true;
     }
 }
+
 void update_bounding_vertices_array(Model* model){
     Model* box = get_element_from_array(&bounding_boxes,0);
     for(int i = 0; i < box->vertex_array.count ; i++){
@@ -260,11 +273,73 @@ void draw_camera_direction(){
     
 }
 
+void init_grid_greometry(){
+    init_vertex_array(&new_grid.vertex_array, 100);
+
+    for(int i = 1; i < 6; i++){
+        for(int o = 1; o < 6; o++){
+            Vertex vertex1;
+            Vertex vertex2;
+            Vertex vertex3;
+            Vertex vertex4;
+            Vertex vertex5;
+            Vertex vertex6;
+            Vertex vertex7;
+            Vertex vertex8;
+
+            glm_vec3_copy((vec3){i,o,0}, vertex1.postion);
+            glm_vec3_copy((vec3){-i,o,0}, vertex2.postion);
+            
+            glm_vec3_copy((vec3){o,i,0}, vertex3.postion);
+            glm_vec3_copy((vec3){o,-i,0}, vertex4.postion);
+
+
+            glm_vec3_copy((vec3){i,-o,0}, vertex5.postion);
+            glm_vec3_copy((vec3){-i,-o,0}, vertex6.postion);
+
+            glm_vec3_copy((vec3){-o,i,0}, vertex7.postion);
+            glm_vec3_copy((vec3){-o,-i,0}, vertex8.postion);
+
+
+          /*   add_debug_line((vec3){i,o,0},(vec3){-i,o,0});
+            add_debug_line((vec3){o,i,0},(vec3){o,-i,0});
+            
+            add_debug_line((vec3){i,-o,0},(vec3){-i,-o,0});
+            add_debug_line((vec3){-o,i,0},(vec3){-o,-i,0}); */
+
+            add_vextex_to_array(&new_grid.vertex_array,vertex1);
+            add_vextex_to_array(&new_grid.vertex_array,vertex2);
+            add_vextex_to_array(&new_grid.vertex_array,vertex3);
+            add_vextex_to_array(&new_grid.vertex_array,vertex4);
+            add_vextex_to_array(&new_grid.vertex_array,vertex5);
+            add_vextex_to_array(&new_grid.vertex_array,vertex6);
+            add_vextex_to_array(&new_grid.vertex_array,vertex7);
+            add_vextex_to_array(&new_grid.vertex_array,vertex8);
+        }
+        
+    }
+
+    init_static_gpu_vertex_buffer(&new_grid.vertex_array,&new_grid.vertex_buffer_id);
+    new_grid.shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
+
+}
+
+void draw_grid(){
+    mat4 model;
+    glm_mat4_identity(model);            
+    update_draw_vertices(new_grid.shader, new_grid.vertex_buffer_id,model);
+    glLineWidth(1);            
+    
+    glDrawArrays(GL_LINES, 0, new_grid.vertex_array.count);
+}
+
 void draw_gizmos(){
     if(can_draw_skeletal_bones)   
         draw_skeletal_bones();
     
-    draw_grid_lines();
+    //draw_grid_lines();
+
+    draw_grid();
 
     if(can_draw_gizmos){
         //draw_bounding_box();
@@ -360,16 +435,7 @@ void init_gizmos(){
 
     add_debug_line((vec3){1,1,1},(vec3){0,1,0});
 
-    for(int i = 1; i < 6; i++){
-        for(int o = 1; o < 6; o++){
-            add_debug_line((vec3){i,o,0},(vec3){-i,o,0});
-            add_debug_line((vec3){o,i,0},(vec3){o,-i,0});
-            
-            add_debug_line((vec3){i,-o,0},(vec3){-i,-o,0});
-            add_debug_line((vec3){-o,i,0},(vec3){-o,-i,0});
-        }
-        
-    }
+    init_grid_greometry();
 
     
 }

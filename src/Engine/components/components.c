@@ -24,6 +24,15 @@ void init_sphere_component(SphereComponent* component){
     component->model = selected_model;
 }
 
+void init_cube_component(CubeComponent* component){
+    new_empty_model();
+    Model* cube_model = get_element_from_array(&engine_native_models,1);
+    memcpy(selected_model,cube_model,sizeof(Model));
+    selected_model->id = model_id_count-1;
+    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+    component->model = selected_model;
+}
+
 void init_transfrom_component(TransformComponent* component){
     memset(component->position,0,sizeof(vec3));
     glm_vec3_copy(VEC3(1,1,1),component->scale);
@@ -35,6 +44,12 @@ void update_component(ComponentDefinition* element_component){
     {
     case SPHERE_COMPONENT:{
         SphereComponent* component = &element_component->data[0];
+        glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
+        add_element_to_array(&frame_draw_elements,&component->model);
+        break;
+    }
+     case CUBE_COMPONENT:{
+        CubeComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_element_to_array(&frame_draw_elements,&component->model);
         break;
