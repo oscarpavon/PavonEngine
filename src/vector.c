@@ -52,7 +52,7 @@ void *get_element_from_array(Array* array,int index){
     if(index == 0)
         return &array->data[0];
     if(index > array->count){
-        printf("Element out of ranger, array count: %i",array->count);
+        printf("Element out of ranger, array count: %i\n",array->count);
         return NULL;
     }         
     return &array->data[0] + (index*offset);
@@ -147,10 +147,10 @@ void add_vextex_to_array(VertexArray *array, struct Vertex vertex){
     array->count++;
     array->size += sizeof(struct Vertex);   
     
-    struct Vertex* allocated_vertex = allocate_memory(sizeof(struct Vertex));
+    /* struct Vertex* allocated_vertex = allocate_memory(sizeof(struct Vertex));
     if(allocated_vertex== NULL){
         printf("Memory not allocated ERROR\n");
-    }
+    } */
     if(!array->vertices){
         printf("array no allocated\n");
     }

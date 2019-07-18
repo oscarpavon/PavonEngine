@@ -16,6 +16,28 @@ void assign_nodes_indices(Skeletal* skeletal){
     }
 }
 
+void update_joints_vertex(){
+    Skeletal* skeletal = selected_element->model->skeletal;
+    if(skeletal == NULL)
+        return;
+    int vertex_count = skeletal->joints_count;
+    struct Vertex vertices[vertex_count];
+    memset(vertices,0,sizeof(vertices));
+    
+    for(int i = 0; i < skeletal->joints_count ; i++){       
+        mat4 local;        
+        get_global_matrix(&skeletal->joints[i], local);
+        mat4 global;
+        glm_mat4_mul(selected_element->model->model_mat, local, global);
+        struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
+        memcpy(&vertices[i],&vert,sizeof(struct Vertex));
+    }
+
+    for(int i = 0; i < vertex_count ; i++){
+        add_vextex_to_array(&skeletal_bones_gizmo_geometry.vertex_array,vertices[i]);
+    }
+}
+
 void init_skeletal_gizmo(){
 
     Skeletal* skeletal = selected_element->model->skeletal;
