@@ -389,7 +389,11 @@ void init_engine(){
 
     init_array(&frame_draw_elements,sizeof(void*),300);
 
+    touch_position_x = -1;
+    touch_position_x = -1;
+
 }
+
 Array models;
 Array elements;
 

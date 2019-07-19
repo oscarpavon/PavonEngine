@@ -6,7 +6,7 @@ typedef struct Model Model;
 #include <cglm/cglm.h>
 
 typedef enum ComponentType{
-    TRASNFORM_COMPONENT,
+    TRASNFORM_COMPONENT = 0,
     SPHERE_COMPONENT,
     CAMERA_COMPONENT,
     CUBE_COMPONENT,

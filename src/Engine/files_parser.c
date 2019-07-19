@@ -86,17 +86,6 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 
   actual_json_file = js;
 
-  if(actual_data_type == DATA_TYPE_GUI){
-    if(previos_id != button_id){
-      Button new_button;
-      memset(&new_button,0,sizeof(Button));
-      add_to_array(actual_array,&new_button);
-      previos_id = button_id;
-      actual_button = get_from_array(actual_array,button_id);      
-    }
-    
-  }
-
 	if (count == 0) {
 		return 0;
 	}
@@ -189,6 +178,16 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 		return 1;
 	} 
   else if (token->type == JSMN_OBJECT) {
+    if(actual_data_type == DATA_TYPE_GUI){
+      if(previos_id != button_id){
+        Button new_button;
+        memset(&new_button,0,sizeof(Button));
+        add_to_array(actual_array,&new_button);
+        previos_id = button_id;
+        actual_button = get_from_array(actual_array,button_id);      
+      }
+      
+    }
     if(actual_data_type == DATA_TYPE_GUI){
        if(object_zero == true){
         object_zero = false;

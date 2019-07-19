@@ -34,9 +34,6 @@ typedef struct Menu{
     Array buttons;
 }Menu;
 
-
-
-
 void init_gui();
 void draw_button();
 void draw_gui();
@@ -47,5 +44,8 @@ void update_user_iterface_status();
 void new_empty_button();
 
 void load_gui(const char* name);
+
+float pixel_size_x;
+float pixel_size_y;
 
 #endif //ENGINE_GUI_H

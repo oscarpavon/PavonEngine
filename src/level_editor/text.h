@@ -65,9 +65,6 @@ TextMenu menu_show_gui_elements;
 
 int mark_id;
 
-float pixel_size_x;
-float pixel_size_y;
-
 Array menus;
 
 #endif

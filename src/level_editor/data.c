@@ -6,17 +6,26 @@
 FILE* actual_file;
 DataType actual_data_type;
 
+Element* current_element = NULL;
+int hirarchical_count = 0;
+
+
+void hirachical_tab(){
+    for(int i = 0; i< hirarchical_count ; i++){
+        fputs("\t", actual_file);
+    }
+}
 int add_array_of_numbers(int count){
     
     return 0;
 }
 int token_count = 0;
 void new_text_token(const char* type, const char* value){
-    fprintf(actual_file,"\t\"%s\" : \"%s\",\n",type,value);
+    hirachical_tab(); fprintf(actual_file,"\t\"%s\" : \"%s\",\n",type,value);
     token_count += 2;
 }
 void new_text_primitive_token(const char* type, int value){
-    fprintf(actual_file,"\t\"%s\" : %i,\n",type,value);
+    hirachical_tab(); fprintf(actual_file,"\t\"%s\" : %i,\n",type,value);
     token_count += 2;
 }
 
@@ -36,9 +45,13 @@ void new_text_vec2_token(const char* text,vec2 vec){
 }
 
 void new_save_element(SaveDataFunction function, int data_id){
-    fputs("{\n", actual_file);
+    hirachical_tab(); fputs("{\n", actual_file);
+    hirarchical_count++;
     function(data_id);
-    fputs("},\n",actual_file);
+    hirarchical_count--;
+    hirachical_tab(); fputs("},\n",actual_file);
+    
+   
     token_count++;
 }
 
@@ -138,6 +151,42 @@ void create_save_data_backup(){
 
     fclose(level_file);
 }
+
+void save_element_component_data(int id){
+    ComponentDefinition* component = get_from_array(&current_element->components,id);
+    new_text_primitive_token("component_type",component->type);
+
+}
+
+void save_level_element_data(int id){ 
+    SaveDataFunction component = &save_element_component_data;
+    Element* element = get_from_array(&editor_elements,id);
+    current_element = element;
+    new_text_token("name",element->name);
+    
+    hirachical_tab(); fputs("\"components\" : [ \n" , actual_file);
+
+    hirarchical_count++;
+        for(int i = 0; i < element->components_count ; i++){
+            new_save_element(component,i);
+        }
+    hirarchical_count--;
+    hirachical_tab(); fputs("]\n" , actual_file);
+}
+
+void save_level(int id){
+    hirachical_tab(); fputs("\"level\" : {\n" , actual_file);
+    
+    SaveDataFunction element_save_function =  &save_level_element_data;
+    for(int i = 0; i < editor_elements.count ; i++){        
+       
+        new_save_element(element_save_function,i);
+
+    }
+    
+    hirachical_tab(); fputs("}\n" , actual_file);
+}
+
 void save_level_data(const char* level_name){    
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
@@ -154,10 +203,9 @@ void save_level_data(const char* level_name){
 
     save_header_info();
 
-    for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_from_array(&editor_elements,i);
-        add_element_to_save_data(new_file,element,i);
-    }
+    SaveDataFunction level =  &save_level;
+    new_save_element(level,0);
+    
     save_camera_editor_camera_transform(new_file);
     fclose(new_file);
 

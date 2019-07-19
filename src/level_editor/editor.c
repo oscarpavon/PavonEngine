@@ -362,8 +362,6 @@ void draw_editor_viewport(){
     update_elements_components();
 
     draw_elements(&frame_draw_elements);
-    
-    glClear(GL_DEPTH_BUFFER_BIT);
 
     draw_gizmos();
 

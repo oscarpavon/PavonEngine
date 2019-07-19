@@ -77,8 +77,8 @@ void update_button_matrix(GLuint shader_id, vec2 size, vec2 position){
     glm_mat4_identity(projection);
 
     glm_ortho(0,camera_width_screen,camera_heigth_screen,0,0,1,projection);
-
-    glm_scale(scale,(vec3){size[0],size[1],0});
+    
+    glm_scale(scale,(vec3){size[0],size[1] ,0});
 
     glm_translate(position_mat,(vec3){position[0],position[1],0});
 
@@ -150,8 +150,17 @@ void init_button(Button* button, float position_x , float position_y , float siz
     
     button->position[0] = position_x;
 
-    button->size[0] = size_x;
-    button->size[1] = size_y;
+    float reasigned_size_x = camera_width_screen/1280;
+    float reasigned_size_y = camera_heigth_screen/720;
+
+    float aspect_ratio = camera_width_screen/camera_heigth_screen;
+    float new_size_x = size_x * (reasigned_size_x+aspect_ratio);
+    float new_size_y = size_y * (reasigned_size_y+aspect_ratio);
+
+    button->size[0] = new_size_x;
+    button->size[1] = new_size_y;
+
+    
 
     button->original_position[0] = position_x;
     if(button->relative_to == POSITION_RELATIVE_LEFT_BOTTON){
@@ -314,8 +323,8 @@ void draw_gui(){
 
 void new_empty_button(){
     Button new_button;
-
-    init_button(&new_button, 400, 300, 35,35);
+    
+    init_button(&new_button, camera_width_screen/2, camera_heigth_screen/2, 15, 15);
 
     add_to_array(actual_buttons_array,&new_button);
 

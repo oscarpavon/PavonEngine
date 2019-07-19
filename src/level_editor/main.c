@@ -36,7 +36,7 @@ int main(){
         draw_editor_viewport();     
         
         glfwSwapBuffers(main_window.window);
-
+                
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
         struct timespec result = diff(time1,time2);

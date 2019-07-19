@@ -338,6 +338,8 @@ void draw_gizmos(){
 
     draw_grid();
 
+    glClear(GL_DEPTH_BUFFER_BIT);
+    
     if(can_draw_gizmos){
         //draw_bounding_box();
         //draw_camera_direction();

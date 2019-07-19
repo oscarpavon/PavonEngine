@@ -83,6 +83,7 @@ void parse_command(const char* command){
                 strcpy(selected_button->name,&command[4]);
             }
         }
+        
 
     }else{
         if(command[1] == 'w'){
@@ -484,7 +485,8 @@ void grab_mode(){
     }
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR){
-        
+        if(selected_button == NULL)
+            return;
         if(input.W.pressed){
             move_ui_element_value[0] = 0;
             move_ui_element_value[1] = move_ui_element_value_per_axis;
@@ -744,6 +746,8 @@ void input_mode_play(){
 }
 
 void input_gui_editor(){
+    if(editor_sub_mode != EDITOR_SUB_MODE_NULL)
+        return;
     can_open_text_menu_with_key(&menu_show_gui_elements,&input.L,NULL);
 
     if(key_released(&input.ESC)){
@@ -752,7 +756,7 @@ void input_gui_editor(){
     }
         
         
-    if(key__released(&input.A,NULL)){
+    if(key__released(&input.A,GLFW_MOD_SHIFT)){
         new_empty_button();
     }
 

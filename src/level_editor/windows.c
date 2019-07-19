@@ -4,6 +4,9 @@
 #include "editor.h"
 #include "../game.h"
 
+#define INIT_WINDOW_SIZE_X 1280
+#define INIT_WINDOW_SIZE_Y 720
+
 void create_window(Window *win){
   
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -14,14 +17,14 @@ void create_window(Window *win){
     
     glfwInit();
     
-    win->window = glfwCreateWindow(800,600,"Engine", NULL , NULL);
+    win->window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,"Engine", NULL , NULL);
     glfwMakeContextCurrent(win->window);
     //glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
   
     
-    glViewport(0,0,800,600);
-    camera_heigth_screen = 600;
-    camera_width_screen = 800;
+    glViewport(0,0,INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
+    camera_heigth_screen = INIT_WINDOW_SIZE_Y;
+    camera_width_screen = INIT_WINDOW_SIZE_X;
 }
 
 void update_envents(){
