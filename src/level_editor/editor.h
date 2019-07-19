@@ -32,7 +32,7 @@ typedef enum EditorMode{
 
 void init_editor();
 
-void update_editor();
+void draw_editor_viewport();
 
 void get_element_status(Element* element);
 

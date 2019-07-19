@@ -53,7 +53,7 @@ static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
     return 0;
 }
 
-unsigned char command_text_buffer[100];
+
 bool activate_text_input_mode = false;
 unsigned short int character_count = 0;
 
@@ -153,8 +153,6 @@ void text_input_mode(){
         character_count--;
         command_text_buffer[character_count] = '\0';
     }
-    set_text_size(12);
-    render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 
 }
 
@@ -307,6 +305,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_9:
         actual_key = &input.KEY_9;
+        break;
+    case GLFW_KEY_C:
+        actual_key = &input.C;
         break;
     
     default:
@@ -598,41 +599,6 @@ void navigate_mode(){
     
 }
 
-void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
-    if(mods == NULL){
-        if( key_released(open_key) ){
-            menu->execute = true;
-            menu->show = true;
-        }
-    }else{
-        if( key_released(open_key) ){
-            if(mods == open_key->mods){
-                menu->execute = true;
-                menu->show = true;
-            }            
-        }
-    }
-    
-
-    if(menu->show){
-        if(key_released(&input.ESC)){
-            menu->execute = false;
-            menu->show = false;
-        }
-        if(key_released(&input.J)){
-            menu->actual_element_select++;
-        }
-        if(key_released(&input.K)){
-            menu->actual_element_select--;
-        }
-        if(key_released(&input.ENTER)){
-            menu->element_selected = true;
-            menu->show = false;
-        }
-
-    }
-}
-
 void default_mode(){
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
         return;
@@ -691,6 +657,7 @@ void default_mode(){
 
     
     can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
+
     
 }
 
@@ -753,7 +720,7 @@ void input_mode_play(){
                 printf("No player start\n");
                 return;
             }            
-            
+
             set_element_position(player1,player_start->position);
             player_in_start_position = true;
         }else{

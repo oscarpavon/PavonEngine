@@ -342,8 +342,7 @@ void draw_gizmos(){
         //draw_bounding_box();
         //draw_camera_direction();
 
-        
-
+    
         for(int i = 0; i< editor_elements.count ; i++){
             Element* element = get_from_array(&editor_elements,i);
             if(element->type == ELEMENT_TYPE_CAMERA){

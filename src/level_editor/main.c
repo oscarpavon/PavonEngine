@@ -31,12 +31,10 @@ int main(){
         struct timespec time1, time2;
         int temp;
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-
         
-        update_editor();
         update_input();
+        draw_editor_viewport();     
         
-   
         glfwSwapBuffers(main_window.window);
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);

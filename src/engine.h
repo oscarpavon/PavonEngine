@@ -55,7 +55,7 @@ void load_model_texture_to_gpu(struct Model*);
 
 void init_model_gl_buffers(struct Model* new_model);
 
-void update_editor(); 
+void draw_editor_viewport(); 
 
 void set_selected_element_transform(vec3 position, versor rotation);
 

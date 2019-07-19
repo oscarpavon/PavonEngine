@@ -23,14 +23,15 @@ GLuint uniform_text_color_location;
 
 FT_GlyphSlot g;
 
+GLfloat black[4] = {1, 1, 1, 1};
+GLfloat red[4] = {1, 0, 0, 1};
 
 void render_text(const char *text, float x, float y, float sx, float sy, bool mark) {
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
 
     glUseProgram(text_shader_id);
-    GLfloat black[4] = {1, 1, 1, 1};
-    GLfloat red[4] = {1, 0, 0, 1};
+   
     GLint uniform_color =  glGetUniformLocation(text_shader_id,"color");
 
     const char *p;
@@ -223,73 +224,6 @@ void init_text_shader(){
     //uniform_text_color_location =  glGetUniformLocation(text_shader_id,"color");
 
 }
-void menu_action_add_element(TextMenu* menu){
-    add_element_with_model_path(menu->text_for_action);
-}
-
-void menu_action_add_texture_to_element(TextMenu* menu){
-    add_texture_to_selected_element_with_image_path(menu->text_for_action);
-}
-
-void menu_action_select_element(TextMenu* menu){
-    printf("Selected element\n");
-    int id = menu->actual_element_select;
-    Element* element = NULL;
-   
-    if(!input.SHIFT.pressed){
-        if(selected_element != NULL)
-            selected_element->selected = false;
-    }else{
-        add_to_array(&selected_elements_id,&selected_element->id);
-    }   
-
-    element = get_from_array(&editor_elements,id);
-    element->selected = true;
-    selected_element = element;
-    if(input.SHIFT.pressed){
-        add_to_array(&selected_elements_id,&selected_element->id);
-    }
-
-    for(int i = 0 ; i < selected_elements_id.count ; i++){
-        unsigned short int *id = get_from_array(&selected_elements_id,i);
-        unsigned short int id_number;
-        memcpy(&id_number,id,sizeof(unsigned short int));
-        printf("seleteted: %i\n", id_number);
-    }
-}
-
-void menu_action_add_editor_native_element(TextMenu* menu){
-    add_editor_native_element(menu->text_for_action);
-    printf("Add editor native element: %s\n",menu->text_for_action);
-}
-#define EDITOR_NATIVE_ELEMETN_COUNT 6
-const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = { {"Camera"} , {"Player Start"}, {"Collider"} , {"Sphere"}, {"Cube"}, {"Cillinder"}};
-
-void menu_action_draw_native_editor_elments(TextMenu* menu){
-    float text_size = 12;
-    set_text_size(text_size);   
-
-    for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
-        
-        const char* name = elements_names[i];
-       
-        int y_pos = i*text_size+text_size;
-        if(i == 0){
-            y_pos = text_size;
-        }
-        bool can_mark = false;
-        if(menu->actual_element_select == i)
-            can_mark = true;
-
-        if(menu->actual_element_select == i && menu->element_selected){
-           strcpy(menu->text_for_action,name);
-        }
-            
-        
-        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
-    }
-    
-}
 
 void draw_element_text_list(TextMenu* menu, const char* text, int i){
     if(text == NULL)
@@ -305,35 +239,7 @@ void draw_element_text_list(TextMenu* menu, const char* text, int i){
     render_text(text, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
 }
 
-void menu_action_draw_editor_elements(TextMenu* menu){
-    float text_size = 12;
-    set_text_size(text_size);
-    menu->text_size  = text_size;
-     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_from_array(&editor_elements,i);
-        char* name = element->model_path;
-        if( strcmp(element->model_path,"") == 0){
-            if(strcmp(element->name,"") == 0)
-                name = "no_name";
-            else
-                name = element->name;
-        }
-        draw_element_text_list(menu,name,i);
-    }
-       
-}
-void menu_action_select_gui_element(TextMenu* menu){
-    selected_button = get_from_array(actual_buttons_array,menu->actual_element_select);    
-}
-
-void menu_action_draw_gui_elements(TextMenu* menu){
-    menu->text_size = 12;
-    for (int i = 0; i < actual_buttons_array->count ; i++)
-    {
-        Button* button = get_from_array(actual_buttons_array,i);
-        draw_element_text_list(menu,button->name,i);
-    }
-}
+#include "menu_action.h"
 
 void init_text_renderer(){
     FT_Library ft;
@@ -380,6 +286,7 @@ void init_text_renderer(){
     menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
     menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
     
+    init_menus();
 }
 
 void update_text_renderer_window_size(){
@@ -435,7 +342,11 @@ void draw_frame_time(){
 }
 
 void text_renderer_loop(){ 
-    
+    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
+        set_text_size(12);
+        render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);
+    }
+
     draw_editor_mode();
     draw_frame_time();
     if(editor_sub_mode != EDITOR_SUB_MODE_NULL){
@@ -452,4 +363,5 @@ void text_renderer_loop(){
 
     update_text_menu(&menu_show_gui_elements);
 
+    draw_menus();
 }

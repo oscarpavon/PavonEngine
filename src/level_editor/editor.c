@@ -340,19 +340,13 @@ void update_elements_components(){
     }
 }
 
-void update_editor(){
+void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //check_elements_camera_distance_for_LOD();
     //assign_LOD_mesh();
     
-    for(size_t i = 0; i < editor_elements.count ; i++) { 
-   /*    Element* element = get_from_array(&editor_elements,i);
-      Model* draw_model = element->model;
-      add_to_array(&frame_draw_elements,&draw_model); */
-    }
-
     update_elements_components();
 
     draw_elements(&frame_draw_elements);
@@ -365,8 +359,7 @@ void update_editor(){
          update_user_iterface_status();
          draw_gui();
          
-    }
-       
+    }       
 
     text_renderer_loop();
 

@@ -53,7 +53,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void character_callback(GLFWwindow* window, unsigned int codepoint);
 
-
 void init_input();
 
 bool mouse_navigate_control;
@@ -76,6 +75,6 @@ static inline bool key__released(Key* key, int mods){
     return false;
 }
 
-
+unsigned char command_text_buffer[100];
 
 #endif // !EDITOR_INPUT_H

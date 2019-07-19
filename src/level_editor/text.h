@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "../Engine/array.h"
 
+#include "input.h"
 
 #define DIRECTORY_MODELS 0
 #define DIRECTORY_TEXTURES 1
@@ -35,20 +36,22 @@ typedef enum{
 
 typedef struct TextMenu TextMenu;
 
-typedef void(*ExecuteFunction)(TextMenu*);
-typedef void(*DrawFunction)(TextMenu*);
+typedef void(*TextMenuFunction)(TextMenu*);
 
 typedef struct TextMenu{
+    char name[30];
     bool show;
     bool element_selected;
     bool execute;
     unsigned int actual_element_select;
-    ExecuteFunction execute_function;
-    DrawFunction draw_text_funtion;
+    TextMenuFunction execute_function;
+    TextMenuFunction draw_text_funtion;
     TextMenuType type;
     unsigned short int element_count;
     unsigned short int text_size;
-    char text_for_action[30];   
+    char text_for_action[30];
+    Key* open_key;
+    int mods_key;
 }TextMenu;
 
 
@@ -64,5 +67,7 @@ int mark_id;
 
 float pixel_size_x;
 float pixel_size_y;
+
+Array menus;
 
 #endif
