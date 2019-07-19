@@ -110,6 +110,17 @@ void add_editor_native_element(const char* native_element_name){
     }else if ( strcmp("Empty Element", native_element_name) == 0 ){
         new_empty_element();
         strcpy(selected_element->name, "New Empty Element");
+    }else if ( strcmp("Floor", native_element_name) == 0 ){
+        new_empty_element();
+        strcpy(selected_element->name, "Floor");
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+
+        StaticMeshComponent mesh_component;
+        mesh_component.model = get_from_array(&engine_native_models,3);
+        add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+
     }
 }
 
@@ -290,6 +301,7 @@ void init_editor(){
     load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
     load_model_to_array(&engine_native_models,"editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"editor/floor.glb", "editor/floor.jpg");
 
 }
 
