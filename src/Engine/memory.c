@@ -1,6 +1,6 @@
 #include "memory.h"
 #include <stdlib.h>
-
+#include "log.h"
 
 void init_engine_memory(){
     engine_memory = malloc(INIT_MEMORY);
@@ -38,7 +38,7 @@ void* allocate_stack_memory(StackMemory* stack, int bytes_size){
         stack->marker += expanded_size_bytes;
         return (void*)aligned_adress;
     }   
-    printf("ERROR allocating stack memory\n");
+    LOG("ERROR allocating stack memory\n");
     return NULL;
 }
 
@@ -59,7 +59,7 @@ void* allocate_memory(int size){
         memory_marker += size;
         return allocated_memory;
     }   
-    printf("ERROR engine memory\n");
+    LOG("ERROR engine memory\n");
     return NULL;
 }
 

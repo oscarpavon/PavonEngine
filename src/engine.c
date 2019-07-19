@@ -26,7 +26,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
     if(mvp_uniform == -1){
-        printf("MVP uniform not found\n");
+        LOG("MVP uniform not found\n");
         raise(SIGINT);
         exit(-1);
         return;
@@ -37,7 +37,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     GLenum error;
     error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("[X] Send matrix error, Error %08x \n",error);
+        LOG("[X] Send matrix error, Error %08x \n",error);
     }
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
@@ -109,11 +109,11 @@ void new_empty_model(){
 void add_texture_to_selected_element_with_image_path(const char* image_path){
 
     if(selected_element == NULL){
-        printf("No element selected\n"); 
+        LOG("No element selected\n"); 
         return;
     }
     if(image_path == NULL){
-        printf("Error to load, null path (add_editor_texture - 154\n");
+        LOG("Error to load, null path (add_editor_texture - 154\n");
         return;
     }
 
@@ -125,7 +125,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 
 void add_element_with_model_path(const char* model_gltf_path){
     if(model_gltf_path == NULL){
-        printf("Error to load, null path (add_editor_element\n");
+        LOG("Error to load, null path (add_editor_element\n");
         return;
     }
 
@@ -166,7 +166,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     strcpy(selected_element->model_path,model_gltf_path);
 
-    printf("model loaded and shader created \n");
+    LOG("model loaded and shader created \n");
 }
 
 void update_viewport_size(){
@@ -202,8 +202,8 @@ void draw_simgle_model(struct Model * new_model){
     GLenum error;
     error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("draw error\n");
-        LOGW("Error %08x \n",error);
+        LOG("draw error\n");
+        LOG("Error %08x \n",error);
     }
 }
 
@@ -224,7 +224,7 @@ void draw_elements(Array *elements){
         if(element->model == NULL)
             continue;
         if(element->model->id > model_id_count){
-            printf("Posible gargabe model pointer , model not draw\n ");
+            LOG("Posible gargabe model pointer , model not draw\n ");
             continue;
         } 
         if(element->model->draw == false)
@@ -250,7 +250,7 @@ void draw_elements(Array *elements){
 
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("[X] Send unifrom COLOR error, Error %08x \n",error);
+            LOG("[X] Send unifrom COLOR error, Error %08x \n",error);
 
         }
         glEnableVertexAttribArray(1);
@@ -262,7 +262,7 @@ void draw_elements(Array *elements){
 
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("[X] Draw elements, Error %08x \n",error);
+            LOG("[X] Draw elements, Error %08x \n",error);
         }
     }
 
@@ -288,8 +288,8 @@ void load_model_texture_to_gpu(struct Model * model){
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("texture error \n");
-        LOGW("Error %08x \n",error);
+        LOG("texture error \n");
+        LOG("Error %08x \n",error);
     }
 }
 void load_models_texture_to_gpu(Array* models_array){
@@ -315,8 +315,8 @@ void load_models_texture_to_gpu(Array* models_array){
 
         GLenum error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("texture error \n");
-            LOGW("Error %08x \n",error);
+            LOG("texture error \n");
+            LOG("Error %08x \n",error);
         }
 
     }
@@ -379,7 +379,7 @@ void init_engine(){
         int* element = get_from_array(&test_numbers,i);
         int number;
         memcpy(&number,element,sizeof(unsigned short int));
-        printf("Number: %i\n",number);
+        LOG("Number: %i\n",number);
     }
 
 

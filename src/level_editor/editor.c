@@ -170,7 +170,7 @@ void load_level_in_editor(const char* name){
     strcat(save_name, level_folder);
     strcat(save_name,name);
     strcat(save_name,".lvl");
-    printf("%s\n",save_name);
+    LOG("%s\n",save_name);
 
     int level_result = load_level_to_elements_array(save_name, &load_elements);
     if(level_result != 0)
@@ -183,7 +183,7 @@ void load_level_in_editor(const char* name){
 
     struct timespec result = diff(time1,time2);
     long millisecond = result.tv_nsec / 1000000;
-    printf("Level loading time: %ld ms\n",millisecond);
+    LOG("Level loading time: %ld ms\n",millisecond);
 }
 
 void duplicate_selected_element(){
@@ -219,17 +219,17 @@ void duplicate_selected_element(){
 }
 
 void get_elements_in_editor_map(){
-    printf("Elements count: %i\n", editor_elements.count);
+    LOG("Elements count: %i\n", editor_elements.count);
 
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_from_array(&editor_elements,i);
-        printf("Element name: %s\n", element->model_path);
+        LOG("Element name: %s\n", element->model_path);
     }
   
 
 }
 void get_element_status(Element* element){
-    printf("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
+    LOG("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
 
 }
 
@@ -299,7 +299,7 @@ void check_elements_camera_distance_for_LOD(){
         Element* element = get_from_array(&editor_elements,i);
         if(element->has_LOD){
             float camera_distance = glm_vec3_distance(element->position, camera_position);
-            //printf("Camera Distance: %f\n",camera_distance);
+            //LOG("Camera Distance: %f\n",camera_distance);
             if(camera_distance >= 8){
                 element->model->change_LOD  = true;
             }else if (camera_distance <= 7.6){

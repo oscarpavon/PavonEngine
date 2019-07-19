@@ -7,6 +7,7 @@
 
 #include <GLES2/gl2.h>
 #include "utils.h"
+#include "Engine/log.h"
 
 static const char* triVertShader = "#version 100 \n \
 attribute vec3 vPosition;\

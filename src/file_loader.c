@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include "file_loader.h"
 #include "utils.h"
+#include "Engine/log.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,7 +29,7 @@ int load_file(const char* path, File* output){
 #ifdef ANDROID
     AAsset* file =  AAssetManager_open(assets_manager,path,AASSET_MODE_BUFFER);
     if(!file){
-        LOGW("Error in loading file: %s",path);
+        LOG("Error in loading file: %s",path);
     }
     output->resource_descriptor.descriptor = AAsset_openFileDescriptor(file,&output->resource_descriptor.start,&output->resource_descriptor.length);
     size_t size = AAsset_getLength(file);
@@ -47,7 +48,7 @@ int load_file(const char* path, File* output){
     output->path = new_path;
     FILE* file = fopen(new_path,"r");
     if(file == NULL){
-        printf("error to load: %s\n", new_path);
+        LOG("error to load: %s\n", new_path);
         return -1;
     }
     fseek(file, 0, SEEK_END);

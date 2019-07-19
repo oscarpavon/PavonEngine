@@ -150,7 +150,7 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
     Node* joints = get_from_array(&nodes,index_to_store+1);
     skeletal->joints = joints;
     actual_model->skeletal = skeletal;
-    printf("Skin loaded\n");
+    LOG("Skin loaded\n");
   }
   
   for(int i = 0; i < in_node->children_count; i++){ 
@@ -173,7 +173,7 @@ void check_LOD(cgltf_data* data){
         if(name[n] == '_'){
           if(strcmp("LOD0",&name[n]+1) == 0){
          
-            printf("Found LOD0\n");
+            LOG("Found LOD0\n");
             load_mesh(data->nodes[i].mesh);
             
             break;
@@ -269,7 +269,7 @@ int load_model(const char* path , struct Model* model){
   cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
 
   if (result != cgltf_result_success){
-    LOGW("Model no loaded: %s \n", new_file.path);
+    LOG("Model no loaded: %s \n", new_file.path);
     return -1;
   }
   current_data = data;
@@ -285,7 +285,7 @@ int load_model(const char* path , struct Model* model){
   //check_LOD(data);
 
   if(model_loaded){
-    LOGW("gltf loaded with LODs. \n");
+    LOG("gltf loaded with LODs. \n");
     in_model_array = NULL;
     cgltf_free(data);
     
@@ -310,7 +310,7 @@ int load_model(const char* path , struct Model* model){
     }
   }
 
-  LOGW("gltf loaded: %s. \n",path);
+  LOG("gltf loaded: %s. \n",path);
 
   cgltf_free(data);
   current_data = NULL;

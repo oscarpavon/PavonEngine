@@ -78,7 +78,7 @@ void create_window(struct android_app * app){
 
     eglMakeCurrent(display, surface, surface, context);
 
-    LOGW("---------> Windows size: %f %f",(float)w,(float)h);
+    LOG("---------> Windows size: %f %f",(float)w,(float)h);
 
     glViewport(0,0,w,h);
     camera_heigth_screen = h;

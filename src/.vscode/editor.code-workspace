@@ -45,7 +45,8 @@
 			"vector": "c",
 			"types.h": "c",
 			"editor_mode.h": "c",
-			"array.h": "c"
+			"array.h": "c",
+			"shader.h": "c"
 		}
 	}
 }

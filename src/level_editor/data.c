@@ -161,7 +161,7 @@ void save_level_data(const char* level_name){
     save_camera_editor_camera_transform(new_file);
     fclose(new_file);
 
-    printf("Saved to %s\n",save_name);
+    LOG("Saved to %s\n",save_name);
 }
 
 void save_buttons_data(int id){    
@@ -200,5 +200,5 @@ void save_gui_data(const char* gui_name){
 
     fclose(new_file);
 
-    printf("Saved to %s\n",save_name);
+    LOG("Saved to %s\n",save_name);
 }

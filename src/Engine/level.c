@@ -50,11 +50,11 @@ void add_loaded_elements(Array* load_elements, Array* editor_models, Array* edit
 
         if(element->duplicated_of_id==-1 && element->id != CAMERA__ELEMENT_ID){
             if( strcmp(element->model_path, "") == 0){
-                printf("[X]No model path in load element\n");
+                LOG("[X]No model path in load element\n");
                 return;
             }
             if( strcmp(element->texture_path, "") == 0){
-                printf("[X]No texture path in load element\n");
+                LOG("[X]No texture path in load element\n");
                 return;
             }
                 
@@ -91,7 +91,7 @@ int load_level_to_elements_array(const char* name, Array* load_elements){
     File level_file;
     if( load_file(name, &level_file) == -1){
         
-        printf("Level not found: %s\n",name);
+        LOG("Level not found: %s\n",name);
         return -1;
     }
 

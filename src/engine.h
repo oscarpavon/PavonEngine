@@ -5,7 +5,7 @@
 #ifndef PAVON_ENGINE_H
 #define PAVON_ENGINE_H
 
-#include "Engine/array.h"
+
 
 #ifdef ANDROID
 #include <common.h>
@@ -15,6 +15,9 @@ struct android_app* app;
 #endif
 
 #include <signal.h>
+
+#include "Engine/array.h"
+#include "Engine/log.h"
 
 #include "model.h"
 #include "Engine/data.h"

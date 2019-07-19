@@ -104,7 +104,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 	if (token->type == JSMN_PRIMITIVE) {
     if (jsoneq(js, token-1, "elements") == 0){
       elements_count = get_token_primitive_value(token);
-      printf("Elements from header count: %i\n",elements_count);
+      LOG("Elements from header count: %i\n",elements_count);
       
     }
 
@@ -151,11 +151,11 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
           {
           case DATA_TYPE_LEVEL:
             actual_data_type = type;
-            printf("Header Type LEVEL\n");
+            LOG("Header Type LEVEL\n");
             break;
           case DATA_TYPE_GUI:
             actual_data_type = type;
-            printf("Header Type GUI\n");
+            LOG("Header Type GUI\n");
           default:
             break;
           } 
@@ -291,7 +291,7 @@ int parse_header(const char* json_file){
     header_size++;
   }
   header_size += 2;
-  printf("Json Header size: %i\n",header_size);
+  LOG("Json Header size: %i\n",header_size);
 
   jsmn_parser parser;
   jsmn_init(&parser);
@@ -299,7 +299,7 @@ int parse_header(const char* json_file){
   jsmntok_t header_tokens[20];
 
   int token_parsed = jsmn_parse(&parser,json_file,header_size,header_tokens,20);
-  printf("Header token parsed: %d\n",token_parsed);
+  LOG("Header token parsed: %d\n",token_parsed);
   dump(actual_json_file,header_tokens,token_parsed,0);
 
   return 0;
@@ -324,7 +324,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  printf("%s\n", models_json_file);
+  LOG("%s\n", models_json_file);
 
   actual_json_file = models_json_file;
 
@@ -349,7 +349,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   int o = 2;
   free(models_json_file);
-  printf("json level parsed\n");
+  LOG("json level parsed\n");
 }
 
 void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* out_element){
@@ -368,7 +368,7 @@ void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* 
 
   memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  printf("%s\n", models_json_file);
+  LOG("%s\n", models_json_file);
 
   actual_json_file = models_json_file;
 

@@ -72,11 +72,11 @@ void parse_command(const char* command){
          if(command[1] == 'w'){
             
             save_gui_data(&command[3]);
-            printf("GUI saved: %s\n",&command[3]);
+            LOG("GUI saved: %s\n",&command[3]);
         }
         if(command[1] == 'o'){
             load_gui(&command[3]);       
-            printf("GUI loaded\n");
+            LOG("GUI loaded\n");
         }
         if(first_char_command == 's'){
             if(command[2] == 'n'){
@@ -87,11 +87,11 @@ void parse_command(const char* command){
     }else{
         if(command[1] == 'w'){
             save_level_data(&command[3]);
-            printf("Level saved: %s\n",&command[3]);
+            LOG("Level saved: %s\n",&command[3]);
         }
         if(command[1] == 'o'){        
             load_level_in_editor(&command[3]);
-            printf("Level loaded\n");
+            LOG("Level loaded\n");
         }
     }
     
@@ -100,7 +100,7 @@ void parse_command(const char* command){
     }
     if(command[1] == 'r'){        
         reload_editor();
-        printf("reload\n");
+        LOG("reload\n");
     }
     if(command[1] == 's'){ //set
         if(command[3] == 'p'){//player
@@ -110,7 +110,7 @@ void parse_command(const char* command){
     }
     if(command[1] == 'h'){        
        /*  selected_element->has_HLOD = true;
-        printf("HLOD added\n"); */
+        LOG("HLOD added\n"); */
     }
     if(command[1] == 'd'){ 
         unsigned int duplicate_count = atoi(&command[3]); 
@@ -120,7 +120,7 @@ void parse_command(const char* command){
             glm_translate(selected_element->model->model_mat, move);
             glm_vec3_add(selected_element->position,move,selected_element->position);
         }      
-        printf("duplicated %i\n",duplicate_count);
+        LOG("duplicated %i\n",duplicate_count);
     }
     if(command[1] == 'h'){
         
@@ -129,7 +129,7 @@ void parse_command(const char* command){
 
 void parse_characters(unsigned char character){
     if(character == ':'){
-        printf("Command mode\n");
+        LOG("Command mode\n");
         command_text_buffer[character_count] = character;
         character_count++;        
         change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
@@ -161,7 +161,7 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
             return;
     unsigned char character[1];
     code_to_utf8(character,codepoint);
-    //printf("Converted: %s\n",character);
+    //LOG("Converted: %s\n",character);
     parse_characters(character[0]);
 }
 
@@ -610,10 +610,10 @@ void default_mode(){
 
     if(key__released(&input.D,GLFW_MOD_ALT)){
        duplicate_selected_element();
-       printf("duplicated \n"); 
+       LOG("duplicated \n"); 
     }
     if(key__released(&input.A,GLFW_MOD_ALT)){
-        printf("deselect all \n");
+        LOG("deselect all \n");
         deselect_all(); 
     }
     if(key_released(&input.S)){
@@ -621,13 +621,13 @@ void default_mode(){
     }
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
-        printf("editor play mode \n");
+        LOG("editor play mode \n");
         change_to_editor_mode(EDITOR_PLAY_MODE);
     }
 
     if(key__released(&input.P,GLFW_MOD_CONTROL)){
         //TODO: open game in new window
-        printf("playing \n");
+        LOG("playing \n");
         play_game_standalone();
     }
   
@@ -717,14 +717,14 @@ void input_mode_play(){
     if(!player_in_start_position){
         if(player1 != NULL){
             if(player_start == NULL){
-                printf("No player start\n");
+                LOG("No player start\n");
                 return;
             }            
 
             set_element_position(player1,player_start->position);
             player_in_start_position = true;
         }else{
-            printf("No player selected\n");
+            LOG("No player selected\n");
             return;
         }
     }

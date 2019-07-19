@@ -58,7 +58,7 @@ void check_if_pressed(struct Button* button){
     if(minx <= touch_position_x && maxy >= touch_position_y){
         if(miny <= touch_position_y && maxx >= touch_position_x){
             button->pressed = true;
-            LOGW("button pressed\n");
+            LOG("button pressed\n");
             
         }
     }else{
@@ -125,8 +125,8 @@ void draw_buttons(){
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("buttons error\n");
-        LOGW("Error %08x \n",error);
+        LOG("buttons error\n");
+        LOG("Error %08x \n",error);
     }
 
 
@@ -237,8 +237,8 @@ void draw_logo_image(){
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("draw logo\n");
-        LOGW("Error %08x \n",error);
+        LOG("draw logo\n");
+        LOG("Error %08x \n",error);
     }
 
     //glDisable(GL_BLEND);
@@ -293,7 +293,7 @@ void update_user_iterface_status(){
          if(button->pressed){
              ActionPointer* action_pointer = get_from_array(&actions_pointers,button->action_function_id);
              if(action_pointer->action == NULL){
-                 printf("No button action added\n");
+                 LOG("No button action added\n");
                  return;
              }
              action_pointer->action();
@@ -335,7 +335,7 @@ void load_gui(const char* name){
     File level_file;
     if( load_file(save_name, &level_file) == -1){
         
-        printf("GUI file not found: %s\n",name);
+        LOG("GUI file not found: %s\n",name);
         return;
     }
 

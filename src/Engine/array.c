@@ -11,7 +11,7 @@ void init_array(Array * array, size_t element_bytes_size, int count){
     if(array->initialized != true){
        
     }else{
-        printf("Array already initialized\n");
+        LOG("Array already initialized\n");
         return;
     }  
     array->count = 0;
@@ -25,7 +25,7 @@ void init_array(Array * array, size_t element_bytes_size, int count){
 
 void add_to_array(Array* array, void* element){
     if(array->initialized == false){
-        printf("Array not initialized\n");
+        LOG("Array not initialized\n");
         raise(SIGINT);
         return;
     }
@@ -36,7 +36,7 @@ void add_to_array(Array* array, void* element){
         return;
     }
     if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
-        printf("Array need reallocation\n");//TODO: reallocation engine memory
+        LOG("Array need reallocation\n");//TODO: reallocation engine memory
         raise(SIGINT);
     }
     size_t offset = array->actual_bytes_size;
@@ -48,7 +48,7 @@ void add_to_array(Array* array, void* element){
 
 void *get_from_array(Array* array,int index){
     if(array->initialized == false){
-        printf("Array not initialized\n");
+        LOG("Array not initialized\n");
         raise(SIGINT);
         return NULL;
     }
@@ -56,7 +56,7 @@ void *get_from_array(Array* array,int index){
     if(index == 0)
         return &array->data[0];
     if(index > array->count){
-        printf("Element out of ranger, array count: %i\n",array->count);
+        LOG("Element out of ranger, array count: %i\n",array->count);
         return NULL;
     }         
     return &array->data[0] + (index*offset);

@@ -101,7 +101,7 @@ void menu_action_add_texture_to_element(TextMenu* menu){
 }
 
 void menu_action_select_element(TextMenu* menu){
-    printf("Selected element\n");
+    LOG("Selected element\n");
     int id = menu->actual_element_select;
     Element* element = NULL;
    
@@ -123,13 +123,13 @@ void menu_action_select_element(TextMenu* menu){
         unsigned short int *id = get_from_array(&selected_elements_id,i);
         unsigned short int id_number;
         memcpy(&id_number,id,sizeof(unsigned short int));
-        printf("seleteted: %i\n", id_number);
+        LOG("seleteted: %i\n", id_number);
     }
 }
 
 void menu_action_add_editor_native_element(TextMenu* menu){
     add_editor_native_element(menu->text_for_action);
-    printf("Add editor native element: %s\n",menu->text_for_action);
+    LOG("Add editor native element: %s\n",menu->text_for_action);
 }
 #define EDITOR_NATIVE_ELEMETN_COUNT 7
 const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = { 

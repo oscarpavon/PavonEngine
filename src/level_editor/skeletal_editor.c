@@ -91,8 +91,8 @@ void draw_skeletal_bones(){
 
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOGW("skeletal draw error \n");
-        LOGW("Error %08x \n",error);
+        LOG("skeletal draw error \n");
+        LOG("Error %08x \n",error);
     }
 
 }

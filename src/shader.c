@@ -10,12 +10,12 @@ void print_shader_compile_log(GLuint shader, const char* path_for_error_debug){
     GLint isCompiled = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
     if(isCompiled == GL_FALSE){
-        LOGW("Failed to compile shader: %s\n",path_for_error_debug);
+        LOG("Failed to compile shader: %s\n",path_for_error_debug);
         GLint lenght;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
         GLchar error[lenght];
         glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
-        LOGW("Error: %s\n",error);
+        LOG("Error: %s\n",error);
     }
 
 }

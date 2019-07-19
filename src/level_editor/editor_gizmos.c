@@ -154,7 +154,7 @@ void draw_bounding_box(){
         GLenum error;
         error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("[X] Send uniform error, Error %08x \n",error);
+            LOG("[X] Send uniform error, Error %08x \n",error);
         }
         glDrawArrays(GL_LINES, 0, bounding_model->vertex_array.count);
         return;
@@ -228,7 +228,7 @@ void draw_axis_lines(){
             GLenum error;
             error = glGetError();
             if(error != GL_NO_ERROR){
-                LOGW("[X] Send uniform error, Error %08x \n",error);
+                LOG("[X] Send uniform error, Error %08x \n",error);
             }
             glDrawArrays(GL_LINES, 0, line->vertex_array.count);
             continue;

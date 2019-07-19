@@ -5,7 +5,7 @@
 #include "input.h"
 #ifdef ANDROID
 static inline void touch_position(float x , float y){
-    LOGW("------> X: %f , Y: %f",touch_position_x , touch_position_y);
+    LOG("------> X: %f , Y: %f",touch_position_x , touch_position_y);
 }
 
 void handle_input_event(struct AInputEvent * event){

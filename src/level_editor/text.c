@@ -83,8 +83,8 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
 
         GLenum error = glGetError();
         if(error != GL_NO_ERROR){
-            LOGW("text draw error \n");
-            LOGW("Error %08x \n",error);
+            LOG("text draw error \n");
+            LOG("Error %08x \n",error);
         }
 
     }
@@ -104,7 +104,7 @@ void list_directory_files(TextMenu* menu){
   
     if (dr == NULL)  
     { 
-        printf("Could not open current directory\n" );         
+        LOG("Could not open current directory\n" );         
     }   
 
     int directory_count = 0;
@@ -245,12 +245,12 @@ void init_text_renderer(){
     FT_Library ft;
 
     if(FT_Init_FreeType(&ft)) {
-        fprintf(stderr, "Could not init freetype library\n");
+        LOG("Could not init freetype library\n");
         return;
     }
 
     if(FT_New_Face(ft, "../assets/editor/DejaVuSerif.ttf", 0, &face)) {
-        fprintf(stderr, "Could not open font\n");    
+        LOG("Could not open font\n");    
         return;
     }
    
@@ -320,7 +320,7 @@ void update_text_menu(TextMenu* menu){
             menu->element_selected = false;
 
             if(menu->execute_function == NULL){
-                printf("Menu execute function not assigned\n");    
+                LOG("Menu execute function not assigned\n");    
                 return;
             }
 

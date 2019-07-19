@@ -86,7 +86,7 @@ void init_audio_manager(){
 
     result = slCreateEngine(&engine_object, 0 , NULL , engine_mix_interface_id_count, engine_mix_interface_ids, engine_mix_reqs);
     if(result != SL_RESULT_SUCCESS){
-        LOGW("Audio engine initialize failed");
+        LOG("Audio engine initialize failed");
     }
 
     (*engine_object)->Realize(engine_object,SL_BOOLEAN_FALSE);

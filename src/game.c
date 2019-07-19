@@ -31,12 +31,12 @@ void init_camera_local_transform(){
 }
 
 void move_player_forward(){
-    printf("Action pointer work\n");
+    LOG("Action pointer work\n");
 }
 
 void init_game(){
     if(player1 == NULL){
-        printf("No current player configured\n");
+        LOG("No current player configured\n");
         game_initialized = false;
         return;
     }
