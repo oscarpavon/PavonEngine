@@ -233,8 +233,13 @@ void draw_element_text_list(TextMenu* menu, const char* text, int i){
         y_pos = menu->text_size;
     }
     bool can_mark = false;
-    if(menu->actual_element_select == i)
+    if(menu->actual_element_select == i){
         can_mark = true;
+        if(menu->element_selected){
+            strcpy(menu->text_for_action,text);
+        }
+    }
+        
 
     render_text(text, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
 }

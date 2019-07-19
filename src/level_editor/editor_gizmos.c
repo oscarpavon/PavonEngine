@@ -345,23 +345,14 @@ void draw_gizmos(){
     
         for(int i = 0; i< editor_elements.count ; i++){
             Element* element = get_from_array(&editor_elements,i);
-            if(element->type == ELEMENT_TYPE_CAMERA){
-                Model* actual_gizmo = get_from_array(&gizmos,2);
-                if(selected_element != NULL){
-                    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-                    if(transform)
-                        glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
-                }
-                draw_simgle_model(actual_gizmo);
-                
-            }
+            
             if(element->type == ELEMENT_TYPE_PLAYER_START){
                 Model* actual_gizmo = get_from_array(&gizmos,3);
-                if(selected_element != NULL){
-                    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-                    if(transform)
-                        glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
-                }
+                
+                TransformComponent* transform = get_component_from_element(element,TRASNFORM_COMPONENT);
+                if(transform)
+                    glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
+                
                 draw_simgle_model(actual_gizmo);
                 
             }

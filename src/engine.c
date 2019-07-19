@@ -94,6 +94,7 @@ void new_empty_element(){
 
     select_last_element();
 }
+
 void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));

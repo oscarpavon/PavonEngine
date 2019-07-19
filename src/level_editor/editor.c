@@ -65,12 +65,7 @@ void add_editor_native_element(const char* native_element_name){
         add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
 
         CameraComponent camera_component;
-        glm_vec3_copy((vec3){0,1,0},camera_component.front);
-        glm_mat4_copy(main_camera.projection,camera_component.projection);
-        vec3 look_pos;
-        glm_vec3_add(selected_element->position, camera_component.front, look_pos);
-        glm_lookat(selected_element->position, look_pos, camera_up , camera_component.view);
-
+        init_camera_component(&camera_component);
         add_component_to_selected_element(sizeof(CameraComponent), &camera_component, CAMERA_COMPONENT);
         
     }else if ( strcmp("Player Start", native_element_name) == 0 )
@@ -112,6 +107,9 @@ void add_editor_native_element(const char* native_element_name){
         memset(&cube,0,sizeof(SphereComponent));
         init_cube_component(&cube);
         add_component_to_selected_element(sizeof(CubeComponent), &cube, CUBE_COMPONENT);
+    }else if ( strcmp("Empty Element", native_element_name) == 0 ){
+        new_empty_element();
+        strcpy(selected_element->name, "New Empty Element");
     }
 }
 
@@ -291,6 +289,8 @@ void init_editor(){
     actual_standard_fragment_shader = editor_standard_fragment_shader;    
     load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"editor/camera.gltf", "editor/camera_gizmo.jpg");
+
 }
 
 

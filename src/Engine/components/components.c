@@ -33,6 +33,23 @@ void init_cube_component(CubeComponent* component){
     component->model = selected_model;
 }
 
+void init_camera_component(CameraComponent* component){
+    new_empty_model();
+    Model* cube_model = get_from_array(&engine_native_models,2);
+    memcpy(selected_model,cube_model,sizeof(Model));
+    selected_model->id = model_id_count-1;
+    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+    component->camera_gizmo = selected_model;
+
+    glm_vec3_copy((vec3){0,1,0},component->front);
+    glm_mat4_copy(main_camera.projection,component->projection);
+    vec3 look_pos;
+    glm_vec3_add(selected_element->position, component->front, look_pos);
+    glm_vec3_copy(VEC3(0,0,0),component->position);
+    glm_lookat(selected_element->position, look_pos, camera_up , component->view);
+
+}
+
 void init_transfrom_component(TransformComponent* component){
     memset(component->position,0,sizeof(vec3));
     glm_vec3_copy(VEC3(1,1,1),component->scale);
@@ -59,6 +76,12 @@ void update_component(ComponentDefinition* element_component){
             element_component->parent->transform = &element_component->data[0];
         break;
     }      
+    case CAMERA_COMPONENT:{
+        CameraComponent* component = &element_component->data[0];
+        glm_mat4_copy(element_component->parent->transform->model_matrix,component->camera_gizmo->model_mat);
+        add_to_array(&frame_draw_elements,&component->camera_gizmo);
+        break;
+    }      
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
@@ -80,5 +103,16 @@ void* get_component_from_selected_element(ComponentType type){
             }           
         }        
     }
+    return NULL;
+}
+void* get_component_from_element(Element* element, ComponentType type){
+    Element* previous_element = selected_element;
+    selected_element = element;
+    Element* result = get_component_from_selected_element(type);
+    if(result){
+        selected_element = previous_element;
+        return result;
+    }
+    selected_element = previous_element;
     return NULL;
 }

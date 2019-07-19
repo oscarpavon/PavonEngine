@@ -13,6 +13,8 @@
 
 void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
+        if(input.SHIFT.pressed)
+            return;
         if( key_released(open_key) ){
             menu->execute = true;
             menu->show = true;
@@ -60,6 +62,19 @@ void new_text_menu(const char* name, Key* open_key, int mods_key,
     add_to_array(&menus,&menu);
 }
 
+const char* components_names[4] = {{"Camera Component"}, {"Sphere Component"}, {"Cube Component"}, {"Transform Component"}};
+
+void draw_available_components(TextMenu* menu){
+    float text_size = 12;
+    set_text_size(text_size);
+    menu->text_size  = text_size;
+    for(int i = 0; i < 4 ; i++){
+
+        char* name = components_names[i];
+        
+        draw_element_text_list(menu,name,i);
+    }
+}
 
 void draw_components_from_selected_element(TextMenu* menu){
     float text_size = 12;
@@ -79,9 +94,19 @@ void draw_components_from_selected_element(TextMenu* menu){
     }
 }
 
+void menu_action_add_component_to_select_element(TextMenu* menu){
+    if( strcmp("Transform Component", menu->text_for_action) == 0 ){ 
+        TransformComponent transform;
+        init_transfrom_component(&transform);
+        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+
+    } 
+}
+
 void init_menus(){
     init_array(&menus,sizeof(TextMenu),10);
     new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, NULL);
+    new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
 
 }
 
@@ -92,6 +117,7 @@ void draw_menus(){
         update_text_menu(&menus_list[i]);
     }
 }
+
 void menu_action_add_element(TextMenu* menu){
     add_element_with_model_path(menu->text_for_action);
 }
@@ -138,26 +164,14 @@ const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = {
 
 void menu_action_draw_native_editor_elments(TextMenu* menu){
     float text_size = 12;
-    set_text_size(text_size);   
+    set_text_size(text_size);
+    menu->text_size = text_size;   
 
     for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
         
         const char* name = elements_names[i];
+        draw_element_text_list(menu,name,i);
        
-        int y_pos = i*text_size+text_size;
-        if(i == 0){
-            y_pos = text_size;
-        }
-        bool can_mark = false;
-        if(menu->actual_element_select == i)
-            can_mark = true;
-
-        if(menu->actual_element_select == i && menu->element_selected){
-           strcpy(menu->text_for_action,name);
-        }
-            
-        
-        render_text(name, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
     }
     
 }

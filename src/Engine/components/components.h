@@ -3,12 +3,7 @@
 
 #include "../../engine.h"
 
-typedef struct CameraComponent{
-    mat4 projection;
-    mat4 view;
-    vec3 front;
-    vec3 up;
-}CameraComponent;
+
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT,
@@ -45,6 +40,15 @@ typedef struct TransformComponent{
     mat4 model_matrix;
 }TransformComponent;
 
+typedef struct CameraComponent{
+    mat4 projection;
+    mat4 view;
+    vec3 front;
+    vec3 up;
+    vec3 position;
+    Model* camera_gizmo;
+}CameraComponent;
+
 typedef struct StaticMeshComponent{    
     Model* model;
 }StaticMeshComponent;
@@ -55,9 +59,11 @@ typedef struct SkinnedMeshComponent{
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type);
 void init_sphere_component(SphereComponent* component);
+void init_camera_component(CameraComponent* component);
 void init_cube_component(CubeComponent* component);
 void update_component(ComponentDefinition*);
 void init_transfrom_component(TransformComponent* component);
 void* get_component_from_selected_element(ComponentType type);
+void* get_component_from_element(Element* element, ComponentType type);
 
 #endif
