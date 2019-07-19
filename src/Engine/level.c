@@ -1,8 +1,9 @@
 #include "level.h"
 
 #include "../model.h"
-#include "../camera.h"
+
 #include "../engine.h"
+
 #ifdef EDITOR
 #include "../level_editor/editor.h"
 #endif // EDITOR
@@ -80,7 +81,7 @@ void add_loaded_elements(Array* load_elements, Array* editor_models, Array* edit
             glm_translate(selected_element->model->model_mat, element->position);
         }
         if(element->id == CAMERA__ELEMENT_ID){
-            glm_vec3_copy(element->position,camera_position);
+            glm_vec3_copy(element->position,main_camera.position);
             update_look_at();
         }
     }

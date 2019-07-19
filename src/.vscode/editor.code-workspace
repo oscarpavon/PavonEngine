@@ -47,7 +47,9 @@
 			"editor_mode.h": "c",
 			"array.h": "c",
 			"shader.h": "c",
-			"menu_action.h": "c"
+			"menu_action.h": "c",
+			"components.h": "c",
+			"data.h": "c"
 		}
 	}
 }

@@ -175,7 +175,7 @@ void camera_rotate_control(float yaw, float pitch){
     front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
 
     if(first_camera_rotate == true){
-        glm_vec3_copy(camera_front,init_front);
+        glm_vec3_copy(main_camera.front,init_front);
         glm_vec3_mul(init_front,(vec3){0,5,0},init_front);
         first_camera_rotate = false;
     }
@@ -184,7 +184,7 @@ void camera_rotate_control(float yaw, float pitch){
     //glm_vec3_rotate(front,45,(vec3){0,0,1});    
     glm_normalize(front);
 
-    glm_vec3_copy(front, camera_front);
+    glm_vec3_copy(front, main_camera.front);
 
     update_look_at();
 }
@@ -527,14 +527,14 @@ void navigate_mode(){
 
     if(input.E.pressed){
         vec3 move;
-        glm_vec3_mul(velocity_vector,camera_up,move);
-        glm_vec3_add(camera_position,move,camera_position);
+        glm_vec3_mul(velocity_vector,main_camera.up,move);
+        glm_vec3_add(main_camera.position,move,main_camera.position);
         update_look_at();
     }
     if(input.Q.pressed){
         vec3 move;
-        glm_vec3_mul(velocity_vector,camera_up,move);
-        glm_vec3_sub(camera_position,move,camera_position);
+        glm_vec3_mul(velocity_vector,main_camera.up,move);
+        glm_vec3_sub(main_camera.position,move,main_camera.position);
         update_look_at();
     }
     if(input.J.pressed){
@@ -568,37 +568,37 @@ void navigate_mode(){
 
     if(input.W.pressed){
         vec3 move;
-        glm_vec3_mul(velocity_vector,camera_front,move);
-        glm_vec3_add(camera_position,move,camera_position);
+        glm_vec3_mul(velocity_vector,main_camera.front,move);
+        glm_vec3_add(main_camera.position,move,main_camera.position);
         update_look_at();
     }
     if(input.S.pressed){
         vec3 move;
-        glm_vec3_mul(velocity_vector,camera_front,move);
-        glm_vec3_sub(camera_position,move,camera_position);
+        glm_vec3_mul(velocity_vector,main_camera.front,move);
+        glm_vec3_sub(main_camera.position,move,main_camera.position);
         update_look_at();
     }
     if(input.D.pressed){
         vec3 cross;
-        glm_vec3_cross(camera_front, camera_up, cross);
+        glm_vec3_cross(main_camera.front, main_camera.up, cross);
         glm_normalize(cross);
         vec3 move;
         glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_add(camera_position, move,camera_position);
+        glm_vec3_add(main_camera.position, move,main_camera.position);
         update_look_at();
     }
     if(input.A.pressed){
         vec3 cross;
-        glm_vec3_cross(camera_front, camera_up, cross);
+        glm_vec3_cross(main_camera.front, main_camera.up, cross);
         glm_normalize(cross);
         vec3 move;
         glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_sub(camera_position, move,camera_position);
+        glm_vec3_sub(main_camera.position, move,main_camera.position);
         update_look_at();
     }
     
 }
-
+bool controlling_camera_component = false;
 void default_mode(){
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
         return;
@@ -636,7 +636,7 @@ void default_mode(){
     } 
     
     
-    if(key_released(&input.Q)){
+    if(key_released(&input.P)){
         get_elements_in_editor_map();
     }
 
@@ -658,7 +658,19 @@ void default_mode(){
     
     can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
 
-    
+    if(key_released(&input.Q)){
+        if(controlling_camera_component){
+            controlling_camera_component = false;
+            memcpy(&main_camera,&saved_camera, sizeof(CameraComponent));
+            update_look_at();
+            return;
+        }
+        CameraComponent* camera_component = get_component_from_selected_element(CAMERA_COMPONENT);
+        if(camera_component){
+            controlling_camera_component = true;
+            change_view_to_camera_component(camera_component);
+        }
+    }
 }
 
 void rotate_input_mode(){

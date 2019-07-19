@@ -1,3 +1,5 @@
+#ifndef ENGINE_DATA_TYPES
+#define ENGINE_DATA_TYPES
 
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;
@@ -47,3 +49,4 @@ typedef struct ActionPointer{
     Action action;
 }ActionPointer;
 
+#endif // !ENGINE_DATA_TYPES

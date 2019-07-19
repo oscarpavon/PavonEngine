@@ -7,16 +7,11 @@
 
 #include <cglm.h>
 
-typedef struct camera {
-    mat4 projection;
-    mat4 view;
-}Camera;
+#include "Engine/components/components.h"
 
+CameraComponent main_camera;
+CameraComponent saved_camera;
 
-Camera main_camera;
-vec3 camera_up;
-vec3 camera_front;
-vec3 camera_position;
 float camera_heigth_screen;
 float camera_width_screen;
 versor camera_rotation;

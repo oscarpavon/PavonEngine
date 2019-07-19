@@ -1,9 +1,9 @@
 #ifndef ENGINE_COMPONENTS_H
 #define ENGINE_COMPONENTS_H
 
-#include "../../engine.h"
-
-
+typedef struct Element Element;
+typedef struct Model Model;
+#include <cglm/cglm.h>
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT,
@@ -65,5 +65,6 @@ void update_component(ComponentDefinition*);
 void init_transfrom_component(TransformComponent* component);
 void* get_component_from_selected_element(ComponentType type);
 void* get_component_from_element(Element* element, ComponentType type);
+void change_view_to_camera_component(CameraComponent* camera_component);
 
 #endif

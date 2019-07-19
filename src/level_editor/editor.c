@@ -255,7 +255,7 @@ void init_editor(){
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
-    init_vec3(-6,0,2, camera_position);
+    init_vec3(-6,0,2, main_camera.position);
     update_look_at();   
 
     init_gizmos();
@@ -298,7 +298,7 @@ void check_elements_camera_distance_for_LOD(){
     for(int i = 0; i< editor_elements.count ; i++){
         Element* element = get_from_array(&editor_elements,i);
         if(element->has_LOD){
-            float camera_distance = glm_vec3_distance(element->position, camera_position);
+            float camera_distance = glm_vec3_distance(element->position, main_camera.position);
             //LOG("Camera Distance: %f\n",camera_distance);
             if(camera_distance >= 8){
                 element->model->change_LOD  = true;

@@ -22,7 +22,7 @@ struct android_app* app;
 #include "model.h"
 #include "Engine/data.h"
 #include <cglm.h>
-#include "camera.h"
+
 #include "file_loader.h"
 #include "Engine/files_parser.h"
 #include "Engine/memory.h"
@@ -34,6 +34,8 @@ struct android_app* app;
 
 #include "Engine/components/components.h"
 #include "Engine/animation/animation.h"
+
+#include "camera.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 
@@ -111,7 +113,6 @@ Array* actual_elements_array;
 Array* actual_LOD_models_array;
 GLuint actual_standard_fragment_shader;
 Array* actual_buttons_array;
-
 
 Array components;
 Array engine_native_models;

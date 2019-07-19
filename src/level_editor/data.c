@@ -111,7 +111,7 @@ void save_camera_editor_camera_transform(FILE* new_file){
     fputs("\t\"id\" : ", new_file);
     fprintf(new_file,"%i,\n",300);
     fputs("\t\"pos\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f],\n",camera_position[0] , camera_position[1] , camera_position[2]);
+    fprintf(new_file,"[%f , %f , %f],\n",main_camera.position[0] , main_camera.position[1] , main_camera.position[2]);
     fputs("\t\"rot\" : ", new_file);
     fprintf(new_file,"[%f , %f , %f , %f],\n",camera_rotation[0] , camera_rotation[1] , camera_rotation[2], camera_rotation[3]);
     fputs("\t\"texture\" : ", new_file);

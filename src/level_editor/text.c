@@ -4,7 +4,6 @@
 #include "../utils.h"
 #include <GLES2/gl2.h>
 #include "../shader.h"
-#include "../camera.h"
 
 #include <stdlib.h>
 #include "../file_loader.h"

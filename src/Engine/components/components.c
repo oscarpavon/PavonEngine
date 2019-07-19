@@ -1,4 +1,5 @@
 #include "components.h"
+#include "../../engine.h"
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type){
     ComponentDefinition new_element_component;
@@ -41,13 +42,21 @@ void init_camera_component(CameraComponent* component){
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     component->camera_gizmo = selected_model;
 
-    glm_vec3_copy((vec3){0,1,0},component->front);
+    glm_vec3_copy(VEC3(0,0,1),component->up),
+    glm_vec3_copy((vec3){0,-1,0},component->front);
     glm_mat4_copy(main_camera.projection,component->projection);
     vec3 look_pos;
     glm_vec3_add(selected_element->position, component->front, look_pos);
     glm_vec3_copy(VEC3(0,0,0),component->position);
-    glm_lookat(selected_element->position, look_pos, camera_up , component->view);
+    glm_lookat(selected_element->position, look_pos, main_camera.up , component->view);
 
+}
+
+void change_view_to_camera_component(CameraComponent* camera_component){
+    memcpy(&saved_camera,&main_camera, sizeof(CameraComponent));
+    memcpy(&main_camera,camera_component,sizeof(CameraComponent));
+    memcpy(camera_component->projection,saved_camera.projection,sizeof(mat4));
+    update_look_at();
 }
 
 void init_transfrom_component(TransformComponent* component){
@@ -78,6 +87,7 @@ void update_component(ComponentDefinition* element_component){
     }      
     case CAMERA_COMPONENT:{
         CameraComponent* component = &element_component->data[0];
+        glm_vec3_copy(element_component->parent->position, component->position);
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->camera_gizmo->model_mat);
         add_to_array(&frame_draw_elements,&component->camera_gizmo);
         break;
