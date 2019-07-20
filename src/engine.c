@@ -161,7 +161,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     StaticMeshComponent mesh_component;
     mesh_component.model = selected_model;
     add_to_array(&texts,model_gltf_path);
-    mesh_component.path_text_id = texts.count-1;
+    mesh_component.model_id = texts.count-1;
     
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
 
@@ -294,6 +294,7 @@ void compiles_standard_shaders(){
 
 void init_engine(){
     init_array(&texts,sizeof(char[20]),50);
+    init_array(&textures_paths,sizeof(char[20]),50);
 
     init_camera();
 
@@ -397,8 +398,8 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 }
 
 void update_translation(vec3 translation){
-    glm_vec3_add(selected_element->transform->position,translation,selected_element->transform->position);
-    if(selected_element->transform != NULL){
-        glm_translate(selected_element->transform->model_matrix, translation);
-    }
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    glm_vec3_add(transform->position,translation,transform->position);
+    glm_translate(transform->model_matrix, translation);
+    
 }

@@ -141,7 +141,7 @@ void save_element_component_data(int id){
     }
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* mesh = &component->data[0];
-        new_text_primitive_token("path",mesh->path_text_id);
+        new_text_primitive_token("path",mesh->model_id);
         break;
     }       
     default:
@@ -225,14 +225,13 @@ void save_level_data(const char* level_name){
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
     actual_data_type = DATA_TYPE_LEVEL;
-    element_id_count += 1; //editor camera
-
+    
     save_header_info();
 
     SaveDataFunction level =  &save_level;
     new_save_element(level,0);
     
-    save_camera_editor_camera_transform(new_file);
+    
     fclose(new_file);
 
     LOG("Saved to %s\n",save_name);

@@ -125,10 +125,8 @@ bool actual_element_component_parsed = false;
 void parse_components(jsmntok_t* token){
 
     if(dump_array_type == DUMP_ARRAY_TYPE_COMPONENT){
-      unsigned int value =  get_token_primitive_value(token+1);
-      if(actual_element_component_parsed == true)
-      return;
       
+            
       if (string_equal( token, "type") == 0){ 
         unsigned int value =  get_token_primitive_value(token+1);
         switch (value)
@@ -153,6 +151,8 @@ void parse_components(jsmntok_t* token){
           break;
         }
       }
+
+
     }
 
     if(dump_array_type == DUMP_ARRAY_TYPE_TEXT){
@@ -194,6 +194,8 @@ void parse_level_token(jsmntok_t* token){
   if(current_component_type == STATIC_MESH_COMPONENT){
     if (string_equal( token, "path") == 0) {
       int path_id = get_token_primitive_value(token+1);
+      StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+      mesh->model_id = path_id;
     }
   }
 
@@ -215,14 +217,14 @@ void parse_level_token(jsmntok_t* token){
       return;
     for(int i = 0; i < actual_element_components_count ; i++){
       parse_componentes = true;
-      dump(token+1,(token+1)->size,0);
+      //dump(token+1,(token+1)->size,0);
       
     }
-    actual_element_component_parsed = true;
+    
   }
 
   
-
+  parse_components(token);
    
 }
 
@@ -231,8 +233,6 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
   actual_element = &_elements_array[element_id];
 
   selected_element = &_elements_array[element_id];
-
-  const char* js = actual_json_file;
 
 	if (count == 0) {
 		return 0;
@@ -302,7 +302,8 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
       }
     }
     
-    parse_level_token(token);
+    if(actual_data_type == DATA_TYPE_LEVEL)
+      parse_level_token(token);
 
 		return 1;
 	} 
@@ -323,10 +324,8 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
         object_zero = false;
       }else
         button_id++;
-    }
-    
-    
-
+    }   
+  
 		j = 0;
 
 		for (i = 0; i <= token->size; i++) {
@@ -437,7 +436,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
 
-  LOG("%s\n", models_json_file);
+  //LOG("%s\n", models_json_file);
 
   actual_json_file = models_json_file;
 

@@ -190,7 +190,10 @@ void load_level_in_editor(const char* name){
         new_empty_element();
         Element* loaded_element = get_from_array(&load_elements,i);
         memcpy(selected_element,loaded_element,sizeof(Element));
-        
+        for(int o = 0; o < loaded_element->components_count; o++){
+            ComponentDefinition* component = get_from_array(&loaded_element->components,o);
+            component->parent = loaded_element;
+        }
     }
 
    // add_loaded_elements(&load_elements, &editor_models, &editor_elements);

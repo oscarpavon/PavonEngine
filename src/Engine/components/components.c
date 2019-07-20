@@ -81,8 +81,11 @@ void update_component(ComponentDefinition* element_component){
         break;
     }
     case TRASNFORM_COMPONENT:{
-        if(element_component->parent->transform == NULL)
+        if(element_component->parent->transform == NULL){
             element_component->parent->transform = &element_component->data[0];
+            glm_translate(element_component->parent->transform->model_matrix,element_component->parent->transform->position);
+        }
+        
         break;
     }      
     case CAMERA_COMPONENT:{
@@ -94,6 +97,9 @@ void update_component(ComponentDefinition* element_component){
     }      
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
+        if(component->model == NULL){
+            component->model = get_from_array(actual_model_array,component->model_id);
+        }
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&frame_draw_elements,&component->model);
         break;

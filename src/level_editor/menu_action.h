@@ -62,7 +62,7 @@ void new_text_menu(const char* name, Key* open_key, int mods_key,
     add_to_array(&menus,&menu);
 }
 
-const char* components_names[4] = {{"Camera Component"}, {"Sphere Component"}, {"Cube Component"}, {"Transform Component"}};
+const char* components_names[4] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component"};
 
 void draw_available_components(TextMenu* menu){
     float text_size = 12;
@@ -159,7 +159,7 @@ void menu_action_add_editor_native_element(TextMenu* menu){
 }
 #define EDITOR_NATIVE_ELEMETN_COUNT 8
 const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = { 
-    {"Empty Element"} , {"Camera"} , {"Player Start"}, {"Collider"} , {"Sphere"}, {"Cube"}, {"Cyllinder"}, {"Floor"}
+    "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor"
     };
 
 void menu_action_draw_native_editor_elments(TextMenu* menu){
