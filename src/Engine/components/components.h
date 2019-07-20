@@ -49,7 +49,8 @@ typedef struct CameraComponent{
     Model* camera_gizmo;
 }CameraComponent;
 
-typedef struct StaticMeshComponent{    
+typedef struct StaticMeshComponent{
+    int path_text_id;    
     Model* model;
 }StaticMeshComponent;
 

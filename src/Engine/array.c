@@ -7,12 +7,12 @@
 #include "../engine.h"
 
 
-void init_array(Array * array, size_t element_bytes_size, int count){
+int init_array(Array * array, size_t element_bytes_size, int count){
     if(array->initialized != true){
        
     }else{
         LOG("Array already initialized\n");
-        return;
+        return -1;
     }  
     array->count = 0;
     array->data = allocate_stack_memory_alignmed(element_bytes_size * count,16);
@@ -21,6 +21,7 @@ void init_array(Array * array, size_t element_bytes_size, int count){
     array->bytes_capacity = element_bytes_size * count;
     array->initialized = true;
     array->element_capacity = count;
+    return 0;
 }
 
 void add_to_array(Array* array, void* element){

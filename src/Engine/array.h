@@ -16,7 +16,7 @@ typedef struct Array{
     void * data;
 }Array;
 
-void init_array(Array * array, size_t element_bytes_size, int count);
+int init_array(Array * array, size_t element_bytes_size, int count);
 
 void add_to_array(Array* array, void* element);
 

@@ -5,51 +5,18 @@
 #include "../engine.h"
 #include "../level_editor/data.h"
 
+typedef enum DumpArrayType{
+  DUMP_ARRAY_TYPE_NULL,
+  DUMP_ARRAY_TYPE_INT,
+  DUMP_ARRAY_TYPE_COMPONENT,
+  DUMP_ARRAY_TYPE_TEXT
+}DumpArrayType;
+
 int header_size = 0;
 DataType actual_data_type;
 unsigned int elements_count = 0;
 
-static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
-  
-  if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
-      strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
-    return 0;
-  }
-  return -1;
-}
-
-static inline size_t get_token_size(jsmntok_t *t){
-  size_t length = t->end - t->start;
-  return length;
-}
-
-
-static int dump_int(const char *js, jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, Element* model) {
-
-    if (jsoneq(js, object_t, "id") == 0) {
-        size_t size = get_token_size(next_t);
-        char text[size+1];
-        memcpy(&text,&js[next_t->start],size);
-        text[size] = '\0';
-        unsigned int model_id = atoi(text);
-        memcpy(&model->id, &model_id, sizeof(unsigned int));
-      }
-}
-
-static int dump_array(const char *js, jsmntok_t *t, size_t count, int index, float* firt_array_element) {
-	
-	if (t->type == JSMN_PRIMITIVE) {
-    size_t size = get_token_size(t);
-    char text[size+1];
-    memcpy(&text,&js[t->start],size);
-    text[size] = '\0';
-    float model_id = atof(text);
-    firt_array_element += index;
-    memcpy(firt_array_element, &model_id, sizeof(float));
-
-		return 1;
-	}
-}
+bool parse_componentes = false;
 
 int element_id = 0;
 int button_id = 0;
@@ -63,6 +30,68 @@ struct Element* _elements_array;
 Array* actual_array;
 const char* actual_json_file;
 
+
+DumpArrayType dump_array_type = DUMP_ARRAY_TYPE_NULL;
+ComponentType current_component_type;
+
+static inline int get_token_primitive_value(jsmntok_t *token);
+
+static int string_equal(jsmntok_t *tok, const char *s) {
+  
+  if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
+      strncmp(actual_json_file + tok->start, s, tok->end - tok->start) == 0) {
+    return 0;
+  }
+  return -1;
+}
+
+static inline size_t get_token_size(jsmntok_t *t){
+  size_t length = t->end - t->start;
+  return length;
+}
+
+static int dump_array(jsmntok_t* token, int count){
+  switch (dump_array_type)
+  {
+  case DUMP_ARRAY_TYPE_COMPONENT:
+    {
+
+    }
+    break;
+  
+  default:
+    break;
+  }
+}
+
+static int dump_int(jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, Element* model) {
+
+    if (string_equal(object_t, "id") == 0) {
+        size_t size = get_token_size(next_t);
+        char text[size+1];
+        memcpy(&text,&actual_json_file[next_t->start],size);
+        text[size] = '\0';
+        unsigned int model_id = atoi(text);
+        memcpy(&model->id, &model_id, sizeof(unsigned int));
+      }
+}
+
+
+static int dump_array_ints(jsmntok_t *token, size_t count, int index, float* firt_array_element) {
+	
+	if (token->type == JSMN_PRIMITIVE) {
+    float value = get_token_primitive_value(token);
+    firt_array_element += index;
+    memcpy(firt_array_element, &value, sizeof(float));
+
+		return 1;
+	}
+}
+
+
+
+static int dump(jsmntok_t *token, size_t count, int indent);
+
 static inline int get_token_primitive_value(jsmntok_t *token){
   int size = get_token_size(token);
   char text[size+1];
@@ -72,7 +101,16 @@ static inline int get_token_primitive_value(jsmntok_t *token){
   return result;
 }
 
-static inline get_token_string(char* out, jsmntok_t* token){
+static inline float get_token_primitive_float(jsmntok_t *token){
+  int size = get_token_size(token);
+  char text[size+1];
+  memcpy(&text,&actual_json_file[token->start],size);
+  text[size] = '\0';
+  float result = atof(text);
+  return result;
+}
+
+static inline void get_token_string(char* out, jsmntok_t* token){
   size_t size = get_token_size(token);
   char text[size+1];
   memcpy(&text,&actual_json_file[token->start],size);
@@ -80,28 +118,138 @@ static inline get_token_string(char* out, jsmntok_t* token){
   strcpy(out, text);   
 }
 
-static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
+
+int actual_element_components_count = 0;
+bool actual_element_component_parsed = false;
+
+void parse_components(jsmntok_t* token){
+
+    if(dump_array_type == DUMP_ARRAY_TYPE_COMPONENT){
+      unsigned int value =  get_token_primitive_value(token+1);
+      if(actual_element_component_parsed == true)
+      return;
+      
+      if (string_equal( token, "type") == 0){ 
+        unsigned int value =  get_token_primitive_value(token+1);
+        switch (value)
+        {
+        case TRASNFORM_COMPONENT:
+          {
+            current_component_type = TRASNFORM_COMPONENT;
+            TransformComponent transform;
+            init_transfrom_component(&transform);
+            add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+
+          }
+          break;
+        case STATIC_MESH_COMPONENT:{
+            current_component_type = STATIC_MESH_COMPONENT;
+            StaticMeshComponent mesh_component;
+            mesh_component.model = NULL;
+            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+          }
+          break;
+        default:
+          break;
+        }
+      }
+    }
+
+    if(dump_array_type == DUMP_ARRAY_TYPE_TEXT){
+      if (string_equal( token, "paths") == 0){
+        
+      }
+    }
+
+    if(current_component_type == TRASNFORM_COMPONENT){
+      
+      if (string_equal( token, "position") == 0){
+        vec3 pos;
+        jsmntok_t* array_value_token = token+2;
+
+        for (int i = 0; i < (token+1)->size; i++) {   
+          float value = get_token_primitive_float(array_value_token+i);         
+          memcpy(&pos[i],&value,sizeof(float));               
+        }
+
+        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+        glm_vec3_copy(pos,transform->position);
+      }
+    }
+}
+
+void parse_level_token(jsmntok_t* token){
+  if (string_equal(token, "data") == 0) {
+    int i = 0;
+  }
+  if (string_equal(token, "paths") == 0) {
+    jsmntok_t* array_value_token = token+2;
+    for (int i = 0; i < (token+1)->size; i++) {   
+      char text[20];
+      get_token_string(text,array_value_token+i);
+      add_to_array(&texts,text);
+    }
+  }
+
+  if(current_component_type == STATIC_MESH_COMPONENT){
+    if (string_equal( token, "path") == 0) {
+      int path_id = get_token_primitive_value(token+1);
+    }
+  }
+
+  if (string_equal( token, "name") == 0) {     
+      char text[20];
+      get_token_string(text,token+1);      
+      strcpy(actual_element->name, text);
+      actual_element_component_parsed = false;
+  }
+
+  if (string_equal( token, "components_count") == 0) {    
+    actual_element_components_count =  get_token_primitive_value(token+1); 
+    if(selected_element->components.initialized==false)    
+      init_array(&selected_element->components,sizeof(ComponentDefinition),actual_element_components_count);
+  }
+
+  if (string_equal( token, "components") == 0){ 
+    if(actual_element_component_parsed == true)
+      return;
+    for(int i = 0; i < actual_element_components_count ; i++){
+      parse_componentes = true;
+      dump(token+1,(token+1)->size,0);
+      
+    }
+    actual_element_component_parsed = true;
+  }
+
+  
+
+   
+}
+
+static int dump(jsmntok_t *token, size_t count, int indent) {
 	int i, j;
   actual_element = &_elements_array[element_id];
 
-  actual_json_file = js;
+  selected_element = &_elements_array[element_id];
+
+  const char* js = actual_json_file;
 
 	if (count == 0) {
 		return 0;
 	}
 
 	if (token->type == JSMN_PRIMITIVE) {
-    if (jsoneq(js, token-1, "elements") == 0){
+    if (string_equal( token-1, "elements") == 0){
       elements_count = get_token_primitive_value(token);
       LOG("Elements from header count: %i\n",elements_count);
       
     }
 
-    if (jsoneq(js, token-1, "function_id") == 0){
+    if (string_equal( token-1, "function_id") == 0){
       actual_button->action_function_id = get_token_primitive_value(token);      
     }
     
-    if (jsoneq(js, token-1, "type") == 0){     
+    if (string_equal( token-1, "type") == 0){     
       
       switch (get_token_primitive_value(token))
       {
@@ -116,15 +264,15 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
 
       
     }
-    if (jsoneq(js, token-1, "model_id") == 0){
+    if (string_equal( token-1, "model_id") == 0){
       actual_element->model_id = get_token_primitive_value(token);
     }
 
-    if (jsoneq(js, token-1, "id") == 0){       
+    if (string_equal( token-1, "id") == 0){       
       actual_element->id = get_token_primitive_value(token);
     }
 
-    if (jsoneq(js, token-1, "copy") == 0){
+    if (string_equal( token-1, "copy") == 0){
       actual_element->duplicated_of_id = get_token_primitive_value(token);
       element_id++;
     }
@@ -134,7 +282,7 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
   else if (token->type == JSMN_STRING) { 
 
     if(actual_data_type == DATA_TYPE_HEADER){
-      if (jsoneq(js, token, "type") == 0){ 
+      if (string_equal( token, "type") == 0){ 
           unsigned int type = get_token_primitive_value(token+1);
           switch (type)
           {
@@ -152,32 +300,20 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       return 1;
     }
 
-    if (jsoneq(js, token, "name") == 0) {  
-      char text[20];
-      get_token_string(text,token+1);      
-      strcpy(actual_button->name, text);
-    }   
-
-    if (jsoneq(js, token, "path") == 0) {     
-      char text[20];
-      get_token_string(text,token+1);      
-      strcpy(actual_element->model_path, text);
-      return 1;    
+    if(actual_data_type == DATA_TYPE_GUI){
+      if (string_equal( token, "name") == 0) {  
+        char text[20];
+        get_token_string(text,token+1);      
+        strcpy(actual_button->name, text);
+      }
     }
-
-    if (jsoneq(js, token, "texture") == 0){
-      char text[20];
-      get_token_string(text,token+1);    
-      strcpy(actual_element->texture_path, text); 
-      
-      element_id++;
-      return 1;        
-             
-    }  
+    
+    parse_level_token(token);
 
 		return 1;
 	} 
   else if (token->type == JSMN_OBJECT) {
+
     if(actual_data_type == DATA_TYPE_GUI){
       if(previos_id != button_id){
         Button new_button;
@@ -195,15 +331,17 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
         button_id++;
     }
     
+    
 
 		j = 0;
 
-		for (i = 0; i < token->size; i++) {
+		for (i = 0; i <= token->size; i++) {
     
-    	j += dump(js, token+1+j, count-j, indent+1); 
+    	j += dump( token+1+j, count-j, indent+1); 
 
 		}
     
+
 		return j+1;
 	} 
   else if (token->type == JSMN_ARRAY) {
@@ -211,27 +349,27 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       int array_element_index = 0;
       
       if(actual_data_type == DATA_TYPE_LEVEL){
-        if (jsoneq(js, token-1, "pos") == 0) {
+        if (string_equal( token-1, "pos") == 0) {
           vec3 pos;
           for (i = 0; i < token->size; i++) {   
 
-            dump_array(js, token+1+j, count-j, array_element_index,pos);
+            dump_array_ints( token+1+j, count-j, array_element_index,pos);
             array_element_index++;               
 
-            j += dump(js, token+1+j, count-j, indent+1);                 
+            j += dump( token+1+j, count-j, indent+1);                 
 
           }
           glm_vec3_copy(pos,actual_element->position);
                       
         }
-        if (jsoneq(js, token-1, "rot") == 0) {
+        if (string_equal( token-1, "rot") == 0) {
           vec4 quat;
           for (i = 0; i < token->size; i++) {   
 
-            dump_array(js, token+1+j, count-j, array_element_index,quat);
+            dump_array_ints( token+1+j, count-j, array_element_index,quat);
             array_element_index++;               
 
-            j += dump(js, token+1+j, count-j, indent+1);                 
+            j += dump( token+1+j, count-j, indent+1);                 
 
           }
           glm_vec4_copy(quat,actual_element->rotation);
@@ -239,28 +377,28 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
       }
       
       if(actual_data_type == DATA_TYPE_GUI){
-        if (jsoneq(js, token-1, "pos") == 0) {
+        if (string_equal( token-1, "pos") == 0) {
             vec2 pos;
             for (i = 0; i < token->size; i++) {   
 
-              dump_array(js, token+1+j, count-j, array_element_index,pos);
+              dump_array_ints( token+1+j, count-j, array_element_index,pos);
               array_element_index++;               
 
-              j += dump(js, token+1+j, count-j, indent+1);                 
+              j += dump( token+1+j, count-j, indent+1);                 
 
             }
             actual_button->position[0] = pos[0];
             actual_button->position[1] = pos[1];
                      
         }
-        if (jsoneq(js, token-1, "size") == 0) {
+        if (string_equal( token-1, "size") == 0) {
             vec2 size;
             for (i = 0; i < token->size; i++) {   
 
-              dump_array(js, token+1+j, count-j, array_element_index,size);
+              dump_array_ints( token+1+j, count-j, array_element_index,size);
               array_element_index++;               
 
-              j += dump(js, token+1+j, count-j, indent+1);                 
+              j += dump( token+1+j, count-j, indent+1);                 
 
             }
             actual_button->size[0] = size[0];
@@ -268,9 +406,18 @@ static int dump(const char *js, jsmntok_t *token, size_t count, int indent) {
         }
       }
 
-      for (i = 0; i < token->size; i++) {             
+      if(actual_data_type == DATA_TYPE_LEVEL){
+        if (string_equal( token-1, "components") == 0){
+          dump_array_type = DUMP_ARRAY_TYPE_COMPONENT;
+        }
+        if (string_equal( token-1, "paths") == 0){
+          dump_array_type = DUMP_ARRAY_TYPE_TEXT;
+        }
+      }
 
-        j += dump(js, token+1+j, count-j, indent+1);     
+      for (i = 0; i <= token->size; i++) {             
+
+        j += dump( token+1+j, count-j, indent+1);     
 
       }      
             
@@ -299,7 +446,7 @@ int parse_header(const char* json_file){
 
   int token_parsed = jsmn_parse(&parser,json_file,header_size,header_tokens,20);
   LOG("Header token parsed: %d\n",token_parsed);
-  dump(actual_json_file,header_tokens,token_parsed,0);
+  dump(header_tokens,token_parsed,0);
 
   return 0;
 }
@@ -317,7 +464,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   jsmntok_t tokens[max_tokens];
   jsmn_init(&parser);
 
-  char* models_json_file = malloc(json_file_size-header_size);
+  char* models_json_file = allocate_memory(json_file_size-header_size);
   memset(models_json_file,0,json_file_size-header_size);
   models_json_file[json_file_size-header_size] = '\0';
 
@@ -338,16 +485,14 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   init_array(out_element,sizeof(Element),elements_count);   
 
-  dump(models_json_file,tokens,number_of_tokens_readed,0);
+  dump(tokens,number_of_tokens_readed,0);
 
   
   for(int i = 0; i < elements_count; i++){
     add_to_array(out_element,&elements[i]);
   }
- 
 
-  int o = 2;
-  free(models_json_file);
+  //free(models_json_file);
   LOG("json level parsed\n");
 }
 
@@ -375,6 +520,6 @@ void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* 
 
   actual_array = out_element;
 
-  dump(models_json_file,tokens,number_of_tokens_readed,0);
+  dump(tokens,number_of_tokens_readed,0);
 
 }

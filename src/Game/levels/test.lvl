@@ -1,28 +1,35 @@
 {
-		"elements" : 2,
-		"type" : 0,
-		"tokens" : 4,
+	"elements" : 2,
+	"type" : 0,
+	"tokens" : 4,
 },
 {
-	"level" : {
-	{
-			"name" : "Sphere",
-		 "components" : [ 
-			{
-					"component_type" : 0,
-			},
-			{
-					"component_type" : 1,
-			},
-		]
-	},
-	}
+	"level" : [
+		{
+			"elements" : [
+				{
+					"name" : "New Element",
+					"components_count" : 2,
+					"components" : [
+						{
+							"type" : 0,
+							"position" : [3.080001 , 3.080001 , 2.520000],
+							"rotation" : [0.000000 , 0.000000 , 0.000000 , 0.000000],
+						},
+						{
+							"type" : 4,
+							"path" : 0,
+						},
+					],
+				},
+			],
+		},
+		{
+			"data" : [
+				"paths" : [
+					"lince.gltf",
+				],
+			],
+		},
+	],
 },
-,
-{
-	"type" : "editor_camera",
-	"id" : 300,
-	"pos" : [-6.000000 , 0.000000 , 2.000000],
-	"rot" : [0.000000 , 0.000000 , 0.000000 , 0.000000],
-	"texture" : "no_texture"
-}

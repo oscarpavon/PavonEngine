@@ -185,7 +185,18 @@ void load_level_in_editor(const char* name){
     if(level_result != 0)
         return;   
     
-    add_loaded_elements(&load_elements, &editor_models, &editor_elements);
+
+    for(int i = 0; i< texts.count ; i++){
+       load_and_create_simple_model(get_from_array(&texts,i));
+    }
+    for(int i = 0; i < load_elements.count; i++){
+        new_empty_element();
+        Element* loaded_element = get_from_array(&load_elements,i);
+        memcpy(selected_element,loaded_element,sizeof(Element));
+        
+    }
+
+   // add_loaded_elements(&load_elements, &editor_models, &editor_elements);
     //clean_array(&load_elements);
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);

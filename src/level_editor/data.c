@@ -21,21 +21,25 @@ int add_array_of_numbers(int count){
 }
 int token_count = 0;
 void new_text_token(const char* type, const char* value){
-    hirachical_tab(); fprintf(actual_file,"\t\"%s\" : \"%s\",\n",type,value);
+    hirachical_tab(); 
+    fprintf(actual_file,"\"%s\" : \"%s\",\n",type,value);
     token_count += 2;
 }
 void new_text_primitive_token(const char* type, int value){
-    hirachical_tab(); fprintf(actual_file,"\t\"%s\" : %i,\n",type,value);
+    hirachical_tab(); 
+    fprintf(actual_file,"\"%s\" : %i,\n",type,value);
     token_count += 2;
 }
 
 void new_text_vec4_token(const char* text,vec4 vec){
-    fprintf(actual_file,"\t\"%s\" : [%f , %f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2], vec[3]);
+    hirachical_tab();
+    fprintf(actual_file,"\"%s\" : [%f , %f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2], vec[3]);
     token_count += 6;
 }
 
 void new_text_vec3_token(const char* text,vec3 vec){
-    fprintf(actual_file,"\t\"%s\" : [%f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2]);
+    hirachical_tab();
+    fprintf(actual_file,"\"%s\" : [%f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2]);
     token_count += 5;
 }
 
@@ -44,13 +48,29 @@ void new_text_vec2_token(const char* text,vec2 vec){
     token_count += 4;
 }
 
+void new_array_data(const char* text,void(*function)(void)){
+    hirachical_tab(); fprintf(actual_file,"\"%s\" : [\n",text);
+    hirarchical_count++;
+    function();
+    hirarchical_count--;    
+    hirachical_tab(); fputs("],\n",actual_file);
+    
+}
+
+void new_element(void(*function)(void)){
+    hirachical_tab(); fputs("{\n", actual_file);
+    hirarchical_count++;
+    function();
+    hirarchical_count--;
+    hirachical_tab(); fputs("},\n",actual_file);
+}
+
 void new_save_element(SaveDataFunction function, int data_id){
     hirachical_tab(); fputs("{\n", actual_file);
     hirarchical_count++;
     function(data_id);
     hirarchical_count--;
-    hirachical_tab(); fputs("},\n",actual_file);
-    
+    hirachical_tab(); fputs("},\n",actual_file);   
    
     token_count++;
 }
@@ -154,37 +174,87 @@ void create_save_data_backup(){
 
 void save_element_component_data(int id){
     ComponentDefinition* component = get_from_array(&current_element->components,id);
-    new_text_primitive_token("component_type",component->type);
-
+    new_text_primitive_token("type",component->type);
+    switch (component->type)
+    {
+    case TRASNFORM_COMPONENT:{
+        TransformComponent* transform = &component->data[0];
+        new_text_vec3_token("position",transform->position);
+        new_text_vec4_token("rotation",transform->rotation);
+        break;
+    }
+    case STATIC_MESH_COMPONENT:{
+        StaticMeshComponent* mesh = &component->data[0];
+        new_text_primitive_token("path",mesh->path_text_id);
+        break;
+    }       
+    default:
+        break;
+    }
+}
+void components_count(){
+    new_text_primitive_token("count",current_element->components_count);
+}
+void components_data(){
+    SaveDataFunction component = &save_element_component_data;
+    
+    for(int i = 0; i < current_element->components_count ; i++){
+        new_save_element(component,i);
+    }
 }
 
 void save_level_element_data(int id){ 
-    SaveDataFunction component = &save_element_component_data;
+    
     Element* element = get_from_array(&editor_elements,id);
     current_element = element;
-    new_text_token("name",element->name);
-    
-    hirachical_tab(); fputs("\"components\" : [ \n" , actual_file);
 
-    hirarchical_count++;
-        for(int i = 0; i < element->components_count ; i++){
-            new_save_element(component,i);
-        }
-    hirarchical_count--;
-    hirachical_tab(); fputs("]\n" , actual_file);
+    new_text_token("name",element->name); 
+    new_text_primitive_token("components_count",element->components_count);       
+    new_array_data("components",&components_data);
 }
 
-void save_level(int id){
-    hirachical_tab(); fputs("\"level\" : {\n" , actual_file);
-    
+
+void level_elements_data(){
     SaveDataFunction element_save_function =  &save_level_element_data;
     for(int i = 0; i < editor_elements.count ; i++){        
-       
+        
         new_save_element(element_save_function,i);
 
     }
-    
-    hirachical_tab(); fputs("}\n" , actual_file);
+
+}
+
+void level_paths_data(){
+
+    for(int i = 0; i< texts.count ; i++){       
+        hirachical_tab();
+        fprintf(actual_file,"\"%s\",\n",get_from_array(&texts,i));
+    }
+   
+}
+
+void level_data(){
+    new_array_data("paths",&level_paths_data);
+}
+
+typedef void(*function_with_function)( const char*text, void(*function2)(void));
+
+void new_element_wiht_data( function_with_function t,const char* text, void(*function2)(void)){
+    hirachical_tab(); fputs("{\n", actual_file);
+    hirarchical_count++;
+    t(text,function2);
+    hirarchical_count--;
+    hirachical_tab(); fputs("},\n",actual_file);
+}
+void leve_data_element_plus_data(){
+   new_element_wiht_data(&new_array_data,"elements",&level_elements_data);
+   new_element_wiht_data(&new_array_data,"data",&level_data);
+    //new_array_data("elements",&level_elements_data);
+    //new_array_data("data",&level_data);
+   
+}
+void save_level(int id){
+    new_array_data("level",&leve_data_element_plus_data);
 }
 
 void save_level_data(const char* level_name){    

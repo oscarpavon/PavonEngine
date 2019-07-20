@@ -124,12 +124,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     
 }
 
-void add_element_with_model_path(const char* model_gltf_path){
-    if(model_gltf_path == NULL){
-        LOG("Error to load, null path (add_editor_element\n");
-        return;
-    }
-
+void load_and_create_simple_model(const char* model_gltf_path){
     struct Model models[3];
     memset(models,0,sizeof(models));
     
@@ -146,11 +141,18 @@ void add_element_with_model_path(const char* model_gltf_path){
     memcpy(&selected_model->max,&models[0].max,sizeof(vec3));
     selected_model->skeletal = models[0].skeletal;
 
-    struct Model* model0 = selected_model;     
+    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
-    model0->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+    init_model_gl_buffers(selected_model);  
+}
 
-    init_model_gl_buffers(model0);   
+void add_element_with_model_path(const char* model_gltf_path){
+    if(model_gltf_path == NULL){
+        LOG("Error to load, null path (add_editor_element\n");
+        return;
+    }
+
+    load_and_create_simple_model(model_gltf_path);  
     
     new_empty_element();
     selected_element->model = selected_model;
@@ -163,10 +165,12 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     StaticMeshComponent mesh_component;
     mesh_component.model = selected_model;
+    add_to_array(&texts,model_gltf_path);
+    mesh_component.path_text_id = texts.count-1;
+    
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
 
-    strcpy(selected_element->model_path,model_gltf_path);
-
+        
     LOG("model loaded and shader created \n");
 }
 
@@ -353,6 +357,7 @@ void compiles_standard_shaders(){
 }
 
 void init_engine(){
+    init_array(&texts,sizeof(char[20]),50);
 
     init_camera();
 
@@ -458,6 +463,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 void update_translation(vec3 translation){
     //glm_translate(selected_element->model->model_mat, translation);
     glm_vec3_add(selected_element->position,translation,selected_element->position);
+    glm_vec3_add(selected_element->transform->position,translation,selected_element->transform->position);
     if(selected_element->transform != NULL){
         glm_translate(selected_element->transform->model_matrix, translation);
     }

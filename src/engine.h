@@ -84,6 +84,7 @@ void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
+void load_and_create_simple_model(const char* model_gltf_path);
 
 void update_translation(vec3 translation);
 
@@ -118,6 +119,8 @@ Array components;
 Array engine_native_models;
 
 Array frame_draw_elements;
+
+Array texts;
 
 float frame_time;
 
