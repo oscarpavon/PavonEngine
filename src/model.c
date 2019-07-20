@@ -323,6 +323,6 @@ int load_model(const char* path , struct Model* model){
 }
 
 void free_model_load(Element* model){
-  free(model->model_path);
+
 
 }

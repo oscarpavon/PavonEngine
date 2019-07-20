@@ -83,7 +83,6 @@ void add_editor_native_element(const char* native_element_name){
     }else if ( strcmp("Player Controller", native_element_name) == 0 )
     {
         new_empty_element();
-        selected_element->model = selected_model;
         strcpy(selected_element->name, "Player1");
         selected_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
     }else if ( strcmp("Sphere", native_element_name) == 0 ){
@@ -126,9 +125,7 @@ void add_editor_native_element(const char* native_element_name){
 
 
 void clean_element(Element* element){    
-    if(element->model->skeletal != NULL){
-             
-    }
+   
 }
 
 void clean_editor(){
@@ -150,9 +147,9 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
     glm_quatv(new_rot_quat, glm_rad(angle), axis);
 
     versor result_quat;
-    glm_quat_mul(element->rotation, new_rot_quat, result_quat);
+    glm_quat_mul(element->transform->rotation, new_rot_quat, result_quat);
 
-    glm_quat_copy(result_quat, element->rotation);
+    glm_quat_copy(result_quat, element->transform->rotation);
 
     mat4 model_rot_mat;
     glm_quat_mat4(new_rot_quat,model_rot_mat);
@@ -207,57 +204,12 @@ void load_level_in_editor(const char* name){
 }
 
 void duplicate_selected_element(){
-    Element new_element;
-    memset(&new_element,0,sizeof(struct Element));
-    
-
-    Model new_model;
-    memset(&new_element,0,sizeof(struct Model));
-
-    memcpy(&new_model,selected_element->model,sizeof(struct Model));
-    new_model.has_HLOD = false;
-    new_model.HLOD = NULL;
-    new_model.change_to_HLOD = false;
-    add_to_array(&editor_models,&new_model);
-    
-    element_id_count++;
-    
-    memcpy(&new_element, selected_element, sizeof(struct Element));
-
-    new_element.model = get_from_array(&editor_models,editor_models.count-1);
-    new_element.id = element_id_count;
-    new_element.has_HLOD = false;
-
-    if(selected_element->duplicated_of_id > -1)
-        new_element.duplicated_of_id = selected_element->duplicated_of_id;
-    else
-        new_element.duplicated_of_id = selected_element->id;
-
-    add_to_array(&editor_elements,&new_element);
-    
-    select_last_element();
-}
-
-void get_elements_in_editor_map(){
-    LOG("Elements count: %i\n", editor_elements.count);
-
-    for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_from_array(&editor_elements,i);
-        LOG("Element name: %s\n", element->model_path);
-    }
-  
-
-}
-void get_element_status(Element* element){
-    LOG("Position: %f, %f %f\n",element->position[0] , element->position[1] , element->position[2]);
 
 }
 
 void remove_selected_element(){
-    //remove_last_element_from_model_array(&editor_models);
     clean_element(selected_element);
     selected_element = NULL;
-   // remove_element_from_array(&editor_elements);
     element_id_count--;
 }
 
@@ -320,19 +272,15 @@ void init_editor(){
 void check_elements_camera_distance_for_LOD(){
     for(int i = 0; i< editor_elements.count ; i++){
         Element* element = get_from_array(&editor_elements,i);
-        if(element->has_LOD){
-            float camera_distance = glm_vec3_distance(element->position, main_camera.position);
+        if(element){
+            float camera_distance = glm_vec3_distance(element->transform->position, main_camera.position);
             //LOG("Camera Distance: %f\n",camera_distance);
             if(camera_distance >= 8){
-                element->model->change_LOD  = true;
             }else if (camera_distance <= 7.6){
-                element->model->change_LOD  = false;
             }
-            if(camera_distance >= 20 && element->model->has_HLOD){
-                element->model->change_to_HLOD = true;
+            if(camera_distance >= 20){
             }
             if(camera_distance < 19){
-                element->model->change_to_HLOD = false;
             }
         }        
     }

@@ -264,18 +264,12 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
 
       
     }
-    if (string_equal( token-1, "model_id") == 0){
-      actual_element->model_id = get_token_primitive_value(token);
-    }
 
     if (string_equal( token-1, "id") == 0){       
       actual_element->id = get_token_primitive_value(token);
     }
 
-    if (string_equal( token-1, "copy") == 0){
-      actual_element->duplicated_of_id = get_token_primitive_value(token);
-      element_id++;
-    }
+  
 
 		return 1;
 	} 
@@ -346,35 +340,8 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
 	} 
   else if (token->type == JSMN_ARRAY) {
       j = 0;
-      int array_element_index = 0;
+      int array_element_index = 0;  
       
-      if(actual_data_type == DATA_TYPE_LEVEL){
-        if (string_equal( token-1, "pos") == 0) {
-          vec3 pos;
-          for (i = 0; i < token->size; i++) {   
-
-            dump_array_ints( token+1+j, count-j, array_element_index,pos);
-            array_element_index++;               
-
-            j += dump( token+1+j, count-j, indent+1);                 
-
-          }
-          glm_vec3_copy(pos,actual_element->position);
-                      
-        }
-        if (string_equal( token-1, "rot") == 0) {
-          vec4 quat;
-          for (i = 0; i < token->size; i++) {   
-
-            dump_array_ints( token+1+j, count-j, array_element_index,quat);
-            array_element_index++;               
-
-            j += dump( token+1+j, count-j, indent+1);                 
-
-          }
-          glm_vec4_copy(quat,actual_element->rotation);
-        }
-      }
       
       if(actual_data_type == DATA_TYPE_GUI){
         if (string_equal( token-1, "pos") == 0) {
@@ -479,9 +446,7 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   Element elements[elements_count];
   memset(elements,0,sizeof(elements));
   _elements_array = &elements[0];
-  for(int i = 0; i<elements_count;i++){
-      elements[i].duplicated_of_id = -1;
-  }  
+
 
   init_array(out_element,sizeof(Element),elements_count);   
 

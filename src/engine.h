@@ -121,6 +121,7 @@ Array engine_native_models;
 Array frame_draw_elements;
 
 Array texts;
+Array textures_paths;
 
 float frame_time;
 

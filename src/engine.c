@@ -77,14 +77,9 @@ void new_empty_element(){
     Element new_element;
     memset(&new_element,0,sizeof(struct Element));
 
-    new_element.duplicated_of_id = -1;
-    //new_element.model = get_from_array(actual_model_array,element_id_count);
+    
     new_element.id = element_id_count;
     new_element.type = ELEMENT_TYPE_MODEL;
-
-    glm_vec3_copy((vec3){0,0,0}, new_element.position);
-    
-    glm_quat_identity(new_element.rotation);    
 
     element_id_count++;
     
@@ -102,7 +97,7 @@ void new_empty_model(){
 
     selected_model = get_from_array(actual_model_array,actual_model_array->count-1);
         
-    glm_mat4_identity(selected_model->model_mat);
+    
     selected_model->id = model_id_count;
     model_id_count++;
 }
@@ -118,9 +113,10 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         return;
     }
 
-    selected_element->model->texture.image = load_image(image_path);
-    load_model_texture_to_gpu(selected_element->model);
-    strcpy(selected_element->texture_path,image_path);
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    mesh->model->texture.image = load_image(image_path);
+    load_model_texture_to_gpu(mesh->model);
+    add_to_array(&textures_paths,image_path);
     
 }
 
@@ -155,7 +151,6 @@ void add_element_with_model_path(const char* model_gltf_path){
     load_and_create_simple_model(model_gltf_path);  
     
     new_empty_element();
-    selected_element->model = selected_model;
     
     strcpy(selected_element->name, "New Element");
     TransformComponent transform;
@@ -182,15 +177,7 @@ void update_viewport_size(){
 }
 
 void set_selected_element_transform(vec3 position, versor rotation){
-    glm_translate(selected_element->model->model_mat, position);
-    glm_vec3_add(selected_element->position,position,selected_element->position);
-
-    mat4 model_rot_mat;
-    glm_quat_mat4(rotation,model_rot_mat);
-
-    glm_mul(selected_element->model->model_mat, model_rot_mat, selected_element->model->model_mat);
-
-    glm_quat_copy(rotation, selected_element->rotation);
+   
 }
 
 void draw_simgle_model(struct Model * new_model){
@@ -219,58 +206,7 @@ void draw_elements(Array *elements){
         draw_simgle_model(model[0]);
     }
     clean_array(elements);
-    return;
-    
-    GLfloat white[4] = {1, 1, 1, 1};
-    GLfloat red[4] = {1, 0, 0, 1};
-
-    for(size_t i = 0; i < elements->count ; i++) {                
-        Element* element = get_from_array(elements,i);
-        if(element->model == NULL)
-            continue;
-        if(element->model->id > model_id_count){
-            LOG("Posible gargabe model pointer , model not draw\n ");
-            continue;
-        } 
-        if(element->model->draw == false)
-            continue;
-        
-
-        struct Model *new_model;
-        struct Model *LOD0 = element->model;
-        new_model = LOD0;     
-        
-        GLenum error;
-        glBindTexture(GL_TEXTURE_2D, LOD0->texture.id);
-        
-        update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
-
-        
-        GLint uniform_color =  glGetUniformLocation(new_model->shader,"color");
-        if(element->selected)          
-            glUniform4fv(uniform_color, 1, red);
-        else
-           glUniform4fv(uniform_color, 1, white);
-        
-
-        error = glGetError();
-        if(error != GL_NO_ERROR){
-            LOG("[X] Send unifrom COLOR error, Error %08x \n",error);
-
-        }
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
-
-        glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
-
-        error = glGetError();
-        if(error != GL_NO_ERROR){
-            LOG("[X] Draw elements, Error %08x \n",error);
-        }
-    }
-
+    return;   
 }
 
 
@@ -461,8 +397,6 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 }
 
 void update_translation(vec3 translation){
-    //glm_translate(selected_element->model->model_mat, translation);
-    glm_vec3_add(selected_element->position,translation,selected_element->position);
     glm_vec3_add(selected_element->transform->position,translation,selected_element->transform->position);
     if(selected_element->transform != NULL){
         glm_translate(selected_element->transform->model_matrix, translation);

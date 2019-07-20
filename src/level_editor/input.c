@@ -118,8 +118,6 @@ void parse_command(const char* command){
         for(int i = 0; i< duplicate_count; i++){
             duplicate_selected_element();        
             vec3 move = {24,0,0};
-            glm_translate(selected_element->model->model_mat, move);
-            glm_vec3_add(selected_element->position,move,selected_element->position);
         }      
         LOG("duplicated %i\n",duplicate_count);
     }
@@ -639,7 +637,7 @@ void default_mode(){
     
     
     if(key_released(&input.P)){
-        get_elements_in_editor_map();
+       
     }
 
     if(key_released(&input.KEY_1)){
@@ -722,8 +720,6 @@ void input_mode_play(){
     }
 
     if(key_released(&input.ESC)){
-        if(player1 != NULL)
-            player1->model->draw = false;
 
         player_in_start_position = false;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
@@ -735,7 +731,7 @@ void input_mode_play(){
                 return;
             }            
 
-            set_element_position(player1,player_start->position);
+            set_element_position(player1,player_start->transform->position);
             player_in_start_position = true;
         }else{
             LOG("No player selected\n");

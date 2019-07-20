@@ -46,9 +46,9 @@ void init_camera_component(CameraComponent* component){
     glm_vec3_copy((vec3){0,-1,0},component->front);
     glm_mat4_copy(main_camera.projection,component->projection);
     vec3 look_pos;
-    glm_vec3_add(selected_element->position, component->front, look_pos);
+    glm_vec3_add(selected_element->transform->position, component->front, look_pos);
     glm_vec3_copy(VEC3(0,0,0),component->position);
-    glm_lookat(selected_element->position, look_pos, main_camera.up , component->view);
+    glm_lookat(selected_element->transform->position, look_pos, main_camera.up , component->view);
 
 }
 
@@ -87,7 +87,7 @@ void update_component(ComponentDefinition* element_component){
     }      
     case CAMERA_COMPONENT:{
         CameraComponent* component = &element_component->data[0];
-        glm_vec3_copy(element_component->parent->position, component->position);
+        glm_vec3_copy(element_component->parent->transform->position, component->position);
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->camera_gizmo->model_mat);
         add_to_array(&frame_draw_elements,&component->camera_gizmo);
         break;

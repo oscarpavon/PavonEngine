@@ -40,8 +40,6 @@ void load_level_in_editor(const char*);
 
 void list_directory_files();
 
-void get_elements_in_editor_map();
-
 void deselect_all();
 
 void change_to_editor_mode(EditorMode mode);

@@ -17,7 +17,7 @@ void assign_nodes_indices(Skeletal* skeletal){
 }
 
 void update_joints_vertex(){
-    Skeletal* skeletal = selected_element->model->skeletal;
+    Skeletal* skeletal;
     if(skeletal == NULL)
         return;
     int vertex_count = skeletal->joints_count;
@@ -28,7 +28,7 @@ void update_joints_vertex(){
         mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
         mat4 global;
-        glm_mat4_mul(selected_element->model->model_mat, local, global);
+        glm_mat4_mul(selected_element->transform->model_matrix, local, global);
         struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
         memcpy(&vertices[i],&vert,sizeof(struct Vertex));
     }
@@ -40,7 +40,7 @@ void update_joints_vertex(){
 
 void init_skeletal_gizmo(){
 
-    Skeletal* skeletal = selected_element->model->skeletal;
+    Skeletal* skeletal;
     if(skeletal == NULL)
         return;
     int vertex_count = skeletal->joints_count;
@@ -54,7 +54,7 @@ void init_skeletal_gizmo(){
         mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
         mat4 global;
-        glm_mat4_mul(selected_element->model->model_mat, local, global);
+        glm_mat4_mul(selected_element->transform->model_matrix, local, global);
         struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
         memcpy(&vertices[i],&vert,sizeof(struct Vertex));
 
@@ -100,7 +100,7 @@ void draw_skeletal_bones(){
 
 void init_skeletal_editor(){
        
-    assign_nodes_indices(selected_element->model->skeletal);
+    //assign_nodes_indices(skeletal);
     init_skeletal_gizmo();
     init_static_gpu_vertex_buffer(&skeletal_bones_gizmo_geometry.vertex_array,&skeletal_gizmo_vertices_buffer_id);
     init_static_gpu_index_buffer(&skeletal_bones_gizmo_geometry.index_array,&skeletal_gizmo_index_buffer_id);

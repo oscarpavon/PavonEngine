@@ -62,8 +62,9 @@ void init_selected_object_bounding_box_vertices(){
         memset(&min,0,sizeof(struct Vertex));
         memset(&max,0,sizeof(struct Vertex));
 
-        glm_vec3_copy(selected_element->model->min, min.postion);
-        glm_vec3_copy(selected_element->model->max, max.postion);
+        StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        glm_vec3_copy(mesh->model->min, min.postion);
+        glm_vec3_copy(mesh->model->max, max.postion);
 
 
         struct Vertex vert3;
@@ -143,7 +144,7 @@ void update_bounding_vertices_array(Model* model){
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
         Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
-        update_bounding_vertices_array(selected_element->model);
+        //update_bounding_vertices_array( model );
         //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         mat4 model;
         glm_mat4_identity(model);
@@ -252,11 +253,11 @@ void draw_camera_direction(){
         vec3 direction;
         CameraComponent* camera = get_from_array(&components,0);
         vec3 look_pos;
-        glm_vec3_add(selected_element->position, camera->front, look_pos);        
-        glm_vec3_sub(look_pos,selected_element->position,direction);
+        glm_vec3_add(selected_element->transform->position, camera->front, look_pos);        
+        glm_vec3_sub(look_pos,selected_element->transform->position,direction);
 
         DebugLine* line = get_from_array(&debug_objects,2);
-        glm_vec3_copy(selected_element->position,line->start);
+        glm_vec3_copy(selected_element->transform->position,line->start);
         
         vec3 front_dir;
         glm_vec3_copy((vec3){0,-1,0},front_dir);
@@ -265,7 +266,7 @@ void draw_camera_direction(){
         glm_vec3_mul((vec3){2,2,2},front_dir,direction_len);
 
         vec3 pos2;
-        glm_vec3_add(selected_element->position,direction_len,pos2);
+        glm_vec3_add(selected_element->transform->position,direction_len,pos2);
         
         glm_vec3_copy(pos2,line->end);
         update_line_vertices(line);

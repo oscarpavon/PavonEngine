@@ -186,8 +186,8 @@ void menu_action_draw_editor_elements(TextMenu* menu){
 
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_from_array(&editor_elements,i);
-        char* name = element->model_path;
-        if( strcmp(element->model_path,"") == 0){
+        char* name = element->name;
+        if( strcmp(element->name,"") == 0){
             if(strcmp(element->name,"") == 0)
                 name = "no_name";
             else

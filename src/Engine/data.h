@@ -16,16 +16,7 @@ typedef struct Element{
     unsigned int id;
     ElementType type;
     char name[20];
-    vec3 position;
-    versor rotation;
-    struct Model* model;
-    char model_path[20];
-    char texture_path[20];
-    short int duplicated_of_id;
-    bool selected;
-    bool has_HLOD;
-    bool has_LOD;
-    unsigned int model_id;
+    bool selected;    
     unsigned int components_count;
     Array components;
     TransformComponent* transform;
