@@ -36,8 +36,8 @@ void init_cube_component(CubeComponent* component){
 
 void init_camera_component(CameraComponent* component){
     new_empty_model();
-    Model* cube_model = get_from_array(&engine_native_models,2);
-    memcpy(selected_model,cube_model,sizeof(Model));
+    Model* camera_model = get_from_array(&engine_native_models,2);
+    memcpy(selected_model,camera_model,sizeof(Model));
     selected_model->id = model_id_count-1;
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     component->camera_gizmo = selected_model;
@@ -56,17 +56,7 @@ void init_camera_component(CameraComponent* component){
 void change_view_to_camera_component(CameraComponent* camera_component){
     memcpy(&saved_camera,&main_camera, sizeof(CameraComponent));
     
-    mat4 local;
-    glm_mat4_identity(local);
-    glm_translate(local,camera_component->position);
-    mat4 inverse;
-    glm_mat4_inv(selected_element->transform->model_matrix,inverse);
-    mat4 global;
-    glm_mat4_mul(local,inverse,main_camera.view);
-
     memcpy(&main_camera,camera_component,sizeof(CameraComponent));
-    //glm_vec3_copy(VEC3(global[3][0],global[3][1],global[3][2]),main_camera.position);
-    //update_look_at();
 }
 
 void update_main_camera_with_camera_component_values(CameraComponent* camera_component){
@@ -134,7 +124,13 @@ void update_component(ComponentDefinition* element_component){
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
         if(component->model == NULL){
-            component->model = get_from_array(actual_model_array,component->model_id);
+            int model_id;
+            if(get_component_from_selected_element(CAMERA_COMPONENT)){
+                model_id = component->model_id + 1;
+            }else/*TODO: Because camera model gizmo if loader first in level parser*/ 
+                model_id = component->model_id;
+                
+            component->model = get_from_array(actual_model_array,model_id);
             Texture* texture = get_from_array(current_textures_array,component->texture_id);
             component->model->texture.id = texture->id;
         }

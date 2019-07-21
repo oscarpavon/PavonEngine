@@ -143,10 +143,7 @@ ComponentType parse_component_type(Token* type_token){
   case TRASNFORM_COMPONENT:
     {
       current_component_type = TRASNFORM_COMPONENT;
-      TransformComponent transform;
-      init_transfrom_component(&transform);
-      add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
-
+      add_transform_component_to_selected_element();
     }
     break;
   case STATIC_MESH_COMPONENT:{
@@ -156,21 +153,29 @@ ComponentType parse_component_type(Token* type_token){
       add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     }
     break;
+  case CAMERA_COMPONENT:
+  {
+    current_component_type = CAMERA_COMPONENT;
+    add_camera_component_to_selected_element();
+  }
   default:
     break;
   }
   return current_component_type;
 }
+
 Token * fill_components_values(ComponentType type, Token* token_value_name_string){
   Token * last_element_readed;
   switch (type)
   {
-  case TRASNFORM_COMPONENT:{
+  case TRASNFORM_COMPONENT:
+  {
     LOG("Pased Transform Component\n");
     last_element_readed = get_token_array_component_transform(token_value_name_string);
     return last_element_readed;
-    }    
+  }    
   case STATIC_MESH_COMPONENT:
+  {
     LOG("Parsed Static mesh component\n");
     token_value_name_string++;
     last_element_readed = token_value_name_string;
@@ -180,6 +185,32 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     mesh->model_id = mesh_path_id;
     mesh->texture_id = texture_id;
     return last_element_readed;
+
+  }
+  case CAMERA_COMPONENT:
+  {
+    Token* token = token_value_name_string;
+    LOG("Parsed Camera component\n");
+    if( string_equal(token,"position") != 0){
+      LOG("No token \"position\" string passed\n");
+      return;
+    }
+    vec3 pos;
+    Token* array_token = token+1;
+    Token* array_value_token = token+2;
+    Token* last_token_readed = NULL;
+    for (int i = 0; i < array_token->size; i++) {
+      last_token_readed = array_value_token+i;   
+      float value = get_token_primitive_float(array_value_token+i);         
+      memcpy(&pos[i],&value,sizeof(float));               
+    }
+    
+    CameraComponent* camera =  get_component_from_selected_element(CAMERA_COMPONENT);
+    glm_vec3_copy(pos,camera->position);   
+
+    return last_token_readed;
+
+  }
   break;
   }
 }
