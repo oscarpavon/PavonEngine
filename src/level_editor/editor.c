@@ -142,17 +142,28 @@ void clean_editor(){
 
 
 void rotate_editor_element(Element* element, float angle, vec3 axis){
-   
+   TransformComponent* transform = get_component_from_element(element, TRASNFORM_COMPONENT);
+   if(transform == NULL){
+       LOG("No transfrom pointer in element\n");
+       return;
+   }
     versor new_rot_quat;
     glm_quatv(new_rot_quat, glm_rad(angle), axis);
 
     versor result_quat;
-    glm_quat_mul(element->transform->rotation, new_rot_quat, result_quat);
+    glm_quat_mul(transform->rotation, new_rot_quat, result_quat);
 
-    glm_quat_copy(result_quat, element->transform->rotation);
+    glm_quat_copy(result_quat, transform->rotation);
 
     mat4 model_rot_mat;
     glm_quat_mat4(new_rot_quat,model_rot_mat);
+
+    glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
+}
+
+void rotate_editor_selected_element_with_quaternion(versor quaternion){
+    mat4 model_rot_mat;
+    glm_quat_mat4(quaternion,model_rot_mat);
 
     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
     if(transform)
@@ -195,8 +206,7 @@ void load_level_in_editor(const char* name){
             component->parent = loaded_element;
         }
     }
-
-   // add_loaded_elements(&load_elements, &editor_models, &editor_elements);
+ 
     //clean_array(&load_elements);
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);

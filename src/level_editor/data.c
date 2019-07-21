@@ -165,7 +165,6 @@ void save_level_element_data(int id){
     current_element = element;
 
     new_text_token("name",element->name); 
-    new_text_primitive_token("components_count",element->components_count);       
     new_array_data("components",&components_data);
 }
 

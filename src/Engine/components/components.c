@@ -63,6 +63,7 @@ void init_transfrom_component(TransformComponent* component){
     memset(component->position,0,sizeof(vec3));
     glm_vec3_copy(VEC3(1,1,1),component->scale);
     glm_mat4_identity(component->model_matrix);
+    glm_quat_identity(component->rotation);
 }
 
 void update_component(ComponentDefinition* element_component){
@@ -82,8 +83,10 @@ void update_component(ComponentDefinition* element_component){
     }
     case TRASNFORM_COMPONENT:{
         if(element_component->parent->transform == NULL){
-            element_component->parent->transform = &element_component->data[0];
-            glm_translate(element_component->parent->transform->model_matrix,element_component->parent->transform->position);
+            TransformComponent* transform = &element_component->data[0];
+            element_component->parent->transform = transform;
+            glm_translate(transform->model_matrix,transform->position);
+            rotate_editor_selected_element_with_quaternion(element_component->parent->transform->rotation);
         }
         
         break;
@@ -99,6 +102,9 @@ void update_component(ComponentDefinition* element_component){
         StaticMeshComponent* component = &element_component->data[0];
         if(component->model == NULL){
             component->model = get_from_array(actual_model_array,component->model_id);
+        }
+        if(component->model == NULL){
+            return;
         }
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&frame_draw_elements,&component->model);

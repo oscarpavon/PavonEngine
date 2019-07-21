@@ -48,6 +48,8 @@ void clean_editor();
 
 void rotate_editor_element(Element* element, float angle, vec3 axis);
 
+void rotate_editor_selected_element_with_quaternion(versor quaternion);
+
 void remove_selected_element();
 
 void reload_editor();

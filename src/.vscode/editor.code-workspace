@@ -49,7 +49,9 @@
 			"shader.h": "c",
 			"menu_action.h": "c",
 			"components.h": "c",
-			"data.h": "c"
+			"data.h": "c",
+			"optional": "c",
+			"system_error": "c"
 		}
 	}
 }
