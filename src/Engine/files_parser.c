@@ -30,7 +30,6 @@ const char* actual_json_file;
 ComponentType current_component_type;
 
 static inline int get_token_primitive_value(jsmntok_t *token);
-static int dump(jsmntok_t *token, size_t count, int indent);
 
 static int string_equal(jsmntok_t *tok, const char *s) {
   
@@ -95,169 +94,6 @@ static inline void get_token_string(char* out, jsmntok_t* token){
   text[size] = '\0';      
   strcpy(out, text);   
 }
-
-static int dump(jsmntok_t *token, size_t count, int indent) {
-	int i, j;
-  actual_element = &_elements_array[element_id];
-
-  selected_element = &_elements_array[element_id];
-
-	if (count == 0) {
-		return 0;
-	}
-
-	if (token->type == JSMN_PRIMITIVE) {
-   
-
-    if (string_equal( token-1, "function_id") == 0){
-      actual_button->action_function_id = get_token_primitive_value(token);      
-    }
-    
-   
-
-    if (string_equal( token-1, "id") == 0){       
-      actual_element->id = get_token_primitive_value(token);
-    }
-
-  
-
-		return 1;
-	} 
-  else if (token->type == JSMN_STRING) { 
-
-    if(actual_data_type == DATA_TYPE_HEADER){
-      if (string_equal( token, "type") == 0){ 
-          unsigned int type = get_token_primitive_value(token+1);
-          switch (type)
-          {
-          case DATA_TYPE_LEVEL:
-            actual_data_type = type;
-            LOG("Header Type LEVEL\n");
-            break;
-          case DATA_TYPE_GUI:
-            actual_data_type = type;
-            LOG("Header Type GUI\n");
-          default:
-            break;
-          } 
-      }
-      return 1;
-    }
-
-    if(actual_data_type == DATA_TYPE_GUI){
-      if (string_equal( token, "name") == 0) {  
-        char text[20];
-        get_token_string(text,token+1);      
-        strcpy(actual_button->name, text);
-      }
-    }
-    
-
-		return 1;
-	} 
-  else if (token->type == JSMN_OBJECT) {
-
-    if(actual_data_type == DATA_TYPE_GUI){
-      if(previos_id != button_id){
-        Button new_button;
-        memset(&new_button,0,sizeof(Button));
-        add_to_array(actual_array,&new_button);
-        previos_id = button_id;
-        actual_button = get_from_array(actual_array,button_id);      
-      }
-      
-    }
-    if(actual_data_type == DATA_TYPE_GUI){
-       if(object_zero == true){
-        object_zero = false;
-      }else
-        button_id++;
-    }   
-  
-		j = 0;
-
-		for (i = 0; i <= token->size; i++) {
-    
-    	j += dump( token+1+j, count-j, indent+1); 
-
-		}
-    
-
-		return j+1;
-	} 
-  else if (token->type == JSMN_ARRAY) {
-      j = 0;
-      int array_element_index = 0;  
-      
-      
-      if(actual_data_type == DATA_TYPE_GUI){
-        if (string_equal( token-1, "pos") == 0) {
-            vec2 pos;
-            for (i = 0; i < token->size; i++) {   
-
-              dump_array_ints( token+1+j, count-j, array_element_index,pos);
-              array_element_index++;               
-
-              j += dump( token+1+j, count-j, indent+1);                 
-
-            }
-            actual_button->position[0] = pos[0];
-            actual_button->position[1] = pos[1];
-                     
-        }
-        if (string_equal( token-1, "size") == 0) {
-            vec2 size;
-            for (i = 0; i < token->size; i++) {   
-
-              dump_array_ints( token+1+j, count-j, array_element_index,size);
-              array_element_index++;               
-
-              j += dump( token+1+j, count-j, indent+1);                 
-
-            }
-            actual_button->size[0] = size[0];
-            actual_button->size[1] = size[1];
-        }
-      }
-
-    
-      for (i = 0; i <= token->size; i++) {             
-
-        j += dump( token+1+j, count-j, indent+1);     
-
-      }      
-            
-      return j+1;
-	}  
-	return 0;
-}
-
-
-
-int parse_header(const char* json_file){
-  actual_json_file = json_file;
-  actual_data_type = DATA_TYPE_HEADER;
-  for(int i = 0; i < 100 ; i++){
-    if(json_file[i] == '}'){
-      break;
-    }
-    header_size++;
-  }
-  header_size += 2;
-  LOG("Json Header size: %i\n",header_size);
-
-  jsmn_parser parser;
-  jsmn_init(&parser);
-
-  jsmntok_t header_tokens[20];
-
-  int token_parsed = jsmn_parse(&parser,json_file,header_size,header_tokens,20);
-  LOG("Header token parsed: %d\n",token_parsed);
-  dump(header_tokens,token_parsed,0);
-
-  return 0;
-}
-
 
 jsmntok_t* get_token_array_component_transform(jsmntok_t* token){
   if( string_equal(token,"position") != 0){
@@ -445,25 +281,17 @@ void parse_actual_file(jsmntok_t* tokens, int count){
 }
 
 void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
-  parse_header(json_file);
-  int token_count = elements_count *(5+5+30);
+ 
+  int token_count = 20 *(5+5+30);
   
   jsmn_parser parser;
   int max_tokens = token_count+30;
   jsmntok_t tokens[max_tokens];
   jsmn_init(&parser);
+ 
+  actual_json_file = json_file;
 
-  char* models_json_file = allocate_memory(json_file_size-header_size);
-  memset(models_json_file,0,json_file_size-header_size);
-  models_json_file[json_file_size-header_size] = '\0';
-
-  memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
-
-  //LOG("%s\n", models_json_file);
-
-  actual_json_file = models_json_file;
-
-  int parse_result = jsmn_parse(&parser , models_json_file , json_file_size-header_size , tokens,max_tokens);
+  int parse_result = jsmn_parse(&parser , actual_json_file , json_file_size-header_size , tokens,max_tokens);
   switch (parse_result)
   {
   case JSMN_ERROR_INVAL:
@@ -486,43 +314,12 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
 
   init_array(out_element,sizeof(Element),elements_count);   
 
-  //dump(tokens,parse_result,0);
-
   parse_actual_file(tokens,parse_result);
-
   
   for(int i = 0; i < elements_count; i++){
     add_to_array(out_element,&elements[i]);
   }
 
-  //free(models_json_file);
   LOG("json level parsed\n");
 }
 
-void parse_gui_file(const char* json_file, size_t json_file_size, struct Array* out_element){
-  parse_header(json_file);
-
-  int token_count = elements_count * 8;
-
-  jsmn_parser parser;
-  int max_tokens = token_count+30;
-  jsmntok_t tokens[max_tokens];
-  jsmn_init(&parser);
-
-  char* models_json_file = malloc(json_file_size-header_size);
-  memset(models_json_file,0,json_file_size-header_size);
-  models_json_file[json_file_size-header_size] = '\0';
-
-  memcpy(models_json_file,json_file+header_size,json_file_size-header_size);
-
-  LOG("%s\n", models_json_file);
-
-  actual_json_file = models_json_file;
-
-  int number_of_tokens_readed = jsmn_parse(&parser , models_json_file , json_file_size-header_size , tokens,max_tokens);
-
-  actual_array = out_element;
-
-  dump(tokens,number_of_tokens_readed,0);
-
-}

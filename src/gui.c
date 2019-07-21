@@ -348,7 +348,7 @@ void load_gui(const char* name){
         return;
     }
 
-    parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);
+    //parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);
 
     close_file(&level_file);
 
