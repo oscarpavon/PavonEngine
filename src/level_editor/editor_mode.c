@@ -86,8 +86,10 @@ void change_to_editor_mode(EditorMode mode){
         editor_mode_show_text = "GUI Editor";
         break;
     case EDITOR_PLAY_MODE:
-        if(game_initialized == false)
-            init_game();
+        if(game_initialized == false){
+            //init_game();
+            game_initialized = true;
+        }            
         if(game_initialized == false){
             change_to_editor_mode(EDITOR_DEFAULT_MODE);
             return;

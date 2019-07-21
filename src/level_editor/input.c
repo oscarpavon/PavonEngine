@@ -622,7 +622,7 @@ void navigate_mode(){
     }
     
 }
-bool controlling_camera_component = false;
+
 void default_mode(){
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
         return;
@@ -736,7 +736,8 @@ bool player_in_start_position = false;
 
 void input_mode_play(){
   
-    update_game();
+    //update_game();
+    controlling_camera_component = true;
 
     if(input.W.pressed){
         vec3 move = {0,-move_object_value,0};
@@ -746,16 +747,18 @@ void input_mode_play(){
     if(key_released(&input.ESC)){
 
         player_in_start_position = false;
+        controlling_camera_component = false;
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
+        return;
     }
     if(!player_in_start_position){
         if(player1 != NULL){
             if(player_start == NULL){
                 LOG("No player start\n");
-                return;
+                //return;
             }            
 
-            set_element_position(player1,player_start->transform->position);
+            //set_element_position(player1,player_start->transform->position);
             player_in_start_position = true;
         }else{
             LOG("No player selected\n");

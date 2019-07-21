@@ -316,6 +316,11 @@ void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    if(controlling_camera_component){
+        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
+        update_main_camera_with_camera_component_values(camera);
+    }
+
     update_elements_components();
 
     draw_elements(&frame_draw_elements);

@@ -144,14 +144,17 @@ void save_element_component_data(int id){
         new_text_primitive_token("model",mesh->model_id);
         new_text_primitive_token("texture",mesh->model_id);
         break;
-    }       
+    }
+    case CAMERA_COMPONENT:
+        {
+            CameraComponent* camera = component->data;
+            new_text_vec3_token("position",camera->position);
+        } 
     default:
         break;
     }
 }
-void components_count(){
-    new_text_primitive_token("count",current_element->components_count);
-}
+
 void components_data(){
     SaveDataFunction component = &save_element_component_data;
     

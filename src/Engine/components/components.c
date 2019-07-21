@@ -58,16 +58,35 @@ void change_view_to_camera_component(CameraComponent* camera_component){
     
     mat4 local;
     glm_mat4_identity(local);
-    glm_translate(local,VEC3(0,2,1));
+    glm_translate(local,camera_component->position);
     mat4 inverse;
     glm_mat4_inv(selected_element->transform->model_matrix,inverse);
     mat4 global;
-    glm_mat4_mul(local,inverse,global);
+    glm_mat4_mul(local,inverse,main_camera.view);
 
     memcpy(&main_camera,camera_component,sizeof(CameraComponent));
-    glm_vec3_copy(VEC3(global[3][0],global[3][1],global[3][2]),main_camera.position);
-    update_look_at();
+    //glm_vec3_copy(VEC3(global[3][0],global[3][1],global[3][2]),main_camera.position);
+    //update_look_at();
 }
+
+void update_main_camera_with_camera_component_values(CameraComponent* camera_component){
+    mat4 local;
+    glm_mat4_identity(local);
+    glm_translate(local,camera_component->position);
+
+    mat4 global;
+    glm_mat4_mul(selected_element->transform->model_matrix,local,global);
+    vec3 global_position;
+    glm_vec3_copy(VEC3(global[3][0],global[3][1],global[3][2]),main_camera.position);
+    vec3 direction;
+    vec3 direction_pivot;
+    glm_vec3_add(selected_element->transform->position,VEC3(0,0,1.5),direction_pivot);
+    glm_vec3_sub(direction_pivot,main_camera.position, direction);
+    glm_vec3_normalize(direction);
+    glm_vec3_copy(direction,main_camera.front);
+
+    update_look_at(); 
+}  
 
 void init_transfrom_component(TransformComponent* component){
     memset(component->position,0,sizeof(vec3));
@@ -109,6 +128,7 @@ void update_component(ComponentDefinition* element_component){
    
         glm_mat4_mul(element_component->parent->transform->model_matrix, local , component->camera_gizmo->model_mat);      
         add_to_array(&frame_draw_elements,&component->camera_gizmo);
+        
         break;
     }      
     case STATIC_MESH_COMPONENT:{

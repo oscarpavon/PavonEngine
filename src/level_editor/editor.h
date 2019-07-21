@@ -77,4 +77,6 @@ Array editor_elements;
 Array selected_elements_id;
 
 char opened_file_name[20];
+
+bool controlling_camera_component;
 #endif
