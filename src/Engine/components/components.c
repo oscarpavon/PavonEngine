@@ -55,8 +55,17 @@ void init_camera_component(CameraComponent* component){
 
 void change_view_to_camera_component(CameraComponent* camera_component){
     memcpy(&saved_camera,&main_camera, sizeof(CameraComponent));
+    
+    mat4 local;
+    glm_mat4_identity(local);
+    glm_translate(local,VEC3(0,2,1));
+    mat4 inverse;
+    glm_mat4_inv(selected_element->transform->model_matrix,inverse);
+    mat4 global;
+    glm_mat4_mul(local,inverse,global);
+
     memcpy(&main_camera,camera_component,sizeof(CameraComponent));
-    memcpy(camera_component->projection,saved_camera.projection,sizeof(mat4));
+    glm_vec3_copy(VEC3(global[3][0],global[3][1],global[3][2]),main_camera.position);
     update_look_at();
 }
 
@@ -94,8 +103,11 @@ void update_component(ComponentDefinition* element_component){
     }      
     case CAMERA_COMPONENT:{
         CameraComponent* component = &element_component->data[0];
-        glm_vec3_copy(element_component->parent->transform->position, component->position);
-        glm_mat4_copy(element_component->parent->transform->model_matrix,component->camera_gizmo->model_mat);
+        mat4 local;
+        glm_mat4_identity(local);
+        glm_translate(local,component->position);
+   
+        glm_mat4_mul(element_component->parent->transform->model_matrix, local , component->camera_gizmo->model_mat);      
         add_to_array(&frame_draw_elements,&component->camera_gizmo);
         break;
     }      
@@ -119,7 +131,8 @@ void update_component(ComponentDefinition* element_component){
 }
 
 void* get_component_from_selected_element(ComponentType type){
-
+    if(!selected_element)
+        return NULL;
     if(selected_element->components_count > 0){
         for(int i = 0; i< selected_element->components_count ; i++){       
             ComponentDefinition* component = get_from_array(&selected_element->components,i);
@@ -154,5 +167,5 @@ void add_camera_component_to_selected_element(){
     CameraComponent camera_component;
     init_camera_component(&camera_component);
     add_component_to_selected_element(sizeof(CameraComponent), &camera_component, CAMERA_COMPONENT);
-    
+
 }

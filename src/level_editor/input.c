@@ -436,32 +436,45 @@ void grab_mode(){
     input_change_mode();
 
     if(editor_mode == EDITOR_DEFAULT_MODE){     
-
+        
+        vec3 move;
+        bool update = false;
         if(!grid_translate){            
             if(input.W.pressed){
-                vec3 move = {0,-move_object_value,0};
-                update_translation(move);
+                glm_vec3_copy( VEC3(0,-move_object_value,0) , move );
+                update = true;
             }
             if(input.S.pressed){
-                vec3 move = {0,move_object_value,0};
-                update_translation(move);
-            }
+                glm_vec3_copy( VEC3(0,move_object_value,0) , move );
+                update = true;            }
             if(input.D.pressed){
-                vec3 move = {-move_object_value,0,0};
-                update_translation(move);
+                glm_vec3_copy( VEC3(-move_object_value,0,0) , move );
+                update = true;            
             }
             if(input.A.pressed){
-                vec3 move = {move_object_value,0,0};
-                update_translation(move);
+                glm_vec3_copy( VEC3(move_object_value,0,0) , move );
+                update = true;            
             }
             if(input.E.pressed){
-                vec3 move = {0,0,move_object_value};
-                update_translation(move);
+                glm_vec3_copy( VEC3(0,0,move_object_value) , move );
+                update = true;            
             }
             if(input.Q.pressed){
-                vec3 move = {0,0,-move_object_value};
-                update_translation(move);
+                glm_vec3_copy( VEC3(0,0,-move_object_value) , move );
+                update = true;            
             }
+            if(current_component_selected != NULL){
+                if(update){
+                    CameraComponent* camera = current_component_selected->data;
+                    glm_vec3_add(camera->position,move,camera->position);
+                }              
+            }else
+            {
+                if(update)
+                    update_translation(move);
+            }
+            
+            
             
         }else{
             if(key_released(&input.KEY_1)){

@@ -47,6 +47,7 @@ void deselect_all(){
         Element* element = get_from_array(&editor_elements,i);
         element->selected = false;
     }
+    current_component_selected = NULL;
 }
 
 void editor_message(const char* message){

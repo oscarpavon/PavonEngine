@@ -414,6 +414,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     init_model_gl_buffers(&new_model);
 
     load_model_texture_to_gpu(&new_texture);
+    new_model.texture.id = new_texture.id;
 
     add_to_array(array,&new_model);  
 
@@ -421,6 +422,8 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
 void update_translation(vec3 translation){
     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    if(!transform)
+        return;
     glm_translate(transform->model_matrix, translation);
     glm_vec3_copy(VEC3(transform->model_matrix[3][0],
                         transform->model_matrix[3][1],

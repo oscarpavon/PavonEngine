@@ -111,6 +111,8 @@ Model* selected_model;
 Element* player1;
 Element* player_start;
 
+ComponentDefinition* current_component_selected;
+
 Array* current_textures_array;
 Array* actual_model_array;
 Array* actual_elements_array;

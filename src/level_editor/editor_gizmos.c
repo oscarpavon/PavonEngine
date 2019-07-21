@@ -364,7 +364,12 @@ void draw_gizmos(){
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = get_from_array(&gizmos,0);
-            if(editor_mode == EDITOR_DEFAULT_MODE){                
+            if(editor_mode == EDITOR_DEFAULT_MODE){
+                if(current_component_selected){
+                    CameraComponent* camera = current_component_selected->data;
+                    glm_mat4_copy(camera->camera_gizmo->model_mat, actual_gizmo->model_mat);
+                    draw_simgle_model(actual_gizmo);
+                }                
                 if(selected_element != NULL){
                     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
                     if(transform)

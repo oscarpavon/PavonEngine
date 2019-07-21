@@ -76,6 +76,13 @@ void draw_available_components(TextMenu* menu){
     }
 }
 
+void menu_action_select_component_from_selected_element(TextMenu* menu){
+    current_component_selected = get_from_array(&selected_element->components,2);
+    if(current_component_selected)
+        LOG("Component selected\n");
+
+}
+
 void draw_components_from_selected_element(TextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
@@ -87,8 +94,24 @@ void draw_components_from_selected_element(TextMenu* menu){
     }
 
     for(int i = 0; i < selected_element->components_count ; i++){
+        char* name;
+        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        switch (component->type)
+        {
+        case TRASNFORM_COMPONENT:
+            name = "Transfrom Component";
+            break;
+        case CAMERA_COMPONENT:
+            name = "Camera Component";
+            break;
 
-        char* name = "Component ";
+        case STATIC_MESH_COMPONENT:
+            name = "Static Mesh Component";
+            break;
+        default:
+            break;
+        }
+        
         
         draw_element_text_list(menu,name,i);
     }
@@ -108,7 +131,7 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 
 void init_menus(){
     init_array(&menus,sizeof(TextMenu),10);
-    new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, NULL);
+    new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
     new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
 
 }
@@ -142,6 +165,8 @@ void menu_action_select_element(TextMenu* menu){
     }   
 
     element = get_from_array(&editor_elements,id);
+    if(element == NULL)
+        return;
     element->selected = true;
     selected_element = element;
     if(input.SHIFT.pressed){
