@@ -7,25 +7,16 @@
 
 typedef jsmntok_t Token;
 
-typedef enum DumpArrayType{
-  DUMP_ARRAY_TYPE_NULL,
-  DUMP_ARRAY_TYPE_INT,
-  DUMP_ARRAY_TYPE_COMPONENT,
-  DUMP_ARRAY_TYPE_TEXT
-}DumpArrayType;
 
 int header_size = 0;
 DataType actual_data_type;
 unsigned int elements_count = 0;
 
-bool parse_componentes = false;
 
 int element_id = 0;
 int button_id = 0;
 int previos_id = -1;
 
-int actual_element_components_count = 0;
-bool actual_element_component_parsed = false;
 
 bool object_zero = true;
 
@@ -36,7 +27,6 @@ Array* actual_array;
 const char* actual_json_file;
 
 
-DumpArrayType dump_array_type = DUMP_ARRAY_TYPE_NULL;
 ComponentType current_component_type;
 
 static inline int get_token_primitive_value(jsmntok_t *token);
@@ -56,19 +46,6 @@ static inline size_t get_token_size(jsmntok_t *t){
   return length;
 }
 
-static int dump_array(jsmntok_t* token, int count){
-  switch (dump_array_type)
-  {
-  case DUMP_ARRAY_TYPE_COMPONENT:
-    {
-
-    }
-    break;
-  
-  default:
-    break;
-  }
-}
 
 static int dump_int(jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, Element* model) {
 
@@ -119,113 +96,6 @@ static inline void get_token_string(char* out, jsmntok_t* token){
   strcpy(out, text);   
 }
 
-void parse_components(jsmntok_t* token){
-
-    if(dump_array_type == DUMP_ARRAY_TYPE_COMPONENT){
-      
-            
-      if (string_equal( token, "type") == 0){ 
-        unsigned int value =  get_token_primitive_value(token+1);
-        switch (value)
-        {
-        case TRASNFORM_COMPONENT:
-          {
-            current_component_type = TRASNFORM_COMPONENT;
-            TransformComponent transform;
-            init_transfrom_component(&transform);
-            add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
-
-          }
-          break;
-        case STATIC_MESH_COMPONENT:{
-            current_component_type = STATIC_MESH_COMPONENT;
-            StaticMeshComponent mesh_component;
-            mesh_component.model = NULL;
-            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
-          }
-          break;
-        default:
-          break;
-        }
-      }
-
-
-    }
-
-    if(dump_array_type == DUMP_ARRAY_TYPE_TEXT){
-      if (string_equal( token, "paths") == 0){
-        
-      }
-    }
-
-    if(current_component_type == TRASNFORM_COMPONENT){
-      
-      if (string_equal( token, "position") == 0){
-        vec3 pos;
-        jsmntok_t* array_value_token = token+2;
-
-        for (int i = 0; i < (token+1)->size; i++) {   
-          float value = get_token_primitive_float(array_value_token+i);         
-          memcpy(&pos[i],&value,sizeof(float));               
-        }
-
-        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-        glm_vec3_copy(pos,transform->position);
-      }
-    }
-}
-
-void parse_level_token(jsmntok_t* token){
-  if (string_equal(token, "data") == 0) {
-    int i = 0;
-  }
-  if (string_equal(token, "paths") == 0) {
-    jsmntok_t* array_value_token = token+2;
-    for (int i = 0; i < (token+1)->size; i++) {   
-      char text[20];
-      get_token_string(text,array_value_token+i);
-      add_to_array(&texts,text);
-    }
-  }
-
-  if(current_component_type == STATIC_MESH_COMPONENT){
-    if (string_equal( token, "path") == 0) {
-      int path_id = get_token_primitive_value(token+1);
-      StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-      mesh->model_id = path_id;
-    }
-  }
-
-  if (string_equal( token, "name") == 0) {     
-      char text[20];
-      get_token_string(text,token+1);      
-      strcpy(actual_element->name, text);
-      actual_element_component_parsed = false;
-      element_id++;
-  }
-
-  if (string_equal( token, "components_count") == 0) {    
-    actual_element_components_count =  get_token_primitive_value(token+1); 
-    if(selected_element->components.initialized==false)    
-      init_array(&selected_element->components,sizeof(ComponentDefinition),actual_element_components_count);
-  }
-
-  if (string_equal( token, "components") == 0){ 
-    if(actual_element_component_parsed == true)
-      return;
-    for(int i = 0; i < actual_element_components_count ; i++){
-      parse_componentes = true;
-      //dump(token+1,(token+1)->size,0);
-      
-    }
-    
-  }
-
-  
-  parse_components(token);
-   
-}
-
 static int dump(jsmntok_t *token, size_t count, int indent) {
 	int i, j;
   actual_element = &_elements_array[element_id];
@@ -237,31 +107,13 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
 	}
 
 	if (token->type == JSMN_PRIMITIVE) {
-    if (string_equal( token-1, "elements") == 0){
-      elements_count = get_token_primitive_value(token);
-      LOG("Elements from header count: %i\n",elements_count);
-      
-    }
+   
 
     if (string_equal( token-1, "function_id") == 0){
       actual_button->action_function_id = get_token_primitive_value(token);      
     }
     
-    if (string_equal( token-1, "type") == 0){     
-      
-      switch (get_token_primitive_value(token))
-      {
-      case ELEMENT_TYPE_PLAYER_START:
-        actual_element->type = ELEMENT_TYPE_PLAYER_START;
-        break;
-      case ELEMENT_TYPE_PLAYER_CONTROLLER:
-        actual_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
-      default:
-        break;
-      }
-
-      
-    }
+   
 
     if (string_equal( token-1, "id") == 0){       
       actual_element->id = get_token_primitive_value(token);
@@ -300,8 +152,6 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
       }
     }
     
-    if(actual_data_type == DATA_TYPE_LEVEL)
-      parse_level_token(token);
 
 		return 1;
 	} 
@@ -370,15 +220,7 @@ static int dump(jsmntok_t *token, size_t count, int indent) {
         }
       }
 
-      if(actual_data_type == DATA_TYPE_LEVEL){
-        if (string_equal( token-1, "components") == 0){
-          dump_array_type = DUMP_ARRAY_TYPE_COMPONENT;
-        }
-        if (string_equal( token-1, "paths") == 0){
-          dump_array_type = DUMP_ARRAY_TYPE_TEXT;
-        }
-      }
-
+    
       for (i = 0; i <= token->size; i++) {             
 
         j += dump( token+1+j, count-j, indent+1);     
@@ -414,11 +256,6 @@ int parse_header(const char* json_file){
   dump(header_tokens,token_parsed,0);
 
   return 0;
-}
-
-
-void parse_component_type_elements(){
-
 }
 
 
