@@ -3,15 +3,15 @@
 
 #include <GLES2/gl2.h>
 
-typedef struct image{
+typedef struct Image{
   unsigned short int width;
   unsigned short int heigth;
   unsigned char* pixels_data;
 }Image;
 
-typedef struct texture{
+typedef struct Texture{
     Image image;
-    GLuint id;
+    unsigned int id;
 }Texture;
 
 Image load_image(const char* path);

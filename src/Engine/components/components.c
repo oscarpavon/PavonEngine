@@ -102,6 +102,8 @@ void update_component(ComponentDefinition* element_component){
         StaticMeshComponent* component = &element_component->data[0];
         if(component->model == NULL){
             component->model = get_from_array(actual_model_array,component->model_id);
+            Texture* texture = get_from_array(current_textures_array,component->texture_id);
+            component->model->texture.id = texture->id;
         }
         if(component->model == NULL){
             return;

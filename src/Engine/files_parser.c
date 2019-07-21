@@ -19,6 +19,20 @@ ComponentType current_component_type;
 
 static inline int get_token_primitive_value(Token *token);
 
+static inline Token* get_next_object_token(Token* token){
+  while(token->type != JSMN_OBJECT){
+       token += 1;
+  } 
+  return token;
+}
+static inline Token* get_next_array_token(Token* token){
+  while(token->type != JSMN_ARRAY){
+       token += 1;
+  } 
+  return token;
+}
+
+
 static int string_equal(Token *tok, const char *s) {
   
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
@@ -152,46 +166,38 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
   switch (type)
   {
   case TRASNFORM_COMPONENT:{
+    LOG("Pased Transform Component\n");
     last_element_readed = get_token_array_component_transform(token_value_name_string);
     return last_element_readed;
     }    
   case STATIC_MESH_COMPONENT:
-    LOG("Static mesh component\n");
+    LOG("Parsed Static mesh component\n");
     token_value_name_string++;
     last_element_readed = token_value_name_string;
     int mesh_path_id = get_token_primitive_value(token_value_name_string);
+    int texture_id = get_token_primitive_value(token_value_name_string+2);
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
     mesh->model_id = mesh_path_id;
+    mesh->texture_id = texture_id;
     return last_element_readed;
   break;
   }
 }
 
-Token* parse_component_object_token(Token* object_token_component){
-  Token * last_element_readed = object_token_component;
-  for(int i= 0; i< object_token_component->size ; i++){
-    Token* token_primitive_type;
-    if(last_element_readed->type == JSMN_OBJECT){
-      token_primitive_type = last_element_readed+2;
-      object_token_component = last_element_readed;
-    }      
-    else if(last_element_readed->type == JSMN_PRIMITIVE){
-      if((last_element_readed+1)->type == JSMN_OBJECT)
-        object_token_component = last_element_readed+1;
-      token_primitive_type = last_element_readed+3;
-    }
-      
-
+Token* parse_components_objects(Token* array_components){
+  Token * last_element_readed = array_components;
+  for(int i= 0; i< array_components->size ; i++){
+    Token* object = get_next_object_token(last_element_readed);
+    Token* token_primitive_type = object+2;
     ComponentType type = parse_component_type(token_primitive_type);
-    last_element_readed = fill_components_values(type,object_token_component+3);    
+    last_element_readed = fill_components_values(type,object+3);    
   }
   
   return last_element_readed;
 }
 Token* get_components_from_token(Token* components_array){
   int components_counts = components_array->size;
-  init_array(&selected_element->components,sizeof(ComponentDefinition),components_counts);
-  Token* last_element_parsed = parse_component_object_token(components_array+1);
+  Token* last_element_parsed = parse_components_objects(components_array);
   return last_element_parsed;
 }
 //return last token readed
@@ -213,13 +219,6 @@ Token* parse_element_object_token(Token* object_token){
     }else{
       LOG("token name not found\n");
     }
-}
-
-Token* get_next_object_token(Token* token){
-  while(token->type != JSMN_OBJECT){
-       token += 1;
-  } 
-  return token;
 }
 
 Token* parse_elements(Token* array_element_token){
@@ -250,21 +249,36 @@ void parse_actual_file(Token* tokens, int count){
 
   Token* new_object = get_next_object_token(last_element_parsed);
   for(int i = 0; i< count ; i++){
-    Token* actual_token = &tokens[i];
-    if(actual_token->type == JSMN_STRING){
-        if (string_equal(actual_token, "paths") == 0) {
-          Token* array_value_token = actual_token+2;
-          for (int i = 0; i < (actual_token+1)->size; i++) {   
+    last_element_parsed = &tokens[i];
+    if(last_element_parsed->type == JSMN_STRING){
+        if (string_equal(last_element_parsed, "models") == 0) {
+          Token* array_value_token = last_element_parsed+2;
+          for (int i = 0; i < (last_element_parsed+1)->size; i++) {   
             char text[20];
             get_token_string(text,array_value_token+i);
             add_to_array(&texts,text);
           }
+          break;
         }
 
     }
 
+
+  }
+
+  while (string_equal(last_element_parsed,"textures") != 0)
+  {
+    last_element_parsed++;
   }
   
+  Token* texture_array = last_element_parsed+1;
+  
+  for(int i = 0; i < texture_array->size; i++){
+    Token* value = last_element_parsed + 2;
+    char text[20];
+    get_token_string(text,value+i);
+    add_to_array(&textures_paths,text);
+  }
 
 }
 

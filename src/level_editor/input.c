@@ -93,6 +93,7 @@ void parse_command(const char* command){
         if(command[1] == 'o'){        
             load_level_in_editor(&command[3]);
             LOG("Level loaded\n");
+            return;
         }
     }
     

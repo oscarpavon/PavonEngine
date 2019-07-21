@@ -141,7 +141,8 @@ void save_element_component_data(int id){
     }
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* mesh = &component->data[0];
-        new_text_primitive_token("path",mesh->model_id);
+        new_text_primitive_token("model",mesh->model_id);
+        new_text_primitive_token("texture",mesh->model_id);
         break;
     }       
     default:
@@ -179,7 +180,7 @@ void level_elements_data(){
 
 }
 
-void level_paths_data(){
+void save_model_paths(){
 
     for(int i = 0; i< texts.count ; i++){       
         hirachical_tab();
@@ -187,9 +188,18 @@ void level_paths_data(){
     }
    
 }
+void save_textures_paths(){
+
+    for(int i = 0; i< textures_paths.count ; i++){       
+        hirachical_tab();
+        fprintf(actual_file,"\"%s\",\n",get_from_array(&textures_paths,i));
+    }
+   
+}
 
 void level_data(){
-    new_array_data("paths",&level_paths_data);
+    new_array_data("models",&save_model_paths);
+    new_array_data("textures",&save_textures_paths);
 }
 
 typedef void(*function_with_function)( const char*text, void(*function2)(void));
@@ -201,13 +211,12 @@ void new_element_wiht_data( function_with_function t,const char* text, void(*fun
     hirarchical_count--;
     hirachical_tab(); fputs("},\n",actual_file);
 }
+
 void leve_data_element_plus_data(){
    new_element_wiht_data(&new_array_data,"elements",&level_elements_data);
-   new_element_wiht_data(&new_array_data,"data",&level_data);
-    //new_array_data("elements",&level_elements_data);
-    //new_array_data("data",&level_data);
-   
+   new_element_wiht_data(&new_array_data,"data",&level_data);   
 }
+
 void save_level(int id){
     new_array_data("level",&leve_data_element_plus_data);
 }

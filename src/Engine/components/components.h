@@ -50,7 +50,8 @@ typedef struct CameraComponent{
 }CameraComponent;
 
 typedef struct StaticMeshComponent{
-    int model_id;    
+    int model_id;
+    int texture_id;
     Model* model;
 }StaticMeshComponent;
 

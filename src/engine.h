@@ -56,7 +56,7 @@ it not show it becouse color is multiplied per 0 ! */
 void draw_elements(Array* elements);
 void draw_simgle_model(struct Model * new_model);
 void load_models_texture_to_gpu(Array* models_array);
-void load_model_texture_to_gpu(struct Model*);
+void load_model_texture_to_gpu(Texture*);
 
 void init_model_gl_buffers(struct Model* new_model);
 
@@ -89,6 +89,7 @@ void load_and_create_simple_model(const char* model_gltf_path);
 
 void update_translation(vec3 translation);
 
+void load_simple_image(const char* path);
 
 bool should_close;
 
@@ -110,6 +111,7 @@ Model* selected_model;
 Element* player1;
 Element* player_start;
 
+Array* current_textures_array;
 Array* actual_model_array;
 Array* actual_elements_array;
 Array* actual_LOD_models_array;

@@ -114,10 +114,31 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     }
 
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-    mesh->model->texture.image = load_image(image_path);
-    load_model_texture_to_gpu(mesh->model);
-    add_to_array(&textures_paths,image_path);
     
+    Texture new_texture;
+    memset(&new_texture,0,sizeof(Texture));
+    new_texture.image = load_image(image_path);
+    load_model_texture_to_gpu(&new_texture); 
+    
+    add_to_array(current_textures_array,&new_texture);
+    Texture* texture_loaded = get_from_array(current_textures_array,current_textures_array->count-1);
+    
+    add_to_array(&textures_paths,image_path);
+    mesh->texture_id = textures_paths.count-1;
+
+    mesh->model->texture.id = texture_loaded->id;//for compatibility
+
+    LOG("Texture loaded and assigned: %s\n",image_path);
+    
+}
+
+void load_simple_image(const char* path){
+    Texture new_texture;
+    memset(&new_texture,0,sizeof(Texture));
+    new_texture.image = load_image(path);
+    load_model_texture_to_gpu(&new_texture); 
+    
+    add_to_array(current_textures_array,&new_texture);    
 }
 
 void load_and_create_simple_model(const char* model_gltf_path){
@@ -210,15 +231,15 @@ void draw_elements(Array *elements){
 }
 
 
-void load_model_texture_to_gpu(struct Model * model){
-    glGenTextures(1, &model->texture.id);
-    glBindTexture(GL_TEXTURE_2D, model->texture.id);
+void load_model_texture_to_gpu(Texture* texture){
+    glGenTextures(1, &texture->id);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
 
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, model->texture.image.width,
-                    model->texture.image.heigth, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, model->texture.image.pixels_data);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, texture->image.width,
+                    texture->image.heigth, 0,
+                    GL_RGB, GL_UNSIGNED_BYTE, texture->image.pixels_data);
 
-    free_image(&model->texture.image);
+    free_image(&texture->image);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -387,11 +408,12 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
     glUseProgram(new_model.shader);
 
-    new_model.texture.image = load_image(color_texture_path);
+    Texture new_texture;
+    new_texture.image = load_image(color_texture_path);
 
     init_model_gl_buffers(&new_model);
 
-    load_model_texture_to_gpu(&new_model);
+    load_model_texture_to_gpu(&new_texture);
 
     add_to_array(array,&new_model);  
 

@@ -21,6 +21,7 @@
 #include "../Engine/level.h"
 
 Array editor_models;
+Array editor_textures;
 
 Array LOD_models;
 
@@ -197,8 +198,12 @@ void load_level_in_editor(const char* name){
 
     for(int i = 0; i< texts.count ; i++){
        load_and_create_simple_model(get_from_array(&texts,i));
-    }   
-    
+    }    
+
+    for(int i = 0; i< textures_paths.count ; i++){
+       load_simple_image(get_from_array(&textures_paths,i));
+    } 
+
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
     struct timespec result = diff(time1,time2);
@@ -222,6 +227,7 @@ void reload_editor(){
     clean_array(&editor_elements);   
     clean_array(&editor_models);
     clean_array(&texts);
+    clean_array(&textures_paths);
 }
 
 void init_editor(){
@@ -229,6 +235,7 @@ void init_editor(){
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     actual_LOD_models_array = &LOD_models;
+    current_textures_array = &editor_textures;
     
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
@@ -246,6 +253,7 @@ void init_editor(){
     init_array(&LOD_models,sizeof(Model),10);
     init_array(&editor_elements,sizeof(Element),100);
     init_array(&editor_models, sizeof(Model),100);
+    init_array(&editor_textures, sizeof(Texture),100);
     init_array(&engine_native_models,sizeof(Model),10);
     
 
@@ -318,9 +326,6 @@ void update_elements_components(){
 void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //check_elements_camera_distance_for_LOD();
-    //assign_LOD_mesh();
     
     update_elements_components();
 
