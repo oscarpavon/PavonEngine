@@ -223,10 +223,8 @@ void save_level_data(const char* level_name){
 
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
-    actual_data_type = DATA_TYPE_LEVEL;
-    
-    save_header_info();
-
+    actual_data_type = DATA_TYPE_LEVEL;  
+ 
     SaveDataFunction level =  &save_level;
     new_save_element(level,0);
     

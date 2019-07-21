@@ -174,7 +174,6 @@ void update_camera_aspect_ratio(){
     glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
 }
 
-Array load_elements;
 
 void load_level_in_editor(const char* name){
     struct timespec time1, time2;
@@ -189,25 +188,14 @@ void load_level_in_editor(const char* name){
     strcat(save_name,".lvl");
     LOG("%s\n",save_name);
 
-    int level_result = load_level_to_elements_array(save_name, &load_elements);
+    int level_result = load_level_to_elements_array(save_name, actual_elements_array);
     if(level_result != 0)
         return;   
     
 
     for(int i = 0; i< texts.count ; i++){
        load_and_create_simple_model(get_from_array(&texts,i));
-    }
-    for(int i = 0; i < load_elements.count; i++){
-        new_empty_element();
-        Element* loaded_element = get_from_array(&load_elements,i);
-        memcpy(selected_element,loaded_element,sizeof(Element));
-        for(int o = 0; o < loaded_element->components_count; o++){
-            ComponentDefinition* component = get_from_array(&loaded_element->components,o);
-            component->parent = loaded_element;
-        }
-    }
- 
-    //clean_array(&load_elements);
+    }   
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 

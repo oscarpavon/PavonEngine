@@ -7,31 +7,19 @@
 
 typedef jsmntok_t Token;
 
-
 int header_size = 0;
 DataType actual_data_type;
 unsigned int elements_count = 0;
 
-
 int element_id = 0;
-int button_id = 0;
-int previos_id = -1;
 
-
-bool object_zero = true;
-
-struct Element* actual_element;
-Button* actual_button;
-struct Element* _elements_array;
-Array* actual_array;
 const char* actual_json_file;
-
 
 ComponentType current_component_type;
 
-static inline int get_token_primitive_value(jsmntok_t *token);
+static inline int get_token_primitive_value(Token *token);
 
-static int string_equal(jsmntok_t *tok, const char *s) {
+static int string_equal(Token *tok, const char *s) {
   
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
       strncmp(actual_json_file + tok->start, s, tok->end - tok->start) == 0) {
@@ -40,13 +28,13 @@ static int string_equal(jsmntok_t *tok, const char *s) {
   return -1;
 }
 
-static inline size_t get_token_size(jsmntok_t *t){
+static inline size_t get_token_size(Token *t){
   size_t length = t->end - t->start;
   return length;
 }
 
 
-static int dump_int(jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int indent, Element* model) {
+static int dump_int(Token *next_t, Token *object_t, size_t count, int indent, Element* model) {
 
     if (string_equal(object_t, "id") == 0) {
         size_t size = get_token_size(next_t);
@@ -58,7 +46,7 @@ static int dump_int(jsmntok_t *next_t, jsmntok_t *object_t, size_t count, int in
       }
 }
 
-static int dump_array_ints(jsmntok_t *token, size_t count, int index, float* firt_array_element) {
+static int dump_array_ints(Token *token, size_t count, int index, float* firt_array_element) {
 	
 	if (token->type == JSMN_PRIMITIVE) {
     float value = get_token_primitive_value(token);
@@ -69,7 +57,7 @@ static int dump_array_ints(jsmntok_t *token, size_t count, int index, float* fir
 	}
 }
 
-static inline int get_token_primitive_value(jsmntok_t *token){
+static inline int get_token_primitive_value(Token *token){
   int size = get_token_size(token);
   char text[size+1];
   memcpy(&text,&actual_json_file[token->start],size);
@@ -78,7 +66,7 @@ static inline int get_token_primitive_value(jsmntok_t *token){
   return result;
 }
 
-static inline float get_token_primitive_float(jsmntok_t *token){
+static inline float get_token_primitive_float(Token *token){
   int size = get_token_size(token);
   char text[size+1];
   memcpy(&text,&actual_json_file[token->start],size);
@@ -87,7 +75,7 @@ static inline float get_token_primitive_float(jsmntok_t *token){
   return result;
 }
 
-static inline void get_token_string(char* out, jsmntok_t* token){
+static inline void get_token_string(char* out, Token* token){
   size_t size = get_token_size(token);
   char text[size+1];
   memcpy(&text,&actual_json_file[token->start],size);
@@ -95,15 +83,15 @@ static inline void get_token_string(char* out, jsmntok_t* token){
   strcpy(out, text);   
 }
 
-jsmntok_t* get_token_array_component_transform(jsmntok_t* token){
+Token* get_token_array_component_transform(Token* token){
   if( string_equal(token,"position") != 0){
     LOG("No token \"position\" string passed\n");
     return;
   }
   vec3 pos;
-  jsmntok_t* array_token = token+1;
-  jsmntok_t* array_value_token = token+2;
-  jsmntok_t* last_token_readed = NULL;
+  Token* array_token = token+1;
+  Token* array_value_token = token+2;
+  Token* last_token_readed = NULL;
   for (int i = 0; i < array_token->size; i++) {
     last_token_readed = array_value_token+i;   
     float value = get_token_primitive_float(array_value_token+i);         
@@ -132,7 +120,7 @@ jsmntok_t* get_token_array_component_transform(jsmntok_t* token){
   return last_token_readed;
 }
 
-ComponentType parse_component_type(jsmntok_t* type_token){
+ComponentType parse_component_type(Token* type_token){
   if( type_token->type != JSMN_PRIMITIVE)
     LOG("Get type is not a primitive value\n");
   int type = get_token_primitive_value(type_token);
@@ -159,8 +147,8 @@ ComponentType parse_component_type(jsmntok_t* type_token){
   }
   return current_component_type;
 }
-jsmntok_t * fill_components_values(ComponentType type, jsmntok_t* token_value_name_string){
-  jsmntok_t * last_element_readed;
+Token * fill_components_values(ComponentType type, Token* token_value_name_string){
+  Token * last_element_readed;
   switch (type)
   {
   case TRASNFORM_COMPONENT:{
@@ -179,10 +167,10 @@ jsmntok_t * fill_components_values(ComponentType type, jsmntok_t* token_value_na
   }
 }
 
-jsmntok_t* parse_component_object_token(jsmntok_t* object_token_component){
-  jsmntok_t * last_element_readed = object_token_component;
+Token* parse_component_object_token(Token* object_token_component){
+  Token * last_element_readed = object_token_component;
   for(int i= 0; i< object_token_component->size ; i++){
-    jsmntok_t* token_primitive_type;
+    Token* token_primitive_type;
     if(last_element_readed->type == JSMN_OBJECT){
       token_primitive_type = last_element_readed+2;
       object_token_component = last_element_readed;
@@ -200,22 +188,22 @@ jsmntok_t* parse_component_object_token(jsmntok_t* object_token_component){
   
   return last_element_readed;
 }
-jsmntok_t* get_components_from_token(jsmntok_t* components_array){
+Token* get_components_from_token(Token* components_array){
   int components_counts = components_array->size;
   init_array(&selected_element->components,sizeof(ComponentDefinition),components_counts);
-  jsmntok_t* last_element_parsed = parse_component_object_token(components_array+1);
+  Token* last_element_parsed = parse_component_object_token(components_array+1);
   return last_element_parsed;
 }
 //return last token readed
-jsmntok_t* parse_element_object_token(jsmntok_t* object_token){
-    jsmntok_t* name_token = object_token+1;
+Token* parse_element_object_token(Token* object_token){
+    Token* name_token = object_token+1;
     if( name_token->type == JSMN_STRING ){
       if( string_equal(name_token,"name") == 0 ){
         char name[20];
         get_token_string(name,name_token+1);
         LOG("Name: %s\n",name);
         strcpy(selected_element->name,name);
-        jsmntok_t* last_element_parsed = get_components_from_token(name_token+3);
+        Token* last_element_parsed = get_components_from_token(name_token+3);
         return last_element_parsed;
       }else{
         char text[20];
@@ -227,20 +215,20 @@ jsmntok_t* parse_element_object_token(jsmntok_t* object_token){
     }
 }
 
-jsmntok_t* get_next_object_token(jsmntok_t* token){
+Token* get_next_object_token(Token* token){
   while(token->type != JSMN_OBJECT){
        token += 1;
   } 
   return token;
 }
 
-jsmntok_t* parse_elements(jsmntok_t* array_element_token){
+Token* parse_elements(Token* array_element_token){
   
   int elements_counts = array_element_token->size;
  
-  jsmntok_t* last_element_parsed = array_element_token;
+  Token* last_element_parsed = array_element_token;
   for(int i = 0; i< elements_counts ; i++){
-    selected_element = &_elements_array[element_id];
+    new_empty_element();
     last_element_parsed = get_next_object_token(last_element_parsed);
     last_element_parsed = parse_element_object_token(last_element_parsed);
     element_id++;
@@ -248,10 +236,10 @@ jsmntok_t* parse_elements(jsmntok_t* array_element_token){
   return last_element_parsed;
 }
 
-void parse_actual_file(jsmntok_t* tokens, int count){
-  jsmntok_t* last_element_parsed = NULL;
+void parse_actual_file(Token* tokens, int count){
+  Token* last_element_parsed = NULL;
   for(int i = 0; i< count ; i++){
-    jsmntok_t* actual_token = &tokens[i];
+    Token* actual_token = &tokens[i];
     if(actual_token->type == JSMN_STRING){
       if( string_equal(actual_token,"elements") == 0){
         last_element_parsed =  parse_elements(actual_token+1);
@@ -281,17 +269,17 @@ void parse_actual_file(jsmntok_t* tokens, int count){
 }
 
 void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
- 
+  
   int token_count = 20 *(5+5+30);
   
   jsmn_parser parser;
   int max_tokens = token_count+30;
-  jsmntok_t tokens[max_tokens];
+  Token tokens[max_tokens];
   jsmn_init(&parser);
  
   actual_json_file = json_file;
 
-  int parse_result = jsmn_parse(&parser , actual_json_file , json_file_size-header_size , tokens,max_tokens);
+  int parse_result = jsmn_parse(&parser , actual_json_file , json_file_size , tokens,max_tokens);
   switch (parse_result)
   {
   case JSMN_ERROR_INVAL:
@@ -307,19 +295,9 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   default:
     break;
   }
-  Element elements[elements_count];
-  memset(elements,0,sizeof(elements));
-  _elements_array = &elements[0];
-
-
-  init_array(out_element,sizeof(Element),elements_count);   
 
   parse_actual_file(tokens,parse_result);
   
-  for(int i = 0; i < elements_count; i++){
-    add_to_array(out_element,&elements[i]);
-  }
-
   LOG("json level parsed\n");
 }
 
