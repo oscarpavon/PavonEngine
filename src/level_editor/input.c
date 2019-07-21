@@ -96,12 +96,22 @@ void parse_command(const char* command){
         }
     }
     
+    switch (first_char_command)
+    {
+    case 'r':{
+        reload_editor();
+        LOG("reload\n");
+    }
+    break;
+    
+    default:
+        break;
+    }
     if(command[1] == 'q'){
         exit(0);
     }
     if(command[1] == 'r'){        
-        reload_editor();
-        LOG("reload\n");
+       
     }
     if(command[1] == 's'){ //set
         if(command[3] == 'p'){//player

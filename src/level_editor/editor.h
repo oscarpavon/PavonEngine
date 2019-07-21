@@ -76,5 +76,5 @@ Array editor_elements;
 
 Array selected_elements_id;
 
-
+char opened_file_name[20];
 #endif

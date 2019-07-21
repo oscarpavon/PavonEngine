@@ -176,6 +176,8 @@ void update_camera_aspect_ratio(){
 
 
 void load_level_in_editor(const char* name){
+    strcpy(opened_file_name,name);
+
     struct timespec time1, time2;
     int temp;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
@@ -218,7 +220,8 @@ void reload_editor(){
     element_id_count = 0;
     
     clean_array(&editor_elements);   
-    
+    clean_array(&editor_models);
+    clean_array(&texts);
 }
 
 void init_editor(){

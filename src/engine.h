@@ -63,6 +63,7 @@ void init_model_gl_buffers(struct Model* new_model);
 void draw_editor_viewport(); 
 
 void set_selected_element_transform(vec3 position, versor rotation);
+void rotate_element(Element* element, versor quaternion);
 
 void set_element_position(Element* element, vec3 position);
 

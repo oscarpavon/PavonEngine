@@ -399,7 +399,19 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
 void update_translation(vec3 translation){
     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-    glm_vec3_add(transform->position,translation,transform->position);
     glm_translate(transform->model_matrix, translation);
-    
+    glm_vec3_copy(VEC3(transform->model_matrix[3][0],
+                        transform->model_matrix[3][1],
+                        transform->model_matrix[3][2]),
+    transform->position);
+}
+
+void rotate_element(Element* element, versor quaternion){
+    mat4 model_rot_mat;
+    glm_quat_mat4(quaternion,model_rot_mat);
+
+    TransformComponent* transform = get_component_from_element(element,TRASNFORM_COMPONENT);
+    if(transform)
+        glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
+
 }

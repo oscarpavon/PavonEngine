@@ -212,7 +212,10 @@ void save_level(int id){
     new_array_data("level",&leve_data_element_plus_data);
 }
 
-void save_level_data(const char* level_name){    
+void save_level_data(const char* level_name){
+    if(strcmp(level_name, "") == 0)
+        level_name = opened_file_name;
+
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
     strcat(save_name, level_folder);
