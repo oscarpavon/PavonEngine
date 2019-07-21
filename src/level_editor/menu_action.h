@@ -100,6 +100,9 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
         init_transfrom_component(&transform);
         add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
 
+    } else
+    if( strcmp("Camera Component", menu->text_for_action) == 0 ){ 
+        add_camera_component_to_selected_element();
     } 
 }
 

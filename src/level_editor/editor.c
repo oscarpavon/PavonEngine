@@ -61,9 +61,7 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "Camera01");
         selected_element->type = ELEMENT_TYPE_CAMERA;        
         
-        TransformComponent transform;
-        init_transfrom_component(&transform);
-        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+        add_transform_component_to_selected_element();        
 
         CameraComponent camera_component;
         init_camera_component(&camera_component);
@@ -75,10 +73,7 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "PlayerStart01");        
         selected_element->type = ELEMENT_TYPE_PLAYER_START;        
         player_start = selected_element;
-        TransformComponent transform;
-        init_transfrom_component(&transform);
-        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);        
-        
+        add_transform_component_to_selected_element();        
         selected_model = NULL;
         
     }else if ( strcmp("Player Controller", native_element_name) == 0 )
@@ -89,9 +84,7 @@ void add_editor_native_element(const char* native_element_name){
     }else if ( strcmp("Sphere", native_element_name) == 0 ){
         new_empty_element();
         strcpy(selected_element->name, "Sphere");
-        TransformComponent transform;
-        init_transfrom_component(&transform);
-        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+        add_transform_component_to_selected_element();
         SphereComponent sphere;
         memset(&sphere,0,sizeof(SphereComponent));
         init_sphere_component(&sphere);
@@ -100,9 +93,7 @@ void add_editor_native_element(const char* native_element_name){
     else if ( strcmp("Cube", native_element_name) == 0 ){
         new_empty_element();
         strcpy(selected_element->name, "Cube");
-        TransformComponent transform;
-        init_transfrom_component(&transform);
-        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+        add_transform_component_to_selected_element();
         CubeComponent cube;
         memset(&cube,0,sizeof(SphereComponent));
         init_cube_component(&cube);
@@ -113,10 +104,7 @@ void add_editor_native_element(const char* native_element_name){
     }else if ( strcmp("Floor", native_element_name) == 0 ){
         new_empty_element();
         strcpy(selected_element->name, "Floor");
-        TransformComponent transform;
-        init_transfrom_component(&transform);
-        add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
-
+        add_transform_component_to_selected_element();
         StaticMeshComponent mesh_component;
         mesh_component.model = get_from_array(&engine_native_models,3);
         add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);

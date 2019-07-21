@@ -52,6 +52,7 @@ void init_camera_component(CameraComponent* component){
 
 }
 
+
 void change_view_to_camera_component(CameraComponent* camera_component){
     memcpy(&saved_camera,&main_camera, sizeof(CameraComponent));
     memcpy(&main_camera,camera_component,sizeof(CameraComponent));
@@ -139,4 +140,19 @@ void* get_component_from_element(Element* element, ComponentType type){
     }
     selected_element = previous_element;
     return NULL;
+}
+
+void add_transform_component_to_selected_element(){
+    TransformComponent transform;
+    init_transfrom_component(&transform);
+    add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+    selected_element->transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+
+}
+
+void add_camera_component_to_selected_element(){
+    CameraComponent camera_component;
+    init_camera_component(&camera_component);
+    add_component_to_selected_element(sizeof(CameraComponent), &camera_component, CAMERA_COMPONENT);
+    
 }

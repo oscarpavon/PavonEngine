@@ -68,5 +68,6 @@ void init_transfrom_component(TransformComponent* component);
 void* get_component_from_selected_element(ComponentType type);
 void* get_component_from_element(Element* element, ComponentType type);
 void change_view_to_camera_component(CameraComponent* camera_component);
-
+void add_transform_component_to_selected_element();
+void add_camera_component_to_selected_element();
 #endif
