@@ -143,16 +143,15 @@ ComponentType parse_component_type(Token* type_token){
   if( type_token->type != JSMN_PRIMITIVE)
     LOG("Get type is not a primitive value\n");
   int type = get_token_primitive_value(type_token);
+  current_component_type = type;
   switch (type)
   {
   case TRASNFORM_COMPONENT:
     {
-      current_component_type = TRASNFORM_COMPONENT;
       add_transform_component_to_selected_element();
     }
     break;
   case STATIC_MESH_COMPONENT:{
-      current_component_type = STATIC_MESH_COMPONENT;
       StaticMeshComponent mesh_component;
       mesh_component.model = NULL;
       add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
@@ -160,9 +159,17 @@ ComponentType parse_component_type(Token* type_token){
     break;
   case CAMERA_COMPONENT:
   {
-    current_component_type = CAMERA_COMPONENT;
     add_camera_component_to_selected_element();
+    break;
   }
+  case SPHERE_COMPONENT:
+    {
+      SphereComponent sphere;
+      memset(&sphere,0,sizeof(SphereComponent));
+      init_sphere_component(&sphere);
+      add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
+      break;
+    }
   default:
     break;
   }
@@ -177,6 +184,10 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
   {
     LOG("Pased Transform Component\n");
     last_element_readed = get_token_array_component_transform(token_value_name_string);
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    glm_translate(transform->model_matrix,transform->position);
+    rotate_element(selected_element,transform->rotation);
+
     return last_element_readed;
   }    
   case STATIC_MESH_COMPONENT:
@@ -191,6 +202,11 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     mesh->texture_id = texture_id;
     return last_element_readed;
 
+  }
+  case SPHERE_COMPONENT:
+  {
+
+    return token_value_name_string;
   }
   case CAMERA_COMPONENT:
   {

@@ -264,6 +264,16 @@ void init_editor(){
 
 }
 
+void draw_count_of_draw_call(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text("Draw:" , 0 + ((camera_width_screen/2)-500) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    char buf[5]; 
+    float count = frame_draw_elements.count;
+    gcvt(count, 6, buf);
+    if(count != 0)
+    render_text(buf , 0 + ((camera_width_screen/2)-440) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+
+}
 
 void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
@@ -276,6 +286,7 @@ void draw_editor_viewport(){
 
     update_elements_components();
 
+    draw_count_of_draw_call();
     draw_elements(&frame_draw_elements);
 
     draw_gizmos();

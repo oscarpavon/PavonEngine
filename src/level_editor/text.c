@@ -303,6 +303,7 @@ void draw_editor_mode(){
     render_text(editor_mode_show_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 }
 
+
 void draw_editor_sub_mode(){
     FT_Set_Pixel_Sizes(face, 0, 12);
     render_text(editor_sub_mode_text , 0 + ((camera_width_screen/2)-100) * pixel_size_x , 0 + ((camera_heigth_screen/2)-40) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
@@ -361,7 +362,7 @@ void text_renderer_loop(){
         set_text_size(12);
         render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);
     }
-
+    draw_count_of_draw_call();
     draw_engine_memory();
     draw_editor_mode();
     draw_frame_time();

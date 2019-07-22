@@ -101,12 +101,6 @@ void update_component(ComponentDefinition* element_component){
         break;
     }
     case TRASNFORM_COMPONENT:{
-        if(element_component->parent->transform == NULL){
-            TransformComponent* transform = &element_component->data[0];
-            element_component->parent->transform = transform;
-            glm_translate(transform->model_matrix,transform->position);
-            rotate_element(element_component->parent,transform->rotation);
-        }
         
         break;
     }      
