@@ -187,7 +187,7 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
     glm_translate(transform->model_matrix,transform->position);
     rotate_element(selected_element,transform->rotation);
-
+    
     return last_element_readed;
   }    
   case STATIC_MESH_COMPONENT:

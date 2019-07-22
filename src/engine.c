@@ -348,12 +348,13 @@ void init_engine(){
     action_pointer_id_count = 0;
     init_array(&actions_pointers,sizeof(ActionPointer),20);
 
-    init_array(&frame_draw_elements,sizeof(void*),300);
+    init_array(&frame_draw_elements,sizeof(void*),100);
+    init_array(&models_for_test_occlusion,sizeof(void*),300);
 
     touch_position_x = -1;
     touch_position_x = -1;
 
-    init_array(&engine_native_models,sizeof(Model),10);
+    init_array(&engine_native_models,sizeof(Model),100);
 
     actual_standard_fragment_shader = standart_fragment_shader;    
     load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
@@ -462,4 +463,29 @@ void rotate_element(Element* element, versor quaternion){
     if(transform)
         glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
 
+}
+
+void test_elements_occlusion(){
+    vec4 frustrum_planes[6];
+    mat4 view_projection_mat;
+    glm_mat4_mul(main_camera.projection,main_camera.view,view_projection_mat);
+
+    glm_frustum_planes(view_projection_mat,frustrum_planes);
+
+
+
+    for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
+        Model** model = get_from_array(&models_for_test_occlusion,i);
+        Model* test_model = model[0];
+        
+        vec3 box[2];
+        
+        glm_vec3_copy(test_model->min,box[0]);
+        glm_vec3_copy(test_model->max,box[1]);
+        glm_vec3_add(box[0],VEC3(test_model->model_mat[3][0],test_model->model_mat[3][1],test_model->model_mat[3][2]),box[0]);
+        glm_vec3_add(box[1],VEC3(test_model->model_mat[3][0],test_model->model_mat[3][1],test_model->model_mat[3][2]),box[1]);
+
+        if(glm_aabb_frustum(box,frustrum_planes) == true)
+            add_to_array(&frame_draw_elements,&model[0]);
+    }   
 }

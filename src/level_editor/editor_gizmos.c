@@ -62,9 +62,18 @@ void init_selected_object_bounding_box_vertices(){
         memset(&min,0,sizeof(struct Vertex));
         memset(&max,0,sizeof(struct Vertex));
 
+        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+
         StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-        glm_vec3_copy(mesh->model->min, min.postion);
-        glm_vec3_copy(mesh->model->max, max.postion);
+        if(!mesh){
+            bounding_box_initialized = true;
+            return;
+        }
+           
+        //glm_vec3_copy(mesh->model->min, min.postion);
+        //glm_vec3_copy(mesh->model->max, max.postion);
+        glm_vec3_add(mesh->model->min,transform->position,min.postion);
+        glm_vec3_add(mesh->model->max,transform->position,max.postion);
 
 
         struct Vertex vert3;
@@ -130,13 +139,39 @@ void init_selected_object_bounding_box_vertices(){
    }
 
 }
-
+vec3 last_position;
 void update_bounding_vertices_array(Model* model){
+    bool sub = false;
+    if(last_position[0] == selected_element->transform->position[0] &&
+        last_position[1] == selected_element->transform->position[1] &&
+        last_position[2] == selected_element->transform->position[2]){
+            return;
+        }
+    if(last_position[0] >= selected_element->transform->position[0] &&
+        last_position[1] >= selected_element->transform->position[1] &&
+        last_position[2] >= selected_element->transform->position[2]){
+            sub = false;
+        }else
+        {
+                sub = true;
+        }
+    
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    glm_vec3_add(selected_element->transform->position,mesh->model->max,mesh->model->max);
+    glm_vec3_add(selected_element->transform->position,mesh->model->min,mesh->model->min);
+
+    glm_vec3_copy(selected_element->transform->position,last_position);
+
     Model* box = get_from_array(&bounding_boxes,0);
+    
     for(int i = 0; i < box->vertex_array.count ; i++){
         vec3 new_vertex_pos;
-        struct Vertex* vertex = get_from_array(&box->vertex_array,i);
-        glm_vec3_rotate_m4(model->model_mat,vertex->postion,vertex->postion);
+        struct Vertex* vertex = get_from_array(&box->vertex_array,i);        
+        
+        if(sub)
+            glm_vec3_sub(vertex->postion,selected_element->transform->position,vertex->postion);
+        else    
+            glm_vec3_sub(vertex->postion,selected_element->transform->position,vertex->postion);
     }
 }
 
@@ -144,8 +179,8 @@ void update_bounding_vertices_array(Model* model){
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
         Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
-        //update_bounding_vertices_array( model );
-        //update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
+        update_bounding_vertices_array( bounding_model );
+        update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         mat4 model;
         glm_mat4_identity(model);
         update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id, model);

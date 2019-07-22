@@ -17,7 +17,10 @@ void add_component_to_selected_element(int component_byte_size, void* new_compon
 }
 
 void init_sphere_component(SphereComponent* component){
+    previous_models_array = actual_model_array;
+    actual_model_array = &engine_native_models;
     new_empty_model();
+    actual_model_array = previous_models_array;
     Model* sphere_model = get_from_array(&engine_native_models,0);
     memcpy(selected_model,sphere_model,sizeof(Model));
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
@@ -25,7 +28,10 @@ void init_sphere_component(SphereComponent* component){
 }
 
 void init_cube_component(CubeComponent* component){
+    previous_models_array = actual_model_array;
+    actual_model_array = &engine_native_models;
     new_empty_model();
+    actual_model_array = previous_models_array;
     Model* cube_model = get_from_array(&engine_native_models,1);
     memcpy(selected_model,cube_model,sizeof(Model));
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
@@ -91,17 +97,21 @@ void update_component(ComponentDefinition* element_component){
     case SPHERE_COMPONENT:{
         SphereComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&models_for_test_occlusion,&component->model);
         break;
     }
      case CUBE_COMPONENT:{
         CubeComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&models_for_test_occlusion,&component->model);
         break;
     }
     case TRASNFORM_COMPONENT:{
-        
+        if(element_component->parent->transform == NULL){
+            TransformComponent* transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);
+            element_component->parent->transform = transform;
+        }
+
         break;
     }      
     case CAMERA_COMPONENT:{
@@ -111,7 +121,7 @@ void update_component(ComponentDefinition* element_component){
         glm_translate(local,component->position);
    
         glm_mat4_mul(element_component->parent->transform->model_matrix, local , component->camera_gizmo->model_mat);      
-        add_to_array(&frame_draw_elements,&component->camera_gizmo);
+        add_to_array(&models_for_test_occlusion,&component->camera_gizmo);
         
         break;
     }      
@@ -124,12 +134,14 @@ void update_component(ComponentDefinition* element_component){
             component->model = get_from_array(actual_model_array,model_id);
             Texture* texture = get_from_array(current_textures_array,component->texture_id);
             component->model->texture.id = texture->id;
+            
         }
         if(component->model == NULL){
             return;
         }
+        
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&frame_draw_elements,&component->model);
+        add_to_array(&models_for_test_occlusion,&component->model);
         break;
     }      
     default:

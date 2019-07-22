@@ -285,9 +285,11 @@ void draw_editor_viewport(){
     }
 
     update_elements_components();
+    test_elements_occlusion();
 
     draw_count_of_draw_call();
     draw_elements(&frame_draw_elements);
+    clean_array(&models_for_test_occlusion);
 
     draw_gizmos();
 

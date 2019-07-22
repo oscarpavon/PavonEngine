@@ -93,6 +93,8 @@ void update_translation(vec3 translation);
 
 void load_simple_image(const char* path);
 
+void test_elements_occlusion();
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
@@ -127,6 +129,7 @@ Array components;
 Array engine_native_models;
 
 Array frame_draw_elements;
+Array models_for_test_occlusion;
 
 Array texts;
 Array textures_paths;
