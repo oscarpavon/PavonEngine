@@ -28,8 +28,6 @@ typedef struct Model{
 
     Texture texture;
 
-    struct Skeletal* skeletal;   
-
 }Model;
 
 struct LoadGeometry{

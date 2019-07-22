@@ -149,7 +149,7 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
     skeletal->joints_count = in_node->skin->joints_count;
     Node* joints = get_from_array(&nodes,index_to_store+1);
     skeletal->joints = joints;
-    actual_model->skeletal = skeletal;
+    
     LOG("Skin loaded\n");
   }
   
@@ -161,7 +161,7 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
 }
 
 
-struct Model* in_model_array = NULL;
+
 
 void check_LOD(cgltf_data* data){
   if(data->nodes_count > 1){
@@ -277,7 +277,7 @@ int load_model(const char* path , struct Model* model){
   cgltf_load_buffers(&options,data,new_file.path);
   close_file(&new_file);
 
-  in_model_array = model;
+
   actual_vertex_array = &model->vertex_array;
   actual_index_array = &model->index_array;
   actual_model = model;
@@ -286,7 +286,7 @@ int load_model(const char* path , struct Model* model){
 
   if(model_loaded){
     LOG("gltf loaded with LODs. \n");
-    in_model_array = NULL;
+ 
     cgltf_free(data);
     
     return 0;
@@ -314,7 +314,7 @@ int load_model(const char* path , struct Model* model){
 
   cgltf_free(data);
   current_data = NULL;
-  in_model_array = NULL;
+ 
   actual_vertex_array = NULL;
   actual_index_array = NULL;
   actual_model = NULL;
@@ -322,7 +322,3 @@ int load_model(const char* path , struct Model* model){
   return 0;
 }
 
-void free_model_load(Element* model){
-
-
-}

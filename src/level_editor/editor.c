@@ -221,15 +221,11 @@ void duplicate_selected_element(){
             StaticMeshComponent new_mesh;
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
             new_mesh.model = selected_model;
-            new_mesh.model->vertex_array.count = original_mesh->model->vertex_array.count;
-            new_mesh.model->index_array.count = original_mesh->model->index_array.count;
-            new_mesh.model->index_buffer_id = original_mesh->model->index_buffer_id;
-            new_mesh.model->vertex_buffer_id = original_mesh->model->vertex_buffer_id;
-            new_mesh.model->texture.id = original_mesh->model->texture.id;
+            duplicate_model_data(new_mesh.model,original_mesh->model);
             new_mesh.model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
         }          
-            break;
+        break;
         
         default:
             break;

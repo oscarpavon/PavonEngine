@@ -95,6 +95,8 @@ void load_simple_image(const char* path);
 
 void test_elements_occlusion();
 
+void duplicate_model_data(Model* destination , Model* source);
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){

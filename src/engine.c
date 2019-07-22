@@ -153,8 +153,7 @@ void load_and_create_simple_model(const char* model_gltf_path){
     memcpy(&selected_model->index_array,&models[0].index_array,sizeof(Array));
     memcpy(&selected_model->vertex_array,&models[0].vertex_array,sizeof(Array));
     memcpy(&selected_model->min,&models[0].min,sizeof(vec3));
-    memcpy(&selected_model->max,&models[0].max,sizeof(vec3));
-    selected_model->skeletal = models[0].skeletal;
+    memcpy(&selected_model->max,&models[0].max,sizeof(vec3));   
 
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
@@ -488,4 +487,12 @@ void test_elements_occlusion(){
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
     }   
+}
+
+void duplicate_model_data(Model* destination , Model* source){
+    destination->vertex_array.count = source->vertex_array.count;
+    destination->index_array.count = source->index_array.count;
+    destination->index_buffer_id = source->index_buffer_id;
+    destination->vertex_buffer_id = source->vertex_buffer_id;
+    destination->texture.id = source->texture.id;
 }
