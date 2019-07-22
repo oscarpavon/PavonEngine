@@ -10,42 +10,6 @@
 
 #include "../file_loader.h"
 
-#define CAMERA__ELEMENT_ID 300
-
-void add_loaded_elements(Array* load_elements, Array* editor_models, Array* editor_elements){
-    init_array(editor_models,sizeof(Model),load_elements->count);
-    for(int i = 0; i < load_elements->count; i++){
-        Element* element = get_from_array(load_elements,i);
-        switch (element->type)
-        {
-        case ELEMENT_TYPE_PLAYER_START:{
-            new_empty_model();
-            new_empty_element();
-            selected_element->type = element->type;
-            selected_model->draw = false;
-            strcpy(selected_element->name, "PlayerStart01");            
-            player_start = selected_element;
-            continue;
-            break;
-        }            
-            
-        case ELEMENT_TYPE_PLAYER_CONTROLLER:{
-            new_empty_model();
-            new_empty_element();
-            selected_model->draw = false;
-            selected_element->type = element->type;
-            strcpy(selected_element->name, "Player");
-            player1 = selected_element;
-            continue;
-            break;
-        }
-        
-        default:
-            break;
-        }       
-
-    }
-}
 
 int load_level_to_elements_array(const char* name, Array* load_elements){    
 

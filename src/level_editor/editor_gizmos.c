@@ -49,7 +49,7 @@ void init_selected_object_bounding_box_vertices(){
         add_to_array(actual_model_array,&new_model);
         selected_model = get_from_array(actual_model_array,actual_model_array->count-1);
         glm_mat4_identity(selected_model->model_mat);
-        selected_model->id = model_id_count;
+        selected_model->id = actual_model_array->count-1;
         
        
         init_array(&selected_model->vertex_array,sizeof(Vertex),50);
@@ -367,6 +367,8 @@ void draw_gizmos(){
             if(editor_mode == EDITOR_DEFAULT_MODE){
                 if(current_component_selected){
                     CameraComponent* camera = current_component_selected->data;
+                    if(!camera)
+                        return;
                     glm_mat4_copy(camera->camera_gizmo->model_mat, actual_gizmo->model_mat);
                     draw_simgle_model(actual_gizmo);
                 }                

@@ -102,7 +102,7 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
 bool game_initialized;
 
 unsigned int element_id_count;
-unsigned int model_id_count;
+
 unsigned int components_id_count;
 
 Element* selected_element;
@@ -113,6 +113,7 @@ Element* player_start;
 
 ComponentDefinition* current_component_selected;
 
+Array* previous_models_array;
 Array* current_textures_array;
 Array* actual_model_array;
 Array* actual_elements_array;

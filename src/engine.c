@@ -95,11 +95,9 @@ void new_empty_model(){
     memset(&new_model,0,sizeof(Model));
     add_to_array(actual_model_array,&new_model);
 
-    selected_model = get_from_array(actual_model_array,actual_model_array->count-1);
-        
+    selected_model = get_from_array(actual_model_array,actual_model_array->count-1);        
     
-    selected_model->id = model_id_count;
-    model_id_count++;
+    selected_model->id = actual_model_array->count-1;
 }
 
 void add_texture_to_selected_element_with_image_path(const char* image_path){

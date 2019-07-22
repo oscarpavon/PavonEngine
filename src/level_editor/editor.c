@@ -198,7 +198,7 @@ void load_level_in_editor(const char* name){
     struct timespec result = diff(time1,time2);
     long millisecond = result.tv_nsec / 1000000;
     LOG("Level loading time: %ld ms\n",millisecond);
-}
+} 
 
 void duplicate_selected_element(){
 
@@ -269,36 +269,6 @@ void init_editor(){
 
 }
 
-
-void check_elements_camera_distance_for_LOD(){
-    for(int i = 0; i< editor_elements.count ; i++){
-        Element* element = get_from_array(&editor_elements,i);
-        if(element){
-            float camera_distance = glm_vec3_distance(element->transform->position, main_camera.position);
-            //LOG("Camera Distance: %f\n",camera_distance);
-            if(camera_distance >= 8){
-            }else if (camera_distance <= 7.6){
-            }
-            if(camera_distance >= 20){
-            }
-            if(camera_distance < 19){
-            }
-        }        
-    }
-}
-
-void assign_LOD_mesh(){
-    for(int i = 0; i < editor_models.count ; i++){
-        struct Model* model = get_from_array(&editor_models,i);
-        if(model->change_LOD){
-            model->LOD = &LOD_models.data[model->actual_LOD];
-        }
-    }
-}
-
-void init_game_in_editor(){
-    
-}
 
 void update_elements_components(){
     for(int i = 0; i < editor_elements.count ; i++){

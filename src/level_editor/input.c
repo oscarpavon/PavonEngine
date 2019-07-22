@@ -68,35 +68,62 @@ void parse_command(const char* command){
         change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
     }
     
-    if(editor_mode == EDITOR_MODE_GUI_EDITOR){
-         if(command[1] == 'w'){
-            
+    
+    if(command[1] == 'w'){
+        switch (editor_mode)
+        {
+        case EDITOR_MODE_GUI_EDITOR:
             save_gui_data(&command[3]);
             LOG("GUI saved: %s\n",&command[3]);
-        }
-        if(command[1] == 'o'){
-            load_gui(&command[3]);       
-            LOG("GUI loaded\n");
-        }
-        if(first_char_command == 's'){
-            if(command[2] == 'n'){
-                strcpy(selected_button->name,&command[4]);
-            }
+            return;
+        case EDITOR_DEFAULT_MODE:
+                save_level_data(&command[3]);
+            LOG("Level saved: %s\n",&command[3]);
+            return;
+        default:
+            break;
         }
         
+    }
 
-    }else{
-        if(command[1] == 'w'){
-            save_level_data(&command[3]);
-            LOG("Level saved: %s\n",&command[3]);
-        }
-        if(command[1] == 'o'){        
+
+    if(command[1] == 'o'){
+        switch (editor_mode)
+        {
+        case EDITOR_MODE_GUI_EDITOR:
+            load_gui(&command[3]);       
+            LOG("GUI loaded\n");
+            return;
+            
+        case EDITOR_DEFAULT_MODE:
             load_level_in_editor(&command[3]);
             LOG("Level loaded\n");
             return;
+            
+        default:
+            break;
+        }
+        
+    }
+    if(first_char_command == 's'){
+        if(command[2] == 'n'){
+            switch (editor_mode)
+            {
+            case EDITOR_MODE_GUI_EDITOR:
+                strcpy(selected_button->name,&command[4]);
+                return;
+                
+            case EDITOR_DEFAULT_MODE:
+                strcpy(selected_element->name,&command[4]);
+                return;
+                
+            default:
+                break;
+            }
+            
         }
     }
-    
+ 
     switch (first_char_command)
     {
     case 'r':{
@@ -132,9 +159,7 @@ void parse_command(const char* command){
         }      
         LOG("duplicated %i\n",duplicate_count);
     }
-    if(command[1] == 'h'){
-        
-    }
+
 }
 
 void parse_characters(unsigned char character){
@@ -189,9 +214,7 @@ void camera_rotate_control(float yaw, float pitch){
         glm_vec3_mul(init_front,(vec3){0,5,0},init_front);
         first_camera_rotate = false;
     }
-    //glm_vec3_add(init_front,front,front);
-
-    //glm_vec3_rotate(front,45,(vec3){0,0,1});    
+ 
     glm_normalize(front);
 
     glm_vec3_copy(front, main_camera.front);

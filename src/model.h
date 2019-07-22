@@ -28,17 +28,7 @@ typedef struct Model{
 
     Texture texture;
 
-    struct Skeletal* skeletal;
-    
-    unsigned int short LOD_count;
-    unsigned int short actual_LOD;
-    struct Model* LOD;
-    bool change_LOD;
-    struct Model* HLOD;
-    bool has_HLOD;
-    bool change_to_HLOD;
-    
-    bool draw;  
+    struct Skeletal* skeletal;   
 
 }Model;
 
