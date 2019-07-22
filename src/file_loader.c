@@ -42,7 +42,7 @@ int load_file(const char* path, File* output){
     output->path = path;
     
     AAsset_close(file);
-
+    return 0;
 #else
     const char* new_path = get_path(path);
     output->path = new_path;

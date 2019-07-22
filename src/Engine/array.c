@@ -1,7 +1,7 @@
 #include "array.h"
 #include "../vertex.h"
 
-#include "utils.h"
+#include "../utils.h"
 
 #include "memory.h"
 #include "../engine.h"

@@ -18,7 +18,7 @@ void handle_finger_up(){
     touch_position_y = -1;
 }
 
-int32_t handle_input(struct android_app* app, AInputEvent* event) {
+int handle_input(android_app* app, AInputEvent* event) {
 
     int32_t eventType = AInputEvent_getType(event);
     switch(eventType){

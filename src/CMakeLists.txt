@@ -102,6 +102,7 @@ if(ANDROID)
         SHARED
                 ${main_file}
                 ${engine_source}
+                ${game_source}
         )
 
 endif(ANDROID)

@@ -16,6 +16,8 @@
 #include "input.h"
 #include "file_loader.h"
 #include "gui.h"
+#include "Engine/level.h"
+#include "game.h"
 
 static EGLint const attribute_list[] = {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -125,18 +127,38 @@ void android_main(struct android_app* main_app){
             }
         }
     }
+    init_engine_memory();
 
     assets_manager = app->activity->assetManager;
 
     init_audio_manager();
 
-
     draw_loading_screen();
     eglSwapBuffers(display,surface);
+
 
     init_engine();
 
     init_game_engine();
+
+    int level_result = load_level_to_elements_array("levels/test.lvl", actual_elements_array);
+    if(level_result != 0){
+        raise(SIGINT);
+        return;
+    }
+
+    load_gui("gui/test.gui");
+
+    for(int i = 0; i< texts.count ; i++){
+        load_and_create_simple_model(get_from_array(&texts,i));
+    }
+
+    for(int i = 0; i< textures_paths.count ; i++){
+        load_simple_image(get_from_array(&textures_paths,i));
+    }
+
+
+    init_game();
 
     while(!should_close){
 
@@ -148,6 +170,7 @@ void android_main(struct android_app* main_app){
             }
         }
 
+        update_game();
         engine_loop();
 
         eglSwapBuffers(display,surface);

@@ -198,7 +198,7 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     LOG("Parsed Camera component\n");
     if( string_equal(token,"position") != 0){
       LOG("No token \"position\" string passed\n");
-      return;
+      return NULL;
     }
     vec3 pos;
     Token* array_token = token+1;

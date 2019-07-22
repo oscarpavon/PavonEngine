@@ -12,23 +12,6 @@
 
 #include "engine.h"
 
-void handle_camera_rotation(){
-
-}
-mat4 tranlate_dot_rot;
-
-void init_camera_local_transform(){
-    mat4 camera_local_mat_position;
-    glm_mat4_identity(camera_local_mat_position);
-
-    glm_translate(camera_local_mat_position, (vec3){-0.4,-0.5,-3.5});
-
-    init_vec3(0,-2,1.f, main_camera.position);
-    update_look_at();
-
-    glm_mat4_mul(camera_local_mat_position, main_camera.view, tranlate_dot_rot);
-
-}
 
 void move_player_forward(){
     //LOG("Action pointer work\n");
@@ -47,7 +30,7 @@ void rotate_player_left(){
 }
 
 void rotate_player_right(){
-       versor new_rot_quat;
+    versor new_rot_quat;
     glm_quatv(new_rot_quat, glm_rad(-5), VEC3(0,0,1) );
     rotate_element(selected_element,new_rot_quat);
 }
@@ -62,15 +45,8 @@ void init_game(){
     game_initialized = true;
 }
 
-
-void update_player_camera(){
-    mat4 inverse_player_matrix;
-    glm_mat4_inv(player1->transform->model_matrix, inverse_player_matrix);
-
-    glm_mat4_mul(tranlate_dot_rot,inverse_player_matrix,main_camera.view);
-
-}
-
 void update_game(){
-    update_player_camera(); 
+    selected_element = get_from_array(actual_elements_array,0);
+    CameraComponent* camera = get_component_from_element(selected_element,CAMERA_COMPONENT);
+    update_main_camera_with_camera_component_values(camera);
 }

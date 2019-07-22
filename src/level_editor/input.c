@@ -762,11 +762,6 @@ void input_mode_play(){
     //update_game();
     controlling_camera_component = true;
 
-    if(input.W.pressed){
-        vec3 move = {0,-move_object_value,0};
-        update_translation(move);
-    }
-
     if(key_released(&input.ESC)){
 
         player_in_start_position = false;

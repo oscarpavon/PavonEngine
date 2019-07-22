@@ -224,7 +224,6 @@ void init_editor(){
     
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
-    actual_LOD_models_array = &LOD_models;
     current_textures_array = &editor_textures;
     
 
@@ -244,7 +243,7 @@ void init_editor(){
     init_array(&editor_elements,sizeof(Element),100);
     init_array(&editor_models, sizeof(Model),100);
     init_array(&editor_textures, sizeof(Texture),100);
-    init_array(&engine_native_models,sizeof(Model),10);
+    
     
 
     element_id_count = 0;    
@@ -262,26 +261,9 @@ void init_editor(){
     //init_skeletal_editor();
     
     
-    actual_standard_fragment_shader = editor_standard_fragment_shader;    
-    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"editor/camera.gltf", "editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"editor/floor.glb", "editor/floor.jpg");
 
 }
 
-
-void update_elements_components(){
-    for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = get_from_array(&editor_elements,i);
-        if(element->components_count > 0){
-            for(int o = 0; o < element->components_count ; o++){
-                ComponentDefinition* component = get_from_array(&element->components,o);
-                update_component(component);
-            }
-        }
-    }
-}
 
 void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
@@ -299,7 +281,6 @@ void draw_editor_viewport(){
     draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
-         update_user_iterface_status();
          draw_gui();
          
     }       

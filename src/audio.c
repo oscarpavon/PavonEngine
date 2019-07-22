@@ -8,6 +8,7 @@
 
 #include "file_loader.h"
 #include "utils.h"
+#include "Engine/log.h"
 
 SLObjectItf engine_object;
 SLEngineItf audio_engine;

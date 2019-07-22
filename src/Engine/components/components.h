@@ -3,7 +3,9 @@
 
 typedef struct Element Element;
 typedef struct Model Model;
-#include <cglm/cglm.h>
+
+
+#include <cglm.h>
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,

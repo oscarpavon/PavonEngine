@@ -353,10 +353,19 @@ void init_engine(){
     touch_position_x = -1;
     touch_position_x = -1;
 
+    init_array(&engine_native_models,sizeof(Model),10);
+
+    actual_standard_fragment_shader = standart_fragment_shader;    
+    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"editor/floor.glb", "editor/floor.jpg");
+
 }
 
 Array models;
 Array elements;
+Array textures;
 
 void init_game_engine(){
     should_close = false;    
@@ -367,20 +376,36 @@ void init_game_engine(){
 
     init_array(&models, sizeof(Model),100);
     init_array(&elements,sizeof(Element),100);
+    init_array(&textures,sizeof(Texture),100);
     actual_model_array = &models;
     actual_elements_array = &elements;
-    //actual_LOD_models_array = &LOD_models;
+    current_textures_array = &textures;
+
     actual_standard_fragment_shader = standart_fragment_shader;
 
     
+}
+
+void update_elements_components(){
+    for(int i = 0; i < actual_elements_array->count ; i++){
+        Element* element = get_from_array(actual_elements_array,i);
+        if(element->components_count > 0){
+            for(int o = 0; o < element->components_count ; o++){
+                ComponentDefinition* component = get_from_array(&element->components,o);
+                update_component(component);
+            }
+        }
+    }
 }
 
 void engine_loop(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    update_elements_components();
 
-    draw_elements(actual_elements_array); 
+    draw_elements(&frame_draw_elements);
+
     draw_gui();   
 
 

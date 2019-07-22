@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include "../level_editor/windows.h"
 #include "../engine.h"
+#include "../game.h"
+#include "../Engine/level.h"
+#include "../Engine/components/components.h"
 
 int main(){
     init_engine_memory();
@@ -13,13 +16,22 @@ int main(){
     init_engine();  
     init_game_engine();
     
+    int level_result = load_level_to_elements_array("../levels/test.lvl", actual_elements_array);
+    if(level_result != 0){
+        raise(SIGINT);
+        return -1;   
+    }
+        
+    load_gui("test");
 
-    Array load_elements;
-    init_array(&load_elements,sizeof(Element), 10);
-    load_level_to_elements_array("../levels/player.lvl", &load_elements);   
-    
-    add_loaded_elements(&load_elements, actual_model_array, actual_elements_array);
-    clean_array(&load_elements);
+    for(int i = 0; i< texts.count ; i++){
+       load_and_create_simple_model(get_from_array(&texts,i));
+    }    
+
+    for(int i = 0; i< textures_paths.count ; i++){
+       load_simple_image(get_from_array(&textures_paths,i));
+    } 
+
 
     init_game();
 

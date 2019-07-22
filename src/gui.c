@@ -313,7 +313,7 @@ void update_user_iterface_status(){
 void draw_gui(){
     glCullFace(GL_FRONT);
     draw_buttons();
-
+    update_user_iterface_status();
     glCullFace(GL_BACK);
 }
 
@@ -333,10 +333,14 @@ void new_empty_button(){
 void load_gui(const char* name){
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
+    #ifdef EDITOR
     strcat(save_name, gui_folder);
     strcat(save_name,name);
     strcat(save_name,".gui");
-
+    #else
+    strcpy(save_name,name);
+    #endif // DEBUG
+    
     File level_file;
     if( load_file(save_name, &level_file) == -1){
         

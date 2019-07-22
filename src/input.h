@@ -6,10 +6,10 @@
 #define PAVONTHEGAME_INPUT_H
 
 #include "utils.h"
-
+typedef struct android_app android_app;
 #ifdef ANDROID
 #include <android/input.h>
-int32_t handle_input(struct android_app* app, AInputEvent* event);
+int handle_input(android_app* app, AInputEvent* event);
 #endif //def ANDROID
 
 float touch_position_x;
