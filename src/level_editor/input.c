@@ -777,15 +777,15 @@ void input_mode_play(){
     if(!player_in_start_position){
         if(player1 != NULL){
             if(player_start == NULL){
-                LOG("No player start\n");
+                //LOG("No player start\n");
                 //return;
             }            
 
             //set_element_position(player1,player_start->transform->position);
             player_in_start_position = true;
         }else{
-            LOG("No player selected\n");
-            return;
+            //LOG("No player selected\n");
+           // return;
         }
     }
     

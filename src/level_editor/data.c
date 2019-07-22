@@ -44,7 +44,8 @@ void new_text_vec3_token(const char* text,vec3 vec){
 }
 
 void new_text_vec2_token(const char* text,vec2 vec){
-    fprintf(actual_file,"\t\"%s\" : [%f , %f ],\n", text ,vec[0] , vec[1]);
+    hirachical_tab();
+    fprintf(actual_file,"\"%s\" : [%f , %f],\n", text ,vec[0] , vec[1]);
     token_count += 4;
 }
 
@@ -253,15 +254,20 @@ void save_buttons_data(int id){
     Button* button = get_from_array(actual_buttons_array,id);
     if(button != NULL){
         new_text_token("name",button->name);
-        new_text_vec2_token("pos",button->position);
+        new_text_vec2_token("position",button->position);
         new_text_vec2_token("size",button->size);
         //new_text_primitive_token("relative",button->relative_to);
-        new_text_primitive_token("function_id",button->action_function_id);
+        new_text_primitive_token("function",button->action_function_id);
     }   
     
 }
 
-
+void ui_elements_data(){
+    SaveDataFunction save = &save_buttons_data;
+    for(int i = 0; i < actual_buttons_array->count ; i++){
+         new_save_element(save,i);
+    }
+}
 
 void save_gui_data(const char* gui_name){
     char save_name[50];
@@ -273,15 +279,9 @@ void save_gui_data(const char* gui_name){
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
     actual_data_type = DATA_TYPE_GUI;
-    element_id_count = actual_buttons_array->count;
-
-    save_header_info();
-    fputs("{\n", new_file);
-    SaveDataFunction save = &save_buttons_data;
-    for(int i = 0; i < actual_buttons_array->count ; i++){
-         new_save_element(save,i);
-    }
-    fputs("\n}", new_file);
+    element_id_count = actual_buttons_array->count;  
+    
+    new_element(&ui_elements_data);
 
     fclose(new_file);
 

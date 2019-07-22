@@ -333,6 +333,17 @@ void update_text_menu(TextMenu* menu){
         }
     }   
 }
+void draw_engine_memory(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text("Memory:" , 0 + ((camera_width_screen/2)-400) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    char buf[5]; 
+    float total_memory_in_kb = INIT_MEMORY/1024;
+    gcvt(total_memory_in_kb, 6, buf);
+    render_text(buf , 0 + ((camera_width_screen/2)-340) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    render_text("kb" , 0 + ((camera_width_screen/2)-300) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+
+
+}
 
 void draw_frame_time(){
     FT_Set_Pixel_Sizes(face, 0, 12);
@@ -351,6 +362,7 @@ void text_renderer_loop(){
         render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);
     }
 
+    draw_engine_memory();
     draw_editor_mode();
     draw_frame_time();
     if(editor_sub_mode != EDITOR_SUB_MODE_NULL){

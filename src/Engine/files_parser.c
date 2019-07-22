@@ -7,8 +7,9 @@
 
 typedef jsmntok_t Token;
 
-int header_size = 0;
-DataType actual_data_type;
+Token* tokens;
+Array tokens_array_memory;
+
 unsigned int elements_count = 0;
 
 int element_id = 0;
@@ -97,39 +98,43 @@ static inline void get_token_string(char* out, Token* token){
   strcpy(out, text);   
 }
 
-Token* get_token_array_component_transform(Token* token){
-  if( string_equal(token,"position") != 0){
-    LOG("No token \"position\" string passed\n");
-    return;
+Token* get_token_array_float_values(const char* name, Token* name_token, float* out){
+  if(name_token->type != JSMN_STRING){
+    LOG("No token JSMN_STRING passed\n"); 
+    return NULL;
   }
-  vec3 pos;
-  Token* array_token = token+1;
-  Token* array_value_token = token+2;
+    
+  if( string_equal(name_token,name) != 0){
+    LOG("Name \"%s\" not equal\n",name);
+    return NULL;
+  }
+
+  Token* array_token = name_token+1;
+  Token* array_value_token = array_token+1;
   Token* last_token_readed = NULL;
   for (int i = 0; i < array_token->size; i++) {
     last_token_readed = array_value_token+i;   
     float value = get_token_primitive_float(array_value_token+i);         
-    memcpy(&pos[i],&value,sizeof(float));               
+    memcpy(&out[i],&value,sizeof(float));               
   }
+  return last_token_readed+1;//text element, not the las JSMN_PRIMITIVE
+}
 
-  last_token_readed += 1;
-  if( string_equal(last_token_readed,"rotation") != 0){
-      LOG("No token \"rotation\" string passed\n");
-      return;
-  }
-  vec4 rot;
-  array_token = last_token_readed+1;
-  array_value_token = array_token+1;
-  for (int i = 0; i < array_token->size; i++) {
-    last_token_readed = array_value_token+i;   
-    float value = get_token_primitive_float(array_value_token+i);         
-    memcpy(&rot[i],&value,sizeof(float));               
-  }  
-
-
+/*Level Parser Start*/
+Token* get_token_array_component_transform(Token* token){
   TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-  glm_vec3_copy(pos,transform->position);
-  glm_vec4_copy(rot,transform->rotation);
+
+  Token* last_token_readed = NULL;
+
+  last_token_readed = get_token_array_float_values("position",token,transform->position);
+  if(!last_token_readed)
+    raise(SIGINT);
+
+
+  last_token_readed = get_token_array_float_values("rotation",last_token_readed,transform->rotation);
+  if(!last_token_readed)
+    raise(SIGINT);
+
 
   return last_token_readed;
 }
@@ -266,7 +271,7 @@ Token* parse_elements(Token* array_element_token){
   return last_element_parsed;
 }
 
-void parse_actual_file(Token* tokens, int count){
+void parse_level_tokens(Token* tokens, int count){
   Token* last_element_parsed = NULL;
   for(int i = 0; i< count ; i++){
     Token* actual_token = &tokens[i];
@@ -313,13 +318,18 @@ void parse_actual_file(Token* tokens, int count){
 
 }
 
-void load_level_elements_from_json(const char* json_file, size_t json_file_size, struct Array* out_element){
-  
-  int token_count = 20 *(5+5+30);
-  
+int parse_tokens(const char* json_file, int json_file_size){
+   
   jsmn_parser parser;
-  int max_tokens = token_count+30;
-  Token tokens[max_tokens];
+  int max_tokens = 400;
+  init_array(&tokens_array_memory,sizeof(Token),max_tokens);
+  for(int i = 0; i<max_tokens ; i++){
+    Token token;
+    memset(&token,0,sizeof(Token));
+    add_to_array(&tokens_array_memory,&token);
+  }
+  tokens = &tokens_array_memory.data[0];
+
   jsmn_init(&parser);
  
   actual_json_file = json_file;
@@ -340,9 +350,53 @@ void load_level_elements_from_json(const char* json_file, size_t json_file_size,
   default:
     break;
   }
-
-  parse_actual_file(tokens,parse_result);
-  
-  LOG("json level parsed\n");
+    
+  return parse_result;
 }
 
+void load_level_elements_from_json(const char* json_file, int json_file_size){
+  
+  int result = parse_tokens(json_file,json_file_size);
+
+  parse_level_tokens(tokens,result);
+  
+  LOG("json level parsed\n");
+
+  clean_array(&tokens_array_memory);
+}
+/*End Level Parser */
+
+
+/*---------------------------------------------- */
+/*UI file parser start */
+
+void parse_ui_tokens(int count){
+  Token* last_token_readed = &tokens[0];
+  last_token_readed += 3;
+  for(int i = 0; i< tokens[0].size ; i++){
+      
+    new_empty_button();
+    Button* new_button = get_from_array(actual_buttons_array,actual_buttons_array->count-1);
+    
+    Token* name_value = last_token_readed;
+    get_token_string(new_button->name,name_value);
+
+    last_token_readed = get_token_array_float_values("position", name_value+1, new_button->position);
+    last_token_readed = get_token_array_float_values("size", last_token_readed, new_button->size);
+    int function_id = get_token_primitive_value(last_token_readed+1);
+    new_button->action_function_id = function_id;
+    last_token_readed += 4;
+  }
+}
+
+void parse_gui_file(const char* json_file, int json_file_size){
+  int result = parse_tokens(json_file,json_file_size);
+  
+  parse_ui_tokens(result);
+
+  LOG("json UI parsed\n");
+
+  clean_array(&tokens_array_memory);
+
+}
+/*UI file parser end*/

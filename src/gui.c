@@ -314,10 +314,6 @@ void draw_gui(){
     glCullFace(GL_FRONT);
     draw_buttons();
 
-    //draw_logo_image();
-    
-    //check_if_pressed(&button1);   
-
     glCullFace(GL_BACK);
 }
 
@@ -347,8 +343,8 @@ void load_gui(const char* name){
         LOG("GUI file not found: %s\n",name);
         return;
     }
-
-    //parse_gui_file(level_file.data , level_file.size_in_bytes , &buttons);
+    actual_buttons_array = &buttons;
+    parse_gui_file(level_file.data , level_file.size_in_bytes);
 
     close_file(&level_file);
 

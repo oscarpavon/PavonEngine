@@ -217,6 +217,7 @@ void reload_editor(){
     clean_array(&editor_models);
     clean_array(&texts);
     clean_array(&textures_paths);
+    clean_array(actual_buttons_array);
 }
 
 void init_editor(){

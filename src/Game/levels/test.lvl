@@ -7,7 +7,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [2.320000 , 1.580000 , -0.400000],
+							"position" : [0.000000 , -1.399999 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -36,6 +36,21 @@
 						},
 					],
 				},
+				{
+					"name" : "floor",
+					"components" : [
+						{
+							"type" : 0,
+							"position" : [0.000000 , 0.000000 , 0.000000],
+							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
+						},
+						{
+							"type" : 4,
+							"model" : 2,
+							"texture" : 2,
+						},
+					],
+				},
 			],
 		},
 		{
@@ -43,10 +58,12 @@
 				"models" : [
 					"fireman.gltf",
 					"skydome.gltf",
+					"terrain.gltf",
 				],
 				"textures" : [
 					"fireman.png",
 					"skydome.jpg",
+					"grass03.png",
 				],
 			],
 		},

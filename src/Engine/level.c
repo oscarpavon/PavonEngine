@@ -20,7 +20,7 @@ int load_level_to_elements_array(const char* name, Array* load_elements){
         return -1;
     }
 
-    load_level_elements_from_json(level_file.data , level_file.size_in_bytes , load_elements);
+    load_level_elements_from_json(level_file.data , level_file.size_in_bytes);
 
     close_file(&level_file);
     return 0;

@@ -31,23 +31,33 @@ void init_camera_local_transform(){
 }
 
 void move_player_forward(){
-    LOG("Action pointer work\n");
+    //LOG("Action pointer work\n");
+    update_translation(VEC3(0,-0.3,0));
+
+}
+
+void move_player_backward(){
+    update_translation(VEC3(0,0.3,0));
+}
+
+void rotate_player_left(){
+     versor new_rot_quat;
+    glm_quatv(new_rot_quat, glm_rad(5), VEC3(0,0,1) );
+    rotate_element(selected_element,new_rot_quat);
+}
+
+void rotate_player_right(){
+       versor new_rot_quat;
+    glm_quatv(new_rot_quat, glm_rad(-5), VEC3(0,0,1) );
+    rotate_element(selected_element,new_rot_quat);
 }
 
 void init_game(){
-    if(player1 == NULL){
-        LOG("No current player configured\n");
-        game_initialized = false;
-        return;
-    }
-    selected_element = player1;
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-    if(transform)
-        glm_rotate(transform->model_matrix,180, (vec3){0,0,1});    
-    
-    init_camera_local_transform();
-
+      
     add_action_function(&move_player_forward);
+    add_action_function(&move_player_backward);
+    add_action_function(&rotate_player_left);
+    add_action_function(&rotate_player_right);
 
     game_initialized = true;
 }
