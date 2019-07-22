@@ -282,7 +282,7 @@ int load_model(const char* path , struct Model* model){
   actual_index_array = &model->index_array;
   actual_model = model;
   
-  //check_LOD(data);
+  check_LOD(data);
 
   if(model_loaded){
     LOG("gltf loaded with LODs. \n");

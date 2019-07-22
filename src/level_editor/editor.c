@@ -201,6 +201,41 @@ void load_level_in_editor(const char* name){
 } 
 
 void duplicate_selected_element(){
+    Element* original_elmenent = selected_element;
+    new_empty_model();
+    StaticMeshComponent* original_mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    new_empty_element();
+    for(int i = 0; i < original_elmenent->components.count ; i++){
+        ComponentDefinition* component_definition = get_from_array(&original_elmenent->components,i);
+        switch (component_definition->type)
+        {
+        case TRASNFORM_COMPONENT:
+            add_transform_component_to_selected_element();
+            TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+            memcpy(transform,original_elmenent->transform, sizeof(TransformComponent));
+            break;
+        case CAMERA_COMPONENT:
+            add_camera_component_to_selected_element();
+            break;
+        case STATIC_MESH_COMPONENT:{
+            StaticMeshComponent new_mesh;
+            memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
+            new_mesh.model = selected_model;
+            new_mesh.model->vertex_array.count = original_mesh->model->vertex_array.count;
+            new_mesh.model->index_array.count = original_mesh->model->index_array.count;
+            new_mesh.model->index_buffer_id = original_mesh->model->index_buffer_id;
+            new_mesh.model->vertex_buffer_id = original_mesh->model->vertex_buffer_id;
+            new_mesh.model->texture.id = original_mesh->model->texture.id;
+            new_mesh.model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+            add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
+        }          
+            break;
+        
+        default:
+            break;
+        }
+    }    
+    
 
 }
 

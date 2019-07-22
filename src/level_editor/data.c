@@ -226,8 +226,12 @@ void save_level(int id){
 }
 
 void save_level_data(const char* level_name){
-    if(strcmp(level_name, "") == 0)
+    if(strcmp(level_name, "") == 0){
+        if( strcmp(opened_file_name,"") == 0)
+            return;
         level_name = opened_file_name;
+    }
+        
 
     char save_name[50];
     memset(save_name,0,sizeof(save_name));

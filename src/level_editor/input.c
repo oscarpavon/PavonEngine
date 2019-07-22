@@ -156,6 +156,7 @@ void parse_command(const char* command){
         for(int i = 0; i< duplicate_count; i++){
             duplicate_selected_element();        
             vec3 move = {24,0,0};
+            update_translation(move);
         }      
         LOG("duplicated %i\n",duplicate_count);
     }
@@ -655,7 +656,7 @@ void default_mode(){
 
     input_change_mode();
 
-    if(key__released(&input.D,GLFW_MOD_ALT)){
+    if(key__released(&input.D,GLFW_MOD_SHIFT)){
        duplicate_selected_element();
        LOG("duplicated \n"); 
     }
