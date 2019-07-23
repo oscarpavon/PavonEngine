@@ -2,17 +2,17 @@
 #define ENGINE_COMPONENTS_H
 
 typedef struct Element Element;
-typedef struct Model Model;
-
-
+#include "../../model.h"
 #include <cglm.h>
+#include "../array.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
     SPHERE_COMPONENT,
     CAMERA_COMPONENT,
     CUBE_COMPONENT,
-    STATIC_MESH_COMPONENT
+    STATIC_MESH_COMPONENT,
+    LEVEL_OF_DETAIL_COMPONENT
 }ComponentType;
 
 
@@ -60,6 +60,19 @@ typedef struct StaticMeshComponent{
 typedef struct SkinnedMeshComponent{    
     Model* model;
 }SkinnedMeshComponent;
+
+typedef struct HirarchicalLevelOfDetail{
+    Model model;
+    float distance;
+    bool draw;
+}HirarchicalLevelOfDetail;
+
+typedef struct LevelOfDetailComponent{
+    Array meshes;
+    Array distances;
+    HirarchicalLevelOfDetail* hirarchical_level_of_detail;
+}LevelOfDetailComponent;
+
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type);
 void init_sphere_component(SphereComponent* component);

@@ -21,7 +21,7 @@ Array* actual_index_array;
 Array* current_array;
 struct Model* actual_model;
 bool model_loaded = false;
-
+int models_parsed = 0;
 
 void read_accessor_indices(cgltf_accessor* accessor){
   init_array(actual_index_array,sizeof(unsigned short int),accessor->count);
@@ -122,6 +122,7 @@ void load_mesh(cgltf_mesh* mesh){
     load_primitive(&mesh->primitives[i]);
   }  
   model_loaded = true;
+  //models_parsed++;
 }
 
 void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_to_store){
@@ -164,38 +165,71 @@ void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_t
 
 
 void check_LOD(cgltf_data* data){
+  cgltf_mesh* meshes[4];
+  memset(meshes,0,sizeof(meshes));
   if(data->nodes_count > 1){
     for(int i = 0; i < data->nodes_count; i++){
       int node_name_size = strlen(data->nodes[i].name);
       char name[node_name_size];
-      strcpy(name,data->nodes[i].name);
+      strcpy(name,data->nodes[i].name);    
+
       for(int n = 0; n<node_name_size; n++){
         if(name[n] == '_'){
           if(strcmp("LOD0",&name[n]+1) == 0){
-         
+            
+
             LOG("Found LOD0\n");
-            load_mesh(data->nodes[i].mesh);
+            //load_mesh(data->nodes[i].mesh);
+            meshes[models_parsed] = data->nodes[i].mesh;
+            models_parsed++;
             
             break;
           }
           if(strcmp("LOD1",&name[n]+1) == 0){
-            
- 
+            meshes[models_parsed] = data->nodes[i].mesh;
+            models_parsed++;
+
             break;
           }
           
           if(strcmp("LOD3",&name[n]+1) == 0){
-           
+            //models_parsed++;
             break;
           }
           if(strcmp("HLOD",&name[n]+1) == 0){
-           
-             
+            HirarchicalLevelOfDetail new_hirarchical;
+            memset(&new_hirarchical.model,0,sizeof(Model));
+            actual_vertex_array = &new_hirarchical.model.vertex_array;
+            actual_index_array = &new_hirarchical.model.index_array;
+            init_model_gl_buffers(&new_hirarchical.model);
+            new_hirarchical.model.shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+            //load_mesh(data->nodes[i].mesh);
+            add_to_array(&array_hirarchical_level_of_detail,&new_hirarchical);
+            //models_parsed++;
           }
         }
       }
     }
    
+  }
+  if(models_parsed > 1){
+    LevelOfDetailComponent* details;
+  
+    LevelOfDetailComponent detail_component;
+    memset(&detail_component,0,sizeof(LevelOfDetailComponent));
+    init_array(&detail_component.meshes,sizeof(Model),models_parsed);
+    add_component_to_selected_element(sizeof(LevelOfDetailComponent), &detail_component, LEVEL_OF_DETAIL_COMPONENT);
+    details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    selected_element->transform = transform;
+    for(int i = 0; i< models_parsed; i++){
+      new_empty_model_in_array(&details->meshes);
+      actual_vertex_array = &selected_model->vertex_array;
+      actual_index_array = &selected_model->index_array;
+      load_mesh(meshes[i]);
+      selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+      init_model_gl_buffers(selected_model);
+    }
   }
 }
 
@@ -257,6 +291,7 @@ void load_current_animation(){
 
 
 
+
 int load_model(const char* path , struct Model* model){
   model_loaded = false;
   File new_file;
@@ -289,7 +324,7 @@ int load_model(const char* path , struct Model* model){
  
     cgltf_free(data);
     
-    return 0;
+    return models_parsed;
   }  
   
   if(data->skins_count >= 1){
@@ -319,6 +354,8 @@ int load_model(const char* path , struct Model* model){
   actual_index_array = NULL;
   actual_model = NULL;
 
-  return 0;
+  int model_result = models_parsed;
+  models_parsed = 0;
+  return model_result;
 }
 

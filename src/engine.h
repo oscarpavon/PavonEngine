@@ -87,7 +87,8 @@ void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
-void load_and_create_simple_model(const char* model_gltf_path);
+
+int load_and_initialize_simple_model(const char* model_gltf_path);
 
 void update_translation(vec3 translation);
 
@@ -96,6 +97,8 @@ void load_simple_image(const char* path);
 void test_elements_occlusion();
 
 void duplicate_model_data(Model* destination , Model* source);
+
+void new_empty_model_in_array(Array* array);
 
 bool should_close;
 
@@ -130,6 +133,7 @@ Array* actual_buttons_array;
 Array components;
 Array engine_native_models;
 
+Array array_hirarchical_level_of_detail;
 Array frame_draw_elements;
 Array models_for_test_occlusion;
 

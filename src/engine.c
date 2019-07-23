@@ -90,6 +90,16 @@ void new_empty_element(){
     select_last_element();
 }
 
+void new_empty_model_in_array(Array* array){
+    Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    add_to_array(array,&new_model);
+
+    selected_model = get_from_array(array,array->count-1);        
+    
+    selected_model->id = array->count-1;
+}
+
 void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
@@ -139,25 +149,20 @@ void load_simple_image(const char* path){
     add_to_array(current_textures_array,&new_texture);    
 }
 
-void load_and_create_simple_model(const char* model_gltf_path){
-    struct Model models[3];
-    memset(models,0,sizeof(models));
-    
-    
-    if( load_model(model_gltf_path,models ) == -1){
-        return;
-    }    
+int load_and_initialize_simple_model(const char* model_gltf_path){
+    new_empty_model();   
 
-    new_empty_model();
+    int load_model_result = load_model(model_gltf_path,selected_model);
+    if( load_model_result == -1){
+        return -1;
+    }
+    if(load_model_result == 0){
+        selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
-    memcpy(&selected_model->index_array,&models[0].index_array,sizeof(Array));
-    memcpy(&selected_model->vertex_array,&models[0].vertex_array,sizeof(Array));
-    memcpy(&selected_model->min,&models[0].min,sizeof(vec3));
-    memcpy(&selected_model->max,&models[0].max,sizeof(vec3));   
+        init_model_gl_buffers(selected_model); 
 
-    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-
-    init_model_gl_buffers(selected_model);  
+    }
+    return load_model_result; 
 }
 
 void add_element_with_model_path(const char* model_gltf_path){
@@ -166,22 +171,24 @@ void add_element_with_model_path(const char* model_gltf_path){
         return;
     }
 
-    load_and_create_simple_model(model_gltf_path);  
-    
     new_empty_element();
-    
     strcpy(selected_element->name, "New Element");
     TransformComponent transform;
     init_transfrom_component(&transform);
     add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
 
 
-    StaticMeshComponent mesh_component;
-    mesh_component.model = selected_model;
-    add_to_array(&texts,model_gltf_path);
-    mesh_component.model_id = texts.count-1;
+    int models_loaded = load_and_initialize_simple_model(model_gltf_path); 
     
-    add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+
+    if(models_loaded == 0){
+        StaticMeshComponent mesh_component;
+        mesh_component.model = selected_model;
+        add_to_array(&texts,model_gltf_path);
+        mesh_component.model_id = texts.count-1;
+        
+        add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+    }
 
         
     LOG("model loaded and shader created \n");
@@ -323,6 +330,7 @@ void init_engine(){
 
     init_gui();    
 
+    init_array(&array_hirarchical_level_of_detail,sizeof(HirarchicalLevelOfDetail),5);
     init_array(&components,sizeof(ComponentDefinition),100);
     components_id_count = 0;
 
@@ -403,9 +411,11 @@ void engine_loop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     update_elements_components();
+    test_elements_occlusion();
 
     draw_elements(&frame_draw_elements);
-
+    clean_array(&models_for_test_occlusion);
+    
     draw_gui();   
 
 
@@ -495,4 +505,6 @@ void duplicate_model_data(Model* destination , Model* source){
     destination->index_buffer_id = source->index_buffer_id;
     destination->vertex_buffer_id = source->vertex_buffer_id;
     destination->texture.id = source->texture.id;
+    glm_vec3_copy(source->min,destination->min);
+    glm_vec3_copy(source->max,destination->max);
 }

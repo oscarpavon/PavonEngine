@@ -186,7 +186,7 @@ void load_level_in_editor(const char* name){
     
 
     for(int i = 0; i< texts.count ; i++){
-       load_and_create_simple_model(get_from_array(&texts,i));
+       load_and_initialize_simple_model(get_from_array(&texts,i));
     }    
 
     for(int i = 0; i< textures_paths.count ; i++){

@@ -124,7 +124,15 @@ void update_component(ComponentDefinition* element_component){
         add_to_array(&models_for_test_occlusion,&component->camera_gizmo);
         
         break;
-    }      
+    }
+    case LEVEL_OF_DETAIL_COMPONENT:
+        {
+            LevelOfDetailComponent* details = element_component->data;
+            Model* lod0 = &details->meshes.data[0];
+            glm_mat4_copy(element_component->parent->transform->model_matrix,lod0->model_mat);
+            add_to_array(&models_for_test_occlusion,&lod0);
+        }
+        break;      
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
         if(component->model == NULL){

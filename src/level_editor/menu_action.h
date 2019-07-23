@@ -108,6 +108,9 @@ void draw_components_from_selected_element(TextMenu* menu){
         case STATIC_MESH_COMPONENT:
             name = "Static Mesh Component";
             break;
+        case LEVEL_OF_DETAIL_COMPONENT:
+            name = "Level of Detail Component";
+            break;
         default:
             break;
         }

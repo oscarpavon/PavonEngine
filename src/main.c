@@ -150,7 +150,7 @@ void android_main(struct android_app* main_app){
     load_gui("gui/test.gui");
 
     for(int i = 0; i< texts.count ; i++){
-        load_and_create_simple_model(get_from_array(&texts,i));
+        load_and_initialize_simple_model(get_from_array(&texts,i));
     }
 
     for(int i = 0; i< textures_paths.count ; i++){
