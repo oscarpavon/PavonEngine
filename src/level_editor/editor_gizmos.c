@@ -41,11 +41,16 @@ void add_debug_line(vec3 start, vec3 end){
 
 
 void create_bounding_vertices(){
-        StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-        if(!mesh){
-            
-            return;
-        }   
+        Model* mesh;
+        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        
+        
+        if(!mesh_component){
+            LevelOfDetailComponent* details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
+            mesh = get_from_array(&details->meshes,0);
+            if(!mesh)
+                return;
+        }  else mesh = mesh_component->model; 
 
         struct Vertex min;
         memset(&min,0,sizeof(Vertex));        
@@ -60,8 +65,14 @@ void create_bounding_vertices(){
 
         TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
                
-        glm_vec3_add(mesh->model->min,transform->position,min.postion);
-        glm_vec3_add(mesh->model->max,transform->position,max.postion);
+        vec3 box[2];
+        glm_vec3_copy(mesh->min,box[0]);
+        glm_vec3_copy(mesh->max,box[1]);
+
+        glm_aabb_transform(box, mesh->model_mat, box);
+
+        glm_vec3_copy(box[0],min.postion);
+        glm_vec3_copy(box[1],max.postion);   
         
         glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
         
@@ -83,6 +94,7 @@ void create_bounding_vertices(){
         add_to_array(&selected_model->vertex_array,&vert6);
         add_to_array(&selected_model->vertex_array,&vert7);
         add_to_array(&selected_model->vertex_array,&vert8);
+
 }
 bool bounding_box_initialized = false;
 void init_selected_object_bounding_box_vertices(){
@@ -110,21 +122,13 @@ void init_selected_object_bounding_box_vertices(){
 }
 vec3 last_position;
 void update_bounding_vertices_array(Model* model){
-    bool sub = false;
-    if(last_position[0] == selected_element->transform->position[0] &&
+
+    /* if(last_position[0] == selected_element->transform->position[0] &&
         last_position[1] == selected_element->transform->position[1] &&
         last_position[2] == selected_element->transform->position[2]){
             return;
-        }
-    if(last_position[0] >= selected_element->transform->position[0] &&
-        last_position[1] >= selected_element->transform->position[1] &&
-        last_position[2] >= selected_element->transform->position[2]){
-            sub = false;
-        }else
-        {
-                sub = true;
-        }
-    
+        } */
+
     glm_vec3_copy(selected_element->transform->position,last_position);
 
     Model* box = get_from_array(&bounding_boxes,0);

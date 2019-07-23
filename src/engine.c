@@ -510,11 +510,10 @@ void test_elements_occlusion(){
         Model* test_model = model[0];
         
         vec3 box[2];
-        
         glm_vec3_copy(test_model->min,box[0]);
         glm_vec3_copy(test_model->max,box[1]);
-        glm_vec3_add(box[0],VEC3(test_model->model_mat[3][0],test_model->model_mat[3][1],test_model->model_mat[3][2]),box[0]);
-        glm_vec3_add(box[1],VEC3(test_model->model_mat[3][0],test_model->model_mat[3][1],test_model->model_mat[3][2]),box[1]);
+
+        glm_aabb_transform(box, test_model->model_mat, box);
 
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
