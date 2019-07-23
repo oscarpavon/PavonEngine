@@ -120,23 +120,33 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         LOG("Error to load, null path (add_editor_texture - 154\n");
         return;
     }
-
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-    
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
     new_texture.image = load_image(image_path);
     load_model_texture_to_gpu(&new_texture); 
     
     add_to_array(current_textures_array,&new_texture);
-    Texture* texture_loaded = get_from_array(current_textures_array,current_textures_array->count-1);
-    
+
     add_to_array(&textures_paths,image_path);
-    mesh->texture_id = textures_paths.count-1;
+    
+    Texture* texture_loaded = get_from_array(current_textures_array,current_textures_array->count-1);
 
-    mesh->model->texture.id = texture_loaded->id;//for compatibility
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+     
+    if(mesh){
+        mesh->texture_id = textures_paths.count-1;
+        mesh->model->texture.id = texture_loaded->id;//for compatibility
+        LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
+        return;
+    }
+     
+    LevelOfDetailComponent* details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
+    for(int i = 0; i< details->meshes.count ; i++){
+        Model* mesh = get_from_array(&details->meshes,i);
+        mesh->texture.id = texture_loaded->id;//for compatibility
+    }
 
-    LOG("Texture loaded and assigned: %s\n",image_path);
+   
     
 }
 

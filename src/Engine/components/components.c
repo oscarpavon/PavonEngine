@@ -153,7 +153,10 @@ void update_component(ComponentDefinition* element_component){
                         sum_min_max);
             glm_vec3_div(sum_min_max,VEC3(2,2,2),center_object);
 
-            float distance = glm_vec3_distance(main_camera.position,center_object);
+            vec3 object_global_position;
+            glm_vec3_add(object_position,center_object,object_global_position);
+
+            float distance = glm_vec3_distance(main_camera.position,object_global_position);
             Model* draw_model;
             if(distance > 24)
                 draw_model = get_from_array(&details->meshes,1);
