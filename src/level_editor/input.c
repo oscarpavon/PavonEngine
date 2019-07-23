@@ -705,6 +705,10 @@ void default_mode(){
         can_draw_skeletal_bones = true;
         return; 
     }
+    if(key_released(&input.KEY_3)){        
+        can_draw_bounding_box_in_select_element = true;
+        return; 
+    }
            
     can_open_text_menu_with_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
     can_open_text_menu_with_key(&menu_editor_element_list,&input.L,NULL);

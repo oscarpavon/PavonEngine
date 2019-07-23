@@ -204,8 +204,8 @@ void update_component(ComponentDefinition* element_component){
             int model_id;          
             model_id = component->model_id;
             new_empty_model();
-            Model* orinal_model = get_from_array(actual_model_array,model_id);
-            duplicate_model_data(selected_model,orinal_model);
+            Model* original_model = get_from_array(actual_model_array,model_id);
+            duplicate_model_data(selected_model,original_model);
             selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
             component->model = selected_model;
             Texture* texture = get_from_array(current_textures_array,component->texture_id);

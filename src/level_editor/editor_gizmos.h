@@ -11,6 +11,7 @@ bool can_draw_gizmos;
 bool draw_translate_gizmo;
 bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
+bool can_draw_bounding_box_in_select_element;
 
 Array gizmos;
 

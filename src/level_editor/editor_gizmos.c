@@ -39,6 +39,51 @@ void add_debug_line(vec3 start, vec3 end){
 
 }
 
+
+void create_bounding_vertices(){
+        StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        if(!mesh){
+            
+            return;
+        }   
+
+        struct Vertex min;
+        memset(&min,0,sizeof(Vertex));        
+        struct Vertex max;
+        memset(&max,0,sizeof(Vertex));        
+        struct Vertex vert3;
+        struct Vertex vert4;
+        struct Vertex vert5;
+        struct Vertex vert6;
+        struct Vertex vert7;
+        struct Vertex vert8;
+
+        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+               
+        glm_vec3_add(mesh->model->min,transform->position,min.postion);
+        glm_vec3_add(mesh->model->max,transform->position,max.postion);
+        
+        glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
+        
+        glm_vec3_copy((vec3){max.postion[0],min.postion[1],max.postion[2]},vert4.postion);
+
+        glm_vec3_copy((vec3){max.postion[0],max.postion[1],min.postion[2]},vert5.postion);
+
+        glm_vec3_copy((vec3){min.postion[0],min.postion[1],max.postion[2]},vert6.postion);
+        
+        glm_vec3_copy((vec3){max.postion[0],min.postion[1],min.postion[2]},vert7.postion);
+        
+        glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
+
+        add_to_array(&selected_model->vertex_array,&min);
+        add_to_array(&selected_model->vertex_array,&max);
+        add_to_array(&selected_model->vertex_array,&vert3);
+        add_to_array(&selected_model->vertex_array,&vert4);
+        add_to_array(&selected_model->vertex_array,&vert5);
+        add_to_array(&selected_model->vertex_array,&vert6);
+        add_to_array(&selected_model->vertex_array,&vert7);
+        add_to_array(&selected_model->vertex_array,&vert8);
+}
 bool bounding_box_initialized = false;
 void init_selected_object_bounding_box_vertices(){
     if(bounding_box_initialized == false && selected_element != NULL) {
@@ -52,90 +97,14 @@ void init_selected_object_bounding_box_vertices(){
         selected_model->id = actual_model_array->count-1;
         
        
-        init_array(&selected_model->vertex_array,sizeof(Vertex),50);
+        init_array(&selected_model->vertex_array,sizeof(Vertex),8);
         
+        create_bounding_vertices();
 
-        struct Vertex min;
-        
-        struct Vertex max;
+        init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
 
-        memset(&min,0,sizeof(struct Vertex));
-        memset(&max,0,sizeof(struct Vertex));
-
-        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-
-        StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-        if(!mesh){
-            bounding_box_initialized = true;
-            return;
-        }
-           
-        //glm_vec3_copy(mesh->model->min, min.postion);
-        //glm_vec3_copy(mesh->model->max, max.postion);
-        glm_vec3_add(mesh->model->min,transform->position,min.postion);
-        glm_vec3_add(mesh->model->max,transform->position,max.postion);
-
-
-        struct Vertex vert3;
-        glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
-        
-        struct Vertex vert4;
-        glm_vec3_copy((vec3){max.postion[0],min.postion[1],max.postion[2]},vert4.postion);
-
-        struct Vertex vert5;
-        glm_vec3_copy((vec3){max.postion[0],max.postion[1],min.postion[2]},vert5.postion);
-
-        struct Vertex vert6;
-        glm_vec3_copy((vec3){min.postion[0],min.postion[1],max.postion[2]},vert6.postion);
-        
-        struct Vertex vert7;
-        glm_vec3_copy((vec3){max.postion[0],min.postion[1],min.postion[2]},vert7.postion);
-        
-       struct Vertex vert8;
-       glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
-
-       add_to_array(&selected_model->vertex_array,&min);
-       add_to_array(&selected_model->vertex_array,&vert7);
-
-       add_to_array(&selected_model->vertex_array,&vert6);
-       add_to_array(&selected_model->vertex_array,&min);
-
-       add_to_array(&selected_model->vertex_array,&vert4);
-       add_to_array(&selected_model->vertex_array,&vert6);
-
-       add_to_array(&selected_model->vertex_array,&vert7);
-       add_to_array(&selected_model->vertex_array,&vert4);
-
-
-       add_to_array(&selected_model->vertex_array,&vert8);
-       add_to_array(&selected_model->vertex_array,&vert6);
-
-       add_to_array(&selected_model->vertex_array,&min);
-       add_to_array(&selected_model->vertex_array,&vert3);
-
-
-       add_to_array(&selected_model->vertex_array,&vert8);
-       add_to_array(&selected_model->vertex_array,&vert3);
-
-       add_to_array(&selected_model->vertex_array,&vert7);
-       add_to_array(&selected_model->vertex_array,&vert5);
-
-        add_to_array(&selected_model->vertex_array,&vert8);
-       add_to_array(&selected_model->vertex_array,&max);
-    
-       add_to_array(&selected_model->vertex_array,&max);
-       add_to_array(&selected_model->vertex_array,&vert5);
-       
-       add_to_array(&selected_model->vertex_array,&vert5);
-       add_to_array(&selected_model->vertex_array,&vert3);
-
-       add_to_array(&selected_model->vertex_array,&max);
-       add_to_array(&selected_model->vertex_array,&vert4);
-
-       init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
-
-       selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
-       bounding_box_initialized = true;
+        selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+        bounding_box_initialized = true;
    }
 
 }
@@ -156,23 +125,13 @@ void update_bounding_vertices_array(Model* model){
                 sub = true;
         }
     
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-    glm_vec3_add(selected_element->transform->position,mesh->model->max,mesh->model->max);
-    glm_vec3_add(selected_element->transform->position,mesh->model->min,mesh->model->min);
-
     glm_vec3_copy(selected_element->transform->position,last_position);
 
     Model* box = get_from_array(&bounding_boxes,0);
     
-    for(int i = 0; i < box->vertex_array.count ; i++){
-        vec3 new_vertex_pos;
-        struct Vertex* vertex = get_from_array(&box->vertex_array,i);        
-        
-        if(sub)
-            glm_vec3_sub(vertex->postion,selected_element->transform->position,vertex->postion);
-        else    
-            glm_vec3_sub(vertex->postion,selected_element->transform->position,vertex->postion);
-    }
+    clean_array(&box->vertex_array);
+    selected_model = box;
+    create_bounding_vertices();
 }
 
 
@@ -192,7 +151,7 @@ void draw_bounding_box(){
         if(error != GL_NO_ERROR){
             LOG("[X] Send uniform error, Error %08x \n",error);
         }
-        glDrawArrays(GL_LINES, 0, bounding_model->vertex_array.count);
+        glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
         return;
     }
     init_selected_object_bounding_box_vertices();
@@ -227,27 +186,6 @@ void init_line(DebugLine* line){
     line->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader); 
     glm_vec4_copy((vec4){1,1,1,1},line->color);
    
-}
-
-void init_camera_frustrum_gizmo_geometry(float * proj, float *mv){ 
-
-	// Get near and far from the Projection matrix.
-	const double near = proj[11] / (proj[10] - 1.0);
-	const double far = proj[11] / (1.0 + proj[10]);
-
-	// Get the sides of the near plane.
-	const double nLeft = near * (proj[2] - 1.0) / proj[0];
-	const double nRight = near * (1.0 + proj[2]) / proj[0];
-	const double nTop = near * (1.0 + proj[6]) / proj[5];
-	const double nBottom = near * (proj[6] - 1.0) / proj[5];
-
-	// Get the sides of the far plane.
-	const double fLeft = far * (proj[2] - 1.0) / proj[0];
-	const double fRight = far * (1.0 + proj[2]) / proj[0];
-	const double fTop = far * (1.0 + proj[6]) / proj[5];
-	const double fBottom = far * (proj[6] - 1.0) / proj[5];
-  
-
 }
 
 void draw_axis_lines(){
@@ -377,7 +315,8 @@ void draw_gizmos(){
     glClear(GL_DEPTH_BUFFER_BIT);
     
     if(can_draw_gizmos){
-        //draw_bounding_box();
+        if(can_draw_bounding_box_in_select_element)
+            draw_bounding_box();
         //draw_camera_direction();
 
     
@@ -463,6 +402,7 @@ void init_gizmos(){
 
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
+    can_draw_bounding_box_in_select_element = false;
 
     draw_translate_gizmo = false;
     draw_rotate_gizmo = false;
@@ -471,9 +411,5 @@ void init_gizmos(){
     add_debug_line((vec3){0,5,0},(vec3){0,-5,0});
     add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
 
-    //add_debug_line((vec3){1,1,1},(vec3){0,1,0});
-
-    init_grid_greometry();
-
-    
+    init_grid_greometry();    
 }
