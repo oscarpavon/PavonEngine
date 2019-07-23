@@ -659,11 +659,13 @@ void default_mode(){
 
     if(key__released(&input.D,GLFW_MOD_SHIFT)){
        duplicate_selected_element();
-       LOG("duplicated \n"); 
+       LOG("duplicated \n");
+       return; 
     }
     if(key__released(&input.A,GLFW_MOD_ALT)){
         LOG("deselect all \n");
-        deselect_all(); 
+        deselect_all();
+        return;  
     }
     if(key_released(&input.S)){
         //get_element_status(selected_element);
@@ -672,16 +674,19 @@ void default_mode(){
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
         LOG("editor play mode \n");
         change_to_editor_mode(EDITOR_PLAY_MODE);
+        return; 
     }
 
     if(key__released(&input.P,GLFW_MOD_CONTROL)){
         //TODO: open game in new window
         LOG("playing \n");
         play_game_standalone();
+        return; 
     }
   
     if(key_released(&input.X)){
         remove_selected_element();            
+        return; 
     } 
     
     
@@ -698,6 +703,7 @@ void default_mode(){
     if(key_released(&input.KEY_2)){
         init_skeletal_editor();
         can_draw_skeletal_bones = true;
+        return; 
     }
            
     can_open_text_menu_with_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);

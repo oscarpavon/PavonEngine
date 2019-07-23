@@ -91,6 +91,16 @@ void init_transfrom_component(TransformComponent* component){
     glm_quat_identity(component->rotation);
 }
 
+void clean_component_value(ComponentDefinition* component){
+    if(component->type == LEVEL_OF_DETAIL_COMPONENT){
+        LevelOfDetailComponent* details = component->data;
+        if(details->hirarchical_level_of_detail){
+            details->hirarchical_level_of_detail->draw = false;
+            details->hirarchical_level_of_detail->drew = false;
+        }
+    }
+}
+
 void update_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -127,10 +137,62 @@ void update_component(ComponentDefinition* element_component){
     }
     case LEVEL_OF_DETAIL_COMPONENT:
         {
+        
             LevelOfDetailComponent* details = element_component->data;
-            Model* lod0 = &details->meshes.data[0];
-            glm_mat4_copy(element_component->parent->transform->model_matrix,lod0->model_mat);
-            add_to_array(&models_for_test_occlusion,&lod0);
+            Model* LOD0 = get_from_array(&details->meshes,0);
+            vec3 object_position;
+
+            glm_vec3_copy( VEC3(element_component->parent->transform->model_matrix[3][0],
+                                        element_component->parent->transform->model_matrix[3][1],
+                                        element_component->parent->transform->model_matrix[3][2] ) 
+                                        , object_position);
+            vec3 center_object;
+            vec3 sum_min_max;
+            glm_vec3_add(LOD0->min,
+                        LOD0->max,
+                        sum_min_max);
+            glm_vec3_div(sum_min_max,VEC3(2,2,2),center_object);
+
+            float distance = glm_vec3_distance(main_camera.position,center_object);
+            Model* draw_model;
+            if(distance > 24)
+                draw_model = get_from_array(&details->meshes,1);
+            else
+                draw_model= LOD0;
+
+            
+            if(details->hirarchical_level_of_detail){
+                vec3 center_of_hirarchical;
+                vec3 sum;
+                glm_vec3_add(details->hirarchical_level_of_detail->model.min,
+                            details->hirarchical_level_of_detail->model.max,
+                            sum);
+                glm_vec3_div(sum,VEC3(2,2,2),center_of_hirarchical);
+
+                vec3 global_position;
+                glm_vec3_add(object_position,center_of_hirarchical,global_position);
+                float distance_hirarchical = glm_vec3_distance(global_position,main_camera.position);
+                if(distance > 200)
+                    details->hirarchical_level_of_detail->draw = true;
+            }
+            
+
+           
+            if(details->hirarchical_level_of_detail){
+                if(details->hirarchical_level_of_detail->drew)
+                    return;
+                
+                if(details->hirarchical_level_of_detail->draw){
+                    draw_model = &details->hirarchical_level_of_detail->model;
+                    glm_mat4_copy(element_component->parent->transform->model_matrix,draw_model->model_mat);
+                    add_to_array(&models_for_test_occlusion,&draw_model);
+                    details->hirarchical_level_of_detail->drew = true;
+                    return;
+                }
+            }
+           
+            glm_mat4_copy(element_component->parent->transform->model_matrix,draw_model->model_mat);
+            add_to_array(&models_for_test_occlusion,&draw_model);
         }
         break;      
     case STATIC_MESH_COMPONENT:{

@@ -201,9 +201,7 @@ void load_level_in_editor(const char* name){
 } 
 
 void duplicate_selected_element(){
-    Element* original_elmenent = selected_element;
-    new_empty_model();
-    StaticMeshComponent* original_mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    Element* original_elmenent = selected_element;    
     new_empty_element();
     for(int i = 0; i < original_elmenent->components.count ; i++){
         ComponentDefinition* component_definition = get_from_array(&original_elmenent->components,i);
@@ -218,6 +216,8 @@ void duplicate_selected_element(){
             add_camera_component_to_selected_element();
             break;
         case STATIC_MESH_COMPONENT:{
+            StaticMeshComponent* original_mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+            new_empty_model();
             StaticMeshComponent new_mesh;
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
             new_mesh.model = selected_model;
@@ -226,7 +226,22 @@ void duplicate_selected_element(){
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
         }          
         break;
-        
+        case LEVEL_OF_DETAIL_COMPONENT:
+        {
+            LevelOfDetailComponent* original_component = get_component_from_element(original_elmenent,LEVEL_OF_DETAIL_COMPONENT);
+            LevelOfDetailComponent detail_component;
+            memset(&detail_component,0,sizeof(LevelOfDetailComponent));
+            init_array(&detail_component.meshes,sizeof(Model),original_component->meshes.count);
+            detail_component.hirarchical_level_of_detail = original_component->hirarchical_level_of_detail;
+            for(int i = 0; i<original_component->meshes.count ; i++){
+                Model* source_copy = get_from_array(&original_component->meshes,i);                
+                new_empty_model_in_array(&detail_component.meshes);                
+                duplicate_model_data(selected_model,source_copy);
+                selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+            }
+            add_component_to_selected_element(sizeof(LevelOfDetailComponent), &detail_component, LEVEL_OF_DETAIL_COMPONENT);
+            break;
+        }
         default:
             break;
         }
@@ -321,6 +336,7 @@ void draw_editor_viewport(){
     draw_count_of_draw_call();
     draw_elements(&frame_draw_elements);
     clean_array(&models_for_test_occlusion);
+    clean_elements_components();
 
     draw_gizmos();
 

@@ -65,6 +65,8 @@ typedef struct HirarchicalLevelOfDetail{
     Model model;
     float distance;
     bool draw;
+    bool drew;
+    
 }HirarchicalLevelOfDetail;
 
 typedef struct LevelOfDetailComponent{
@@ -86,5 +88,5 @@ void change_view_to_camera_component(CameraComponent* camera_component);
 void add_transform_component_to_selected_element();
 void add_camera_component_to_selected_element();
 void update_main_camera_with_camera_component_values(CameraComponent* camera_component);
-
+void clean_component_value(ComponentDefinition* component);
 #endif

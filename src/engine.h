@@ -88,6 +88,8 @@ void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
 
+void clean_elements_components();
+
 int load_and_initialize_simple_model(const char* model_gltf_path);
 
 void update_translation(vec3 translation);

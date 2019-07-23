@@ -394,6 +394,18 @@ void init_game_engine(){
     
 }
 
+void clean_elements_components(){
+    for(int i = 0; i < actual_elements_array->count ; i++){
+        Element* element = get_from_array(actual_elements_array,i);
+        if(element->components_count > 0){
+            for(int o = 0; o < element->components_count ; o++){
+                ComponentDefinition* component = get_from_array(&element->components,o);
+                clean_component_value(component);
+            }
+        }
+    }
+}
+
 void update_elements_components(){
     for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element = get_from_array(actual_elements_array,i);
