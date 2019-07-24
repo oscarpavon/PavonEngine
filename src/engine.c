@@ -137,7 +137,9 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
      
     if(mesh){
         if(mesh->meshes.count >= 1){
-            for(int i = 0; i<mesh->meshes.count; i++){
+            int id = textures_paths.count-1;
+            add_to_array(&mesh->textures,&id);
+            for(int i = 1; i<mesh->meshes.count; i++){
                 unsigned int* model_id = get_from_array(&mesh->meshes,i);
                 Model* model = get_from_array(actual_model_array,*model_id);
                 model->texture.id = texture_loaded->id;
@@ -191,8 +193,12 @@ void add_element_with_model_path(const char* model_gltf_path){
     init_transfrom_component(&transform);
     add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
 
+    add_to_array(&texts,model_gltf_path);
 
-    int models_loaded = load_and_initialize_simple_model(model_gltf_path); 
+    Array* prev_array = actual_model_array;
+    actual_model_array = &array_models_loaded;
+    int models_loaded = load_and_initialize_simple_model(model_gltf_path);
+    actual_model_array = prev_array;
     
     StaticMeshComponent mesh_component;
     if(models_loaded == 0){
@@ -203,22 +209,25 @@ void add_element_with_model_path(const char* model_gltf_path){
         
     }
     if(models_loaded > 1){
-        init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded);
-        init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded);
-        int model_id_actual_model_array = actual_model_array->count - models_loaded;        
+        init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
+        init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
+        int model_path_id = texts.count-1;
+        add_to_array(&mesh_component.meshes,&model_path_id);
+
+        int id =        array_models_loaded.count-models_loaded;
         for(int i = 0; i<models_loaded ; i++){
-            new_empty_model_in_array(actual_model_array);
-            Model* original_model = get_from_array(actual_model_array,model_id_actual_model_array);
+            new_empty_model();
+            Model* original_model = get_from_array(&array_models_loaded,id);
             duplicate_model_data(selected_model,original_model);
             selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-            int new_model_id = actual_model_array->count -1;
+            int new_model_id = actual_model_array->count-1;
             add_to_array(&mesh_component.meshes,&new_model_id);
-            model_id_actual_model_array++;
+            id++;
         }
     }
 
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
-    add_to_array(&texts,model_gltf_path);
+    
         
     LOG("model loaded and shader created \n");
 }
@@ -349,6 +358,7 @@ void compiles_standard_shaders(){
 void init_engine(){
     init_array(&texts,sizeof(char[20]),50);
     init_array(&textures_paths,sizeof(char[20]),50);
+    init_array(&array_models_loaded,sizeof(Model),100);
 
     init_camera();
 
@@ -423,35 +433,11 @@ void init_game_engine(){
     
 }
 
-void clean_elements_components(){
-    for(int i = 0; i < actual_elements_array->count ; i++){
-        Element* element = get_from_array(actual_elements_array,i);
-        if(element->components_count > 0){
-            for(int o = 0; o < element->components_count ; o++){
-                ComponentDefinition* component = get_from_array(&element->components,o);
-                clean_component_value(component);
-            }
-        }
-    }
-}
-
-void update_elements_components(){
-    for(int i = 0; i < actual_elements_array->count ; i++){
-        Element* element = get_from_array(actual_elements_array,i);
-        if(element->components_count > 0){
-            for(int o = 0; o < element->components_count ; o++){
-                ComponentDefinition* component = get_from_array(&element->components,o);
-                update_component(component);
-            }
-        }
-    }
-}
-
 void engine_loop(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    update_elements_components();
+    for_each_element_components(&update_component);
     test_elements_occlusion();
 
     draw_elements(&frame_draw_elements);

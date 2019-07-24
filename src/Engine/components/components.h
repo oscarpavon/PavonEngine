@@ -55,6 +55,7 @@ typedef struct StaticMeshComponent{
     int model_id;
     int texture_id;
     Model* model;
+    bool initialized;
     Array meshes;
     Array distances;
     Array textures;
@@ -97,4 +98,6 @@ void add_transform_component_to_selected_element();
 void add_camera_component_to_selected_element();
 void update_main_camera_with_camera_component_values(CameraComponent* camera_component);
 void clean_component_value(ComponentDefinition* component);
+void init_element_component(ComponentDefinition* element_component);
+void for_each_element_components(void(*do_to)(ComponentDefinition*));
 #endif

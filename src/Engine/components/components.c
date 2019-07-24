@@ -101,6 +101,35 @@ void clean_component_value(ComponentDefinition* component){
     }
 }
 
+void init_element_component(ComponentDefinition* element_component){
+    switch (element_component->type)
+    {
+    case STATIC_MESH_COMPONENT:
+        {
+            StaticMeshComponent* mesh_component = element_component->data;
+            if(!mesh_component->initialized){
+               
+                for(int i = 1; i<mesh_component->meshes.count-1 ; i++){
+                    unsigned int* texture_id = get_from_array(&mesh_component->textures,i);
+                    unsigned int* id = get_from_array(&mesh_component->meshes,i);
+                    new_empty_model();
+                    Model* original_model = get_from_array(&array_models_loaded,*id);
+                    Texture* texture = get_from_array(current_textures_array,*texture_id);
+                    duplicate_model_data(selected_model,original_model);
+                    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
+                    selected_model->texture.id = texture->id;                 
+                    id++;
+                }
+                mesh_component->initialized = true;
+            }
+        }
+        break;
+    
+    default:
+        break;
+    }
+}
+
 void update_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -208,7 +237,8 @@ void update_component(ComponentDefinition* element_component){
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
         if(component->meshes.count >= 1){
-            unsigned int* model_id = get_from_array(&component->meshes,0);
+            unsigned int* model_id = get_from_array(&component->meshes,1);      
+        
             Model* model = get_from_array(actual_model_array,*model_id);
             glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);
             add_to_array(&models_for_test_occlusion,&model);
@@ -277,4 +307,17 @@ void add_camera_component_to_selected_element(){
     init_camera_component(&camera_component);
     add_component_to_selected_element(sizeof(CameraComponent), &camera_component, CAMERA_COMPONENT);
 
+}
+
+
+void for_each_element_components(void(*do_to)(ComponentDefinition*)){
+     for(int i = 0; i < actual_elements_array->count ; i++){
+        Element* element = get_from_array(actual_elements_array,i);
+        if(element->components_count > 0){
+            for(int o = 0; o < element->components_count ; o++){
+                ComponentDefinition* component = get_from_array(&element->components,o);
+                do_to(component);
+            }
+        }
+    }
 }

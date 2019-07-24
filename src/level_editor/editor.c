@@ -184,15 +184,18 @@ void load_level_in_editor(const char* name){
     if(level_result != 0)
         return;   
     
-
+    actual_model_array = &array_models_loaded;
     for(int i = 0; i< texts.count ; i++){
        load_and_initialize_simple_model(get_from_array(&texts,i));
     }    
+    actual_model_array = &editor_models;
 
     for(int i = 0; i< textures_paths.count ; i++){
        load_simple_image(get_from_array(&textures_paths,i));
     } 
 
+    for_each_element_components(&init_element_component);
+    
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
     struct timespec result = diff(time1,time2);
@@ -330,13 +333,13 @@ void draw_editor_viewport(){
         update_main_camera_with_camera_component_values(camera);
     }
 
-    update_elements_components();
+    for_each_element_components(&update_component);
     test_elements_occlusion();
 
     draw_count_of_draw_call();
     draw_elements(&frame_draw_elements);
     clean_array(&models_for_test_occlusion);
-    clean_elements_components();
+    for_each_element_components(&clean_component_value);
 
     draw_gizmos();
 

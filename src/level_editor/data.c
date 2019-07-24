@@ -138,18 +138,17 @@ void create_save_data_backup(){
 }
 
 void save_models_id(void* component){
-    StaticMeshComponent* mesh = component;
-   fprintf(actual_file,"%i",texts.count-1);
+    StaticMeshComponent* mesh = component;  
    for(int i = 0; i<mesh->meshes.count; i++){
-       fprintf(actual_file,",%i",i);
+       unsigned int* id = get_from_array(&mesh->meshes,i);
+       fprintf(actual_file,"%i,",*id);
    }
 }
 void save_textures_id(void* component){
-    StaticMeshComponent* mesh = component;
-   fprintf(actual_file,"%i",textures_paths.count-1);
+    StaticMeshComponent* mesh = component;   
    for(int i = 0; i<mesh->textures.count; i++){
        int* texture_id = get_from_array(&mesh->textures,i);
-       fprintf(actual_file,",%i",*texture_id);
+       fprintf(actual_file,"%i,",*texture_id);
    }
 }
 

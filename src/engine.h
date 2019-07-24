@@ -65,8 +65,6 @@ void draw_editor_viewport();
 void set_selected_element_transform(vec3 position, versor rotation);
 void rotate_element(Element* element, versor quaternion);
 
-void update_elements_components();
-
 void set_element_position(Element* element, vec3 position);
 
 void update_viewport_size();
@@ -87,8 +85,6 @@ void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
-
-void clean_elements_components();
 
 int load_and_initialize_simple_model(const char* model_gltf_path);
 
@@ -134,6 +130,8 @@ Array* actual_buttons_array;
 
 Array components;
 Array engine_native_models;
+
+Array array_models_loaded;
 
 Array array_hirarchical_level_of_detail;
 Array frame_draw_elements;
