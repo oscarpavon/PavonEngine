@@ -201,13 +201,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     actual_model_array = prev_array;
     
     StaticMeshComponent mesh_component;
-    if(models_loaded == 0){
-        
-        mesh_component.model = selected_model;
-        
-        mesh_component.model_id = texts.count-1;
-        
-    }
+
     if(models_loaded > 1){
         init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
         init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
@@ -216,19 +210,17 @@ void add_element_with_model_path(const char* model_gltf_path){
 
         int id =        array_models_loaded.count-models_loaded;
         for(int i = 0; i<models_loaded ; i++){
-            new_empty_model();
-            Model* original_model = get_from_array(&array_models_loaded,id);
-            duplicate_model_data(selected_model,original_model);
-            selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-            int new_model_id = actual_model_array->count-1;
-            add_to_array(&mesh_component.meshes,&new_model_id);
+            add_to_array(&mesh_component.meshes,&id);
             id++;
         }
     }
 
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     
-        
+    for(int i = 0; i <selected_element->components.count ; i++){
+        init_element_component(get_from_array(&selected_element->components,i));
+    }
+
     LOG("model loaded and shader created \n");
 }
 
@@ -437,7 +429,7 @@ void engine_loop(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    for_each_element_components(&update_component);
+    for_each_element_components(&update_per_frame_component);
     test_elements_occlusion();
 
     draw_elements(&frame_draw_elements);
@@ -483,10 +475,11 @@ void update_translation(vec3 translation){
     if(!transform)
         return;
     glm_translate(transform->model_matrix, translation);
-    glm_vec3_copy(VEC3(transform->model_matrix[3][0],
-                        transform->model_matrix[3][1],
-                        transform->model_matrix[3][2]),
-    transform->position);
+    glm_vec3_copy(transform->model_matrix[3], transform->position);
+    for(int i = 0; i<selected_element->components.count; i++){
+        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        update_component(component);
+    }
 }
 
 void rotate_element(Element* element, versor quaternion){

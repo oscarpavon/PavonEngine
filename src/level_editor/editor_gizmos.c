@@ -41,17 +41,8 @@ void add_debug_line(vec3 start, vec3 end){
 
 
 void create_bounding_vertices(){
-        Model* mesh;
-        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);   
         
-        
-        if(!mesh_component){
-            LevelOfDetailComponent* details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
-            mesh = get_from_array(&details->meshes,0);
-            if(!mesh)
-                return;
-        }  else mesh = mesh_component->model; 
-
         struct Vertex min;
         memset(&min,0,sizeof(Vertex));        
         struct Vertex max;
@@ -63,16 +54,8 @@ void create_bounding_vertices(){
         struct Vertex vert7;
         struct Vertex vert8;
 
-        TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-               
-        vec3 box[2];
-        glm_vec3_copy(mesh->min,box[0]);
-        glm_vec3_copy(mesh->max,box[1]);
-
-        glm_aabb_transform(box, mesh->model_mat, box);
-
-        glm_vec3_copy(box[0],min.postion);
-        glm_vec3_copy(box[1],max.postion);   
+        glm_vec3_copy(mesh_component->bounding_box[0],min.postion);
+        glm_vec3_copy(mesh_component->bounding_box[1],max.postion);   
         
         glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
         
@@ -99,12 +82,10 @@ void create_bounding_vertices(){
 bool bounding_box_initialized = false;
 void init_selected_object_bounding_box_vertices(){
     if(bounding_box_initialized == false && selected_element != NULL) {
+        Array* prev_model_array = actual_model_array;
         actual_model_array = &bounding_boxes;
 
-        Model new_model;
-        memset(&new_model,0,sizeof(Model));
-        add_to_array(actual_model_array,&new_model);
-        selected_model = get_from_array(actual_model_array,actual_model_array->count-1);
+        new_empty_model();
         glm_mat4_identity(selected_model->model_mat);
         selected_model->id = actual_model_array->count-1;
         
@@ -117,17 +98,12 @@ void init_selected_object_bounding_box_vertices(){
 
         selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
         bounding_box_initialized = true;
+        actual_model_array = prev_model_array;
    }
 
 }
 vec3 last_position;
 void update_bounding_vertices_array(Model* model){
-
-    /* if(last_position[0] == selected_element->transform->position[0] &&
-        last_position[1] == selected_element->transform->position[1] &&
-        last_position[2] == selected_element->transform->position[2]){
-            return;
-        } */
 
     glm_vec3_copy(selected_element->transform->position,last_position);
 

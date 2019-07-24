@@ -195,7 +195,7 @@ void load_level_in_editor(const char* name){
     } 
 
     for_each_element_components(&init_element_component);
-    
+
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
     struct timespec result = diff(time1,time2);
@@ -333,7 +333,7 @@ void draw_editor_viewport(){
         update_main_camera_with_camera_component_values(camera);
     }
 
-    for_each_element_components(&update_component);
+    for_each_element_components(&update_per_frame_component);
     test_elements_occlusion();
 
     draw_count_of_draw_call();

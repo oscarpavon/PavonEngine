@@ -55,7 +55,6 @@ typedef struct StaticMeshComponent{
     int model_id;
     int texture_id;
     Model* model;
-    bool initialized;
     Array meshes;
     Array distances;
     Array textures;
@@ -71,8 +70,7 @@ typedef struct HirarchicalLevelOfDetail{
     Model model;
     float distance;
     bool draw;
-    bool drew;
-    
+    bool drew;    
 }HirarchicalLevelOfDetail;
 
 typedef struct LevelOfDetailComponent{
@@ -89,6 +87,7 @@ void add_component_to_selected_element(int component_byte_size, void* new_compon
 void init_sphere_component(SphereComponent* component);
 void init_camera_component(CameraComponent* component);
 void init_cube_component(CubeComponent* component);
+void update_per_frame_component(ComponentDefinition*);
 void update_component(ComponentDefinition*);
 void init_transfrom_component(TransformComponent* component);
 void* get_component_from_selected_element(ComponentType type);

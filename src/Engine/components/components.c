@@ -101,36 +101,79 @@ void clean_component_value(ComponentDefinition* component){
     }
 }
 
+void update_component(ComponentDefinition* element_component){
+    switch (element_component->type)
+    {
+    case STATIC_MESH_COMPONENT:
+        {
+            StaticMeshComponent* mesh_component = element_component->data;            
+               
+            for(int i = 1; i<mesh_component->meshes.count-1 ; i++){            
+                unsigned int* id = get_from_array(&mesh_component->meshes,i);
+                Model* model  = get_from_array(actual_model_array,*id);
+                glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);                 
+            }
+            
+            unsigned int* id = get_from_array(&mesh_component->meshes,1);
+            Model* model  = get_from_array(actual_model_array,*id);
+            glm_vec3_copy(model->min,mesh_component->bounding_box[0]);
+            glm_vec3_copy(model->max,mesh_component->bounding_box[1]);
+            glm_aabb_transform(mesh_component->bounding_box,
+                                element_component->parent->transform->model_matrix,
+                                mesh_component->bounding_box);
+            glm_aabb_center(mesh_component->bounding_box,mesh_component->center);
+            
+        }
+        break;
+     case TRASNFORM_COMPONENT:{
+        
+
+        break;
+    }      
+    default:
+        break;
+    }
+}
 void init_element_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
     case STATIC_MESH_COMPONENT:
         {
-            StaticMeshComponent* mesh_component = element_component->data;
-            if(!mesh_component->initialized){
+            StaticMeshComponent* mesh_component = element_component->data;            
                
-                for(int i = 1; i<mesh_component->meshes.count-1 ; i++){
-                    unsigned int* texture_id = get_from_array(&mesh_component->textures,i);
-                    unsigned int* id = get_from_array(&mesh_component->meshes,i);
-                    new_empty_model();
-                    Model* original_model = get_from_array(&array_models_loaded,*id);
+            for(int i = 1; i<mesh_component->meshes.count-1 ; i++){                
+
+                unsigned int* id = get_from_array(&mesh_component->meshes,i);
+                new_empty_model();
+                Model* original_model = get_from_array(&array_models_loaded,*id);
+                
+                duplicate_model_data(selected_model,original_model);
+                selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
+                unsigned int* texture_id = get_from_array(&mesh_component->textures,i);
+                if(texture_id){
                     Texture* texture = get_from_array(current_textures_array,*texture_id);
-                    duplicate_model_data(selected_model,original_model);
-                    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
-                    selected_model->texture.id = texture->id;                 
-                    id++;
+                    selected_model->texture.id = texture->id;
                 }
-                mesh_component->initialized = true;
+                glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);                 
+                id++;
             }
+
+            update_component(element_component);
         }
         break;
-    
+     case TRASNFORM_COMPONENT:{
+        
+        TransformComponent* transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);
+        element_component->parent->transform = transform;       
+
+        break;
+    }      
     default:
         break;
     }
 }
 
-void update_component(ComponentDefinition* element_component){
+void update_per_frame_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
     case SPHERE_COMPONENT:{
@@ -144,15 +187,7 @@ void update_component(ComponentDefinition* element_component){
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&models_for_test_occlusion,&component->model);
         break;
-    }
-    case TRASNFORM_COMPONENT:{
-        if(element_component->parent->transform == NULL){
-            TransformComponent* transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);
-            element_component->parent->transform = transform;
-        }
-
-        break;
-    }      
+    }   
     case CAMERA_COMPONENT:{
         CameraComponent* component = &element_component->data[0];
         mat4 local;
@@ -240,27 +275,8 @@ void update_component(ComponentDefinition* element_component){
             unsigned int* model_id = get_from_array(&component->meshes,1);      
         
             Model* model = get_from_array(actual_model_array,*model_id);
-            glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);
-            add_to_array(&models_for_test_occlusion,&model);
-        }
-        else if(component->model == NULL){
-            int model_id;          
-            model_id = component->model_id;
-            new_empty_model();
-            Model* original_model = get_from_array(actual_model_array,model_id);
-            duplicate_model_data(selected_model,original_model);
-            selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-            component->model = selected_model;
-            Texture* texture = get_from_array(current_textures_array,component->texture_id);
-            component->model->texture.id = texture->id;
             
-        }
-        if(component->model == NULL){
-            return;
-        }
-        if(component->meshes.count == 0){
-            glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-            add_to_array(&models_for_test_occlusion,&component->model);
+            add_to_array(&models_for_test_occlusion,&model);
         }
         break;
     }      
