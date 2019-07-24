@@ -35,7 +35,7 @@ struct LoadGeometry{
     Array index_array;
 };
 
-int load_model(const char* path, struct Model*);
+int load_model(const char* path);
 
 
 #endif // !MODEL_H

@@ -163,9 +163,9 @@ void load_simple_image(const char* path){
     add_to_array(current_textures_array,&new_texture);    
 }
 
-int load_and_initialize_simple_model(const char* model_gltf_path){       
-    new_empty_model();
-    int load_model_result = load_model(model_gltf_path,selected_model);
+int load_and_initialize_simple_model(const char* model_gltf_path){ 
+
+    int load_model_result = load_model(model_gltf_path);
     if( load_model_result == -1){
         return -1;
     }
@@ -472,26 +472,24 @@ void add_action_function(void(*f)(void)){
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path){   
 
-    struct Model new_model;
-    memset(&new_model,0,sizeof(Model));
-    
-    load_model(path_model,&new_model);
-    glm_mat4_identity(new_model.model_mat);   
+    Array* prev_model_array = actual_model_array;
+    actual_model_array = array;
+        
+    load_model(path_model);  
 
-    new_model.shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
+    selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 
-    glUseProgram(new_model.shader);
+    glUseProgram(selected_model->shader);
 
     Texture new_texture;
     new_texture.image = load_image(color_texture_path);
 
-    init_model_gl_buffers(&new_model);
+    init_model_gl_buffers(selected_model);
 
     load_model_texture_to_gpu(&new_texture);
-    new_model.texture.id = new_texture.id;
+    selected_model->texture.id = new_texture.id;
 
-    add_to_array(array,&new_model);  
-
+    actual_model_array = prev_model_array;
 }
 
 void update_translation(vec3 translation){

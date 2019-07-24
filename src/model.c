@@ -118,6 +118,11 @@ void load_primitive(cgltf_primitive* primitive){
 }
 
 void load_mesh(cgltf_mesh* mesh){
+  new_empty_model();
+  actual_vertex_array = &selected_model->vertex_array;
+  actual_index_array = &selected_model->index_array;
+  actual_model = selected_model;
+
   for(int i = 0; i < mesh->primitives_count ; i++){
     load_primitive(&mesh->primitives[i]);
   }  
@@ -223,10 +228,6 @@ void check_LOD(cgltf_data* data){
   if(models_parsed > 1){
 
     for(int i = 0; i< models_parsed; i++){
-      new_empty_model_in_array(actual_model_array);
-      actual_vertex_array = &selected_model->vertex_array;
-      actual_index_array = &selected_model->index_array;
-      actual_model = selected_model;
       load_mesh(meshes[i]);
       init_model_gl_buffers(selected_model);
     }
@@ -292,7 +293,7 @@ void load_current_animation(){
 
 
 
-int load_model(const char* path , struct Model* model){
+int load_model(const char* path){
   
   model_loaded = false;
   File new_file;
@@ -313,10 +314,6 @@ int load_model(const char* path , struct Model* model){
   cgltf_load_buffers(&options,data,new_file.path);
   close_file(&new_file);
 
-
-  actual_vertex_array = &model->vertex_array;
-  actual_index_array = &model->index_array;
-  actual_model = model;
   
   check_LOD(data);
 
