@@ -150,7 +150,14 @@ void save_element_component_data(int id){
         {
             CameraComponent* camera = component->data;
             new_text_vec3_token("position",camera->position);
-        } 
+            break;
+        }
+    case LEVEL_OF_DETAIL_COMPONENT:
+    {
+        LevelOfDetailComponent* detail = component->data;
+        new_text_primitive_token("texture",detail->texture_id);
+        break;
+    } 
     default:
         break;
     }

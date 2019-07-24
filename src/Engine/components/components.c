@@ -137,8 +137,15 @@ void update_component(ComponentDefinition* element_component){
     }
     case LEVEL_OF_DETAIL_COMPONENT:
         {
-        
             LevelOfDetailComponent* details = element_component->data;
+            if(!details->initialized){
+                Texture* texture_loaded = get_from_array(current_textures_array,details->texture_id);
+                for(int i = 0; i< details->meshes.count ; i++){
+                    Model* mesh = get_from_array(&details->meshes,i);
+                    mesh->texture.id = texture_loaded->id;                    
+                }
+                details->initialized = true;
+            }
             Model* LOD0 = get_from_array(&details->meshes,0);
             vec3 object_position;
 

@@ -72,6 +72,9 @@ typedef struct HirarchicalLevelOfDetail{
 typedef struct LevelOfDetailComponent{
     Array meshes;
     Array distances;
+    int texture_id;
+    int model_id;
+    bool initialized;
     HirarchicalLevelOfDetail* hirarchical_level_of_detail;
 }LevelOfDetailComponent;
 

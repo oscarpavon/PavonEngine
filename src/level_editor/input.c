@@ -185,6 +185,7 @@ void text_input_mode(){
         memset(command_text_buffer,0,sizeof(command_text_buffer));
         
         change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+        return;
     }
     if(key_released(&input.BACKSPACE)){
         character_count--;

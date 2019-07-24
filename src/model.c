@@ -337,7 +337,9 @@ int load_model(const char* path , struct Model* model){
  
     cgltf_free(data);
     
-    return models_parsed;
+    int model_result = models_parsed;
+    models_parsed = 0;
+    return model_result;
   }  
   
   if(data->skins_count >= 1){

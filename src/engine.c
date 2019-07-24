@@ -144,8 +144,8 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     for(int i = 0; i< details->meshes.count ; i++){
         Model* mesh = get_from_array(&details->meshes,i);
         mesh->texture.id = texture_loaded->id;//for compatibility
+        details->texture_id = textures_paths.count-1;
     }
-
    
     
 }
@@ -183,6 +183,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     new_empty_element();
     strcpy(selected_element->name, "New Element");
+    
     TransformComponent transform;
     init_transfrom_component(&transform);
     add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
@@ -194,12 +195,12 @@ void add_element_with_model_path(const char* model_gltf_path){
     if(models_loaded == 0){
         StaticMeshComponent mesh_component;
         mesh_component.model = selected_model;
-        add_to_array(&texts,model_gltf_path);
+        
         mesh_component.model_id = texts.count-1;
         
         add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     }
-
+    add_to_array(&texts,model_gltf_path);
         
     LOG("model loaded and shader created \n");
 }

@@ -139,7 +139,7 @@ Token* get_token_array_component_transform(Token* token){
   return last_token_readed;
 }
 
-ComponentType parse_component_type(Token* type_token){
+ComponentType parse__and_add_component_type(Token* type_token){
   if( type_token->type != JSMN_PRIMITIVE)
     LOG("Get type is not a primitive value\n");
   int type = get_token_primitive_value(type_token);
@@ -170,6 +170,11 @@ ComponentType parse_component_type(Token* type_token){
       add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
       break;
     }
+  case LEVEL_OF_DETAIL_COMPONENT:
+  {
+    
+    break;
+  }
   default:
     break;
   }
@@ -202,6 +207,11 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     mesh->texture_id = texture_id;
     return last_element_readed;
 
+  }
+  case LEVEL_OF_DETAIL_COMPONENT:
+  {
+    LOG("Parsed Level of Details component\n");
+    return token_value_name_string;
   }
   case SPHERE_COMPONENT:
   {
@@ -241,7 +251,7 @@ Token* parse_components_objects(Token* array_components){
   for(int i= 0; i< array_components->size ; i++){
     Token* object = get_next_object_token(last_element_readed);
     Token* token_primitive_type = object+2;
-    ComponentType type = parse_component_type(token_primitive_type);
+    ComponentType type = parse__and_add_component_type(token_primitive_type);
     last_element_readed = fill_components_values(type,object+3);    
   }
   
