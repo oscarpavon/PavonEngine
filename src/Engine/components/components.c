@@ -207,7 +207,13 @@ void update_component(ComponentDefinition* element_component){
         break;      
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* component = &element_component->data[0];
-        if(component->model == NULL){
+        if(component->meshes.count >= 1){
+            unsigned int* model_id = get_from_array(&component->meshes,0);
+            Model* model = get_from_array(actual_model_array,*model_id);
+            glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);
+            add_to_array(&models_for_test_occlusion,&model);
+        }
+        else if(component->model == NULL){
             int model_id;          
             model_id = component->model_id;
             new_empty_model();
@@ -222,9 +228,10 @@ void update_component(ComponentDefinition* element_component){
         if(component->model == NULL){
             return;
         }
-        
-        glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&models_for_test_occlusion,&component->model);
+        if(component->meshes.count == 0){
+            glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
+            add_to_array(&models_for_test_occlusion,&component->model);
+        }
         break;
     }      
     default:

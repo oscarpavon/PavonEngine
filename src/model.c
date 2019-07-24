@@ -205,7 +205,7 @@ void check_LOD(cgltf_data* data){
             actual_index_array = &new_hirarchical.model.index_array;
             actual_model = &new_hirarchical.model;
 
-            load_mesh(data->nodes[i].mesh);
+            //load_mesh(data->nodes[i].mesh);
             init_model_gl_buffers(&new_hirarchical.model);
             new_hirarchical.model.shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
@@ -214,7 +214,6 @@ void check_LOD(cgltf_data* data){
             hirarchical_level_of_detail = 
             get_from_array(&array_hirarchical_level_of_detail,
             array_hirarchical_level_of_detail.count-1);
-            //models_parsed++;
           }
         }
       }
@@ -222,25 +221,13 @@ void check_LOD(cgltf_data* data){
    
   }
   if(models_parsed > 1){
-    LevelOfDetailComponent* details;
-  
-    LevelOfDetailComponent detail_component;
-    memset(&detail_component,0,sizeof(LevelOfDetailComponent));
-    if(hirarchical_level_of_detail)
-      detail_component.hirarchical_level_of_detail = hirarchical_level_of_detail;
-    init_array(&detail_component.meshes,sizeof(Model),models_parsed);
-    
-    add_component_to_selected_element(sizeof(LevelOfDetailComponent), &detail_component, LEVEL_OF_DETAIL_COMPONENT);
-    details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-    selected_element->transform = transform;
+
     for(int i = 0; i< models_parsed; i++){
-      new_empty_model_in_array(&details->meshes);
+      new_empty_model_in_array(actual_model_array);
       actual_vertex_array = &selected_model->vertex_array;
       actual_index_array = &selected_model->index_array;
       actual_model = selected_model;
       load_mesh(meshes[i]);
-      selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
       init_model_gl_buffers(selected_model);
     }
   }
@@ -306,6 +293,7 @@ void load_current_animation(){
 
 
 int load_model(const char* path , struct Model* model){
+  
   model_loaded = false;
   File new_file;
 
@@ -340,8 +328,8 @@ int load_model(const char* path , struct Model* model){
     int model_result = models_parsed;
     models_parsed = 0;
     return model_result;
-  }  
-  
+  }
+
   if(data->skins_count >= 1){
     init_array(&nodes,sizeof(Node),data->nodes_count+1);
     memset(nodes.data,0,sizeof(Node) * data->nodes_count);

@@ -49,6 +49,14 @@ void new_text_vec2_token(const char* text,vec2 vec){
     token_count += 4;
 }
 
+void new_array_data_with_pointer(const char* text,void(*function)(void*),void* data){
+    hirachical_tab(); fprintf(actual_file,"\"%s\" : [",text);
+    hirarchical_count++;
+    function(data);
+    hirarchical_count--;    
+    fputs("],\n",actual_file);
+    
+}
 void new_array_data(const char* text,void(*function)(void)){
     hirachical_tab(); fprintf(actual_file,"\"%s\" : [\n",text);
     hirarchical_count++;
@@ -129,6 +137,22 @@ void create_save_data_backup(){
     fclose(level_file);
 }
 
+void save_models_id(void* component){
+    StaticMeshComponent* mesh = component;
+   fprintf(actual_file,"%i",texts.count-1);
+   for(int i = 0; i<mesh->meshes.count; i++){
+       fprintf(actual_file,",%i",i);
+   }
+}
+void save_textures_id(void* component){
+    StaticMeshComponent* mesh = component;
+   fprintf(actual_file,"%i",textures_paths.count-1);
+   for(int i = 0; i<mesh->textures.count; i++){
+       int* texture_id = get_from_array(&mesh->textures,i);
+       fprintf(actual_file,",%i",*texture_id);
+   }
+}
+
 void save_element_component_data(int id){
     ComponentDefinition* component = get_from_array(&current_element->components,id);
     new_text_primitive_token("type",component->type);
@@ -142,6 +166,11 @@ void save_element_component_data(int id){
     }
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* mesh = &component->data[0];
+        if(mesh->meshes.count >= 1){
+            new_array_data_with_pointer("models",&save_models_id,mesh);
+            new_array_data_with_pointer("textures",&save_textures_id,mesh);
+            break;
+        }
         new_text_primitive_token("model",mesh->model_id);
         new_text_primitive_token("texture",mesh->model_id);
         break;

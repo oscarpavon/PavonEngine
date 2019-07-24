@@ -103,6 +103,8 @@ void new_empty_model_in_array(Array* array){
 void new_empty_model(){
     Model new_model;
     memset(&new_model,0,sizeof(Model));
+    if(!actual_model_array)
+        return;
     add_to_array(actual_model_array,&new_model);
 
     selected_model = get_from_array(actual_model_array,actual_model_array->count-1);        
@@ -134,20 +136,22 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
      
     if(mesh){
-        mesh->texture_id = textures_paths.count-1;
-        mesh->model->texture.id = texture_loaded->id;//for compatibility
+        if(mesh->meshes.count >= 1){
+            for(int i = 0; i<mesh->meshes.count; i++){
+                unsigned int* model_id = get_from_array(&mesh->meshes,i);
+                Model* model = get_from_array(actual_model_array,*model_id);
+                model->texture.id = texture_loaded->id;
+                int id = textures_paths.count-1;
+                add_to_array(&mesh->textures,&id);
+            }
+        }else{
+            mesh->texture_id = textures_paths.count-1;
+            mesh->model->texture.id = texture_loaded->id;//for compatibility
+        }
         LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
         return;
-    }
-     
-    LevelOfDetailComponent* details = get_component_from_selected_element(LEVEL_OF_DETAIL_COMPONENT);
-    for(int i = 0; i< details->meshes.count ; i++){
-        Model* mesh = get_from_array(&details->meshes,i);
-        mesh->texture.id = texture_loaded->id;//for compatibility
-        details->texture_id = textures_paths.count-1;
-    }
-   
-    
+    }    
+       
 }
 
 void load_simple_image(const char* path){
@@ -159,9 +163,8 @@ void load_simple_image(const char* path){
     add_to_array(current_textures_array,&new_texture);    
 }
 
-int load_and_initialize_simple_model(const char* model_gltf_path){
-    new_empty_model();   
-
+int load_and_initialize_simple_model(const char* model_gltf_path){       
+    new_empty_model();
     int load_model_result = load_model(model_gltf_path,selected_model);
     if( load_model_result == -1){
         return -1;
@@ -183,7 +186,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     new_empty_element();
     strcpy(selected_element->name, "New Element");
-    
+
     TransformComponent transform;
     init_transfrom_component(&transform);
     add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
@@ -191,15 +194,30 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     int models_loaded = load_and_initialize_simple_model(model_gltf_path); 
     
-
+    StaticMeshComponent mesh_component;
     if(models_loaded == 0){
-        StaticMeshComponent mesh_component;
+        
         mesh_component.model = selected_model;
         
         mesh_component.model_id = texts.count-1;
         
-        add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     }
+    if(models_loaded > 1){
+        init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded);
+        init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded);
+        int model_id_actual_model_array = actual_model_array->count - models_loaded;        
+        for(int i = 0; i<models_loaded ; i++){
+            new_empty_model_in_array(actual_model_array);
+            Model* original_model = get_from_array(actual_model_array,model_id_actual_model_array);
+            duplicate_model_data(selected_model,original_model);
+            selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+            int new_model_id = actual_model_array->count -1;
+            add_to_array(&mesh_component.meshes,&new_model_id);
+            model_id_actual_model_array++;
+        }
+    }
+
+    add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     add_to_array(&texts,model_gltf_path);
         
     LOG("model loaded and shader created \n");

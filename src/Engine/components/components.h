@@ -55,6 +55,11 @@ typedef struct StaticMeshComponent{
     int model_id;
     int texture_id;
     Model* model;
+    Array meshes;
+    Array distances;
+    Array textures;
+    vec3 center;
+    vec3 bounding_box[2];
 }StaticMeshComponent;
 
 typedef struct SkinnedMeshComponent{    

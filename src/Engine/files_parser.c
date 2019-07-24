@@ -120,6 +120,28 @@ Token* get_token_array_float_values(const char* name, Token* name_token, float* 
   return last_token_readed+1;//text element, not the las JSMN_PRIMITIVE
 }
 
+Token* get_token_array_uint_values(const char* name, Token* name_token, unsigned int* out){
+  if(name_token->type != JSMN_STRING){
+    LOG("No token JSMN_STRING passed\n"); 
+    return NULL;
+  }
+    
+  if( string_equal(name_token,name) != 0){
+    LOG("Name \"%s\" not equal\n",name);
+    return NULL;
+  }
+
+  Token* array_token = name_token+1;
+  Token* array_value_token = array_token+1;
+  Token* last_token_readed = NULL;
+  for (int i = 0; i < array_token->size; i++) {
+    last_token_readed = array_value_token+i;   
+    unsigned int value = get_token_primitive_float(array_value_token+i);         
+    memcpy(&out[i],&value,sizeof(unsigned int));               
+  }
+  return last_token_readed+1;//text element, not the las JSMN_PRIMITIVE
+}
+
 /*Level Parser Start*/
 Token* get_token_array_component_transform(Token* token){
   TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
@@ -198,11 +220,29 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
   case STATIC_MESH_COMPONENT:
   {
     LOG("Parsed Static mesh component\n");
-    token_value_name_string++;
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
     last_element_readed = token_value_name_string;
+
+    if( string_equal(token_value_name_string, "models") == 0){
+      int model_id_count = (last_element_readed+1)->size;
+      init_array(&mesh->meshes,sizeof(unsigned int),model_id_count);
+      mesh->meshes.count = model_id_count;
+      unsigned int * models_id_array = mesh->meshes.data;
+      last_element_readed = get_token_array_uint_values("models",last_element_readed,models_id_array);
+
+      int textures_id_count = (last_element_readed+1)->size;
+      init_array(&mesh->textures,sizeof(unsigned int) , textures_id_count);
+      unsigned int * textures_id_array = mesh->textures.data;
+      mesh->textures.count = textures_id_count;
+      last_element_readed = get_token_array_uint_values("textures",last_element_readed,textures_id_array);
+
+      return last_element_readed;
+    }
+    token_value_name_string++;
+    
     int mesh_path_id = get_token_primitive_value(token_value_name_string);
     int texture_id = get_token_primitive_value(token_value_name_string+2);
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+   
     mesh->model_id = mesh_path_id;
     mesh->texture_id = texture_id;
     return last_element_readed;
@@ -311,7 +351,7 @@ void parse_level_tokens(Token* tokens, int count){
 
   Token* new_object = get_next_object_token(last_element_parsed);
   for(int i = 0; i< count ; i++){
-    last_element_parsed = &tokens[i];
+    last_element_parsed = &new_object[i];
     if(last_element_parsed->type == JSMN_STRING){
         if (string_equal(last_element_parsed, "models") == 0) {
           Token* array_value_token = last_element_parsed+2;
