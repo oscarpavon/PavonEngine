@@ -143,6 +143,7 @@ void init_element_component(ComponentDefinition* element_component){
             for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 
                 unsigned int* id = get_from_array(&mesh_component->meshes,i);
+            
                 new_empty_model();
                 Model* original_model = get_from_array(&array_models_loaded,*id);
                 
@@ -153,8 +154,15 @@ void init_element_component(ComponentDefinition* element_component){
                     Texture* texture = get_from_array(current_textures_array,*texture_id);
                     selected_model->texture.id = texture->id;
                 }
-                glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);                 
+                glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);               
                 
+            }
+
+            int id =        actual_model_array->count - (mesh_component->meshes.count -1) ;
+            for(int i = 1; i<= mesh_component->meshes.count-1 ; i++){
+                unsigned int * geted_id = get_from_array(&mesh_component->meshes,i);
+                memcpy(geted_id,&id, sizeof(unsigned int));
+                id++;
             }
 
             update_component(element_component);

@@ -84,11 +84,14 @@ void new_save_element(SaveDataFunction function, int data_id){
 }
 
 void save_models_id(void* component){
-    StaticMeshComponent* mesh = component;  
-   for(int i = 0; i<mesh->meshes.count; i++){
-       unsigned int* id = get_from_array(&mesh->meshes,i);
-       fprintf(actual_file,"%i,",*id);
-   }
+    StaticMeshComponent* mesh = component;
+    int* path_id = get_from_array(&mesh->meshes,0); 
+    fprintf(actual_file,"%i,",*path_id);
+    for(int o = 1; o < mesh->meshes.count ; o++){
+        int id = (array_models_loaded.count - array_models_loaded.count ) + (o-1);
+        fprintf(actual_file,"%i,",id);
+    }
+
 }
 void save_textures_id(void* component){
     StaticMeshComponent* mesh = component;   

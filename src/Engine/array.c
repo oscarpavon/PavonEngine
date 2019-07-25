@@ -61,7 +61,7 @@ void *get_from_array(Array* array,int index){
     if(index == 0)
         return &array->data[0];
     if(index > array->count){
-        LOG("Element out of range, array count: %i\n",array->count);
+        LOG("Element out of range, array count: %i , requested %i\n",array->count,index);
         return NULL;
     }         
     return &array->data[0] + (index*offset);

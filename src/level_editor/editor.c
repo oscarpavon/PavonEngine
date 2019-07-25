@@ -210,13 +210,23 @@ void duplicate_selected_element(){
             add_camera_component_to_selected_element();
             break;
         case STATIC_MESH_COMPONENT:{
-            StaticMeshComponent* original_mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-            new_empty_model();
+            StaticMeshComponent* original_mesh = get_component_from_element(original_elmenent,STATIC_MESH_COMPONENT);
             StaticMeshComponent new_mesh;
+            memset(&new_mesh,0,sizeof(StaticMeshComponent));
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
-            new_mesh.model = selected_model;
-            duplicate_model_data(new_mesh.model,original_mesh->model);
-            new_mesh.model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+            memset(&new_mesh.meshes,0,sizeof(Array));
+            init_array(&new_mesh.meshes,sizeof(unsigned int),original_mesh->meshes.count);
+            unsigned int* model_id_in_loaded_model = get_from_array(&original_mesh->meshes,0);
+            add_to_array(&new_mesh.meshes, model_id_in_loaded_model);
+            for(int i = 1 ; i < original_mesh->meshes.count ; i++){
+                new_empty_model();
+                unsigned int* original_model_id = get_from_array(&original_mesh->meshes,i);
+                Model* original_model = get_from_array(actual_model_array,*original_model_id);
+                duplicate_model_data(selected_model,original_model);
+                selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);                
+                unsigned int new_id = actual_model_array->count -1;
+                add_to_array(&new_mesh.meshes, &new_id);
+            }  
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
         }          
         break;
