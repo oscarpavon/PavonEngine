@@ -309,6 +309,24 @@ void draw_count_of_draw_call(){
 
 }
 
+void draw_tringles_count(){
+    int triangles = 0;
+    for(int i = 0; i<frame_draw_elements.count; i++){
+        Model** model = get_from_array(&frame_draw_elements,i);
+        int vertices_count = model[0]->vertex_array.count;
+        triangles += vertices_count/3;
+    }
+
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    render_text("Tris:" , 0 + ((camera_width_screen/2)-600) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    char buf[7]; 
+    float count = triangles;
+    gcvt(count, 7, buf);
+    if(count != 0)
+    render_text(buf , 0 + ((camera_width_screen/2)-560) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+
+}
+
 void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -323,6 +341,10 @@ void draw_editor_viewport(){
     check_static_meshes_distance();
 
     draw_count_of_draw_call();
+    
+    draw_tringles_count();
+
+
     draw_elements(&frame_draw_elements);
     clean_array(&models_for_test_occlusion);
     clean_array(&array_static_meshes_pointers);

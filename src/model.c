@@ -185,21 +185,23 @@ void check_LOD(cgltf_data* data){
             
 
             LOG("Found LOD0\n");
-            //load_mesh(data->nodes[i].mesh);
             meshes[models_parsed] = data->nodes[i].mesh;
             models_parsed++;
             
             break;
           }
           if(strcmp("LOD1",&name[n]+1) == 0){
+            LOG("Found LOD1\n");
             meshes[models_parsed] = data->nodes[i].mesh;
             models_parsed++;
 
             break;
           }
           
-          if(strcmp("LOD3",&name[n]+1) == 0){
-            //models_parsed++;
+          if(strcmp("LOD2",&name[n]+1) == 0){
+            LOG("Found LOD2\n");
+            meshes[models_parsed] = data->nodes[i].mesh;
+            models_parsed++;
             break;
           }
           if(strcmp("HLOD",&name[n]+1) == 0){

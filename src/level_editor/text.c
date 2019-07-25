@@ -130,6 +130,11 @@ void list_directory_files(TextMenu* menu){
                     strcpy(model_names[model_count],de->d_name);
                     model_count++;
                 }
+                if(strcmp(&de->d_name[n+1],"glb") == 0){
+                    model_names[model_count] = malloc(name_lenght);
+                    strcpy(model_names[model_count],de->d_name);
+                    model_count++;
+                }
                 if(strcmp(&de->d_name[n+1],"jpg") == 0){
                     texture_names[texture_count] = malloc(name_lenght);
                     strcpy(texture_names[texture_count],de->d_name);
@@ -362,7 +367,7 @@ void text_renderer_loop(){
         set_text_size(12);
         render_text(command_text_buffer , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+24) * pixel_size_y  , pixel_size_x, pixel_size_y, false);
     }
-    draw_count_of_draw_call();
+    
     draw_engine_memory();
     draw_editor_mode();
     draw_frame_time();

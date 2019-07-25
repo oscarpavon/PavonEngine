@@ -479,15 +479,28 @@ void check_static_meshes_distance(){
         StaticMeshComponent* mesh_component = static_mesh_component_pointer_to_pointer[0];
         float distance = glm_vec3_distance(main_camera.position,mesh_component->center);
         Model* draw_model;
-        if(distance > 24){
-            unsigned int * model_id = get_from_array(&mesh_component->meshes,2);
-            draw_model = get_from_array(actual_model_array,*model_id);
-            add_to_array(&frame_draw_elements,&draw_model);
-        }else{
-            unsigned int * model_id = get_from_array(&mesh_component->meshes,1);
-            draw_model = get_from_array(actual_model_array,*model_id);
-            add_to_array(&frame_draw_elements,&draw_model);
+        float distaces[3] = {0,24,40};
+        unsigned int * model_id;
+        int count = mesh_component->meshes.count-1;
+        for(int i = 1; i <= count ; i++){
+            float distance_value = distaces[i-1];            
+            if(distance_value==0){
+               model_id = get_from_array(&mesh_component->meshes,i);
+               continue;
+            }
+            float next_distace_value = distance_value+1;
+            if(i != count)
+                next_distace_value = distaces[i];
+                
+            if(distance >= distance_value && distance_value < next_distace_value){
+                model_id = get_from_array(&mesh_component->meshes,i);
+               continue;
+            }
+            
         }
+        draw_model = get_from_array(actual_model_array,*model_id);
+        
+        add_to_array(&frame_draw_elements,&draw_model);
 
     }
 }

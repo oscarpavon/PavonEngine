@@ -189,7 +189,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
         add_to_array(&models_for_test_occlusion,&component->model);
         break;
     }
-     case CUBE_COMPONENT:{
+    case CUBE_COMPONENT:{
         CubeComponent* component = &element_component->data[0];
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&models_for_test_occlusion,&component->model);
@@ -205,12 +205,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
         add_to_array(&models_for_test_occlusion,&component->camera_gizmo);
         
         break;
-    }
-    case LEVEL_OF_DETAIL_COMPONENT:
-        {
-   
-        }
-        break;      
+    }  
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* static_mesh_component = element_component->data;       
             
