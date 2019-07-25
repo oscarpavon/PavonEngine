@@ -59,8 +59,7 @@ void add_editor_native_element(const char* native_element_name){
     
     if( strcmp("Camera", native_element_name) == 0 ){        
         new_empty_element();        
-        strcpy(selected_element->name, "Camera01");
-        selected_element->type = ELEMENT_TYPE_CAMERA;        
+        strcpy(selected_element->name, "Camera01");              
         
         add_transform_component_to_selected_element();        
 
@@ -72,7 +71,7 @@ void add_editor_native_element(const char* native_element_name){
     {        
         new_empty_element();
         strcpy(selected_element->name, "PlayerStart01");        
-        selected_element->type = ELEMENT_TYPE_PLAYER_START;        
+              
         player_start = selected_element;
         add_transform_component_to_selected_element();        
         selected_model = NULL;
@@ -81,7 +80,7 @@ void add_editor_native_element(const char* native_element_name){
     {
         new_empty_element();
         strcpy(selected_element->name, "Player1");
-        selected_element->type = ELEMENT_TYPE_PLAYER_CONTROLLER;
+        
     }else if ( strcmp("Sphere", native_element_name) == 0 ){
         new_empty_element();
         strcpy(selected_element->name, "Sphere");
@@ -114,16 +113,7 @@ void add_editor_native_element(const char* native_element_name){
 }
 
 
-void clean_element(Element* element){    
-   
-}
-
-void clean_editor(){
-    for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_from_array(&editor_elements,i);
-        clean_element(element);
-        
-    }
+void clean_editor(){   
     
     clean_skeletal_editor();
 
@@ -149,6 +139,7 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
     glm_quat_mat4(new_rot_quat,model_rot_mat);
 
     glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
+    
 }
 
 void rotate_editor_selected_element_with_quaternion(versor quaternion){
@@ -229,22 +220,7 @@ void duplicate_selected_element(){
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
         }          
         break;
-        case LEVEL_OF_DETAIL_COMPONENT:
-        {
-            LevelOfDetailComponent* original_component = get_component_from_element(original_elmenent,LEVEL_OF_DETAIL_COMPONENT);
-            LevelOfDetailComponent detail_component;
-            memset(&detail_component,0,sizeof(LevelOfDetailComponent));
-            init_array(&detail_component.meshes,sizeof(Model),original_component->meshes.count);
-            detail_component.hirarchical_level_of_detail = original_component->hirarchical_level_of_detail;
-            for(int i = 0; i<original_component->meshes.count ; i++){
-                Model* source_copy = get_from_array(&original_component->meshes,i);                
-                new_empty_model_in_array(&detail_component.meshes);                
-                duplicate_model_data(selected_model,source_copy);
-                selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-            }
-            add_component_to_selected_element(sizeof(LevelOfDetailComponent), &detail_component, LEVEL_OF_DETAIL_COMPONENT);
-            break;
-        }
+
         default:
             break;
         }
@@ -254,7 +230,6 @@ void duplicate_selected_element(){
 }
 
 void remove_selected_element(){
-    clean_element(selected_element);
     selected_element = NULL;
     element_id_count--;
 }
@@ -335,10 +310,13 @@ void draw_editor_viewport(){
 
     for_each_element_components(&update_per_frame_component);
     test_elements_occlusion();
+    check_static_meshes_distance();
 
     draw_count_of_draw_call();
     draw_elements(&frame_draw_elements);
     clean_array(&models_for_test_occlusion);
+    clean_array(&array_static_meshes_pointers);
+    clean_array(&array_static_meshes_pointers_for_test_distance);
     for_each_element_components(&clean_component_value);
 
     draw_gizmos();

@@ -89,11 +89,11 @@ void draw_components_from_selected_element(TextMenu* menu){
     menu->text_size  = text_size;
     if(selected_element == NULL)
         return;
-    if(selected_element->components_count== 0){
+    if(selected_element->components.count== 0){
         draw_element_text_list(menu,"No Components",0);
     }
 
-    for(int i = 0; i < selected_element->components_count ; i++){
+    for(int i = 0; i < selected_element->components.count ; i++){
         char* name;
         ComponentDefinition* component = get_from_array(&selected_element->components,i);
         switch (component->type)

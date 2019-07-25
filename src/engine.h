@@ -98,6 +98,8 @@ void duplicate_model_data(Model* destination , Model* source);
 
 void new_empty_model_in_array(Array* array);
 
+void check_static_meshes_distance();
+
 bool should_close;
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
@@ -136,6 +138,8 @@ Array array_models_loaded;
 Array array_hirarchical_level_of_detail;
 Array frame_draw_elements;
 Array models_for_test_occlusion;
+Array array_static_meshes_pointers;
+Array array_static_meshes_pointers_for_test_distance;
 
 Array texts;
 Array textures_paths;

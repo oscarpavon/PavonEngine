@@ -76,10 +76,8 @@ void select_last_element(){
 void new_empty_element(){
     Element new_element;
     memset(&new_element,0,sizeof(struct Element));
-
-    
-    new_element.id = element_id_count;
-    new_element.type = ELEMENT_TYPE_MODEL;
+        
+    new_element.id = element_id_count;    
 
     element_id_count++;
     
@@ -362,32 +360,14 @@ void init_engine(){
     init_gui();    
 
     init_array(&array_hirarchical_level_of_detail,sizeof(HirarchicalLevelOfDetail),5);
-    init_array(&components,sizeof(ComponentDefinition),100);
-    components_id_count = 0;
-
-    Array test_numbers;
-    init_array(&test_numbers,sizeof(unsigned short int), 3);
-    unsigned short int a = 1;
-    unsigned short int b = 2;
-    unsigned short int c = 3;
-    add_to_array(&test_numbers,&a);
-    add_to_array(&test_numbers,&b);
-    add_to_array(&test_numbers,&c);
-
-    for (size_t i = 0; i < test_numbers.count; i++)
-    {
-        int* element = get_from_array(&test_numbers,i);
-        int number;
-        memcpy(&number,element,sizeof(unsigned short int));
-        LOG("Number: %i\n",number);
-    }
-
-
+    
     action_pointer_id_count = 0;
     init_array(&actions_pointers,sizeof(ActionPointer),20);
 
     init_array(&frame_draw_elements,sizeof(void*),100);
     init_array(&models_for_test_occlusion,sizeof(void*),300);
+    init_array(&array_static_meshes_pointers,sizeof(void*),300);
+    init_array(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);
 
     touch_position_x = -1;
     touch_position_x = -1;
@@ -492,14 +472,31 @@ void rotate_element(Element* element, versor quaternion){
 
 }
 
+void check_static_meshes_distance(){
+    for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
+        StaticMeshComponent** 
+        static_mesh_component_pointer_to_pointer = get_from_array(&array_static_meshes_pointers_for_test_distance,i);
+        StaticMeshComponent* mesh_component = static_mesh_component_pointer_to_pointer[0];
+        float distance = glm_vec3_distance(main_camera.position,mesh_component->center);
+        Model* draw_model;
+        if(distance > 24){
+            unsigned int * model_id = get_from_array(&mesh_component->meshes,2);
+            draw_model = get_from_array(actual_model_array,*model_id);
+            add_to_array(&frame_draw_elements,&draw_model);
+        }else{
+            unsigned int * model_id = get_from_array(&mesh_component->meshes,1);
+            draw_model = get_from_array(actual_model_array,*model_id);
+            add_to_array(&frame_draw_elements,&draw_model);
+        }
+
+    }
+}
+
 void test_elements_occlusion(){
     vec4 frustrum_planes[6];
     mat4 view_projection_mat;
     glm_mat4_mul(main_camera.projection,main_camera.view,view_projection_mat);
-
     glm_frustum_planes(view_projection_mat,frustrum_planes);
-
-
 
     for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
         Model** model = get_from_array(&models_for_test_occlusion,i);
@@ -513,7 +510,15 @@ void test_elements_occlusion(){
 
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
+
+        
     }   
+
+    for(int i = 0; i<array_static_meshes_pointers.count; i++){
+        StaticMeshComponent** static_mesh_component = get_from_array(&array_static_meshes_pointers,i);
+        if(glm_aabb_frustum(static_mesh_component[0]->bounding_box,frustrum_planes) == true)
+            add_to_array(&array_static_meshes_pointers_for_test_distance,&static_mesh_component[0]);
+    }
 }
 
 void duplicate_model_data(Model* destination , Model* source){

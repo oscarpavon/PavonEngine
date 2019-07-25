@@ -202,7 +202,7 @@ void draw_axis_lines(){
 
 }
 void draw_camera_direction(){
-    if(selected_element != NULL && selected_element->type == ELEMENT_TYPE_CAMERA){
+    if(selected_element != NULL){
         vec3 direction;
         CameraComponent* camera = get_from_array(&components,0);
         vec3 look_pos;
@@ -298,23 +298,8 @@ void draw_gizmos(){
         if(can_draw_bounding_box_in_select_element)
             draw_bounding_box();
         //draw_camera_direction();
-
-    
-        for(int i = 0; i< editor_elements.count ; i++){
-            Element* element = get_from_array(&editor_elements,i);
-            
-            if(element->type == ELEMENT_TYPE_PLAYER_START){
-                Model* actual_gizmo = get_from_array(&gizmos,3);
-                
-                TransformComponent* transform = get_component_from_element(element,TRASNFORM_COMPONENT);
-                if(transform)
-                    glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
-                
-                draw_simgle_model(actual_gizmo);
-                
-            }
-        }
-        
+   
+       
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = get_from_array(&gizmos,0);

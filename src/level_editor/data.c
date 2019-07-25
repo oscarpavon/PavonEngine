@@ -4,7 +4,6 @@
 #include "../gui.h"
 
 FILE* actual_file;
-DataType actual_data_type;
 
 Element* current_element = NULL;
 int hirarchical_count = 0;
@@ -84,59 +83,6 @@ void new_save_element(SaveDataFunction function, int data_id){
     token_count++;
 }
 
-
-void save_level_info(FILE* new_file){
-    fputs("{\n\t\"model_count\" : ", new_file);
-    fprintf(new_file,"%i",element_id_count+1);
-    fputs("\n},\n",new_file);
-}
-
-void header_info(int i){
-    new_text_primitive_token("elements",element_id_count);
-    new_text_primitive_token("type",actual_data_type);
-    new_text_primitive_token("tokens",token_count);
-    
-}
-void save_header_info(){
-    SaveDataFunction save = &header_info;
-    new_save_element(save,0);
-}
-
-void save_camera_editor_camera_transform(FILE* new_file){     
-    fputs(",\n", new_file);
-    fputs("{\n\t\"type\" : ", new_file);
-    fprintf(new_file,"\"%s\",\n","editor_camera");  
-    fputs("\t\"id\" : ", new_file);
-    fprintf(new_file,"%i,\n",300);
-    fputs("\t\"pos\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f],\n",main_camera.position[0] , main_camera.position[1] , main_camera.position[2]);
-    fputs("\t\"rot\" : ", new_file);
-    fprintf(new_file,"[%f , %f , %f , %f],\n",camera_rotation[0] , camera_rotation[1] , camera_rotation[2], camera_rotation[3]);
-    fputs("\t\"texture\" : ", new_file);
-    fprintf(new_file,"\"%s\"\n","no_texture");
-    fputs("}",new_file);
-}
-
-void create_save_data_backup(){
-    FILE* level_file = fopen("new_level.lvl","r");
-    if(level_file == NULL)
-        return;
-
-    fseek(level_file, 0, SEEK_END);
-    long file_size = ftell(level_file);
-    rewind (level_file);
-
-    char file_buffer[file_size];
-
-    fread(file_buffer,sizeof(char), file_size, level_file);
-
-    FILE* new_file = fopen("level.bkp1","w");
-    fputs(file_buffer,new_file);
-    fclose(new_file);
-
-    fclose(level_file);
-}
-
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;  
    for(int i = 0; i<mesh->meshes.count; i++){
@@ -194,7 +140,7 @@ void save_element_component_data(int id){
 void components_data(){
     SaveDataFunction component = &save_element_component_data;
     
-    for(int i = 0; i < current_element->components_count ; i++){
+    for(int i = 0; i < current_element->components.count ; i++){
         new_save_element(component,i);
     }
 }
@@ -273,12 +219,10 @@ void save_level_data(const char* level_name){
     strcat(save_name, level_folder);
     strcat(save_name,level_name);
     strcat(save_name,".lvl");    
-
-    create_save_data_backup();
-
+  
     FILE* new_file = fopen(save_name,"w+");
     actual_file = new_file;
-    actual_data_type = DATA_TYPE_LEVEL;  
+     
  
     SaveDataFunction level =  &save_level;
     new_save_element(level,0);
@@ -316,8 +260,7 @@ void save_gui_data(const char* gui_name){
     strcat(save_name,".gui");   
 
     FILE* new_file = fopen(save_name,"w+");
-    actual_file = new_file;
-    actual_data_type = DATA_TYPE_GUI;
+    actual_file = new_file;    
     element_id_count = actual_buttons_array->count;  
     
     new_element(&ui_elements_data);

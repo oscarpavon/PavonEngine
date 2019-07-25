@@ -8,12 +8,11 @@ void add_component_to_selected_element(int component_byte_size, void* new_compon
     new_element_component.id = components_id_count;
     new_element_component.parent = selected_element;
     new_element_component.bytes_size = component_byte_size;
-    new_element_component.data = allocate_stack_memory_alignmed(component_byte_size,16);//;allocate_stack_memory(&created_components,component_byte_size);
+    new_element_component.data = allocate_stack_memory_alignmed(component_byte_size,16);
     memcpy(new_element_component.data,new_component,component_byte_size);
 
     add_to_array(&selected_element->components,&new_element_component);    
     
-    selected_element->components_count++;   
 }
 
 void init_sphere_component(SphereComponent* component){
@@ -108,7 +107,7 @@ void update_component(ComponentDefinition* element_component){
         {
             StaticMeshComponent* mesh_component = element_component->data;            
                
-            for(int i = 1; i<mesh_component->meshes.count-1 ; i++){            
+            for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){            
                 unsigned int* id = get_from_array(&mesh_component->meshes,i);
                 Model* model  = get_from_array(actual_model_array,*id);
                 glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);                 
@@ -141,7 +140,7 @@ void init_element_component(ComponentDefinition* element_component){
         {
             StaticMeshComponent* mesh_component = element_component->data;            
                
-            for(int i = 1; i<mesh_component->meshes.count-1 ; i++){                
+            for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 
                 unsigned int* id = get_from_array(&mesh_component->meshes,i);
                 new_empty_model();
@@ -155,7 +154,7 @@ void init_element_component(ComponentDefinition* element_component){
                     selected_model->texture.id = texture->id;
                 }
                 glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);                 
-                id++;
+                
             }
 
             update_component(element_component);
@@ -201,83 +200,14 @@ void update_per_frame_component(ComponentDefinition* element_component){
     }
     case LEVEL_OF_DETAIL_COMPONENT:
         {
-            LevelOfDetailComponent* details = element_component->data;
-            if(!details->initialized){
-                Texture* texture_loaded = get_from_array(current_textures_array,details->texture_id);
-                for(int i = 0; i< details->meshes.count ; i++){
-                    Model* mesh = get_from_array(&details->meshes,i);
-                    mesh->texture.id = texture_loaded->id;                    
-                }
-                details->initialized = true;
-            }
-            Model* LOD0 = get_from_array(&details->meshes,0);
-            vec3 object_position;
-
-            glm_vec3_copy( VEC3(element_component->parent->transform->model_matrix[3][0],
-                                        element_component->parent->transform->model_matrix[3][1],
-                                        element_component->parent->transform->model_matrix[3][2] ) 
-                                        , object_position);
-            vec3 center_object;
-            vec3 sum_min_max;
-            glm_vec3_add(LOD0->min,
-                        LOD0->max,
-                        sum_min_max);
-            glm_vec3_div(sum_min_max,VEC3(2,2,2),center_object);
-
-            vec3 object_global_position;
-            glm_vec3_add(object_position,center_object,object_global_position);
-
-            float distance = glm_vec3_distance(main_camera.position,object_global_position);
-            Model* draw_model;
-            if(distance > 24)
-                draw_model = get_from_array(&details->meshes,1);
-            else
-                draw_model= LOD0;
-
-            
-            if(details->hirarchical_level_of_detail){
-                vec3 center_of_hirarchical;
-                vec3 sum;
-                glm_vec3_add(details->hirarchical_level_of_detail->model.min,
-                            details->hirarchical_level_of_detail->model.max,
-                            sum);
-                glm_vec3_div(sum,VEC3(2,2,2),center_of_hirarchical);
-
-                vec3 global_position;
-                glm_vec3_add(object_position,center_of_hirarchical,global_position);
-                float distance_hirarchical = glm_vec3_distance(global_position,main_camera.position);
-                if(distance > 200)
-                    details->hirarchical_level_of_detail->draw = true;
-            }
-            
-
-           
-            if(details->hirarchical_level_of_detail){
-                if(details->hirarchical_level_of_detail->drew)
-                    return;
-                
-                if(details->hirarchical_level_of_detail->draw){
-                    draw_model = &details->hirarchical_level_of_detail->model;
-                    glm_mat4_copy(element_component->parent->transform->model_matrix,draw_model->model_mat);
-                    add_to_array(&models_for_test_occlusion,&draw_model);
-                    details->hirarchical_level_of_detail->drew = true;
-                    return;
-                }
-            }
-           
-            glm_mat4_copy(element_component->parent->transform->model_matrix,draw_model->model_mat);
-            add_to_array(&models_for_test_occlusion,&draw_model);
+   
         }
         break;      
     case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* component = &element_component->data[0];
-        if(component->meshes.count >= 1){
-            unsigned int* model_id = get_from_array(&component->meshes,1);      
-        
-            Model* model = get_from_array(actual_model_array,*model_id);
+        StaticMeshComponent* static_mesh_component = element_component->data;       
             
-            add_to_array(&models_for_test_occlusion,&model);
-        }
+        add_to_array(&array_static_meshes_pointers,&static_mesh_component);
+
         break;
     }      
     default:
@@ -288,14 +218,14 @@ void update_per_frame_component(ComponentDefinition* element_component){
 void* get_component_from_selected_element(ComponentType type){
     if(!selected_element)
         return NULL;
-    if(selected_element->components_count > 0){
-        for(int i = 0; i< selected_element->components_count ; i++){       
-            ComponentDefinition* component = get_from_array(&selected_element->components,i);
-            if(component->type == type){
-                return &component->data[0];
-            }           
-        }        
-    }
+    
+    for(int i = 0; i< selected_element->components.count ; i++){       
+        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        if(component->type == type){
+            return &component->data[0];
+        }           
+    }        
+    
     return NULL;
 }
 void* get_component_from_element(Element* element, ComponentType type){
@@ -329,8 +259,8 @@ void add_camera_component_to_selected_element(){
 void for_each_element_components(void(*do_to)(ComponentDefinition*)){
      for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element = get_from_array(actual_elements_array,i);
-        if(element->components_count > 0){
-            for(int o = 0; o < element->components_count ; o++){
+        if(element->components.count > 0){
+            for(int o = 0; o < element->components.count ; o++){
                 ComponentDefinition* component = get_from_array(&element->components,o);
                 do_to(component);
             }
