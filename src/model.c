@@ -313,7 +313,11 @@ int load_model(const char* path){
   }
   current_data = data;
 
-  cgltf_load_buffers(&options,data,new_file.path);
+  result = cgltf_load_buffers(&options,data,new_file.path);
+  if (result != cgltf_result_success){
+    LOG("Buffer no loaded: %s \n", new_file.path);
+    return -1;
+  }
   close_file(&new_file);
 
   

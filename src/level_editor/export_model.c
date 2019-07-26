@@ -149,7 +149,8 @@ void uint8_to_char(unsigned short int number, unsigned char* char_number){
 }
 
 typedef struct Encoded{
-    size_t size;
+    size_t char_len;
+    int byte_size;
     char* data;
 }Encoded;
 
@@ -177,8 +178,9 @@ void float_to_bytes(float x, float y, float z){
     data[11] = bytes[3];
 
     Encoded encoded_data;
-    encoded_data.size = 0;    
-    encoded_data.data = base64_encode(data,12,&encoded_data.size);
+    encoded_data.char_len = 0;    
+    encoded_data.data = base64_encode(data,12,&encoded_data.char_len);
+    encoded_data.byte_size = 12;
     printf("Encoded: %s\n",encoded_data.data);
 
     memcpy(&vertices_encoded[vertices_encoded_count],&encoded_data,sizeof(Encoded));
@@ -205,36 +207,51 @@ int export_gltf(const char *name){
 
      unsigned char indices_char[3][2];
 
-    uint8_to_char(0,indices_char[0]);
-    uint8_to_char(1,indices_char[1]);
-    uint8_to_char(2,indices_char[2]);
-    Encoded index_encoded[3];
-    for(unsigned short i = 0; i < 3; i++){
-        index_encoded[i].data = base64_encode(&indices_char[i][0],2,&index_encoded[i].size);
-        printf("uint char : %s\n",index_encoded[i].data);
-    }
+    uint8_to_char(0,&indices_char[0][0]);
+    uint8_to_char(1,&indices_char[1][0]);
+    uint8_to_char(2,&indices_char[2][0]);
+
+    unsigned char indices_charcters[] = 
+                    {indices_char[0][0],indices_char[0][1],
+                    indices_char[1][0],indices_char[1][1],
+                    indices_char[2][0],indices_char[2][1]};
+ 
+    Encoded indices_encodes;
+
+
+    indices_encodes.data = base64_encode(indices_charcters,6,&indices_encodes.char_len);
+    indices_encodes.byte_size = 6;
+    printf("uint char : %s\n",indices_encodes.data);
+
     int bytes_count = 0;
+    int char_count = 0;
     for(int i = 0; i<3;i++){
-        bytes_count += vertices_encoded[i].size;
-        bytes_count += index_encoded[i].size;
+        bytes_count += vertices_encoded[i].byte_size;
+       
+        char_count += vertices_encoded[i].char_len;
+        
     }
+    char_count += indices_encodes.char_len;
+    bytes_count += indices_encodes.byte_size;
 
     printf("Byte size gltf URI: %i\n",bytes_count);
     
     char encode[] = {"data:application/octet-stream;base64,"};
 
-    char* new_buffer = malloc(strlen(encode)+bytes_count+1);
-    memset(new_buffer,0,strlen(encode)+bytes_count+1);
+    char* new_buffer = malloc(strlen(encode)+char_count+1);
+    memset(new_buffer,0,strlen(encode)+char_count+1);
     strcat(new_buffer,encode);
     for(int i = 0; i<3;i++){
         strcat(new_buffer,vertices_encoded[i].data);
     }
     
-    for(int i = 0; i<3;i++){
-        strcat(new_buffer,index_encoded[i].data);
-    }
-    printf("Uri: %s\n",new_buffer);
 
+    strcat(new_buffer,indices_encodes.data);
+
+    printf("Uri: %s\n",new_buffer);
+    new_data.buffers[0].uri = new_buffer;
+    new_data.buffers[0].size = bytes_count;
+    
     cgltf_options options = {0};
     cgltf_data* data_to_export  = data_array[0];
     
