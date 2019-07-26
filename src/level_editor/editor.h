@@ -14,6 +14,8 @@
 
 #include "editor_gizmos.h"
 
+#include "export_model.h"
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,

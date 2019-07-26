@@ -86,7 +86,13 @@ void parse_command(const char* command){
         
     }
 
-
+    if(first_char_command == 'e'){
+        export_gltf("out.gltf");
+    }
+    if(first_char_command == 'a'){
+        add_element_with_model_path(&command[3]);
+    }
+    
     if(command[1] == 'o'){
         switch (editor_mode)
         {

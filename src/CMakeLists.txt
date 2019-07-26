@@ -48,6 +48,7 @@ if(NOT ANDROID)
         level_editor/data.c
         level_editor/editor_gizmos.c
         level_editor/editor_mode.c
+        level_editor/export_model.c
         )
 
         add_executable(Editor ${editor_sources} ${engine_source} ${game_source})

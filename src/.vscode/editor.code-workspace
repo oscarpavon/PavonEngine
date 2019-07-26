@@ -27,7 +27,6 @@
 			"utility": "c",
 			"skeletal_editor.h": "c",
 			"skeletal.h": "c",
-			"cstdbool": "cpp",
 			"text.h": "c",
 			"freetype.h": "c",
 			"stdbool.h": "c",
@@ -51,7 +50,8 @@
 			"components.h": "c",
 			"data.h": "c",
 			"optional": "c",
-			"system_error": "c"
+			"system_error": "c",
+			"cgltf_write.h": "c"
 		}
 	}
 }
