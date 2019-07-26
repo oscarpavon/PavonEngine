@@ -7,7 +7,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 3.099999 , 0.000000],
+							"position" : [1.299999 , 0.000000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -22,7 +22,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 0.000000 , 0.000000],
+							"position" : [-0.780000 , -0.020000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -37,8 +37,8 @@
 		{
 			"data" : [
 				"models" : [
-					"test/cube.gltf",
-					"test/sphere.gltf",
+					"test/triangle.gltf",
+					"test/triangle2.gltf",
 				],
 				"textures" : [
 				],
