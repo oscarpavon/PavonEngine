@@ -8,6 +8,8 @@ FILE* actual_file;
 Element* current_element = NULL;
 int hirarchical_count = 0;
 int previous_id_saved = 0;
+int previous_path_id = 0;
+StaticMeshComponent* previous_component = NULL;
 
 void hirachical_tab(){
     for(int i = 0; i< hirarchical_count ; i++){
@@ -86,14 +88,26 @@ void new_save_element(SaveDataFunction function, int data_id){
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;
     int* path_id = get_from_array(&mesh->meshes,0);
-    fprintf(actual_file,"%i,",*path_id);
     int count = 0;
+    int offset = 0;
+    if(previous_path_id != *path_id){
+        previous_path_id = *path_id;
+        if(previous_component){
+            offset = previous_component->meshes.count-1;
+            previous_id_saved += offset;
+        }
+    }
+    
+    fprintf(actual_file,"%i,",*path_id);
+    
+    
     for(int o = 0; o < mesh->meshes.count-1 ; o++){
         int id = previous_id_saved + o;
         fprintf(actual_file,"%i,",id);
         count++;
     }
-    previous_id_saved += count;
+    previous_component = mesh;
+
 }
 void save_textures_id(void* component){
     StaticMeshComponent* mesh = component;   
