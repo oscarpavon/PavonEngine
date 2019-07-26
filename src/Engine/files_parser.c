@@ -175,7 +175,7 @@ ComponentType parse__and_add_component_type(Token* type_token){
     break;
   case STATIC_MESH_COMPONENT:{
       StaticMeshComponent mesh_component;
-      mesh_component.model = NULL;
+      memset(&mesh_component,0,sizeof(StaticMeshComponent));
       add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     }
     break;
@@ -192,11 +192,6 @@ ComponentType parse__and_add_component_type(Token* type_token){
       add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
       break;
     }
-  case LEVEL_OF_DETAIL_COMPONENT:
-  {
-    
-    break;
-  }
   default:
     break;
   }
@@ -387,7 +382,7 @@ void parse_level_tokens(Token* tokens, int count){
 int parse_tokens(const char* json_file, int json_file_size){
    
   jsmn_parser parser;
-  int max_tokens = 400;
+  int max_tokens = 1000;
   init_array(&tokens_array_memory,sizeof(Token),max_tokens);
   for(int i = 0; i<max_tokens ; i++){
     Token token;

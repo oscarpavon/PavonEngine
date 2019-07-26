@@ -22,7 +22,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [-0.220000 , 5.699999 , 0.000000],
+							"position" : [-0.220000 , 19.100006 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -97,7 +97,7 @@
 		{
 			"data" : [
 				"models" : [
-					"module01.gltf",
+					"module01.gltf",			
 				],
 				"textures" : [
 					"modules_coust.png",
