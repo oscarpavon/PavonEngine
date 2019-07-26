@@ -106,7 +106,7 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "Floor");
         add_transform_component_to_selected_element();
         StaticMeshComponent mesh_component;
-        mesh_component.model = get_from_array(&engine_native_models,3);
+        //mesh_component.model = get_from_array(&engine_native_models,3);
         add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
 
     }
@@ -252,6 +252,7 @@ void reload_editor(){
     clean_array(&texts);
     clean_array(&textures_paths);
     clean_array(actual_buttons_array);
+    clean_array(&array_models_loaded);
 }
 
 void init_editor(){

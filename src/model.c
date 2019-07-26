@@ -346,7 +346,7 @@ int load_model(const char* path){
       load_current_animation();
     }
   }
-
+  models_parsed++;
   LOG("gltf loaded: %s. \n",path);
 
   cgltf_free(data);

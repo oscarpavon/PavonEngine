@@ -9,7 +9,8 @@
 #include "../third_party/cgltf.h"
 
 
-cgltf_data* data = NULL;
+int data_count = 0;
+cgltf_data* data_array[20];
 
 void load_mesh_for_proccess(const char* path){
     File new_file;
@@ -18,14 +19,13 @@ void load_mesh_for_proccess(const char* path){
 
     cgltf_options options = {0};
    
-    cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
+    cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data_array[data_count]);
 
     if (result != cgltf_result_success){
-        LOG("Model no loaded: %s \n", new_file.path);
-        
+        LOG("Model no loaded: %s \n", new_file.path);        
     }
-
-
+    data_count++;
+    
 }
 
 void export_mesh(ComponentDefinition* component){
@@ -39,15 +39,19 @@ void export_mesh(ComponentDefinition* component){
 int export_gltf(const char *name){
     for_each_element_components(&export_mesh);
 
-    cgltf_options options = {0};
     
-    cgltf_result result = cgltf_write_file(&options, name, data);
+
+    cgltf_options options = {0};
+    cgltf_data* data_to_export  = data_array[0];
+    
+    cgltf_result result = cgltf_write_file(&options, name, data_to_export);
     if (result != cgltf_result_success)
     {
         LOG("Error can't save\n");
         return -1;
     }
-    cgltf_free(data);
+    cgltf_free(data_to_export);
     LOG("Exported\n");
+    data_count = 0;
     return 0;
 }

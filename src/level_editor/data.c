@@ -97,7 +97,7 @@ void save_models_id(void* component){
             previous_id_saved += offset;
         }
     }
-    
+
     fprintf(actual_file,"%i,",*path_id);
     
     
@@ -110,7 +110,10 @@ void save_models_id(void* component){
 
 }
 void save_textures_id(void* component){
-    StaticMeshComponent* mesh = component;   
+    StaticMeshComponent* mesh = component; 
+    if(mesh->textures.count == 0){
+        fprintf(actual_file,"%i,",0);
+    }  
    for(int i = 0; i<mesh->textures.count; i++){
        int* texture_id = get_from_array(&mesh->textures,i);
        fprintf(actual_file,"%i,",*texture_id);
@@ -135,8 +138,7 @@ void save_element_component_data(int id){
             new_array_data_with_pointer("textures",&save_textures_id,mesh);
             break;
         }
-        new_text_primitive_token("model",mesh->model_id);
-        new_text_primitive_token("texture",mesh->model_id);
+
         break;
     }
     case CAMERA_COMPONENT:

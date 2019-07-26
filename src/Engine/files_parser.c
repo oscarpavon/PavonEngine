@@ -238,8 +238,8 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
     int mesh_path_id = get_token_primitive_value(token_value_name_string);
     int texture_id = get_token_primitive_value(token_value_name_string+2);
    
-    mesh->model_id = mesh_path_id;
-    mesh->texture_id = texture_id;
+    //mesh->model_id = mesh_path_id;
+    //mesh->texture_id = texture_id;
     return last_element_readed;
 
   }

@@ -1,0 +1,88 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v0.9.36",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Sphere"
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Sphere.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "TEXCOORD_0" : 1
+                    },
+                    "indices" : 2
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 40,
+            "max" : [
+                0.8660255074501038,
+                0.866025447845459,
+                0.9999997615814209
+            ],
+            "min" : [
+                -0.8660255074501038,
+                -0.8660255670547485,
+                -1
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 40,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5123,
+            "count" : 48,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 480,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 320,
+            "byteOffset" : 480
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 96,
+            "byteOffset" : 800
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 896,
+            "uri" : "data:application/octet-stream;base64,AAAAAC69u7MAAIC/AAAAANezXT8BAAC/2LNdPySEBrQBAAC/AAAAANizXT////8+2LNdPySEBrQBAAC/AAAAANezXT8BAAC/2bNdPySEBrT8//8+AAAAANizXT////8+AACAqC69O7T8/38/2bNdPySEBrT8//8+AAAAAC69u7MAAIC/2LNdPySEBrQBAAC/NJais9mzXb8BAAC/2bNdPySEBrT8//8+NJais9mzXb8BAAC/2LNdPySEBrQBAAC/NJais9qzXb/5//8+2bNdPySEBrT8//8+AACAqC69O7T8/38/NJais9qzXb/5//8+AAAAAC69u7MAAIC/NJais9mzXb8BAAC/2LNdv3yQ4DIBAAC/NJais9qzXb/5//8+2LNdv3yQ4DIBAAC/NJais9mzXb8BAAC/2bNdv4CQ4DL2//8+NJais9qzXb/5//8+AACAqC69O7T8/38/2bNdv4CQ4DL2//8+AAAAAC69u7MAAIC/2LNdv3yQ4DIBAAC/AAAAANezXT8BAAC/2bNdv4CQ4DL2//8+AAAAANezXT8BAAC/2LNdv3yQ4DIBAAC/AAAAANizXT////8+2bNdv4CQ4DL2//8+AACAqC69O7T8/38/AAAAANizXT////8+AAAgPwAAgD8AAEA/q6oqP////z6rqio/AABAP6yqqj7///8+q6oqPwAAQD+rqio/////Pqyqqj4AAEA/rKqqPv//Hz8AAAAA////Pqyqqj7//78+AACAP////z6rqio/AACAPquqKj////8+rKqqPgAAgD6rqio/////PquqKj8AAIA+rKqqPv///z6sqqo+//+/PgAAAAAAAIA+rKqqPgAAAD4AAIA/AACAPquqKj8AAAAAq6oqPwAAgD6sqqo+AAAAAKuqKj8AAIA+q6oqPwAAAACsqqo+AACAPqyqqj4AAAA+AAAAAAAAAACsqqo+AABgPwAAgD8AAIA/q6oqPwAAQD+rqio/AACAP6yqqj4AAEA/q6oqPwAAgD+rqio/AABAP6yqqj4AAIA/rKqqPgAAYD8AAAAAAABAP6yqqj4AAAEAAgADAAQABQADAAYABAAHAAgACQAKAAsADAANAA4ADwANABAADgARABIAEwAUABUAFgAXABgAGQAXABoAGAAbABwAHQAeAB8AIAAhACIAIwAhACQAIgAlACYAJwA="
+        }
+    ]
+}

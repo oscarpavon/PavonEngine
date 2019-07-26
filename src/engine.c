@@ -144,9 +144,6 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
                 int id = textures_paths.count-1;
                 add_to_array(&mesh->textures,&id);
             }
-        }else{
-            mesh->texture_id = textures_paths.count-1;
-            mesh->model->texture.id = texture_loaded->id;//for compatibility
         }
         LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
         return;
@@ -169,7 +166,7 @@ int load_and_initialize_simple_model(const char* model_gltf_path){
     if( load_model_result == -1){
         return -1;
     }
-    if(load_model_result == 0){
+    if(load_model_result == 1){
         selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
         init_model_gl_buffers(selected_model); 
@@ -200,18 +197,18 @@ void add_element_with_model_path(const char* model_gltf_path){
     
     StaticMeshComponent mesh_component;
 
-    if(models_loaded > 1){
-        init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
-        init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
-        int model_path_id = texts.count-1;
-        add_to_array(&mesh_component.meshes,&model_path_id);
+    
+    init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
+    init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
+    int model_path_id = texts.count-1;
+    add_to_array(&mesh_component.meshes,&model_path_id);
 
-        int id =        array_models_loaded.count-models_loaded;
-        for(int i = 0; i<models_loaded ; i++){
-            add_to_array(&mesh_component.meshes,&id);
-            id++;
-        }
+    int id =        array_models_loaded.count-models_loaded;
+    for(int i = 0; i<models_loaded ; i++){
+        add_to_array(&mesh_component.meshes,&id);
+        id++;
     }
+   
 
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
     
