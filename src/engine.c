@@ -532,8 +532,8 @@ void test_elements_occlusion(){
 }
 
 void duplicate_model_data(Model* destination , Model* source){
-    destination->vertex_array.count = source->vertex_array.count;
-    destination->index_array.count = source->index_array.count;
+    memcpy(&destination->vertex_array,&source->vertex_array,sizeof(Array));
+    memcpy(&destination->index_array,&source->index_array,sizeof(Array));
     destination->index_buffer_id = source->index_buffer_id;
     destination->vertex_buffer_id = source->vertex_buffer_id;
     destination->texture.id = source->texture.id;

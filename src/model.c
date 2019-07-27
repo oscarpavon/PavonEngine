@@ -41,7 +41,7 @@ void read_accessor(cgltf_accessor* accessor){
     }
     break;
   case cgltf_type_vec3:
-    init_array(actual_vertex_array,sizeof(Vertex),accessor->count+1000);
+    init_array(actual_vertex_array,sizeof(Vertex),accessor->count);
     for(size_t v = 0 ; v < accessor->count ; v++){
       struct Vertex vertex;
       memset(&vertex,0,sizeof(struct Vertex));

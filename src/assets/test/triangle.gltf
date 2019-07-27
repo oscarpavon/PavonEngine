@@ -15,12 +15,12 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Plane"
+            "name" : "point"
         }
     ],
     "meshes" : [
         {
-            "name" : "Plane",
+            "name" : "Plane.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -37,13 +37,13 @@
             "componentType" : 5126,
             "count" : 3,
             "max" : [
-                0.9999999403953552,
-                8.74227694680485e-08,
-                2
+                1,
+                2.9802322387695312e-08,
+                1
             ],
             "min" : [
-                -0.9999999403953552,
-                -8.74227694680485e-08,
+                0,
+                0,
                 0
             ],
             "type" : "VEC3"
@@ -70,7 +70,7 @@
     "buffers" : [
         {
             "byteLength" : 44,
-            "uri" : "data:application/octet-stream;base64,//9/Py29uzMAAAAA//9/vy29u7MAAAAA//9/Py29uzMAAABAAAABAAIAAAA="
+            "uri" : "data:application/octet-stream;base64,AACAPwAAADMAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAABAAIAAAA="
         }
     ]
 }

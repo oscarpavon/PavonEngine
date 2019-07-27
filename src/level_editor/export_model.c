@@ -157,13 +157,40 @@ typedef struct Encoded{
 Encoded vertices_encoded[3];
 int vertices_encoded_count = 0;
 
+void vec3_to_base64_encoded_bytes(vec3 position, Encoded* encoded){
+    uint8_t      bytes[sizeof(float)];
+    *(float*)(bytes) = position[0];  
+
+    unsigned char data[12] = {bytes[0],bytes[1],bytes[2],bytes[3]};
+
+    *(float*)(bytes) = position[1]; 
+    data[4] = bytes[0];
+    data[5] = bytes[1];
+    data[6] = bytes[2];
+    data[7] = bytes[3];
+   
+    *(float*)(bytes) = position[2]; 
+    data[8] = bytes[0];
+    data[9] = bytes[1];
+    data[10] = bytes[2];
+    data[11] = bytes[3];
+
+    Encoded encoded_data;
+    encoded_data.char_len = 0;    
+    encoded_data.data = base64_encode(data,12,&encoded_data.char_len);
+    encoded_data.byte_size = 12;
+
+    memcpy(encoded,&encoded_data,sizeof(Encoded));
+  
+}
+
 void float_to_bytes(float x, float y, float z){
     uint8_t      bytes[sizeof(float)];
     *(float*)(bytes) = x;  // convert float to bytes
-    printf("bytes = [ 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x ]\r\n", bytes[0], bytes[1], bytes[2], bytes[3]);
+    //printf("bytes = [ 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x ]\r\n", bytes[0], bytes[1], bytes[2], bytes[3]);
 
     unsigned char data[12] = {bytes[0],bytes[1],bytes[2],bytes[3]};
-    printf("Character [ %c , %c , %c , %c ]\n",data[0],data[1],data[2],data[3]);
+    //printf("Character [ %c , %c , %c , %c ]\n",data[0],data[1],data[2],data[3]);
 
     *(float*)(bytes) = y;  // convert float to bytes
     data[4] = bytes[0];
@@ -189,23 +216,85 @@ void float_to_bytes(float x, float y, float z){
   
 }
 
-int export_gltf(const char *name){
-    for_each_element_components(&prepare_mesh_data);
+Array array_vertices_encoded;
+Array array_indices_encoded;
+typedef unsigned char UCharInBytes[2];
+static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 
-    cgltf_data* data1 = data_array[0];
-    cgltf_data* data2 = data_array[1];
+void prepare_selected_element_data(cgltf_data* data){
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    unsigned int* model_id = get_from_array(&mesh->meshes,mesh->meshes.count);
+    Model* model = get_from_array(actual_model_array,*model_id);
+    init_array(&array_vertices_encoded,sizeof(Encoded),model->vertex_array.count);
+    for(int i = 0; i<model->vertex_array.count; i++){
+        Vertex* vertex = get_from_array(&model->vertex_array,i);
+        Encoded new_encoded;
+        vec3_to_base64_encoded_bytes(vertex->postion,&new_encoded);
+        add_to_array(&array_vertices_encoded,&new_encoded);
+    }
 
-    cgltf_data new_data;
-    memcpy(&new_data, data1, sizeof(cgltf_data));
+    unsigned char indices_charcters[6];
+    unsigned short int count = 0;
+    init_array(&array_indices_encoded,sizeof(Encoded),model->index_array.count);
+    for(int i = 0; i<model->index_array.count; i++){
+        unsigned short int* index = get_from_array(&model->index_array,i);
+        if(count<6){
+            UCharInBytes uchar_int_bytes;
+            uint8_to_char(*index,uchar_int_bytes);
+            indices_charcters[count] = uchar_int_bytes[0];
+            indices_charcters[count+1] = uchar_int_bytes[1];
+            count += 2;
+        }
+        if(count == 6){
+            Encoded indices_encodes;
+            indices_encodes.data = base64_encode(indices_charcters,6,&indices_encodes.char_len);
+            indices_encodes.byte_size = 6;
+            add_to_array(&array_indices_encoded,&indices_encodes);
+            count = 0;
+        }      
+    }
 
-    float_to_bytes(0,0,0);
+    int bytes_count = 0;
+    int char_count = 0;
+    for(int i = 0; i<array_vertices_encoded.count ; i++){
+        Encoded* vertex_encoded = get_from_array(&array_vertices_encoded,i);
+        bytes_count += vertex_encoded->byte_size;
+       
+        char_count += vertex_encoded->char_len;
+    }
+    
+    for(int i =0; i<array_indices_encoded.count; i++){
+        Encoded* index_encode = get_from_array(&array_indices_encoded,i);
+        char_count += index_encode->char_len;
+        bytes_count += index_encode->byte_size;
+    }
+
+    char* new_buffer = malloc(strlen(encoded_header)+char_count+1);
+    memset(new_buffer,0,strlen(encoded_header)+char_count+1);
+    strcat(new_buffer,encoded_header);
+
+    for(int i = 0; i<array_vertices_encoded.count ; i++){
+        Encoded* vertex_encoded = get_from_array(&array_vertices_encoded,i);
+        strcat(new_buffer,vertex_encoded->data);
+    }
+
+    for(int i =0; i<array_indices_encoded.count; i++){
+        Encoded* index_encode = get_from_array(&array_indices_encoded,i);
+        strcat(new_buffer,index_encode->data);
+    }
+
+
+
+    data->buffers[0].uri = new_buffer;
+    data->buffers[0].size = bytes_count;
+}
+
+void create_triangle_data(){
+        float_to_bytes(0,0,0);
     float_to_bytes(0,1,0);
     float_to_bytes(0,0,1);
- 
     
-
-
-     unsigned char indices_char[3][2];
+    unsigned char indices_char[3][2];
 
     uint8_to_char(0,&indices_char[0][0]);
     uint8_to_char(1,&indices_char[1][0]);
@@ -217,8 +306,6 @@ int export_gltf(const char *name){
                     indices_char[2][0],indices_char[2][1]};
  
     Encoded indices_encodes;
-
-
     indices_encodes.data = base64_encode(indices_charcters,6,&indices_encodes.char_len);
     indices_encodes.byte_size = 6;
     printf("uint char : %s\n",indices_encodes.data);
@@ -230,28 +317,34 @@ int export_gltf(const char *name){
        
         char_count += vertices_encoded[i].char_len;
         
-    }
-    char_count += indices_encodes.char_len;
-    bytes_count += indices_encodes.byte_size;
-
-    printf("Byte size gltf URI: %i\n",bytes_count);
+    } 
     
-    char encode[] = {"data:application/octet-stream;base64,"};
+    printf("Byte size gltf URI: %i\n",bytes_count);   
+   
 
-    char* new_buffer = malloc(strlen(encode)+char_count+1);
-    memset(new_buffer,0,strlen(encode)+char_count+1);
-    strcat(new_buffer,encode);
+    char* new_buffer = malloc(strlen(encoded_header)+char_count+1);
+    memset(new_buffer,0,strlen(encoded_header)+char_count+1);
+    strcat(new_buffer,encoded_header);
     for(int i = 0; i<3;i++){
         strcat(new_buffer,vertices_encoded[i].data);
-    }
-    
+    }   
 
     strcat(new_buffer,indices_encodes.data);
 
     printf("Uri: %s\n",new_buffer);
-    new_data.buffers[0].uri = new_buffer;
-    new_data.buffers[0].size = bytes_count;
-    
+}
+
+int export_gltf(const char *name){
+    for_each_element_components(&prepare_mesh_data);
+
+    cgltf_data* data1 = data_array[0];
+    cgltf_data* data2 = data_array[1];
+
+    cgltf_data new_data;
+    memcpy(&new_data, data1, sizeof(cgltf_data));
+
+    prepare_selected_element_data(&new_data);
+
     cgltf_options options = {0};
     cgltf_data* data_to_export  = data_array[0];
     
