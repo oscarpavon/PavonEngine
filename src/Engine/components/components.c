@@ -115,6 +115,8 @@ void update_component(ComponentDefinition* element_component){
             
             unsigned int* id = get_from_array(&mesh_component->meshes,1);
             Model* model  = get_from_array(actual_model_array,*id);
+            if(!model)
+                return;
             glm_vec3_copy(model->min,mesh_component->bounding_box[0]);
             glm_vec3_copy(model->max,mesh_component->bounding_box[1]);
             glm_aabb_transform(mesh_component->bounding_box,

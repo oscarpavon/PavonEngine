@@ -13,10 +13,6 @@
 int data_count = 0;
 cgltf_data* data_array[20];
 
-
-
-
-
 static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                                 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -25,6 +21,7 @@ static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
                                 'w', 'x', 'y', 'z', '0', '1', '2', '3',
                                 '4', '5', '6', '7', '8', '9', '+', '/'};
+
 static char *decoding_table = NULL;
 static int mod_table[] = {0, 2, 1};
  
@@ -221,39 +218,36 @@ Array array_indices_encoded;
 typedef unsigned char UCharInBytes[2];
 static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 
-void prepare_selected_element_data(cgltf_data* data){
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-    unsigned int* model_id = get_from_array(&mesh->meshes,mesh->meshes.count);
-    Model* model = get_from_array(actual_model_array,*model_id);
-    init_array(&array_vertices_encoded,sizeof(Encoded),model->vertex_array.count);
-    for(int i = 0; i<model->vertex_array.count; i++){
-        Vertex* vertex = get_from_array(&model->vertex_array,i);
-        Encoded new_encoded;
-        vec3_to_base64_encoded_bytes(vertex->postion,&new_encoded);
-        add_to_array(&array_vertices_encoded,&new_encoded);
-    }
+int previous_indices_count = 0;
 
-    unsigned char indices_charcters[6];
+void prepare_indices_data_from_model(Model* model){
+    
+    unsigned char indices_charcters[model->index_array.count*2];
     unsigned short int count = 0;
-    init_array(&array_indices_encoded,sizeof(Encoded),model->index_array.count);
+    
     for(int i = 0; i<model->index_array.count; i++){
         unsigned short int* index = get_from_array(&model->index_array,i);
-        if(count<6){
-            UCharInBytes uchar_int_bytes;
-            uint8_to_char(*index,uchar_int_bytes);
-            indices_charcters[count] = uchar_int_bytes[0];
-            indices_charcters[count+1] = uchar_int_bytes[1];
-            count += 2;
-        }
-        if(count == 6){
-            Encoded indices_encodes;
-            indices_encodes.data = base64_encode(indices_charcters,6,&indices_encodes.char_len);
-            indices_encodes.byte_size = 6;
-            add_to_array(&array_indices_encoded,&indices_encodes);
-            count = 0;
-        }      
+        *index += previous_indices_count;        
+        UCharInBytes uchar_int_bytes;
+        uint8_to_char(*index,uchar_int_bytes);
+        indices_charcters[count] = uchar_int_bytes[0];
+        indices_charcters[count+1] = uchar_int_bytes[1];
+        count +=2;      
     }
+    Encoded indices_encodes;
+    indices_encodes.data = base64_encode(indices_charcters,model->index_array.count*2,&indices_encodes.char_len);
+    indices_encodes.byte_size = model->index_array.count*2;
+    add_to_array(&array_indices_encoded,&indices_encodes);
+    previous_indices_count += model->vertex_array.count;
+    printf("Indices encoded: %s\n",indices_encodes.data);
+}
 
+typedef struct CodedData{
+    int buffer_bytes_count;
+    const char* coded_buffer;
+}CodedData;
+
+CodedData merge_all_coded_data(){
     int bytes_count = 0;
     int char_count = 0;
     for(int i = 0; i<array_vertices_encoded.count ; i++){
@@ -283,10 +277,28 @@ void prepare_selected_element_data(cgltf_data* data){
         strcat(new_buffer,index_encode->data);
     }
 
+    CodedData data;
+    data.coded_buffer = new_buffer;
+    data.buffer_bytes_count = bytes_count;
 
+    return data;
+}
 
-    data->buffers[0].uri = new_buffer;
-    data->buffers[0].size = bytes_count;
+void prepare_vertices_data_from_model(Model* model){   
+    
+    for(int i = 0; i<model->vertex_array.count; i++){
+        Vertex* vertex = get_from_array(&model->vertex_array,i);
+        mat4 position;
+        glm_mat4_identity(position);
+        glm_translate(position,vertex->postion);
+        glm_translate(position,selected_element->transform->position);
+        
+        Encoded new_encoded;
+        vec3_to_base64_encoded_bytes(position[3],&new_encoded);
+        add_to_array(&array_vertices_encoded,&new_encoded);
+    }
+
+ 
 }
 
 void create_triangle_data(){
@@ -334,6 +346,38 @@ void create_triangle_data(){
     printf("Uri: %s\n",new_buffer);
 }
 
+int vertex_count_merged = 0;
+int indices_count_merged = 0;
+
+void data_count_merged(ComponentDefinition* component){
+    if(component->type == STATIC_MESH_COMPONENT){
+        StaticMeshComponent* mesh_component = component->data;
+        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = get_from_array(actual_model_array,*mode_id);
+        vertex_count_merged += model->vertex_array.count;
+        indices_count_merged += model->index_array.count;
+    }
+}
+
+void encode_vertices(ComponentDefinition* component){
+    selected_element = component->parent;
+    if(component->type == STATIC_MESH_COMPONENT){
+        StaticMeshComponent* mesh_component = component->data;
+        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = get_from_array(actual_model_array,*mode_id);
+        prepare_vertices_data_from_model(model);
+    }
+}
+
+void encode_indices(ComponentDefinition* component){
+    if(component->type == STATIC_MESH_COMPONENT){
+        StaticMeshComponent* mesh_component = component->data;
+        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = get_from_array(actual_model_array,*mode_id);
+        prepare_indices_data_from_model(model);
+    }
+}
+
 int export_gltf(const char *name){
     for_each_element_components(&prepare_mesh_data);
 
@@ -343,7 +387,21 @@ int export_gltf(const char *name){
     cgltf_data new_data;
     memcpy(&new_data, data1, sizeof(cgltf_data));
 
-    prepare_selected_element_data(&new_data);
+    for_each_element_components(&data_count_merged);
+    init_array(&array_vertices_encoded,sizeof(Encoded),vertex_count_merged);
+    init_array(&array_indices_encoded,sizeof(Encoded),indices_count_merged);
+
+    for_each_element_components(&encode_vertices);
+    for_each_element_components(&encode_indices);
+
+    CodedData coded_data = merge_all_coded_data();
+    new_data.buffers[0].uri = coded_data.coded_buffer;
+    new_data.buffers[0].size = coded_data.buffer_bytes_count;
+    new_data.buffer_views[0].size = vertex_count_merged * 12;
+    new_data.buffer_views[1].size = indices_count_merged * 2;
+    new_data.buffer_views[1].offset = vertex_count_merged * 12;
+    new_data.accessors[0].count = vertex_count_merged;
+    new_data.accessors[1].count = indices_count_merged;
 
     cgltf_options options = {0};
     cgltf_data* data_to_export  = data_array[0];
@@ -355,6 +413,7 @@ int export_gltf(const char *name){
         return -1;
     }
     cgltf_free(data_to_export);
+
     LOG("Exported\n");
     data_count = 0;
     return 0;

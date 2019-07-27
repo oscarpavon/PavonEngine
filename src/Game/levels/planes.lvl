@@ -7,7 +7,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 3.060001 , 0.000000],
+							"position" : [0.000000 , 2.799999 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -22,7 +22,7 @@
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [7.559998 , -1.540000 , 0.000000],
+							"position" : [2.819998 , -0.580000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -37,8 +37,8 @@
 		{
 			"data" : [
 				"models" : [
-					"test/cube.gltf",
-					"test/sphere.gltf",
+					"test/plane.gltf",
+					"test/plane.gltf",
 				],
 				"textures" : [
 				],
