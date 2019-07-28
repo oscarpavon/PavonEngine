@@ -532,11 +532,5 @@ void test_elements_occlusion(){
 }
 
 void duplicate_model_data(Model* destination , Model* source){
-    memcpy(&destination->vertex_array,&source->vertex_array,sizeof(Array));
-    memcpy(&destination->index_array,&source->index_array,sizeof(Array));
-    destination->index_buffer_id = source->index_buffer_id;
-    destination->vertex_buffer_id = source->vertex_buffer_id;
-    destination->texture.id = source->texture.id;
-    glm_vec3_copy(source->min,destination->min);
-    glm_vec3_copy(source->max,destination->max);
+    memcpy(destination,source,sizeof(Model));
 }

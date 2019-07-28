@@ -125,7 +125,7 @@ void prepare_mesh_data(ComponentDefinition* component){
         StaticMeshComponent* mesh_component = component->data;
         unsigned int *model_id_in_loaded_models = get_from_array(&mesh_component->meshes,0);
         const char* path = get_from_array(&texts,*model_id_in_loaded_models);
-        load_mesh_for_proccess(path);
+        //load_mesh_for_proccess(path);
     }
 }
 
@@ -224,12 +224,12 @@ void prepare_indices_data_from_model(Model* model){
     
     unsigned char indices_charcters[model->index_array.count*2];
     unsigned short int count = 0;
-    
+
     for(int i = 0; i<model->index_array.count; i++){
         unsigned short int* index = get_from_array(&model->index_array,i);
-        *index += previous_indices_count;        
+        unsigned short int index_offset = (*index + previous_indices_count);  
         UCharInBytes uchar_int_bytes;
-        uint8_to_char(*index,uchar_int_bytes);
+        uint8_to_char(index_offset,uchar_int_bytes);
         indices_charcters[count] = uchar_int_bytes[0];
         indices_charcters[count+1] = uchar_int_bytes[1];
         count +=2;      
@@ -237,8 +237,10 @@ void prepare_indices_data_from_model(Model* model){
     Encoded indices_encodes;
     indices_encodes.data = base64_encode(indices_charcters,model->index_array.count*2,&indices_encodes.char_len);
     indices_encodes.byte_size = model->index_array.count*2;
-    add_to_array(&array_indices_encoded,&indices_encodes);
+    add_to_array(&array_indices_encoded,&indices_encodes); 
+    
     previous_indices_count += model->vertex_array.count;
+    
     printf("Indices encoded: %s\n",indices_encodes.data);
 }
 
@@ -379,13 +381,15 @@ void encode_indices(ComponentDefinition* component){
 }
 
 int export_gltf(const char *name){
-    for_each_element_components(&prepare_mesh_data);
+    //for_each_element_components(&prepare_mesh_data);
 
+    load_mesh_for_proccess("test/triangle.gltf");
     cgltf_data* data1 = data_array[0];
     cgltf_data* data2 = data_array[1];
 
     cgltf_data new_data;
     memcpy(&new_data, data1, sizeof(cgltf_data));
+   // memset(&new_data,0,sizeof(cgltf_data));
 
     for_each_element_components(&data_count_merged);
     init_array(&array_vertices_encoded,sizeof(Encoded),vertex_count_merged);
@@ -416,5 +420,7 @@ int export_gltf(const char *name){
 
     LOG("Exported\n");
     data_count = 0;
+    clean_array(&array_indices_encoded);
+    clean_array(&array_vertices_encoded);
     return 0;
 }
