@@ -346,8 +346,12 @@ void draw_engine_memory(){
     float total_memory_in_kb = INIT_MEMORY/1024;
     gcvt(total_memory_in_kb, 6, buf);
     render_text(buf , 0 + ((camera_width_screen/2)-340) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
-    render_text("kb" , 0 + ((camera_width_screen/2)-300) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    render_text("/" , 0 + ((camera_width_screen/2)-305) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 
+    float free_memory = actual_free_memory/1024;
+    gcvt(free_memory, 6, buf);
+    render_text(buf , 0 + ((camera_width_screen/2)-300) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    render_text("kb" , 0 + ((camera_width_screen/2)-265) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 
 }
 
