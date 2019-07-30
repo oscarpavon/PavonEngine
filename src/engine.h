@@ -126,7 +126,6 @@ Array* previous_models_array;
 Array* current_textures_array;
 Array* actual_model_array;
 Array* actual_elements_array;
-Array* actual_LOD_models_array;
 GLuint actual_standard_fragment_shader;
 Array* actual_buttons_array;
 

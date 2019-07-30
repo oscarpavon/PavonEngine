@@ -172,7 +172,7 @@ void check_LOD(cgltf_data* data){
   cgltf_mesh* meshes[4];
   memset(meshes,0,sizeof(meshes));
 
-  HirarchicalLevelOfDetail* hirarchical_level_of_detail;
+  HierarchicalLevelOfDetail* hirarchical_level_of_detail;
   if(data->nodes_count > 1){
     for(int i = 0; i < data->nodes_count; i++){
       int node_name_size = strlen(data->nodes[i].name);
@@ -205,8 +205,8 @@ void check_LOD(cgltf_data* data){
             break;
           }
           if(strcmp("HLOD",&name[n]+1) == 0){
-            HirarchicalLevelOfDetail new_hirarchical;
-            memset(&new_hirarchical,0,sizeof(HirarchicalLevelOfDetail));
+            HierarchicalLevelOfDetail new_hirarchical;
+            memset(&new_hirarchical,0,sizeof(HierarchicalLevelOfDetail));
             memset(&new_hirarchical.model,0,sizeof(Model));
             actual_vertex_array = &new_hirarchical.model.vertex_array;
             actual_index_array = &new_hirarchical.model.index_array;

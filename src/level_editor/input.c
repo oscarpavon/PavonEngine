@@ -66,10 +66,14 @@ void parse_command(const char* command){
 
     if(strcmp(&command[1],"gui") == 0){
         change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
+        return;
     }
-    
-    
-    if(command[1] == 'w'){
+
+ 
+    switch (first_char_command)
+    {
+    case 'w':
+    {
         switch (editor_mode)
         {
         case EDITOR_MODE_GUI_EDITOR:
@@ -83,17 +87,33 @@ void parse_command(const char* command){
         default:
             break;
         }
-        
     }
-
-    if(first_char_command == 'e'){
+    case 'r':{
+        reload_editor();
+        LOG("reload\n");
+        return;
+    }
+    break;
+    case 'e':
+    {
         export_gltf("out.gltf");
+        return;
     }
-    if(first_char_command == 'a'){
+    case 'a':
+    {
         add_element_with_model_path(&command[3]);
+        return;
     }
-    
-    if(command[1] == 'o'){
+    case 'q':{
+        exit(0);
+        return;
+    }
+    case 'g':{
+
+        return;
+    }
+    case 'o':
+    {
         switch (editor_mode)
         {
         case EDITOR_MODE_GUI_EDITOR:
@@ -109,55 +129,34 @@ void parse_command(const char* command){
         default:
             break;
         }
-        
     }
-    if(first_char_command == 's'){
-        if(command[2] == 'n'){
-            switch (editor_mode)
-            {
-            case EDITOR_MODE_GUI_EDITOR:
-                strcpy(selected_button->name,&command[4]);
-                return;
-                
-            case EDITOR_DEFAULT_MODE:
-                strcpy(selected_element->name,&command[4]);
-                return;
-                
-            default:
-                break;
+    case 's':
+        {
+            if(command[3] == 'p'){//player
+                player1 = selected_element;            
+                add_editor_native_element("Player Controller");
             }
-            
+            return;
+
+            if(command[2] == 'n'){
+                switch (editor_mode)
+                {
+                case EDITOR_MODE_GUI_EDITOR:
+                    strcpy(selected_button->name,&command[4]);
+                    return;
+                    
+                case EDITOR_DEFAULT_MODE:
+                    strcpy(selected_element->name,&command[4]);
+                    return;
+                    
+                default:
+                    break;
+                }
+                
+            }
         }
-    }
- 
-    switch (first_char_command)
+    case 'd':
     {
-    case 'r':{
-        reload_editor();
-        LOG("reload\n");
-    }
-    break;
-    
-    default:
-        break;
-    }
-    if(command[1] == 'q'){
-        exit(0);
-    }
-    if(command[1] == 'r'){        
-       
-    }
-    if(command[1] == 's'){ //set
-        if(command[3] == 'p'){//player
-            player1 = selected_element;            
-            add_editor_native_element("Player Controller");
-        }
-    }
-    if(command[1] == 'h'){        
-       /*  selected_element->has_HLOD = true;
-        LOG("HLOD added\n"); */
-    }
-    if(command[1] == 'd'){ 
         unsigned int duplicate_count = atoi(&command[3]); 
         int duplicate_offset = atoi(&command[5]);
         for(int i = 0; i< duplicate_count; i++){
@@ -167,6 +166,10 @@ void parse_command(const char* command){
         }      
         LOG("duplicated %i\n",duplicate_count);
     }
+    default:
+        break;
+    }
+    
 
 }
 

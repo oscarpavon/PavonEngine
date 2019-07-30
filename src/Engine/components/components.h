@@ -63,12 +63,17 @@ typedef struct SkinnedMeshComponent{
     Model* model;
 }SkinnedMeshComponent;
 
-typedef struct HirarchicalLevelOfDetail{
+typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
+typedef struct HierarchicalLevelOfDetail{
     Model model;
     float distance;
     bool draw;
-    bool drew;    
-}HirarchicalLevelOfDetail;
+    bool drew;
+    HierarchicalLevelOfDetail* parent;
+    Array childs;
+    vec3 center;
+    vec3 bounding_box[2];    
+}HierarchicalLevelOfDetail;
 
 typedef struct LevelOfDetailComponent{
     Array meshes;
@@ -76,7 +81,7 @@ typedef struct LevelOfDetailComponent{
     int texture_id;
     int model_id;
     bool initialized;
-    HirarchicalLevelOfDetail* hirarchical_level_of_detail;
+    HierarchicalLevelOfDetail* hirarchical_level_of_detail;
 }LevelOfDetailComponent;
 
 

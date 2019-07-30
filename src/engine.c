@@ -356,7 +356,7 @@ void init_engine(){
 
     init_gui();    
 
-    init_array(&array_hirarchical_level_of_detail,sizeof(HirarchicalLevelOfDetail),5);
+    init_array(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
     
     action_pointer_id_count = 0;
     init_array(&actions_pointers,sizeof(ActionPointer),20);
@@ -469,35 +469,41 @@ void rotate_element(Element* element, versor quaternion){
 
 }
 
+static inline void check_static_mesh_component_distance_from_camera(StaticMeshComponent* static_mesh_component){
+    float distance = glm_vec3_distance(main_camera.position,static_mesh_component->center);
+    Model* draw_model;
+    float distaces[3] = {0,24,40};
+    unsigned int * model_id;
+    int count = static_mesh_component->meshes.count-1;
+    for(int i = 1; i <= count ; i++){
+        float distance_value = distaces[i-1];            
+        if(distance_value==0){
+            model_id = get_from_array(&static_mesh_component->meshes,i);
+            continue;
+        }
+        float next_distace_value = distance_value+1;
+        if(i != count)
+            next_distace_value = distaces[i];
+            
+        if(distance >= distance_value && distance_value < next_distace_value){
+            model_id = get_from_array(&static_mesh_component->meshes,i);
+            continue;
+        }
+        
+    }
+    draw_model = get_from_array(actual_model_array,*model_id);
+    
+    add_to_array(&frame_draw_elements,&draw_model);
+}  
+
 void check_static_meshes_distance(){
     for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
         StaticMeshComponent** 
         static_mesh_component_pointer_to_pointer = get_from_array(&array_static_meshes_pointers_for_test_distance,i);
         StaticMeshComponent* mesh_component = static_mesh_component_pointer_to_pointer[0];
-        float distance = glm_vec3_distance(main_camera.position,mesh_component->center);
-        Model* draw_model;
-        float distaces[3] = {0,24,40};
-        unsigned int * model_id;
-        int count = mesh_component->meshes.count-1;
-        for(int i = 1; i <= count ; i++){
-            float distance_value = distaces[i-1];            
-            if(distance_value==0){
-               model_id = get_from_array(&mesh_component->meshes,i);
-               continue;
-            }
-            float next_distace_value = distance_value+1;
-            if(i != count)
-                next_distace_value = distaces[i];
-                
-            if(distance >= distance_value && distance_value < next_distace_value){
-                model_id = get_from_array(&mesh_component->meshes,i);
-               continue;
-            }
-            
-        }
-        draw_model = get_from_array(actual_model_array,*model_id);
-        
-        add_to_array(&frame_draw_elements,&draw_model);
+
+        /*Simple LOD */
+        check_static_mesh_component_distance_from_camera(mesh_component);
 
     }
 }
@@ -520,8 +526,6 @@ void test_elements_occlusion(){
 
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
-
-        
     }   
 
     for(int i = 0; i<array_static_meshes_pointers.count; i++){

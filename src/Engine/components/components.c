@@ -187,13 +187,13 @@ void update_per_frame_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
     case SPHERE_COMPONENT:{
-        SphereComponent* component = &element_component->data[0];
+        SphereComponent* component = element_component->data;
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&models_for_test_occlusion,&component->model);
         break;
     }
     case CUBE_COMPONENT:{
-        CubeComponent* component = &element_component->data[0];
+        CubeComponent* component = element_component->data;
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
         add_to_array(&models_for_test_occlusion,&component->model);
         break;

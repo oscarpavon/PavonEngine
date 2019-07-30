@@ -188,9 +188,10 @@ void menu_action_add_editor_native_element(TextMenu* menu){
     add_editor_native_element(menu->text_for_action);
     LOG("Add editor native element: %s\n",menu->text_for_action);
 }
-#define EDITOR_NATIVE_ELEMETN_COUNT 8
-const char* elements_names[EDITOR_NATIVE_ELEMETN_COUNT] = { 
-    "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor"
+#define EDITOR_NATIVE_ELEMETN_COUNT 9
+const char* elements_names[] = { 
+    "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor",
+    "HLOD Cluster"
     };
 
 void menu_action_draw_native_editor_elments(TextMenu* menu){
@@ -198,6 +199,7 @@ void menu_action_draw_native_editor_elments(TextMenu* menu){
     set_text_size(text_size);
     menu->text_size = text_size;   
 
+    
     for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
         
         const char* name = elements_names[i];

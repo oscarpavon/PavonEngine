@@ -106,8 +106,12 @@ void add_editor_native_element(const char* native_element_name){
         strcpy(selected_element->name, "Floor");
         add_transform_component_to_selected_element();
         StaticMeshComponent mesh_component;
-        //mesh_component.model = get_from_array(&engine_native_models,3);
         add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+
+    }else if( strcmp("HLOD Cluster",native_element_name) == 0){
+        new_empty_element();
+        strcpy(selected_element->name, "HLOD Cluster");
+        add_transform_component_to_selected_element();
 
     }
 }
@@ -347,10 +351,13 @@ void draw_editor_viewport(){
 
 
     draw_elements(&frame_draw_elements);
+
+    //clean frame
     clean_array(&models_for_test_occlusion);
     clean_array(&array_static_meshes_pointers);
     clean_array(&array_static_meshes_pointers_for_test_distance);
     for_each_element_components(&clean_component_value);
+    //end clean frame
 
     draw_gizmos();
 
