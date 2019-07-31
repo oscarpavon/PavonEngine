@@ -23,6 +23,15 @@ struct Model* actual_model;
 bool model_loaded = false;
 int models_parsed = 0;
 
+Node* get_node_by_name(Array* array, const char* name){
+  for( int i = 0; i < array->count ; i++ ){
+    Node* node = get_from_array(array,i);
+    if( strcmp( node->name , name ) == 0){
+      return node;
+    }
+  }
+}
+
 void read_accessor_indices(cgltf_accessor* accessor){
   init_array(actual_index_array,sizeof(unsigned short int),accessor->count);
   for(size_t i = 0 ; i < accessor->count ; i++){
@@ -129,44 +138,37 @@ void load_mesh(cgltf_mesh* mesh){
   model_loaded = true;
 }
 
-void load_node(Node* parent, cgltf_node *in_node, Node* store_nodes, int index_to_store){
+void load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int index_to_store){
 
   if(copy_nodes){
     Node new_node;
     memset(&new_node,0,sizeof(Node));  
 
-    if(in_node->parent && parent != NULL)
+    if(in_cgltf_node->parent && parent != NULL)
       new_node.parent = parent;  
 
-    strcpy(new_node.name,in_node->name);
+    strcpy(new_node.name,in_cgltf_node->name);
 
-    memcpy(new_node.translation,in_node->translation,sizeof(vec3));
-    memcpy(new_node.rotation, in_node->rotation, sizeof(vec4));
+    memcpy(new_node.translation,in_cgltf_node->translation,sizeof(vec3));
+    memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
 
     add_to_array(&nodes,&new_node);
   }
 
-  if(in_node->mesh != NULL)
-    load_mesh(in_node->mesh);
+  if(in_cgltf_node->mesh != NULL)
+    load_mesh(in_cgltf_node->mesh);
 
-  if(in_node->skin != NULL){
-    Skeletal* skeletal = malloc(sizeof(Skeletal));
-    skeletal->joints_count = in_node->skin->joints_count;
-    Node* joints = get_from_array(&nodes,index_to_store+1);
-    skeletal->joints = joints;
-    
-    LOG("Skin loaded\n");
+  if(in_cgltf_node->skin != NULL){    
+    current_nodes_array = &nodes; 
+    LOG("Nodes assigned to current nodes array\n");
   }
   
-  for(int i = 0; i < in_node->children_count; i++){ 
+  for(int i = 0; i < in_cgltf_node->children_count; i++){ 
     Node* parent = get_from_array(&nodes,index_to_store);    
-    load_node( parent, in_node->children[i],store_nodes,index_to_store+1);
+    load_node( parent, in_cgltf_node->children[i],store_nodes,index_to_store+(i+1));
   }
 
 }
-
-
-
 
 void check_LOD(cgltf_data* data){
   cgltf_mesh* meshes[4];
@@ -247,14 +249,7 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
   memcpy(&channel->sampler,&sampler,sizeof(AnimationSampler));
 }
 
-Node* get_node_by_name(Array* array, const char* name){
-  for( int i = 0; i < array->count ; i++ ){
-    Node* node = get_from_array(array,i);
-    if( strcmp( node->name , name ) == 0){
-      return node;
-    }
-  }
-}
+
 
 
 void load_current_channel(){
@@ -291,9 +286,6 @@ void load_current_animation(){
   }
   
 }
-
-
-
 
 int load_model(const char* path){
   
@@ -340,7 +332,7 @@ int load_model(const char* path){
   }
 
   for(int i = 0; i < data->scene->nodes_count ; i++){
-    load_node(NULL, data->scene->nodes[i],nodes.data,0);
+    load_node(NULL, data->scene->nodes[i],(Node*)nodes.data,0);
   }
   
   if(data->animations_count >= 1){

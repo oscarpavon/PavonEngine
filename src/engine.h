@@ -5,8 +5,6 @@
 #ifndef PAVON_ENGINE_H
 #define PAVON_ENGINE_H
 
-
-
 #ifdef ANDROID
 #include <common.h>
 struct android_app* app;
@@ -100,19 +98,23 @@ void new_empty_model_in_array(Array* array);
 
 void check_static_meshes_distance();
 
+//
+// Global variables
+//
+
 bool should_close;
 
-static inline void update_mvp(mat4 model, mat4 mvp_out){
-    mat4 projection_view;
-    glm_mul(main_camera.projection , main_camera.view, projection_view);
-    glm_mul(projection_view , model , mvp_out);
-}
+float frame_time;
 
 bool game_initialized;
 
 unsigned int element_id_count;
 
 unsigned int components_id_count;
+
+//
+// Global pointers
+//
 
 Element* selected_element;
 Button* selected_button;
@@ -124,9 +126,10 @@ ComponentDefinition* current_component_selected;
 
 Array* previous_models_array;
 Array* current_textures_array;
+Array* current_nodes_array;
 Array* actual_model_array;
 Array* actual_elements_array;
-GLuint actual_standard_fragment_shader;
+
 Array* actual_buttons_array;
 
 Array components;
@@ -135,16 +138,26 @@ Array engine_native_models;
 Array array_models_loaded;
 
 Array array_hirarchical_level_of_detail;
+
+//
+/*Draw frame data */
+//
 Array frame_draw_elements;
 Array models_for_test_occlusion;
 Array array_static_meshes_pointers;
 Array array_static_meshes_pointers_for_test_distance;
 
+//
+//Paths data
+//
 Array texts;
 Array textures_paths;
 
-float frame_time;
 
+//
+//Shaders
+//
+GLuint actual_standard_fragment_shader;
 static int shader_count = 0;
 GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
     shader_count++;
@@ -153,6 +166,12 @@ GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
     glAttachShader(new_shader, fragment);
     glLinkProgram(new_shader);
     return new_shader;
+}
+
+static inline void update_mvp(mat4 model, mat4 mvp_out){
+    mat4 projection_view;
+    glm_mul(main_camera.projection , main_camera.view, projection_view);
+    glm_mul(projection_view , model , mvp_out);
 }
 
 #endif //PAVON_ENGINE_H

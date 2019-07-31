@@ -5,6 +5,7 @@ typedef struct Element Element;
 #include "../../model.h"
 #include <cglm.h>
 #include "../array.h"
+#include "../../skeletal.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
@@ -60,7 +61,8 @@ typedef struct StaticMeshComponent{
 }StaticMeshComponent;
 
 typedef struct SkinnedMeshComponent{    
-    Model* model;
+    Model* mesh;
+    Array joints;
 }SkinnedMeshComponent;
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;

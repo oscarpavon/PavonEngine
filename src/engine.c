@@ -195,9 +195,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     int models_loaded = load_and_initialize_simple_model(model_gltf_path);
     actual_model_array = prev_array;
     
-    StaticMeshComponent mesh_component;
-
-    
+    StaticMeshComponent mesh_component;    
     init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
     init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
     int model_path_id = texts.count-1;
