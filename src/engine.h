@@ -112,10 +112,21 @@ unsigned int element_id_count;
 
 unsigned int components_id_count;
 
+ComponentType current_loaded_component_type;
+
+//
+// Global array containers
+//
+Array components;
+Array engine_native_models;
+
+Array array_models_loaded;
+
+Array array_hirarchical_level_of_detail;
+
 //
 // Global pointers
 //
-
 Element* selected_element;
 Button* selected_button;
 Model* selected_model;
@@ -132,12 +143,6 @@ Array* actual_elements_array;
 
 Array* actual_buttons_array;
 
-Array components;
-Array engine_native_models;
-
-Array array_models_loaded;
-
-Array array_hirarchical_level_of_detail;
 
 //
 /*Draw frame data */

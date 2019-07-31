@@ -195,24 +195,36 @@ void add_element_with_model_path(const char* model_gltf_path){
     int models_loaded = load_and_initialize_simple_model(model_gltf_path);
     actual_model_array = prev_array;
     
-    StaticMeshComponent mesh_component;    
-    init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
-    init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
-    int model_path_id = texts.count-1;
-    add_to_array(&mesh_component.meshes,&model_path_id);
-
-    int id =        array_models_loaded.count-models_loaded;
-    for(int i = 0; i<models_loaded ; i++){
-        add_to_array(&mesh_component.meshes,&id);
-        id++;
-    }
-   
-
-    add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+    switch (current_loaded_component_type)
+    {
+    case COMPONENT_SKINNED_MESH:
+        {
+            LOG("Skinned mesh need fill now\n");
+        }
+        break;
     
-    for(int i = 0; i <selected_element->components.count ; i++){
-        init_element_component(get_from_array(&selected_element->components,i));
+    case STATIC_MESH_COMPONENT:
+        {
+            StaticMeshComponent mesh_component;    
+            init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
+            init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
+            int model_path_id = texts.count-1;
+            add_to_array(&mesh_component.meshes,&model_path_id);
+
+            int id =        array_models_loaded.count-models_loaded;
+            for(int i = 0; i<models_loaded ; i++){
+                add_to_array(&mesh_component.meshes,&id);
+                id++;
+            }        
+
+            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+            
+            for(int i = 0; i <selected_element->components.count ; i++){
+                init_element_component(get_from_array(&selected_element->components,i));
+            }
+        }
     }
+    
 
     LOG("model loaded and shader created \n");
 }

@@ -159,7 +159,8 @@ void load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int i
     load_mesh(in_cgltf_node->mesh);
 
   if(in_cgltf_node->skin != NULL){    
-    current_nodes_array = &nodes; 
+    current_nodes_array = &nodes;
+    current_loaded_component_type = COMPONENT_SKINNED_MESH; 
     LOG("Nodes assigned to current nodes array\n");
   }
   
@@ -312,7 +313,7 @@ int load_model(const char* path){
   }
   close_file(&new_file);
 
-  
+  current_loaded_component_type = STATIC_MESH_COMPONENT;
   check_LOD(data);
 
   if(model_loaded){
