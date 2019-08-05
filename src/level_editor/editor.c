@@ -297,9 +297,7 @@ void init_editor(){
 
     camera_velocity = 0.04;    
 
-    //init_skeletal_editor();
-    
-    
+    //init_skeletal_editor();  
 
 }
 
@@ -362,8 +360,7 @@ void draw_editor_viewport(){
     draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
-         draw_gui();
-         
+         draw_gui();         
     }       
 
     text_renderer_loop();

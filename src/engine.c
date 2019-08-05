@@ -293,35 +293,6 @@ void load_model_texture_to_gpu(Texture* texture){
         LOG("Error %08x \n",error);
     }
 }
-void load_models_texture_to_gpu(Array* models_array){
-    for(size_t i = 0; i < models_array->count ; i++) {
-        struct Model *model = get_from_array(&models_array,i);
-
-
-        glGenTextures(1, &model->texture.id);
-        glBindTexture(GL_TEXTURE_2D, model->texture.id);
-
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, model->texture.image.width,
-                      model->texture.image.heigth, 0,
-                      GL_RGB, GL_UNSIGNED_BYTE, model->texture.image.pixels_data);
-
-        free_image(&model->texture.image);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        GLenum error = glGetError();
-        if(error != GL_NO_ERROR){
-            LOG("texture error \n");
-            LOG("Error %08x \n",error);
-        }
-
-    }
-}
 
 void init_model_gl_buffers(struct Model* new_model){    
 

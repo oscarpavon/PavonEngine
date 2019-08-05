@@ -6,10 +6,10 @@
 #define PAVON_ENGINE_H
 
 #ifdef ANDROID
-#include <common.h>
-struct android_app* app;
+    #include <common.h>
+    struct android_app* app;
 #else
-#include <stdbool.h>
+    #include <stdbool.h>
 #endif
 
 #include <signal.h>
@@ -53,7 +53,7 @@ if in editor the shader need color multiplication uniform otherwise
 it not show it becouse color is multiplied per 0 ! */
 void draw_elements(Array* elements);
 void draw_simgle_model(struct Model * new_model);
-void load_models_texture_to_gpu(Array* models_array);
+
 void load_model_texture_to_gpu(Texture*);
 
 void init_model_gl_buffers(struct Model* new_model);
