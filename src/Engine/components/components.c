@@ -177,7 +177,19 @@ void init_element_component(ComponentDefinition* element_component){
         element_component->parent->transform = transform;       
 
         break;
-    }      
+    }
+    case COMPONENT_SKINNED_MESH:{
+        SkinnedMeshComponent* mesh_component = element_component->data;
+        new_empty_model();
+        Model* original_model = get_from_array(&array_models_loaded,array_models_loaded.count-1);
+        
+        duplicate_model_data(selected_model,original_model);
+        selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
+        
+        glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);    
+        mesh_component->mesh = selected_model;
+        break;
+    }
     default:
         break;
     }
@@ -208,14 +220,20 @@ void update_per_frame_component(ComponentDefinition* element_component){
         add_to_array(&models_for_test_occlusion,&component->camera_gizmo);
         
         break;
-    }  
-    case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* static_mesh_component = element_component->data;       
-            
-        add_to_array(&array_static_meshes_pointers,&static_mesh_component);
+    }
 
+    case STATIC_MESH_COMPONENT:{
+        StaticMeshComponent* static_mesh_component = element_component->data;     
+        add_to_array(&array_static_meshes_pointers,&static_mesh_component);
         break;
-    }      
+    }
+
+    case COMPONENT_SKINNED_MESH:{
+        SkinnedMeshComponent* skinned_mesh_component = element_component->data;
+        add_to_array(&array_skinned_mesh_pointers,&skinned_mesh_component);
+        break;
+    }
+
     default:
         break;
     }

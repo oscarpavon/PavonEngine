@@ -200,6 +200,11 @@ void add_element_with_model_path(const char* model_gltf_path){
     case COMPONENT_SKINNED_MESH:
         {
             LOG("Skinned mesh need fill now\n");
+            SkinnedMeshComponent skin_mesh_component;
+            memset(&skin_mesh_component,0,sizeof(SkinnedMeshComponent));
+            
+            add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
+
         }
         break;
     
@@ -211,20 +216,21 @@ void add_element_with_model_path(const char* model_gltf_path){
             int model_path_id = texts.count-1;
             add_to_array(&mesh_component.meshes,&model_path_id);
 
+            //add model loaded id
             int id =        array_models_loaded.count-models_loaded;
             for(int i = 0; i<models_loaded ; i++){
                 add_to_array(&mesh_component.meshes,&id);
                 id++;
             }        
 
-            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);           
             
-            for(int i = 0; i <selected_element->components.count ; i++){
-                init_element_component(get_from_array(&selected_element->components,i));
-            }
         }
     }
-    
+
+    for(int i = 0; i <selected_element->components.count ; i++){
+        init_element_component(get_from_array(&selected_element->components,i));
+    }
 
     LOG("model loaded and shader created \n");
 }
@@ -346,6 +352,8 @@ void init_engine(){
     init_array(&models_for_test_occlusion,sizeof(void*),300);
     init_array(&array_static_meshes_pointers,sizeof(void*),300);
     init_array(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);
+    init_array(&array_skinned_mesh_for_distance_test,sizeof(void*),100);
+    init_array(&array_skinned_mesh_pointers,sizeof(void*),100);
 
     touch_position_x = -1;
     touch_position_x = -1;
@@ -477,7 +485,7 @@ static inline void check_static_mesh_component_distance_from_camera(StaticMeshCo
     add_to_array(&frame_draw_elements,&draw_model);
 }  
 
-void check_static_meshes_distance(){
+void check_meshes_distance(){
     for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
         StaticMeshComponent** 
         static_mesh_component_pointer_to_pointer = get_from_array(&array_static_meshes_pointers_for_test_distance,i);
@@ -487,6 +495,13 @@ void check_static_meshes_distance(){
         check_static_mesh_component_distance_from_camera(mesh_component);
 
     }
+
+    for(int i = 0; i < array_skinned_mesh_for_distance_test.count ; i++) { 
+        SkinnedMeshComponent**
+        skin_component_pointer_to_pointer = get_from_array(&array_skinned_mesh_for_distance_test,i);
+        add_to_array(&frame_draw_elements,&skin_component_pointer_to_pointer[0]->mesh);
+    }
+    
 }
 
 void test_elements_occlusion(){
@@ -495,6 +510,7 @@ void test_elements_occlusion(){
     glm_mat4_mul(main_camera.projection,main_camera.view,view_projection_mat);
     glm_frustum_planes(view_projection_mat,frustrum_planes);
 
+    /*START: Deprecated in next update */
     for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
         Model** model = get_from_array(&models_for_test_occlusion,i);
         Model* test_model = model[0];
@@ -508,12 +524,20 @@ void test_elements_occlusion(){
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
     }   
+    /* END: Deprecated in next update */
 
     for(int i = 0; i<array_static_meshes_pointers.count; i++){
         StaticMeshComponent** static_mesh_component = get_from_array(&array_static_meshes_pointers,i);
         if(glm_aabb_frustum(static_mesh_component[0]->bounding_box,frustrum_planes) == true)
             add_to_array(&array_static_meshes_pointers_for_test_distance,&static_mesh_component[0]);
     }
+
+    for(int i = 0; i<array_skinned_mesh_pointers.count; i++){
+        SkinnedMeshComponent** skin_component = get_from_array(&array_skinned_mesh_pointers,i);
+        if(glm_aabb_frustum(skin_component[0]->bounding_box,frustrum_planes) == true)
+            add_to_array(&array_skinned_mesh_for_distance_test,&skin_component[0]);
+    }
+
 }
 
 void duplicate_model_data(Model* destination , Model* source){

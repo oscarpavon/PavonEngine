@@ -340,8 +340,9 @@ void draw_editor_viewport(){
     }
 
     for_each_element_components(&update_per_frame_component);
+
     test_elements_occlusion();
-    check_static_meshes_distance();
+    check_meshes_distance();
 
     draw_count_of_draw_call();
     
@@ -354,6 +355,8 @@ void draw_editor_viewport(){
     clean_array(&models_for_test_occlusion);
     clean_array(&array_static_meshes_pointers);
     clean_array(&array_static_meshes_pointers_for_test_distance);
+    clean_array(&array_skinned_mesh_pointers);
+    clean_array(&array_skinned_mesh_for_distance_test);
     for_each_element_components(&clean_component_value);
     //end clean frame
 

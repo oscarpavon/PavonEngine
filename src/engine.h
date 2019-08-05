@@ -96,7 +96,7 @@ void duplicate_model_data(Model* destination , Model* source);
 
 void new_empty_model_in_array(Array* array);
 
-void check_static_meshes_distance();
+void check_meshes_distance();
 
 //
 // Global variables
@@ -151,6 +151,8 @@ Array frame_draw_elements;
 Array models_for_test_occlusion;
 Array array_static_meshes_pointers;
 Array array_static_meshes_pointers_for_test_distance;
+Array array_skinned_mesh_pointers;
+Array array_skinned_mesh_for_distance_test;
 
 //
 //Paths data

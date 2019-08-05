@@ -64,6 +64,7 @@ typedef struct StaticMeshComponent{
 typedef struct SkinnedMeshComponent{    
     Model* mesh;
     Array joints;
+    vec3 bounding_box[2];
 }SkinnedMeshComponent;
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
