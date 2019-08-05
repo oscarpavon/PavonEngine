@@ -191,6 +191,7 @@ void text_input_mode(){
     if(key_released(&input.ENTER)){
         parse_command(command_text_buffer);
         character_count = 0;
+        save_commnad_history(command_text_buffer);
         memset(command_text_buffer,0,sizeof(command_text_buffer));
         
         change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
@@ -200,7 +201,13 @@ void text_input_mode(){
         character_count--;
         command_text_buffer[character_count] = '\0';
     }
+    if(key_released(&input.KEY_UP)){
+        File file;
+        load_file("../build/command_history.txt",&file);
+        strcpy(&command_text_buffer[character_count],file.data);  
+        close_file(&file);
 
+    }
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint){
@@ -353,6 +360,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_C:
         actual_key = &input.C;
+        break;
+    case GLFW_KEY_DOWN:
+        actual_key = &input.KEY_DOWN;
+        break;
+    case GLFW_KEY_UP:
+        actual_key = &input.KEY_UP;
         break;
     
     default:

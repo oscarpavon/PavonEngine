@@ -290,3 +290,9 @@ void save_gui_data(const char* gui_name){
 
     LOG("Saved to %s\n",save_name);
 }
+
+void save_commnad_history(const char* entered_commnad){
+    FILE* new_file = fopen("command_history.txt","w+");
+    fprintf(new_file,"%s",&entered_commnad[1]);
+    fclose(new_file);
+}
