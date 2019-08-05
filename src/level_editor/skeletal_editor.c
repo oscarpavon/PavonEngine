@@ -3,6 +3,8 @@
 #include "../engine.h"
 #include "editor.h"
 
+#include "../Engine/components/components.h"
+
 struct LoadGeometry skeletal_bones_gizmo_geometry;
 GLuint skeletal_gizmo_vertices_buffer_id;
 GLuint skeletal_gizmo_index_buffer_id;
@@ -38,19 +40,23 @@ void update_joints_vertex(){
     }
 }
 
-void init_skeletal_gizmo(){
+void create_skeletal_vertices(){
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
 
-    Skeletal* skeletal;
+    Skeletal new_skeletal;
+    memset(&new_skeletal,0,sizeof(Skeletal));
+    new_skeletal.joints = get_from_array(&skin_component->joints,1);
+    new_skeletal.joints_count = skin_component->joints.count-1;
+    Skeletal* skeletal = &new_skeletal;
     if(skeletal == NULL)
         return;
     int vertex_count = skeletal->joints_count;
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));
 
-    init_array(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),20);
+    init_array(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),50);
     init_array(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
     for(int i = 0; i < skeletal->joints_count ; i++){
-       
         mat4 local;        
         get_global_matrix(&skeletal->joints[i], local);
         mat4 global;
@@ -66,6 +72,8 @@ void init_skeletal_gizmo(){
             }
         }
         add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i);
+
+        LOG("Created vertices for: %s\n",skeletal->joints[i].name);
        
     }
    
@@ -101,12 +109,9 @@ void draw_skeletal_bones(){
 void init_skeletal_editor(){
        
     //assign_nodes_indices(skeletal);
-    init_skeletal_gizmo();
+    create_skeletal_vertices();
     init_static_gpu_vertex_buffer(&skeletal_bones_gizmo_geometry.vertex_array,&skeletal_gizmo_vertices_buffer_id);
-    init_static_gpu_index_buffer(&skeletal_bones_gizmo_geometry.index_array,&skeletal_gizmo_index_buffer_id);
-    
-
-
+    init_static_gpu_index_buffer(&skeletal_bones_gizmo_geometry.index_array,&skeletal_gizmo_index_buffer_id);  
 
     skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
 
@@ -114,6 +119,3 @@ void init_skeletal_editor(){
     
 }
 
-void clean_skeletal_editor(){
-   
-}

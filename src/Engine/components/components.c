@@ -135,6 +135,8 @@ void update_component(ComponentDefinition* element_component){
         break;
     }
 }
+#include "../../model.h"
+
 void init_element_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -188,6 +190,8 @@ void init_element_component(ComponentDefinition* element_component){
         
         glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);    
         mesh_component->mesh = selected_model;
+
+        memcpy(&mesh_component->joints,&model_nodes,sizeof(Array));
         break;
     }
     default:

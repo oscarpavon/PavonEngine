@@ -13,7 +13,6 @@ cgltf_data* current_data;
 cgltf_animation* current_animation;
 cgltf_animation_channel* current_channel;
 cgltf_animation_sampler* current_sampler;
-Array nodes;
 bool copy_nodes = false;
 
 Array* actual_vertex_array;
@@ -152,21 +151,21 @@ void load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int i
     memcpy(new_node.translation,in_cgltf_node->translation,sizeof(vec3));
     memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
 
-    add_to_array(&nodes,&new_node);
+    add_to_array(&model_nodes,&new_node);
   }
 
   if(in_cgltf_node->mesh != NULL)
     load_mesh(in_cgltf_node->mesh);
 
   if(in_cgltf_node->skin != NULL){    
-    current_nodes_array = &nodes;
+    current_nodes_array = &model_nodes;
     current_loaded_component_type = COMPONENT_SKINNED_MESH; 
-    LOG("Nodes assigned to current nodes array\n");
+    LOG("Nodes assigned to current_nodes_array\n");
   }
   
   for(int i = 0; i < in_cgltf_node->children_count; i++){ 
-    Node* parent = get_from_array(&nodes,index_to_store);    
-    load_node( parent, in_cgltf_node->children[i],store_nodes,index_to_store+(i+1));
+    Node* parent = get_from_array(&model_nodes,index_to_store);   
+    load_node( parent , in_cgltf_node->children[i] , store_nodes , index_to_store + (i+1) );
   }
 
 }
@@ -255,7 +254,7 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
 
 void load_current_channel(){
   AnimationChannel channel;
-  channel.node = get_node_by_name(&nodes,current_channel->target_node->name);
+  channel.node = get_node_by_name(&model_nodes,current_channel->target_node->name);
   switch (current_channel->target_path)
   {
   case cgltf_animation_path_type_rotation:
@@ -268,11 +267,9 @@ void load_current_channel(){
   default:
     break;
   }
-
   
   current_sampler = current_channel->sampler;
-  load_current_sampler_to_channel(&channel);
-  
+  load_current_sampler_to_channel(&channel); 
 
 }
 
@@ -327,13 +324,13 @@ int load_model(const char* path){
   }
 
   if(data->skins_count >= 1){
-    init_array(&nodes,sizeof(Node),data->nodes_count+1);
-    memset(nodes.data,0,sizeof(Node) * data->nodes_count);
+    init_array(&model_nodes,sizeof(Node),data->nodes_count+1);
+    memset(model_nodes.data,0,sizeof(Node) * data->nodes_count);
     copy_nodes = true; 
   }
 
   for(int i = 0; i < data->scene->nodes_count ; i++){
-    load_node(NULL, data->scene->nodes[i],(Node*)nodes.data,0);
+    load_node(NULL, data->scene->nodes[i],(Node*)model_nodes.data,0);
   }
   
   if(data->animations_count >= 1){

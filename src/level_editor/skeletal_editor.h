@@ -5,7 +5,6 @@
 
 void draw_skeletal_bones();
 void init_skeletal_editor();
-void clean_skeletal_editor();
 
 void init_skeletal_gizmo();
 

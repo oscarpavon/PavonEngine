@@ -41,7 +41,12 @@ void add_debug_line(vec3 start, vec3 end){
 
 
 void create_bounding_vertices(){
-        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);   
+        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        if(!mesh_component){
+            LOG("No static mesh component\n");
+            return;
+        }
+
         
         struct Vertex min;
         memset(&min,0,sizeof(Vertex));        
@@ -285,14 +290,16 @@ void draw_grid(){
 }
 
 void draw_gizmos(){
-    if(can_draw_skeletal_bones)   
-        draw_skeletal_bones();
+    
     
     draw_axis_lines();
 
     draw_grid();
 
     glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(can_draw_skeletal_bones)   
+        draw_skeletal_bones();
     
     if(can_draw_gizmos){
         if(can_draw_bounding_box_in_select_element)

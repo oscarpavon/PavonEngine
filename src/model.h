@@ -37,5 +37,7 @@ struct LoadGeometry{
 
 int load_model(const char* path);
 
+Array model_nodes;
+
 
 #endif // !MODEL_H

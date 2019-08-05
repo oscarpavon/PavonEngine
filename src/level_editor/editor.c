@@ -117,10 +117,8 @@ void add_editor_native_element(const char* native_element_name){
 }
 
 
-void clean_editor(){   
+void clean_editor(){     
     
-    clean_skeletal_editor();
-
     clear_engine_memory();
 }
 
