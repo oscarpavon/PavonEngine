@@ -38,7 +38,7 @@ void read_accessor_indices(cgltf_accessor* accessor){
       add_to_array(actual_index_array,&index);
   }
 }
-
+/*Read accesor and allocated data in current_array or actual_vertex_array */
 void read_accessor(cgltf_accessor* accessor){
   switch (accessor->type)
   {
@@ -244,6 +244,7 @@ void check_LOD(cgltf_data* data){
 
 void load_current_sampler_to_channel(AnimationChannel* channel){
   AnimationSampler sampler;
+  memset(&sampler,0,sizeof(AnimationSampler));
   init_array(&sampler.inputs,sizeof(float),current_sampler->input->count);
   init_array(&sampler.outputs_vec4,sizeof(vec4),current_sampler->output->count);
   current_array = &sampler.inputs;
@@ -256,8 +257,9 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
 
 
 
-void load_current_channel(){
+void load_current_channel_to_animation(Animation* animation){
   AnimationChannel channel;
+  memset(&channel,0,sizeof(AnimationChannel));
   channel.node = get_node_by_name(&model_nodes,current_channel->target_node->name);
   switch (current_channel->target_path)
   {
@@ -273,24 +275,29 @@ void load_current_channel(){
   }
   
   current_sampler = current_channel->sampler;
-  load_current_sampler_to_channel(&channel); 
-
+  load_current_sampler_to_channel(&channel);
+   
+  add_to_array(&animation->channels,&channel);
 }
 
 
 
 void load_current_animation(){
   Animation new_animation;
+  memset(&new_animation,0,sizeof(Animation));
   strcpy(new_animation.name,current_animation->name);
+  init_array(&new_animation.channels,sizeof(AnimationChannel),current_animation->channels_count);
   for(int i = 0; i< current_animation->channels_count ; i++){
     current_channel = &current_animation->channels[i];
-    //load_current_channel();
+    load_current_channel_to_animation(&new_animation);
   }
-  
+  add_to_array(&model_animation,&new_animation);
 }
 
 int load_model(const char* path){
-  
+  memset(&model_animation,0,sizeof(Array));
+  memset(&model_nodes,0,sizeof(Array));
+
   model_loaded = false;
   File new_file;
 
@@ -337,8 +344,12 @@ int load_model(const char* path){
     load_node(NULL, data->scene->nodes[i],(Node*)model_nodes.data,0);
   }
   
+  /* NULL vertex/index array beacouse not needed anymore */
+  actual_vertex_array = NULL;
+  actual_index_array = NULL;
+
   if(data->animations_count >= 1){
-     
+    init_array(&model_animation,sizeof(Animation),data->animations_count);
     for(int i = 0; i < data->animations_count; i++){
       current_animation = &data->animations[i];
       load_current_animation();
@@ -350,8 +361,7 @@ int load_model(const char* path){
   cgltf_free(data);
   current_data = NULL;
  
-  actual_vertex_array = NULL;
-  actual_index_array = NULL;
+  
   actual_model = NULL;
 
   int model_result = models_parsed;

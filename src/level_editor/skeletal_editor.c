@@ -42,6 +42,10 @@ void update_joints_vertex(){
 
 void create_skeletal_vertices(){
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    if(!skin_component){
+        LOG("No skinned mesh component\n");
+        return;
+    }
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));

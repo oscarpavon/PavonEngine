@@ -192,8 +192,12 @@ void init_element_component(ComponentDefinition* element_component){
         mesh_component->mesh = selected_model;
 
         memcpy(&mesh_component->joints,&model_nodes,sizeof(Array));
+
+        memcpy(&mesh_component->animations,&model_animation,sizeof(Array));
+
         break;
     }
+    
     default:
         break;
     }

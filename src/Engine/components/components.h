@@ -65,6 +65,7 @@ typedef struct SkinnedMeshComponent{
     Model* mesh;
     Array joints;
     vec3 bounding_box[2];
+    Array animations;
 }SkinnedMeshComponent;
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;

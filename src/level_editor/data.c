@@ -280,7 +280,7 @@ void save_gui_data(const char* gui_name){
     strcat(save_name,gui_name);
     strcat(save_name,".gui");   
 
-    FILE* new_file = fopen(save_name,"w+");
+    FILE* new_file = fopen(save_name,"w");
     actual_file = new_file;    
     element_id_count = actual_buttons_array->count;  
     

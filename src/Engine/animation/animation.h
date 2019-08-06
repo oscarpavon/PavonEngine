@@ -19,14 +19,11 @@ typedef struct AnimationChannel {
     AnimationSampler sampler;
 }AnimationChannel;
 
-
-
 typedef struct Animation{
     float time;
     bool loop;
     char name[20];
     Array channels;//AnimationChannel
-    Array samplers;//AnimationSampler
     float start;
     float end; 
 }Animation;
