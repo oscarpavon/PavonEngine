@@ -22,6 +22,7 @@ set(engine_source
         Engine/files_parser.c
         Engine/memory.c
         Engine/array.c
+        Engine/animation/animation.c
         ${components}
 )
 

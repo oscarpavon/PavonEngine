@@ -11,6 +11,7 @@
 #include "editor.h"
 #include "../gui.h"
 
+
 void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
         if(input.SHIFT.pressed)
@@ -47,6 +48,19 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     }
 }
 
+void new_text_menu_simple(const char* name, TextMenu* new_menu){
+    TextMenu menu;
+    memset(&menu,0,sizeof(TextMenu));
+    menu.execute_function = new_menu->execute_function;
+    menu.draw_text_funtion = new_menu->draw_text_funtion;
+    menu.execute = false;
+    menu.show = false;
+    menu.open_key = new_menu->open_key;
+    menu.mods_key = new_menu->mods_key;
+    strcpy(menu.name,name);
+    add_to_array(&menus,&menu);
+}
+
 void new_text_menu(const char* name, Key* open_key, int mods_key, 
                     TextMenuFunction draw_function, 
                     TextMenuFunction execute_function){
@@ -74,6 +88,29 @@ void draw_available_components(TextMenu* menu){
         
         draw_element_text_list(menu,name,i);
     }
+}
+
+void draw_animations_names(TextMenu* menu){
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    if(!skin_component){
+        return;
+    }
+
+    float text_size = 12;
+    set_text_size(text_size);
+    menu->text_size  = text_size;
+    for(int i = 0; i < skin_component->animations.count ; i++){
+        Animation* animation = get_from_array(&skin_component->animations,i);
+        char* name = animation->name;
+        
+        draw_element_text_list(menu,name,i);
+    }
+}
+
+void menu_action_play_animation(TextMenu* menu){
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    play_animation_by_name(skin_component, menu->text_for_action);
+    update_joints_vertex();
 }
 
 void menu_action_select_component_from_selected_element(TextMenu* menu){
@@ -132,11 +169,19 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
     } 
 }
 
+
+
 void init_menus(){
     init_array(&menus,sizeof(TextMenu),10);
     new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
     new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
-
+    
+    TextMenu animation_menu;
+    animation_menu.open_key = &input.B;
+    animation_menu.mods_key = -1;
+    animation_menu.draw_text_funtion = &draw_animations_names;
+    animation_menu.execute_function = &menu_action_play_animation;
+    new_text_menu_simple("Animations", &animation_menu);
 }
 
 void draw_menus(){

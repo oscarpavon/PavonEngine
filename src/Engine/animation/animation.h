@@ -7,7 +7,7 @@
 #define PATH_TYPE_ROTATION 2
 
 #include "../../skeletal.h"
-
+#include "../components/components.h"
 typedef struct AnimationSampler{
     Array inputs;//int
     Array outputs_vec4;//vec4
@@ -27,5 +27,7 @@ typedef struct Animation{
     float start;
     float end; 
 }Animation;
+
+void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name);
 
 #endif // !ENGINE_ANIMATION_H

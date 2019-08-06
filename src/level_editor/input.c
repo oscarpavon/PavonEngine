@@ -207,7 +207,7 @@ void text_input_mode(){
         strcpy(&command_text_buffer[character_count],file.data);  
         close_file(&file);
     }
-    
+
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint){
@@ -360,6 +360,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_C:
         actual_key = &input.C;
+        break;
+    case GLFW_KEY_B:
+        actual_key = &input.B;
         break;
     case GLFW_KEY_DOWN:
         actual_key = &input.KEY_DOWN;

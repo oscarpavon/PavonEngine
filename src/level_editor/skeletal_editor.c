@@ -19,9 +19,20 @@ void assign_nodes_indices(Skeletal* skeletal){
 }
 
 void update_joints_vertex(){
-    Skeletal* skeletal;
-    if(skeletal == NULL)
+    
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    if(!skin_component){
+        LOG("No skinned mesh component\n");
         return;
+    }
+    clean_array(&skeletal_bones_gizmo_geometry.vertex_array);
+
+    Skeletal new_skeletal;
+    memset(&new_skeletal,0,sizeof(Skeletal));
+    new_skeletal.joints = get_from_array(&skin_component->joints,1);
+    new_skeletal.joints_count = skin_component->joints.count-1;
+    Skeletal* skeletal = &new_skeletal;
+
     int vertex_count = skeletal->joints_count;
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));
@@ -38,6 +49,8 @@ void update_joints_vertex(){
     for(int i = 0; i < vertex_count ; i++){
         add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
     }
+
+    update_gpu_vertex_data(&skeletal_bones_gizmo_geometry.vertex_array, skeletal_gizmo_vertices_buffer_id);
 }
 
 void create_skeletal_vertices(){
@@ -87,7 +100,8 @@ void create_skeletal_vertices(){
     for(int i = 0; i < vertex_count ; i++){
         add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
     }
- 
+    
+
 }
 
 GLuint skelta_gizmo_shader;
