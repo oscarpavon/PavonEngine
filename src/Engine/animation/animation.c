@@ -7,13 +7,25 @@ void play_animation(Animation* animation){
         AnimationSampler* sampler = &channel->sampler;
         for(int j = 0; j < sampler->outputs_vec4.count ; j++){
             float* quaternion = get_from_array(&sampler->outputs_vec4,j);
-            glm_vec4_print(quaternion,stdout);
-        }                
-        Node* node = channel->node;
-        glm_vec4_print(node->rotation,stdout);
+            //glm_vec4_print(quaternion,stdout);
+        }
+                        
+        Node* node = channel->node;        
 
-        float* quaternion = get_from_array(&sampler->outputs_vec4,sampler->outputs_vec4.count-1);
-        glm_vec4_copy(quaternion,node->rotation);
+        switch (channel->path_type)
+        {
+            case PATH_TYPE_ROTATION:
+            {
+                float* quaternion = get_from_array(&sampler->outputs_vec4,sampler->outputs_vec4.count-1);
+                glm_vec4_copy(quaternion,node->rotation);
+                break;
+            }          
+            case PATH_TYPE_TRANSLATION:
+            {
+                
+                break;
+            }          
+        }
         
     }
     LOG("Played animation: %s\n",animation->name);

@@ -61,28 +61,9 @@ void read_accessor(cgltf_accessor* accessor){
     
     for(int i = 0 ; i < accessor->count ; i++){
       vec4 quaternion;      
-      cgltf_accessor_read_float(accessor, i, quaternion , 4);
-      for(int j = 0; j < 4 ; j++){
-        float number = (float)quaternion[j];
-        int exponent;
-        frexp(number,&exponent);
-        float new_float = (float)ldexp(number,exponent);
-        LOG("Number: %f\n",number);
-      }
+      cgltf_accessor_read_float(accessor, i, quaternion , 4);     
       add_to_array(current_array,quaternion);
-    }
-    vec4 test1;
-    vec4 test2;
-    glm_vec4_copy((vec4){1,1,1,1},test1);
-    glm_vec4_copy((vec4){2,-4.4264304e-17,2,2},test2);
-
-    //add_to_array(current_array,test1);
-    //add_to_array(current_array,test2);
-    
-    for(int j = 0; j < current_array->count ; j++){
-        float* quaternion = get_from_array(current_array,j);
-        glm_vec4_print(quaternion,stdout);
-    }  
+    }    
     
     break;
   case cgltf_type_scalar:
