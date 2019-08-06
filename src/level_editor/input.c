@@ -206,8 +206,8 @@ void text_input_mode(){
         load_file("../build/command_history.txt",&file);
         strcpy(&command_text_buffer[character_count],file.data);  
         close_file(&file);
-
     }
+    
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint){

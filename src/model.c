@@ -137,7 +137,7 @@ void load_mesh(cgltf_mesh* mesh){
   model_loaded = true;
 }
 
-void load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int index_to_store){
+int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int index_to_store){
 
   if(copy_nodes){
     Node new_node;
@@ -163,9 +163,13 @@ void load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int i
     LOG("Nodes assigned to current_nodes_array\n");
   }
   
+  Node* loaded_parent = get_from_array(&model_nodes,model_nodes.count-1);
+  if(in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL)
+    return 1;
+
+  int offset = 0;
   for(int i = 0; i < in_cgltf_node->children_count; i++){ 
-    Node* parent = get_from_array(&model_nodes,index_to_store);   
-    load_node( parent , in_cgltf_node->children[i] , store_nodes , index_to_store + (i+1) );
+    offset = load_node( loaded_parent , in_cgltf_node->children[i] , store_nodes , index_to_store + (i+1+offset) );
   }
 
 }
