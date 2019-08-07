@@ -15,6 +15,6 @@ int load_gamplay_code();
 
 bool loaded_gamplay_library;
 void* dynamic_lib_handle;
-void(*loop_fuction_dynamic_loaded)(void); 
+void(*loop_fuction_dynamic_loaded)(void*); 
 void close_dynamic_game_play();
 #endif //PAVON_MOBILE_GAME_H

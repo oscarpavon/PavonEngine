@@ -9,6 +9,12 @@ struct champion{
 void test02(){
     LOG("work\n");
 }
-void test(){
-    test02();
+void test(void* in){
+    Input* input = in;
+    if(input->D.pressed){
+        LOG("input work\n");
+    }
+    if(input->W.pressed){
+        LOG("W pressed\n");
+    }
 }

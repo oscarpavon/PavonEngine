@@ -799,7 +799,7 @@ void input_mode_play(){
   
     //update_game();
     if(loop_fuction_dynamic_loaded)
-        loop_fuction_dynamic_loaded();
+        loop_fuction_dynamic_loaded(&input);
 
     controlling_camera_component = true;
 
