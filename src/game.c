@@ -6,7 +6,7 @@
 #include "input.h"
 
 #include "gui.h"
-#include <cglm.h>
+#include "third_party/cglm/cglm.h"
 
 #include "camera.h"
 

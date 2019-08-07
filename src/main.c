@@ -4,7 +4,7 @@
 #include <GLES2/gl2.h>
 
 #include <vec3.h>
-#include <cglm.h>
+#include "third_party/cglm/cglm.h"
 
 #include "utils.h"
 

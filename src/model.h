@@ -5,7 +5,7 @@
 
 #include <GLES2/gl2.h>
 
-#include <cglm.h>
+#include "third_party/cglm/cglm.h"
 
 #include "images.h"
 

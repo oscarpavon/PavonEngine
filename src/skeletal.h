@@ -2,7 +2,7 @@
 #define PAVON_ENGINE_SKELETAL_H
 
 #ifdef ANDROID
-#include <cglm.h>
+#include "third_party/cglm/cglm.h"
 #else
 #include <cglm/cglm.h>
 #endif // ANDROID

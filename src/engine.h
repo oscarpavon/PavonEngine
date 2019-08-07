@@ -19,7 +19,7 @@
 
 #include "model.h"
 #include "Engine/data.h"
-#include <cglm.h>
+#include "third_party/cglm/cglm.h"
 
 #include "file_loader.h"
 #include "Engine/files_parser.h"

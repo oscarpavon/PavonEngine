@@ -51,7 +51,8 @@
 			"data.h": "c",
 			"optional": "c",
 			"system_error": "c",
-			"cgltf_write.h": "c"
+			"cgltf_write.h": "c",
+			"model.h": "c"
 		}
 	}
 }

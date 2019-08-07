@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <cglm.h>
+#include "third_party/cglm/vec3.h"
 
 
 static inline void init_vec3(float x, float y, float z , vec3 vec){
