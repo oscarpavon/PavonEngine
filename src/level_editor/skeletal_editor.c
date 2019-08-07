@@ -22,7 +22,7 @@ void update_joints_vertex(){
     
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
     if(!skin_component){
-        LOG("No skinned mesh component\n");
+        //LOG("No skinned mesh component\n");
         return;
     }
     clean_array(&skeletal_bones_gizmo_geometry.vertex_array);

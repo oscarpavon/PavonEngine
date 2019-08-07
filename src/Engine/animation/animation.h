@@ -28,6 +28,14 @@ typedef struct Animation{
     float end; 
 }Animation;
 
-void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name);
+Array array_animation_play_list;
+
+void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop);
+
+void play_animation_list();
+
+#ifdef EDITOR
+bool update_vertex_bones_gizmos;
+#endif
 
 #endif // !ENGINE_ANIMATION_H

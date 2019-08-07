@@ -346,6 +346,9 @@ void draw_editor_viewport(){
     
     draw_tringles_count();
 
+    play_animation_list();
+    if(update_vertex_bones_gizmos)
+        update_joints_vertex();
 
     draw_elements(&frame_draw_elements);
 

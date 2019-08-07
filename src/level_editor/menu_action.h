@@ -109,8 +109,7 @@ void draw_animations_names(TextMenu* menu){
 
 void menu_action_play_animation(TextMenu* menu){
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-    play_animation_by_name(skin_component, menu->text_for_action);
-    update_joints_vertex();
+    play_animation_by_name(skin_component, menu->text_for_action, true);   
 }
 
 void menu_action_select_component_from_selected_element(TextMenu* menu){

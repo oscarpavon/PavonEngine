@@ -291,6 +291,17 @@ void load_current_animation(){
     current_channel = &current_animation->channels[i];
     load_current_channel_to_animation(&new_animation);
   }
+  
+  float max = 0;
+  for(int i  = 0; i < new_animation.channels.count ; i++){
+    AnimationChannel* channel = get_from_array(&new_animation.channels,i);
+    float* max_from_channel = get_from_array(&channel->sampler.inputs,channel->sampler.inputs.count-1);
+    if(*max_from_channel > max){
+      max = *max_from_channel;
+    }
+  }
+  new_animation.end = max;
+  
   add_to_array(&model_animation,&new_animation);
 }
 

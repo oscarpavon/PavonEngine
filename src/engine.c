@@ -355,6 +355,8 @@ void init_engine(){
     init_array(&array_skinned_mesh_for_distance_test,sizeof(void*),100);
     init_array(&array_skinned_mesh_pointers,sizeof(void*),100);
 
+    init_array(&array_animation_play_list,sizeof(Animation*),100);
+    
     touch_position_x = -1;
     touch_position_x = -1;
 
