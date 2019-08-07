@@ -34,31 +34,31 @@ set (game_source
 
 if(NOT ANDROID)
 
-
-       add_compile_options (-fdiagnostics-color=always)
+        add_compile_options (-fdiagnostics-color=always)
 
         #set(CMAKE_BUILD_TYPE Debug)
 
         set(editor_sources 
-        level_editor/main.c
-        level_editor/windows.c
-        level_editor/input.c
-        level_editor/editor.c
-        level_editor/text.c
-        level_editor/skeletal_editor.c
-        level_editor/data.c
-        level_editor/editor_gizmos.c
-        level_editor/editor_mode.c
-        level_editor/export_model.c
+        Editor/main.c
+        Editor/windows.c
+        Editor/input.c
+        Editor/editor.c
+        Editor/text.c
+        Editor/skeletal_editor.c
+        Editor/data.c
+        Editor/editor_gizmos.c
+        Editor/editor_mode.c
+        Editor/export_model.c
         )
+
 
         add_executable(Editor ${editor_sources} ${engine_source} ${game_source})
         include(FindFreetype)
         include_directories(${FREETYPE_INCLUDE_DIRS})
         target_compile_definitions(Editor PRIVATE EDITOR)
 
-        
-        add_executable(Game ${engine_source} Game/main.c level_editor/windows.c ${game_source})        
+
+        add_executable(Game ${engine_source} Game/main.c Editor/windows.c ${game_source})        
         set_target_properties( Game
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../Game/build"

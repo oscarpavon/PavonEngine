@@ -1,4 +1,4 @@
-#include "../../level_editor/input.h"
+#include "../../Editor/input.h"
 #include "../../engine.h"
 
 struct champion{
@@ -15,6 +15,9 @@ void test(void* in){
         LOG("input work\n");
     }
     if(input->W.pressed){
-        LOG("W pressed\n");
+        //update_translation(VEC3(0,0.2,0));        
+    }
+    if(key_released(&input->Q)){
+        LOG("q pressed\n");
     }
 }

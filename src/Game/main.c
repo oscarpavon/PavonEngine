@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../level_editor/windows.h"
+#include "../Editor/windows.h"
 #include "../engine.h"
 #include "../game.h"
 #include "../Engine/level.h"

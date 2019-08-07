@@ -235,6 +235,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     LOG("model loaded and shader created \n");
 }
 
+
 void update_viewport_size(){
     #ifdef EDITOR
     update_text_renderer_window_size();

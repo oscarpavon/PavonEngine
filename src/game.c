@@ -14,19 +14,15 @@
 
 #include <dlfcn.h>
 
-
-
 int load_gamplay_code(){
     
     char *error;
 
-    dynamic_lib_handle = dlopen("../Game/src/test.so", RTLD_LAZY);
+    dynamic_lib_handle = dlopen("../Game/src/test.so", RTLD_GLOBAL | RTLD_NOW);
     if(!dynamic_lib_handle){
-        LOG("ERROR: Gameplay library not loaded, Error: %s \n",dlerror() );
-        
-    }
-
-    
+        LOG("ERROR: Gameplay library not loaded\nError: %s \n",dlerror() );
+        return -1;
+    }    
 
     loop_fuction_dynamic_loaded = dlsym(dynamic_lib_handle,"test");
     if ((error = dlerror()) != NULL) 
@@ -39,7 +35,8 @@ int load_gamplay_code(){
 }
 
 void close_dynamic_game_play(){
-    dlclose(dynamic_lib_handle);
+    if(dynamic_lib_handle)
+        dlclose(dynamic_lib_handle);
 }
 void move_player_forward(){
     //LOG("Action pointer work\n");
@@ -52,7 +49,7 @@ void move_player_backward(){
 }
 
 void rotate_player_left(){
-     versor new_rot_quat;
+    versor new_rot_quat;
     glm_quatv(new_rot_quat, glm_rad(5), VEC3(0,0,1) );
     rotate_element(selected_element,new_rot_quat);
 }

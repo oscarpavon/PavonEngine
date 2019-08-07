@@ -52,7 +52,8 @@
 			"optional": "c",
 			"system_error": "c",
 			"cgltf_write.h": "c",
-			"model.h": "c"
+			"model.h": "c",
+			"input.h": "c"
 		}
 	}
 }

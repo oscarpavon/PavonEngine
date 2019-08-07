@@ -5,7 +5,7 @@
 #include "../engine.h"
 
 #ifdef EDITOR
-#include "../level_editor/editor.h"
+#include "../Editor/editor.h"
 #endif // EDITOR
 
 #include "../file_loader.h"
