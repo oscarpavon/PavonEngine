@@ -12,7 +12,35 @@
 
 #include "engine.h"
 
+#include <dlfcn.h>
 
+
+
+int load_gamplay_code(){
+    
+    char *error;
+
+    dynamic_lib_handle = dlopen("../Game/src/test.so", RTLD_LAZY);
+    if(!dynamic_lib_handle){
+        LOG("ERROR: Gameplay library not loaded, Error: %s \n",dlerror() );
+        
+    }
+
+    
+
+    loop_fuction_dynamic_loaded = dlsym(dynamic_lib_handle,"test");
+    if ((error = dlerror()) != NULL) 
+    {
+        fprintf(stderr, "%s\n", error);
+        return -1;
+    }
+  
+    return 0;
+}
+
+void close_dynamic_game_play(){
+    dlclose(dynamic_lib_handle);
+}
 void move_player_forward(){
     //LOG("Action pointer work\n");
     update_translation(VEC3(0,-0.3,0));
@@ -35,14 +63,14 @@ void rotate_player_right(){
     rotate_element(selected_element,new_rot_quat);
 }
 
-void init_game(){
-      
+int init_game(){
     add_action_function(&move_player_forward);
     add_action_function(&move_player_backward);
     add_action_function(&rotate_player_left);
     add_action_function(&rotate_player_right);
 
     game_initialized = true;
+    return 0;
 }
 
 void update_game(){

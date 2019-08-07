@@ -71,6 +71,7 @@ if(NOT ANDROID)
                 m
                 pthread
                 freetype
+                dl
                 )
 
         target_link_libraries(Game        

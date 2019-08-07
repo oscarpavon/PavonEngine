@@ -798,12 +798,18 @@ bool player_in_start_position = false;
 void input_mode_play(){
   
     //update_game();
+    if(loop_fuction_dynamic_loaded)
+        loop_fuction_dynamic_loaded();
+
     controlling_camera_component = true;
 
     if(key_released(&input.ESC)){
 
         player_in_start_position = false;
         controlling_camera_component = false;
+        loaded_gamplay_library = false;
+        loop_fuction_dynamic_loaded = NULL;
+        close_dynamic_game_play();
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;
     }

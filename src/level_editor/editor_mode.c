@@ -85,9 +85,12 @@ void change_to_editor_mode(EditorMode mode){
     case EDITOR_MODE_GUI_EDITOR:
         editor_mode_show_text = "GUI Editor";
         break;
-    case EDITOR_PLAY_MODE:
+    case EDITOR_PLAY_MODE:{
         if(game_initialized == false){
-            init_game();
+            if( init_game() == -1){
+                change_to_editor_mode(EDITOR_DEFAULT_MODE);
+                return;
+            }
             game_initialized = true;
         }            
         if(game_initialized == false){
@@ -96,7 +99,12 @@ void change_to_editor_mode(EditorMode mode){
         }            
         game_initialized = true;
         editor_mode_show_text = "Play Mode";
+        if(loaded_gamplay_library == false){
+            load_gamplay_code();
+            loaded_gamplay_library = true;
+        }
         break;
+    }        
     case EDITOR_CHANGING_MODE_MODE:
         editor_mode = mode_to_change;
         break;    

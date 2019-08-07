@@ -7,9 +7,14 @@
 
 #include "model.h"
 
-void init_game();
+int init_game();
 
 void update_game();
 
+int load_gamplay_code();
 
+bool loaded_gamplay_library;
+void* dynamic_lib_handle;
+void(*loop_fuction_dynamic_loaded)(void); 
+void close_dynamic_game_play();
 #endif //PAVON_MOBILE_GAME_H
