@@ -48,15 +48,22 @@ void read_accessor(cgltf_accessor* accessor){
         cgltf_accessor_read_float(accessor, i, &vertex->uv[0], 2);
     }
     break;
-  case cgltf_type_vec3:
-    init_array(actual_vertex_array,sizeof(Vertex),accessor->count);
-    for(size_t v = 0 ; v < accessor->count ; v++){
-      struct Vertex vertex;
-      memset(&vertex,0,sizeof(struct Vertex));
-      cgltf_accessor_read_float(accessor,v,&vertex.postion[0],3);
-      add_to_array(actual_vertex_array,&vertex);
+  case cgltf_type_vec3:{
+    if(actual_vertex_array){
+      init_array(actual_vertex_array,sizeof(Vertex),accessor->count);
+      for(size_t v = 0 ; v < accessor->count ; v++){
+        struct Vertex vertex;
+        memset(&vertex,0,sizeof(struct Vertex));
+        cgltf_accessor_read_float(accessor,v,&vertex.postion[0],3);
+        add_to_array(actual_vertex_array,&vertex);
+      }
     }
+    if(current_array){
+      
+    }
+
     break;
+  }    
   case cgltf_type_vec4:
     
     for(int i = 0 ; i < accessor->count ; i++){
@@ -301,7 +308,7 @@ void load_current_animation(){
     }
   }
   new_animation.end = max;
-  
+
   add_to_array(&model_animation,&new_animation);
 }
 

@@ -40,7 +40,7 @@ void play_animation(Animation* animation){
         }//end for inputs       
     
     }
-    LOG("Played animation: %s\n",animation->name);
+    //LOG("Played animation: %s\n",animation->name);
 }
 
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop){
