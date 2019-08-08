@@ -25,7 +25,7 @@ typedef struct Skeletal{
 }Skeletal;
 
 struct SkeletalNodeUniform{
-    mat4 joints_matrix[3];
+    mat4 joints_matrix[35];
     unsigned short int joint_count;
 };
 
