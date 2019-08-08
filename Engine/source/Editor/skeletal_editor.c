@@ -33,7 +33,8 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
 
     if(current_joint->parent != NULL){
         if(i == 2){
-            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i-1);
+            int id = i-1;
+            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&id);
         }else if(i >= 3){
             add_to_array(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
         }
@@ -45,6 +46,7 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
 }
 void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
+    if(skeletal_bones_gizmo_geometry.vertex_array.initialized)
     add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
 }
 
@@ -78,9 +80,7 @@ void create_skeletal_vertices(){
         glm_mat4_mul(selected_element->transform->model_matrix, local, global);
         
         init_skeletal_vertices(global,i,current_joint);
-    }
-       
-    
+    }     
 
 }
 

@@ -136,7 +136,7 @@ void update_component(ComponentDefinition* element_component){
     }
 }
 #include "../../model.h"
-
+#include "../animation/animation.h"
 void init_element_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -197,6 +197,8 @@ void init_element_component(ComponentDefinition* element_component){
         memcpy(&mesh_component->animations,&model_animation,sizeof(Array));
 
         memcpy(&mesh_component->inverse_bind_matrices,inverse_bind_matrices,sizeof(inverse_bind_matrices));
+
+        update_skeletal_node_uniform();
 
         break;
     }
