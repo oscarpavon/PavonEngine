@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v0.9.10",
+        "generator" : "Khronos glTF Blender I/O v0.9.36",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -20,7 +20,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Plane",
+            "name" : "Plane.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -36,15 +36,15 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 12,
+            "count" : 3,
             "max" : [
-                2.6788530349731445,
-                0.5098234415054321,
-                4.008058071136475
+                1,
+                2,
+                0
             ],
             "min" : [
-                -3.4383344650268555,
-                -1.6649120482270519e-07,
+                -1,
+                0,
                 0
             ],
             "type" : "VEC3"
@@ -52,37 +52,37 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 12,
+            "count" : 3,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5123,
-            "count" : 12,
+            "count" : 3,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 144,
+            "byteLength" : 36,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 96,
-            "byteOffset" : 144
+            "byteLength" : 24,
+            "byteOffset" : 36
         },
         {
             "buffer" : 0,
-            "byteLength" : 24,
-            "byteOffset" : 240
+            "byteLength" : 6,
+            "byteOffset" : 60
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 264,
-            "uri" : "data:application/octet-stream;base64,//9/vwAAAAAAAAAA//9/vwAAAAAAAABA//9/PwAAAAAAAAAAUcktP2EUK7Qlypc/UcktP2EUK7QS5UtAVHIrQGEUK7Qlypc/rA1cwMHEMrSUnJ4/rA1cwMHEMrRJTk9AWBu4v8HEMrSUnJ4/BXeav8qDAj8GhABABXeav8qDAj8DQoBA9BFLP8qDAj8GhABAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAABAAIAAwAEAAUABgAHAAgACQAKAAsA"
+            "byteLength" : 68,
+            "uri" : "data:application/octet-stream;base64,AACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAABAAIAAAA="
         }
     ]
 }

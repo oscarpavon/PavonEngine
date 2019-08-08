@@ -28,6 +28,11 @@ typedef struct Animation{
     float end; 
 }Animation;
 
+struct SkeletalNodeUniform{
+    mat4 joints_matrix[35];
+    unsigned short int joint_count;
+};
+
 Array array_animation_play_list;
 
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop);
