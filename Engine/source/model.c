@@ -3,7 +3,7 @@
 #define CGLTF_IMPLEMENTATION
 #include "third_party/cgltf.h"
 #include "stdio.h"
-#include <vec3.h>
+#include "third_party/cglm/vec3.h"
 
 #include "file_loader.h"
 

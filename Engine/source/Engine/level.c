@@ -4,12 +4,7 @@
 
 #include "../engine.h"
 
-#ifdef EDITOR
-#include "../Editor/editor.h"
-#endif // EDITOR
-
 #include "../file_loader.h"
-
 
 int load_level_to_elements_array(const char* name, Array* load_elements){    
 
