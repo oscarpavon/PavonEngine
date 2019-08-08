@@ -23,8 +23,10 @@ void update_skeletal_node_uniform(){
     clear_skeletal_vertices();
     #endif // DEBUG
     for(int i = 0; i < skeletal->joints_count ; i++){       
-        mat4 local;        
-        get_global_matrix(&skeletal->joints[i], local);
+        Node* joint = &skeletal->joints[i];
+
+        mat4 local;
+        get_global_matrix(joint, local);
         mat4 global;
         glm_mat4_mul(selected_element->transform->model_matrix, local, global);
 
@@ -35,8 +37,9 @@ void update_skeletal_node_uniform(){
         glm_mat4_mul(inverse_model,local,inverse_dot_local);
         glm_mat4_mul(inverse_dot_local,skin_component->inverse_bind_matrices[i],joint_mat);
         glm_mat4_copy(joint_mat,skin_component->node_uniform.joints_matrix[i]);
+        
         #ifdef EDITOR
-        update_skeletal_vertices_gizmo(global,i,&skeletal->joints[i]);
+        update_skeletal_vertices_gizmo(global,i,joint);
         #endif // DEBUG
     }
 }

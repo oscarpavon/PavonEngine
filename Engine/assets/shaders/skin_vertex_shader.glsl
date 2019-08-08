@@ -1,15 +1,12 @@
 #version 100
 attribute mediump vec3        	position;
-attribute mediump vec3			inColor;
 attribute mediump vec2          inUV;
 attribute mediump vec4			inJoint0;
 attribute mediump vec4			inWeight0;
 
 varying mediump vec2 v_TexCoord;
-varying mediump vec3 color;
 
-uniform mat4          MVP;
-uniform mat4	joint_matrix[35];
+uniform mat4	joint_matrix[3];
 uniform mat4 view;
 uniform mat4 model;
 uniform mat4 projection;
@@ -30,6 +27,6 @@ void main(){
 
 	gl_Position = projection * pos;
 	v_TexCoord = inUV;
-	color = inColor;
+
 }
 //end

@@ -6,8 +6,8 @@
 typedef struct Vertex{
     vec3 postion;
     vec2 uv;
-    vec4 weight;
     vec4 joint;
+    vec4 weight;
 }Vertex;
 
 #endif // !VERTEX_H

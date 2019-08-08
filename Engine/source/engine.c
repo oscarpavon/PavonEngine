@@ -29,7 +29,7 @@ static inline void check_send_matrix_error(){
     }
 }
 
-void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
+void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glUseProgram(shader);   
@@ -44,7 +44,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
         GLint view_uniform = glGetUniformLocation(shader,"view");
         GLint joints_matrices_uniform = glGetUniformLocation(shader,"joint_matrix");
 
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &model_matrix[0][0]);
         glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
         glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
 
@@ -59,7 +59,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
     }else{
         mat4 mvp;      
-        update_mvp(matrix, mvp);  
+        update_mvp(model_matrix, mvp);  
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
     }    
 
