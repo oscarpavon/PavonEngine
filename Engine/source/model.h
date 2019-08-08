@@ -39,6 +39,6 @@ int load_model(const char* path);
 
 Array model_nodes;
 Array model_animation;
-
+mat4 inverse_bind_matrices[35];
 
 #endif // !MODEL_H

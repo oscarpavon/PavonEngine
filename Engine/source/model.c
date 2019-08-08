@@ -59,14 +59,7 @@ void read_accessor(cgltf_accessor* accessor, float* out){
   case cgltf_type_vec4:{
     
     for(int i = 0 ; i < accessor->count ; i++){
-      vec4 quaternion;      
-      cgltf_accessor_read_float(accessor, i, quaternion , 4);
-      if(current_array)     
-        add_to_array(current_array,quaternion);
-      else{
-        Vertex* current_vertex = get_from_array(actual_vertex_array,i);
-
-      }
+        cgltf_accessor_read_float(accessor, i, &out[i*4] , 4);
     }      
     break;
   } 
@@ -79,6 +72,13 @@ void read_accessor(cgltf_accessor* accessor, float* out){
     }
     
     break;
+  case cgltf_type_mat4:
+    {
+      for(int i = 0 ; i < accessor->count ; i++){
+        cgltf_accessor_read_float(accessor, i, &out[i*16] , 16);
+      }      
+      break;
+    }
   default:
     break;
   }
@@ -101,7 +101,7 @@ void load_attribute(cgltf_attribute* attribute){
     memset(&vertices_position,0,sizeof(vertices_position));
 
     init_array(actual_vertex_array,sizeof(Vertex),attribute->data->count);
-    
+
     read_accessor(attribute->data, vertices_position);
 
     for(int i = 0; i < attribute->data->count ; i++){
@@ -115,22 +115,34 @@ void load_attribute(cgltf_attribute* attribute){
   case cgltf_attribute_type_texcoord:
     read_accessor(attribute->data,NULL);
     break;
+
   case cgltf_attribute_type_joints:{
     vec4 joints[attribute->data->count];
     memset(&joints,0,sizeof(joints));
 
-    read_accessor(attribute->data,NULL);
+    read_accessor(attribute->data,joints);
+    for(int i = 0; i < attribute->data->count ; i++){
+      Vertex* vertex = get_from_array(actual_vertex_array,i);
+      glm_vec4_copy(joints[i],vertex->joint);
+    }
 
     break;
   }
 
-  case cgltf_attribute_type_weights:
-    read_accessor(attribute->data,NULL);
-    break;
+  case cgltf_attribute_type_weights:{
+    vec4 weight[attribute->data->count];
+    memset(&weight,0,sizeof(weight));
 
-  default:
+    read_accessor(attribute->data,weight);
+    for(int i = 0; i < attribute->data->count ; i++){
+      Vertex* vertex = get_from_array(actual_vertex_array,i);
+      glm_vec4_copy(weight[i],vertex->weight);
+    }
+
     break;
   }
+
+  }//end switch
 
 
   if(attribute->data->has_min){
@@ -189,7 +201,10 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
 
   if(in_cgltf_node->skin != NULL){    
     current_nodes_array = &model_nodes;
-    current_loaded_component_type = COMPONENT_SKINNED_MESH; 
+    current_loaded_component_type = COMPONENT_SKINNED_MESH;
+    
+    read_accessor(in_cgltf_node->skin->inverse_bind_matrices,inverse_bind_matrices);
+
     LOG("Nodes assigned to current_nodes_array\n");
   }
   
@@ -278,9 +293,15 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
   init_array(&sampler.inputs,sizeof(float),current_sampler->input->count);
   init_array(&sampler.outputs_vec4,sizeof(float)*4,current_sampler->output->count);
   current_array = &sampler.inputs;
-  read_accessor(current_sampler->input,NULL);
-  current_array = &sampler.outputs_vec4;
-  read_accessor(current_sampler->output,NULL);
+
+  float inputs[current_sampler->input->count];
+  read_accessor(current_sampler->input,inputs);
+
+  vec4 outputs[current_sampler->output->count];  
+  read_accessor(current_sampler->output,outputs);
+  memcpy(sampler.outputs_vec4.data,outputs,sizeof(outputs));
+  sampler.outputs_vec4.count = current_sampler->output->count; 
+  current_array = NULL;
   memcpy(&channel->sampler,&sampler,sizeof(AnimationSampler));
 }
 

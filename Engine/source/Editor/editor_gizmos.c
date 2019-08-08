@@ -36,7 +36,6 @@ void add_debug_line(vec3 start, vec3 end){
     DebugLine* pnew_line = get_from_array(&debug_objects,debug_objects.count-1);
     glm_vec3_copy(start,pnew_line->start);
     glm_vec3_copy(end,pnew_line->end);
-
 }
 
 

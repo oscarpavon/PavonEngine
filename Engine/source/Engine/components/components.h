@@ -61,11 +61,15 @@ typedef struct StaticMeshComponent{
     vec3 bounding_box[2];
 }StaticMeshComponent;
 
+#include "../../skeletal.h"
+
 typedef struct SkinnedMeshComponent{    
     Model* mesh;
     Array joints;
     vec3 bounding_box[2];
     Array animations;
+    mat4 inverse_bind_matrices[35];
+    struct SkeletalNodeUniform node_uniform;
 }SkinnedMeshComponent;
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;

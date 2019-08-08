@@ -18,39 +18,34 @@ void assign_nodes_indices(Skeletal* skeletal){
     }
 }
 
-void update_joints_vertex(){
-    
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-    if(!skin_component){
-        //LOG("No skinned mesh component\n");
-        return;
-    }
-    clean_array(&skeletal_bones_gizmo_geometry.vertex_array);
-
-    Skeletal new_skeletal;
-    memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = get_from_array(&skin_component->joints,1);
-    new_skeletal.joints_count = skin_component->joints.count-1;
-    Skeletal* skeletal = &new_skeletal;
-
-    int vertex_count = skeletal->joints_count;
-    struct Vertex vertices[vertex_count];
-    memset(vertices,0,sizeof(vertices));
-    
-    for(int i = 0; i < skeletal->joints_count ; i++){       
-        mat4 local;        
-        get_global_matrix(&skeletal->joints[i], local);
-        mat4 global;
-        glm_mat4_mul(selected_element->transform->model_matrix, local, global);
-        struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-        memcpy(&vertices[i],&vert,sizeof(struct Vertex));
-    }
-
-    for(int i = 0; i < vertex_count ; i++){
-        add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
-    }
+void update_joints_vertex(){  
 
     update_gpu_vertex_data(&skeletal_bones_gizmo_geometry.vertex_array, skeletal_gizmo_vertices_buffer_id);
+}
+
+void clear_skeletal_vertices(){
+    clean_array(&skeletal_bones_gizmo_geometry.vertex_array);
+}
+
+void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
+    struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
+    add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
+
+    if(current_joint->parent != NULL){
+        if(i == 2){
+            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i-1);
+        }else if(i >= 3){
+            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
+        }
+    }
+    add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i);
+
+    LOG("Created vertices for: %s\n",current_joint->name);
+
+}
+void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
+    struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
+    add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
 }
 
 void create_skeletal_vertices(){
@@ -81,25 +76,10 @@ void create_skeletal_vertices(){
         get_global_matrix(current_joint, local);
         mat4 global;
         glm_mat4_mul(selected_element->transform->model_matrix, local, global);
-        struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-        memcpy(&vertices[i],&vert,sizeof(struct Vertex));
-
-        if(current_joint->parent != NULL){
-            if(i == 2){
-                add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i-1);
-            }else if(i >= 3){
-                add_to_array(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
-            }
-        }
-        add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i);
-
-        LOG("Created vertices for: %s\n",current_joint->name);
+        
+        init_skeletal_vertices(global,i,current_joint);
+    }
        
-    }
-   
-    for(int i = 0; i < vertex_count ; i++){
-        add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vertices[i]);
-    }
     
 
 }
