@@ -60,3 +60,4 @@ build
 .externalNativeBuild
 local.properties
 src/Game/assets
+Engine/binaries/*
