@@ -10,7 +10,7 @@
 #include "../components/components.h"
 typedef struct AnimationSampler{
     Array inputs;//int
-    Array outputs_vec4;//vec4
+    Array outputs;//vec3 or vec4
 }AnimationSampler;
 
 typedef struct AnimationChannel {

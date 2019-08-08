@@ -291,16 +291,25 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
   AnimationSampler sampler;
   memset(&sampler,0,sizeof(AnimationSampler));
   init_array(&sampler.inputs,sizeof(float),current_sampler->input->count);
-  init_array(&sampler.outputs_vec4,sizeof(float)*4,current_sampler->output->count);
+  
   current_array = &sampler.inputs;
 
   float inputs[current_sampler->input->count];
   read_accessor(current_sampler->input,inputs);
 
-  vec4 outputs[current_sampler->output->count];  
-  read_accessor(current_sampler->output,outputs);
-  memcpy(sampler.outputs_vec4.data,outputs,sizeof(outputs));
-  sampler.outputs_vec4.count = current_sampler->output->count; 
+  if(channel->path_type == PATH_TYPE_ROTATION){
+    init_array(&sampler.outputs,sizeof(float)*4,current_sampler->output->count);
+    vec4 outputs[current_sampler->output->count];  
+    read_accessor(current_sampler->output,outputs);
+    memcpy(sampler.outputs.data,outputs,sizeof(outputs));
+  }else if( channel->path_type == PATH_TYPE_TRANSLATION){
+    vec3 outputs[current_sampler->output->count];
+    init_array(&sampler.outputs,sizeof(float)*3,current_sampler->output->count);
+    read_accessor(current_sampler->output,outputs);
+    memcpy(sampler.outputs.data,outputs,sizeof(outputs));
+  }
+
+  sampler.outputs.count = current_sampler->output->count; 
   current_array = NULL;
   memcpy(&channel->sampler,&sampler,sizeof(AnimationSampler));
 }

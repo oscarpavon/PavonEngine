@@ -37,7 +37,7 @@ void update_skeletal_node_uniform(){
         glm_mat4_mul(inverse_model,local,inverse_dot_local);
         glm_mat4_mul(inverse_dot_local,skin_component->inverse_bind_matrices[i],joint_mat);
         glm_mat4_copy(joint_mat,skin_component->node_uniform.joints_matrix[i]);
-        
+
         #ifdef EDITOR
         update_skeletal_vertices_gizmo(global,i,joint);
         #endif // DEBUG
@@ -64,9 +64,8 @@ void play_animation(Animation* animation){
                 {
                     case PATH_TYPE_ROTATION:
                     {
-                        float* quaternion0 = get_from_array(&sampler->outputs_vec4,j);
-                        float* quaternion1 = get_from_array(&sampler->outputs_vec4,j+1);
-                        float* rotation  = get_from_array(&sampler->outputs_vec4,1);
+                        float* quaternion0 = get_from_array(&sampler->outputs,j);
+                        float* quaternion1 = get_from_array(&sampler->outputs,j+1);
                         
                         vec4 interpolated;
                         glm_vec4_lerp(quaternion0,quaternion1,time_mix,interpolated);
@@ -75,7 +74,9 @@ void play_animation(Animation* animation){
                     }          
                     case PATH_TYPE_TRANSLATION:
                     {
-                        
+                        float* position1 = get_from_array(&sampler->outputs,j);
+                        float* position2 = get_from_array(&sampler->outputs,j+1);                        
+                        glm_vec3_lerp(position1,position2,time_mix,node->translation);
                         break;
                     }          
                 }
