@@ -47,40 +47,43 @@ void create_bounding_vertices(){
         }
 
         
-        struct Vertex min;
-        memset(&min,0,sizeof(Vertex));        
-        struct Vertex max;
-        memset(&max,0,sizeof(Vertex));        
-        struct Vertex vert3;
-        struct Vertex vert4;
-        struct Vertex vert5;
-        struct Vertex vert6;
-        struct Vertex vert7;
-        struct Vertex vert8;
+        struct Vertex back_right_down;
+        memset(&back_right_down,0,sizeof(Vertex));        
+        struct Vertex front_left_up;
+        memset(&front_left_up,0,sizeof(Vertex));        
+        struct Vertex front_right_down;
+        struct Vertex back_left_up;
+        struct Vertex front_left_down;
+        struct Vertex back_right_up;
+        struct Vertex back_left_down;
+        struct Vertex front_right_up;
 
-        glm_vec3_copy(mesh_component->bounding_box[0],min.postion);
-        glm_vec3_copy(mesh_component->bounding_box[1],max.postion);   
+        glm_vec3_copy(mesh_component->bounding_box[0],back_right_down.postion);
+        glm_vec3_copy(mesh_component->bounding_box[1],front_left_up.postion);   
         
-        glm_vec3_copy((vec3){min.postion[0],max.postion[1],min.postion[2]},vert3.postion);
+        glm_vec3_copy((vec3){back_right_down.postion[0],front_left_up.postion[1],back_right_down.postion[2]},front_right_down.postion);
         
-        glm_vec3_copy((vec3){max.postion[0],min.postion[1],max.postion[2]},vert4.postion);
+        glm_vec3_copy((vec3){front_left_up.postion[0],back_right_down.postion[1],front_left_up.postion[2]},back_left_up.postion);
 
-        glm_vec3_copy((vec3){max.postion[0],max.postion[1],min.postion[2]},vert5.postion);
+        glm_vec3_copy((vec3){front_left_up.postion[0],front_left_up.postion[1],back_right_down.postion[2]},front_left_down.postion);
 
-        glm_vec3_copy((vec3){min.postion[0],min.postion[1],max.postion[2]},vert6.postion);
+        glm_vec3_copy((vec3){back_right_down.postion[0],back_right_down.postion[1],front_left_up.postion[2]},back_right_up.postion);
         
-        glm_vec3_copy((vec3){max.postion[0],min.postion[1],min.postion[2]},vert7.postion);
+        glm_vec3_copy((vec3){front_left_up.postion[0],back_right_down.postion[1],back_right_down.postion[2]},back_left_down.postion);
         
-        glm_vec3_copy((vec3){min.postion[0],max.postion[1],max.postion[2]},vert8.postion);
+        glm_vec3_copy((vec3){back_right_down.postion[0],front_left_up.postion[1],front_left_up.postion[2]},front_right_up.postion);
 
-        add_to_array(&selected_model->vertex_array,&min);
-        add_to_array(&selected_model->vertex_array,&max);
-        add_to_array(&selected_model->vertex_array,&vert3);
-        add_to_array(&selected_model->vertex_array,&vert4);
-        add_to_array(&selected_model->vertex_array,&vert5);
-        add_to_array(&selected_model->vertex_array,&vert6);
-        add_to_array(&selected_model->vertex_array,&vert7);
-        add_to_array(&selected_model->vertex_array,&vert8);
+        add_to_array(&selected_model->vertex_array,&front_right_up);
+        add_to_array(&selected_model->vertex_array,&front_left_up);
+        add_to_array(&selected_model->vertex_array,&front_left_down);
+        add_to_array(&selected_model->vertex_array,&front_right_down);        
+        
+        
+        add_to_array(&selected_model->vertex_array,&back_right_up);
+        add_to_array(&selected_model->vertex_array,&back_right_down);
+        add_to_array(&selected_model->vertex_array,&back_left_down); 
+        add_to_array(&selected_model->vertex_array,&back_left_up);
+     
 
 }
 bool bounding_box_initialized = false;
@@ -95,10 +98,25 @@ void init_selected_object_bounding_box_vertices(){
         
        
         init_array(&selected_model->vertex_array,sizeof(Vertex),8);
+        init_array(&selected_model->index_array,sizeof(unsigned short int),36);
+
+        int indices[] = {
+            0,  1,  2,      0,  2,  3,    // front
+            4,  5,  6,      4,  6,  7,    // back
+            0,  4,  1,      1,  4, 7,       // top
+            2, 6, 5,        2, 5, 3,      // bottom
+            3, 5, 4,     3, 0, 4,   // right
+            20, 21, 22,     20, 22, 23,   // left
+        };
+
+        for(int i = 0; i<36 ; i++){
+            add_to_array(&selected_model->index_array,&indices[i]);
+        }
         
         create_bounding_vertices();
 
         init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
+        init_static_gpu_index_buffer(&selected_model->index_array, &selected_model->index_buffer_id);
 
         selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
         bounding_box_initialized = true;
@@ -121,6 +139,7 @@ void update_bounding_vertices_array(Model* model){
 
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
+        
         Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
         update_bounding_vertices_array( bounding_model );
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
@@ -135,7 +154,10 @@ void draw_bounding_box(){
         if(error != GL_NO_ERROR){
             LOG("[X] Send uniform error, Error %08x \n",error);
         }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,bounding_model->index_buffer_id);
         glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
+        glDrawElements(GL_TRIANGLES,bounding_model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
+        
         return;
     }
     init_selected_object_bounding_box_vertices();

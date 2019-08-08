@@ -14,8 +14,8 @@ void update_skeletal_node_uniform(){
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = get_from_array(&skin_component->joints,1);
-    new_skeletal.joints_count = skin_component->joints.count-1;
+    new_skeletal.joints = get_from_array(&skin_component->joints,2);
+    new_skeletal.joints_count = skin_component->joints.count-2;
     Skeletal* skeletal = &new_skeletal;
 
     skin_component->node_uniform.joint_count = new_skeletal.joints_count;

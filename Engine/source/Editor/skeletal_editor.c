@@ -57,8 +57,8 @@ void create_skeletal_vertices(){
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = get_from_array(&skin_component->joints,1);
-    new_skeletal.joints_count = skin_component->joints.count-1;
+    new_skeletal.joints = get_from_array(&skin_component->joints,2);
+    new_skeletal.joints_count = skin_component->joints.count-2;
     Skeletal* skeletal = &new_skeletal;
     assign_nodes_indices(skeletal);
     if(skeletal == NULL)
