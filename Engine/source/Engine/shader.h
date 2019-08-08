@@ -2,12 +2,12 @@
 // Created by pavon on 6/24/19.
 //
 
-#ifndef PAVON_MOBILE_SHADER_H
-#define PAVON_MOBILE_SHADER_H
+#ifndef ENGINE_SHADERS_H
+#define ENGINE_SHADERS_H
 
 #include <GLES2/gl2.h>
 #include "utils.h"
-#include "Engine/log.h"
+#include "log.h"
 
 static const char* triVertShader = "#version 100 \n \
 attribute vec3 vPosition;\
@@ -69,6 +69,19 @@ void main()\
 GLuint standart_vertex_shader;
 GLuint standart_fragment_shader;
 
+GLuint actual_standard_fragment_shader;
+
 GLuint compile_shader(const char* src , GLenum type);
 
-#endif //PAVON_MOBILE_SHADER_H
+static int shader_count = 0;
+GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
+    shader_count++;
+    GLuint new_shader = glCreateProgram();
+    glAttachShader(new_shader, vertex);
+    glAttachShader(new_shader, fragment);
+    glLinkProgram(new_shader);
+    return new_shader;
+}
+
+GLuint load_shader_file(const char* path, GLenum shader_type);
+#endif 

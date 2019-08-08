@@ -1,5 +1,5 @@
 #include "skeletal_editor.h"
-#include "../shader.h"
+#include "../Engine/shader.h"
 #include "../engine.h"
 #include "editor.h"
 

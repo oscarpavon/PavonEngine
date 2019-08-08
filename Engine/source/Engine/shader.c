@@ -3,7 +3,7 @@
 //
 
 #include "shader.h"
-
+#include "../file_loader.h"
 
 void print_shader_compile_log(GLuint shader, const char* path_for_error_debug){
 
@@ -35,5 +35,12 @@ GLuint compile_shader(const char* src , GLenum type){
     }
 
     print_shader_compile_log(shader,error_description);
+    return shader;
+}
+
+GLuint load_shader_file(const char* path, GLenum shader_type){
+    File new_file;
+    load_file(path,&new_file);
+    GLuint shader = compile_shader(new_file.data,shader_type);
     return shader;
 }

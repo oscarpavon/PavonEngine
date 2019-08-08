@@ -8,7 +8,7 @@
 
 #include "input.h"
 
-#include "shader.h"
+#include "Engine/shader.h"
 
 #include <string.h>
 #include <GLES2/gl2.h>

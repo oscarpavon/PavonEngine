@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../model.h"
-#include "../shader.h"
+#include "../Engine/shader.h"
 
 #include <string.h>
 #include "../Engine/array.h"

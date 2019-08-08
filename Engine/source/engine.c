@@ -6,7 +6,7 @@
 
 #include "input.h"
 #include "gui.h"
-#include "shader.h"
+#include "Engine/shader.h"
 
 #include "file_loader.h"
 
@@ -16,23 +16,35 @@
 
 #include <unistd.h>
 
+static inline void mvp_error(){
+    LOG("MVP uniform not found\n");
+    raise(SIGINT);
+}
+
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-    glUseProgram(shader);
-
-    mat4 mvp;      
-    update_mvp(matrix, mvp);  
+    glUseProgram(shader);   
 
     GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
     if(mvp_uniform == -1){
-        LOG("MVP uniform not found\n");
-        raise(SIGINT);
-        exit(-1);
-        return;
+        GLint model_uniform = glGetUniformLocation(shader,"model");
+        if(model_uniform == -1){
+            mvp_error();
+        }
+        GLint projection_uniform = glGetUniformLocation(shader,"projection");
+        GLint view_uniform = glGetUniformLocation(shader,"view");
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
+        glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
+        glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
+
+        
+    }else{
+        mat4 mvp;      
+        update_mvp(matrix, mvp);  
+        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
     }
 
-    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
     
     GLenum error;
     error = glGetError();
@@ -229,7 +241,8 @@ void add_element_with_model_path(const char* model_gltf_path){
     }
 
     for(int i = 0; i <selected_element->components.count ; i++){
-        init_element_component(get_from_array(&selected_element->components,i));
+        ComponentDefinition* component_definition = get_from_array(&selected_element->components,i);
+        init_element_component(component_definition);
     }
 
     LOG("model loaded and shader created \n");

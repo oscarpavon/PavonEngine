@@ -1,5 +1,5 @@
 #include "editor_gizmos.h"
-#include "../shader.h"
+#include "../Engine/shader.h"
 
 GLuint color_fragment_shader;
 

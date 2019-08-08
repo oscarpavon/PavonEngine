@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "../utils.h"
 #include <GLES2/gl2.h>
-#include "../shader.h"
+#include "../Engine/shader.h"
 
 #include <stdlib.h>
 #include "../file_loader.h"

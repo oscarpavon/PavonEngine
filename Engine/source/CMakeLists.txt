@@ -9,10 +9,10 @@ set(engine_source
         images.c
         input.c        
         gui.c
-        shader.c        
         object_select.c
         engine.c
         skeletal.c
+        Engine/shader.c        
         Engine/level.c
         third_party/jsmn.c
         Engine/files_parser.c

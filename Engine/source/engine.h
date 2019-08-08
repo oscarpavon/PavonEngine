@@ -28,7 +28,7 @@
 
 #include <time.h>
 
-#include "shader.h"
+#include "Engine/shader.h"
 
 #include "Engine/components/components.h"
 #include "Engine/animation/animation.h"
@@ -160,20 +160,6 @@ Array array_skinned_mesh_for_distance_test;
 Array texts;
 Array textures_paths;
 
-
-//
-//Shaders
-//
-GLuint actual_standard_fragment_shader;
-static int shader_count = 0;
-GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
-    shader_count++;
-    GLuint new_shader = glCreateProgram();
-    glAttachShader(new_shader, vertex);
-    glAttachShader(new_shader, fragment);
-    glLinkProgram(new_shader);
-    return new_shader;
-}
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){
     mat4 projection_view;

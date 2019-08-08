@@ -203,7 +203,7 @@ void text_input_mode(){
     }
     if(key_released(&input.KEY_UP)){
         File file;
-        load_file("../build/command_history.txt",&file);
+        load_file("../binaries/command_history.txt",&file);
         strcpy(&command_text_buffer[character_count],file.data);  
         close_file(&file);
     }
