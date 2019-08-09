@@ -37,7 +37,7 @@
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 
-static const char* const level_folder = "../Game/levels/";
+static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
 int action_pointer_id_count;

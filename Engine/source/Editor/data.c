@@ -241,7 +241,11 @@ void save_level_data(const char* level_name){
     strcat(save_name,level_name);
     strcat(save_name,".lvl");    
   
-    FILE* new_file = fopen(save_name,"w+");
+    FILE* new_file = fopen(save_name,"w");
+    if(!new_file){
+        LOG("File not created: %s\n",save_name);
+        return;
+    }
     actual_file = new_file;
      
  

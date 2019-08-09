@@ -165,7 +165,7 @@ void load_level_in_editor(const char* name){
     int temp;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-    char* level_folder = "../Game/levels/";
+    char* level_folder = "Game/levels/";
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
     strcat(save_name, level_folder);

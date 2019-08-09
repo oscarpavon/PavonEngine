@@ -81,9 +81,27 @@ void parse_command(const char* command){
             LOG("GUI saved: %s\n",&command[3]);
             return;
         case EDITOR_DEFAULT_MODE:
-                save_level_data(&command[3]);
+            save_level_data(&command[3]);
             LOG("Level saved: %s\n",&command[3]);
             return;
+        default:
+            break;
+        }
+    }
+    case 'o':
+    {
+        switch (editor_mode)
+        {
+        case EDITOR_MODE_GUI_EDITOR:
+            load_gui(&command[3]);       
+            LOG("GUI loaded\n");
+            return;
+            
+        case EDITOR_DEFAULT_MODE:
+            load_level_in_editor(&command[3]);
+            LOG("Level loaded\n");
+            return;
+            
         default:
             break;
         }
@@ -111,24 +129,6 @@ void parse_command(const char* command){
     case 'g':{
 
         return;
-    }
-    case 'o':
-    {
-        switch (editor_mode)
-        {
-        case EDITOR_MODE_GUI_EDITOR:
-            load_gui(&command[3]);       
-            LOG("GUI loaded\n");
-            return;
-            
-        case EDITOR_DEFAULT_MODE:
-            load_level_in_editor(&command[3]);
-            LOG("Level loaded\n");
-            return;
-            
-        default:
-            break;
-        }
     }
     case 's':
         {
