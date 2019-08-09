@@ -84,6 +84,4 @@ static inline bool key__released(Key* key, int mods){
     return false;
 }
 
-unsigned char command_text_buffer[100];
-
 #endif // !EDITOR_INPUT_H

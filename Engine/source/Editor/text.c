@@ -365,6 +365,7 @@ void draw_frame_time(){
 
 }
 
+#include "commands.h"
 void text_renderer_loop(){ 
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
         set_text_size(12);

@@ -11,6 +11,7 @@ editor_gizmos.c
 editor_mode.c
 export_model.c
 geometry.c
+commands.c
 )
 
 set (game_source
