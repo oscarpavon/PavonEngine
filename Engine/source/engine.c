@@ -76,9 +76,6 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
         check_send_matrix_error("MVP");
     }    
 
-    
-
-    
 }
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){

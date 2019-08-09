@@ -87,7 +87,6 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
         }
 
     }
-    //glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE); 
     
 }
@@ -161,7 +160,7 @@ void list_directory_files(TextMenu* menu){
         show_text_count = texture_count; 
         memcpy(directories_names,texture_names,sizeof(texture_names));
     }
-        
+    menu->element_count = show_text_count;
 
     
     for(int i = 0; i < show_text_count ; i++){      

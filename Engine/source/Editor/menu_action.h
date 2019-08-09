@@ -35,10 +35,21 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
             menu->show = false;
         }
         if(key_released(&input.J)){
-            menu->actual_element_select++;
+            if(menu->element_count > menu->actual_element_select)
+                menu->actual_element_select++;
+            else
+            {
+                menu->actual_element_select = 0;
+            }
+            
         }
         if(key_released(&input.K)){
-            menu->actual_element_select--;
+            if(menu->actual_element_select >= 1)
+                menu->actual_element_select--;
+            else
+            {
+                menu->actual_element_select = menu->element_count;
+            }
         }
         if(key_released(&input.ENTER)){
             menu->element_selected = true;
