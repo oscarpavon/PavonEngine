@@ -134,6 +134,11 @@ void list_directory_files(TextMenu* menu){
                     strcpy(model_names[model_count],de->d_name);
                     model_count++;
                 }
+                if(strcmp(&de->d_name[n+1],"blend") == 0){
+                    model_names[model_count] = malloc(name_lenght);
+                    strcpy(model_names[model_count],de->d_name);
+                    model_count++;
+                }
                 if(strcmp(&de->d_name[n+1],"jpg") == 0){
                     texture_names[texture_count] = malloc(name_lenght);
                     strcpy(texture_names[texture_count],de->d_name);

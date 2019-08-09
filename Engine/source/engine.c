@@ -203,7 +203,7 @@ void load_simple_image(const char* path){
 }
 
 int load_and_initialize_simple_model(const char* model_gltf_path){ 
-
+    
     int load_model_result = load_model(model_gltf_path);
     if( load_model_result == -1){
         return -1;

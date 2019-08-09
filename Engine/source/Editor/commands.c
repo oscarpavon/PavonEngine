@@ -97,7 +97,10 @@ void parse_command(const char* command){
     break;
     case 'e':
     {
-        export_gltf("out.gltf");
+        export_gltf("../assets/HLOD/out.gltf");
+        system("blender --python ../scripts/Blender/import.py");
+        reload_editor();
+        add_element_with_model_path("../assets/HLOD/out.gltf");
         return;
     }
     case 'a':

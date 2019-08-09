@@ -61,3 +61,6 @@ build
 local.properties
 src/Game/assets
 Engine/binaries/*
+
+.blend1
+.blend2

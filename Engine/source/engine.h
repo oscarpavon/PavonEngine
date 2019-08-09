@@ -79,7 +79,7 @@ void new_empty_model();
 
 void select_last_element();
 
-void add_element_with_model_path(const char* model_gltf_path);
+void add_element_with_gltf_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
