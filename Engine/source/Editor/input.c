@@ -69,6 +69,11 @@ void parse_command(const char* command){
         return;
     }
 
+    if(strcmp(&command[1],"add cube") == 0){
+        editor_generate_and_add_cube_element();
+        return;
+    }
+
     if(strcmp(&command[1],"hlod") == 0){
         editor_add_HLOD_element();
     }

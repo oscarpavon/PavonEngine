@@ -226,9 +226,7 @@ void add_element_with_model_path(const char* model_gltf_path){
     new_empty_element();
     strcpy(selected_element->name, "New Element");
 
-    TransformComponent transform;
-    init_transfrom_component(&transform);
-    add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
+    add_transform_component_to_selected_element();
 
     add_to_array(&texts,model_gltf_path);
 

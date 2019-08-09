@@ -20,6 +20,8 @@
 
 #include "../Engine/level.h"
 
+#include "geometry.h"
+
 Array editor_models;
 Array editor_textures;
 
@@ -80,6 +82,34 @@ void editor_add_HLOD_element(){
     new_empty_model();
     duplicate_model_data(selected_model, original);
     hlod->model = selected_model;
+}
+
+void editor_generate_and_add_cube_element(){
+    new_empty_element();
+    add_transform_component_to_selected_element();
+
+    StaticMeshComponent mesh_component;    
+    init_array(&mesh_component.meshes,sizeof(unsigned int),2);
+    init_array(&mesh_component.textures,sizeof(unsigned int),2);
+    int model_path_id = texts.count-1;
+    add_to_array(&mesh_component.meshes,&model_path_id);
+
+    new_empty_model();
+    add_to_array(&mesh_component.meshes,&selected_model->id);
+
+    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+    create_cube_indices();
+    vec3 box[2];
+    glm_vec3_copy(VEC3(-1,-1,-1),box[0]);
+    glm_vec3_copy(VEC3(1,1,1),box[1]);
+    
+    create_cube_vertex_geometry(box);
+
+    init_model_gl_buffers(selected_model); 
+    
+    add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
+
+
 }
 
 void add_editor_native_element(const char* native_element_name){

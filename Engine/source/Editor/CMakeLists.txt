@@ -10,6 +10,7 @@ data.c
 editor_gizmos.c
 editor_mode.c
 export_model.c
+geometry.c
 )
 
 set (game_source

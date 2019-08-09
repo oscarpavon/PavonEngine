@@ -19,7 +19,6 @@ set(engine_source
         Engine/memory.c
         Engine/array.c
         Engine/animation/animation.c
-        Engine/geometry.c
         ${components}
 )
 

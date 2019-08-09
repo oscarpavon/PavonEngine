@@ -1,7 +1,7 @@
 #include "editor_gizmos.h"
 #include "../Engine/shader.h"
 
-#include "../Engine/geometry.h"
+#include "geometry.h"
 
 GLuint color_fragment_shader;
 
@@ -58,12 +58,9 @@ void init_selected_object_bounding_box_vertices(){
 
         new_empty_model();
         
-        selected_model->id = actual_model_array->count-1;
-        
+        selected_model->id = actual_model_array->count-1;     
        
-        init_array(&selected_model->vertex_array,sizeof(Vertex),8);
-        init_array(&selected_model->index_array,sizeof(unsigned short int),36);
-
+    
         create_cube_indices();
 
         create_bounding_vertices();

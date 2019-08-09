@@ -11,6 +11,8 @@
     };
 
 void create_cube_vertex_geometry(float *box){
+    init_array(&selected_model->vertex_array,sizeof(Vertex),8);
+    
     struct Vertex back_right_down;//min
     memset(&back_right_down,0,sizeof(Vertex));        
     struct Vertex front_left_up;//max
@@ -51,6 +53,7 @@ void create_cube_vertex_geometry(float *box){
 }
 
 void create_cube_indices(){
+    init_array(&selected_model->index_array,sizeof(unsigned short int),36);
     for(int i = 0; i<36 ; i++){
         add_to_array(&selected_model->index_array,&cube_indices[i]);
     }
