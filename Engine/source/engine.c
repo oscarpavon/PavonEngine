@@ -112,7 +112,8 @@ void new_empty_element(){
     Element new_element;
     memset(&new_element,0,sizeof(struct Element));
         
-    new_element.id = element_id_count;    
+    new_element.id = element_id_count;   
+    new_element.proccess = true; 
 
     element_id_count++;
     
@@ -138,11 +139,13 @@ void new_empty_model(){
     memset(&new_model,0,sizeof(Model));
     if(!actual_model_array)
         return;
+    glm_mat4_identity(new_model.model_mat);
     add_to_array(actual_model_array,&new_model);
 
     selected_model = get_from_array(actual_model_array,actual_model_array->count-1);        
     
     selected_model->id = actual_model_array->count-1;
+
 }
 
 void add_texture_to_selected_element_with_image_path(const char* image_path){

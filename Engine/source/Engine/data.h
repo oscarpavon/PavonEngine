@@ -7,6 +7,7 @@ typedef struct ComponentDefinition ComponentDefinition;
 typedef struct Element{
     unsigned int id;
     char name[20];
+    bool proccess;
     bool selected;
     Array components;
     TransformComponent* transform;

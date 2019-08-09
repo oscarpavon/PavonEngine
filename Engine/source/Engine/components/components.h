@@ -14,7 +14,8 @@ typedef enum ComponentType{
     CUBE_COMPONENT,
     STATIC_MESH_COMPONENT,
     COMPONENT_SKINNED_MESH,
-    LEVEL_OF_DETAIL_COMPONENT
+    LEVEL_OF_DETAIL_COMPONENT,
+    COMPONENT_HLOD
 }ComponentType;
 
 
@@ -53,6 +54,8 @@ typedef struct CameraComponent{
     Model* camera_gizmo;
 }CameraComponent;
 
+typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
+
 typedef struct StaticMeshComponent{
     Array meshes;
     Array distances;
@@ -72,7 +75,7 @@ typedef struct SkinnedMeshComponent{
     struct SkeletalNodeUniform node_uniform;
 }SkinnedMeshComponent;
 
-typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
+
 typedef struct HierarchicalLevelOfDetail{
     Model model;
     float distance;
@@ -83,6 +86,16 @@ typedef struct HierarchicalLevelOfDetail{
     vec3 center;
     vec3 bounding_box[2];    
 }HierarchicalLevelOfDetail;
+
+typedef struct HLODComponent{
+    vec3 center;
+    vec3 bounding_box[2];
+    Model* model;
+    float distance;
+    bool has_childs_HLOD;
+    Array childs;//HLOD childs
+    
+}HLODComponent;
 
 typedef struct LevelOfDetailComponent{
     Array meshes;
@@ -110,4 +123,6 @@ void update_main_camera_with_camera_component_values(CameraComponent* camera_com
 void clean_component_value(ComponentDefinition* component);
 void init_element_component(ComponentDefinition* element_component);
 void for_each_element_components(void(*do_to)(ComponentDefinition*));
+
+void component_add_HLOD_to_select_element();
 #endif

@@ -93,6 +93,7 @@ void draw_available_components(TextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size  = text_size;
+    menu->element_count = 5;
     for(int i = 0; i < 4 ; i++){
 
         char* name = components_names[i];
@@ -256,7 +257,7 @@ void menu_action_draw_native_editor_elments(TextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size = text_size;   
-
+    menu->element_count = 9;
     
     for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
         

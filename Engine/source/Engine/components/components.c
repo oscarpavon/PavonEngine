@@ -236,7 +236,9 @@ void update_per_frame_component(ComponentDefinition* element_component){
     }
 
     case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* static_mesh_component = element_component->data;     
+        StaticMeshComponent* static_mesh_component = element_component->data; 
+        /* Add to  array_static_meshes_pointers for test occlusion
+        array_static_meshes_pointers it cleaned every frame*/    
         add_to_array(&array_static_meshes_pointers,&static_mesh_component);
         break;
     }
@@ -246,9 +248,34 @@ void update_per_frame_component(ComponentDefinition* element_component){
         add_to_array(&array_skinned_mesh_pointers,&skinned_mesh_component);
         break;
     }
+    case COMPONENT_HLOD:
+        {
+            HLODComponent* hlod_component = element_component->data;
+            
+            float distance = glm_vec3_distance(main_camera.position,hlod_component->center);
+            if(distance>=hlod_component->distance){
+                add_to_array(&models_for_test_occlusion,&hlod_component->model);
+                for(int i = 0; i<hlod_component->childs.count ; i++){
+                    Element** ppElement = get_from_array(&hlod_component->childs,i);
+                    Element* element = ppElement[0];
+                    element->proccess = false;
+                }
+                return;
+            }
+            if(hlod_component->has_childs_HLOD){
 
-    default:
-        break;
+            }else{
+                for(int i = 0; i<hlod_component->childs.count ; i++){
+                    Element** ppElement = get_from_array(&hlod_component->childs,i);
+                    Element* element = ppElement[0];
+                    element->proccess = true;
+                    add_to_array(&array_skinned_mesh_pointers,&element);
+                }
+            }
+
+
+            break;
+        }
     }
 }
 
@@ -292,10 +319,18 @@ void add_camera_component_to_selected_element(){
 
 }
 
+void component_add_HLOD_to_select_element(){
+    HLODComponent hlod_component;
+    memset(&hlod_component,0,sizeof(HLODComponent));
+    add_component_to_selected_element(sizeof(HLODComponent),&hlod_component,COMPONENT_HLOD);
+}
+
 
 void for_each_element_components(void(*do_to)(ComponentDefinition*)){
      for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element = get_from_array(actual_elements_array,i);
+        if(!element->proccess)
+            continue;
         if(element->components.count > 0){
             for(int o = 0; o < element->components.count ; o++){
                 ComponentDefinition* component = get_from_array(&element->components,o);

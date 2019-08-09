@@ -57,7 +57,7 @@ void init_selected_object_bounding_box_vertices(){
         actual_model_array = &bounding_boxes;
 
         new_empty_model();
-        glm_mat4_identity(selected_model->model_mat);
+        
         selected_model->id = actual_model_array->count-1;
         
        
@@ -65,7 +65,7 @@ void init_selected_object_bounding_box_vertices(){
         init_array(&selected_model->index_array,sizeof(unsigned short int),36);
 
         create_cube_indices();
-        
+
         create_bounding_vertices();
 
         init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
@@ -109,7 +109,7 @@ void draw_bounding_box(){
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,bounding_model->index_buffer_id);
         glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
-        glDrawElements(GL_TRIANGLES,bounding_model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_LINES,bounding_model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
         
         return;
     }
