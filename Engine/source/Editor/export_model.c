@@ -289,7 +289,6 @@ void prepare_vertices_data_from_model(Model* model){
         glm_translate(position,selected_element->transform->position);
         
         Encoded new_encoded;
-        //vec3_to_base64_encoded_bytes(position[3],&new_encoded);
         float_array_to_base64_encoded_bytes(position[3],3,&new_encoded);
         add_to_array(&array_vertices_position_encoded,&new_encoded);
 
@@ -308,7 +307,7 @@ typedef struct CodedData{
     const char* coded_buffer;
 }CodedData;
 
-CodedData merge_all_coded_data(){
+CodedData merge_all_encoded_data(){
     int bytes_count = 0;
     int char_count = 0;
     for(int i = 0; i<array_vertices_position_encoded.count ; i++){
@@ -340,8 +339,8 @@ CodedData merge_all_coded_data(){
         strcat(new_buffer,vertex_encoded->data);
     }
     for(int i = 0; i<array_UV_position_encoded.count ; i++){
-        Encoded* vertex_encoded = get_from_array(&array_UV_position_encoded,i);
-        strcat(new_buffer,vertex_encoded->data);
+        Encoded* UV_encoded = get_from_array(&array_UV_position_encoded,i);
+        strcat(new_buffer,UV_encoded->data);
     }
 
     for(int i =0; i<array_indices_encoded.count; i++){
@@ -408,7 +407,7 @@ int export_gltf(const char *name){
     for_each_element_components(&encode_vertices);
     for_each_element_components(&encode_indices);
 
-    CodedData coded_data = merge_all_coded_data();
+    CodedData coded_data = merge_all_encoded_data();
     new_data.buffers[0].uri = coded_data.coded_buffer;
     new_data.buffers[0].size = coded_data.buffer_bytes_count;
 
@@ -417,7 +416,7 @@ int export_gltf(const char *name){
     new_data.buffer_views[1].size = UV_count_merged * (sizeof(float)*2);
     new_data.buffer_views[1].offset = vertex_count_merged * (sizeof(float)*3);
 
-    new_data.buffer_views[2].size = indices_count_merged * 2;
+    new_data.buffer_views[2].size = indices_count_merged * sizeof(unsigned short int);
     new_data.buffer_views[2].offset = (vertex_count_merged * (sizeof(float)*3)) + (UV_count_merged * (sizeof(float)*2));
 
     new_data.accessors[0].count = vertex_count_merged;
@@ -439,5 +438,10 @@ int export_gltf(const char *name){
     data_count = 0;
     clean_array(&array_indices_encoded);
     clean_array(&array_vertices_position_encoded);
+    clean_array(&array_UV_position_encoded);
+    vertex_count_merged = 0;
+    indices_count_merged = 0;
+    UV_count_merged = 0;
+    previous_indices_count = 0;
     return 0;
 }
