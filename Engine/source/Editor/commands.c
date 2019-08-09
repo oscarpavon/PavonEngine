@@ -170,6 +170,7 @@ void parse_characters(unsigned char character){
     }
 }
 
+int log_command_offset = 0;
 void text_input_mode(){
     if(key_released(&input.ENTER)){
         parse_command(command_text_buffer);
@@ -188,20 +189,20 @@ void text_input_mode(){
         File file;
         load_file("../binaries/command_history.txt",&file);
         const char* first = file.data;
-        int offset = 0;
+        
         int log_character_count = 0;
-        for(int i = 0; i<file.size_in_bytes ; i++){
-            const char* character = &first[i];
-            if (i < (file.size_in_bytes-1) )  {
-                if(*character != '\n' || (*character != '\0' ) ){
-                    log_character_count++;
-                }                
-            }else{
+        for(int i = 0; i<(file.size_in_bytes-log_command_offset+1) ; i++){
+            const char* character = &first[i+log_command_offset];           
+
+            if(*character == '\n' || (*character == '\0' ) ){
                 log_character_count++;
-                memcpy(&command_text_buffer[character_count],&first[offset],log_character_count);
-                offset = log_character_count;
+                memcpy(&command_text_buffer[character_count],&first[log_command_offset],log_character_count-1);
+                log_command_offset = log_character_count;
                 break;
-            }
+            }else{
+                log_character_count++;                   
+            }                
+           
         
         }
        // strcpy(&command_text_buffer[character_count],file.data);  

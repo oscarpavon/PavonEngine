@@ -223,6 +223,13 @@ void add_element_with_model_path(const char* model_gltf_path){
         return;
     }
 
+    Array* prev_array = actual_model_array;
+    actual_model_array = &array_models_loaded;
+    int models_loaded = load_and_initialize_simple_model(model_gltf_path);
+    if(models_loaded == -1)
+        return;
+    actual_model_array = prev_array;
+    
     new_empty_element();
     strcpy(selected_element->name, "New Element");
 
@@ -230,11 +237,6 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     add_to_array(&texts,model_gltf_path);
 
-    Array* prev_array = actual_model_array;
-    actual_model_array = &array_models_loaded;
-    int models_loaded = load_and_initialize_simple_model(model_gltf_path);
-    actual_model_array = prev_array;
-    
     switch (current_loaded_component_type)
     {
     case COMPONENT_SKINNED_MESH:

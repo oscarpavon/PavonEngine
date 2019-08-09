@@ -372,7 +372,8 @@ int load_model(const char* path){
   model_loaded = false;
   File new_file;
 
-  load_file(path,&new_file);
+  if(load_file(path,&new_file) == -1)
+    return -1;
 
   cgltf_options options = {0};
   cgltf_data* data = NULL;

@@ -296,7 +296,8 @@ void save_gui_data(const char* gui_name){
 }
 
 void save_commnad_history(const char* entered_commnad){
-    FILE* new_file = fopen("command_history.txt","w+");
+    FILE* new_file = fopen("command_history.txt","a");
     fprintf(new_file,"%s",&entered_commnad[1]);
+    fputc('\n',new_file);
     fclose(new_file);
 }
