@@ -203,7 +203,7 @@ void load_simple_image(const char* path){
 }
 
 int load_and_initialize_simple_model(const char* model_gltf_path){ 
-    
+
     int load_model_result = load_model(model_gltf_path);
     if( load_model_result == -1){
         return -1;
@@ -252,7 +252,8 @@ void add_element_with_model_path(const char* model_gltf_path){
     
     case STATIC_MESH_COMPONENT:
         {
-            StaticMeshComponent mesh_component;    
+            StaticMeshComponent mesh_component;
+            memset(&mesh_component,0,sizeof(StaticMeshComponent));    
             init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
             init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
             int model_path_id = texts.count-1;

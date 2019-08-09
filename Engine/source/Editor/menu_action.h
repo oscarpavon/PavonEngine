@@ -207,6 +207,38 @@ void draw_menus(){
 }
 
 void menu_action_add_element(TextMenu* menu){
+    int name_lenght = strlen(menu->text_for_action);
+    for(int n = 0; n < name_lenght; n++){
+        if(menu->text_for_action[n] == '.'){
+            
+            if(strcmp(&menu->text_for_action[n+1],"blend") == 0){
+                char open_blender_file_command[] = "blender --background ";                
+                char python_command[] = " --python ../scripts/Blender/export.py";
+                char relative_path[] = "../assets/";
+                char python_argument[] = " -- ";
+                char file_name[] = "blender_test.gltf";
+                char final_command[strlen(open_blender_file_command) + strlen(relative_path) + strlen(menu->text_for_action) + strlen(python_argument) + strlen(python_command) + strlen(file_name)];
+                memset(final_command,0,strlen(final_command));
+
+                strcat(final_command,open_blender_file_command);
+                strcat(final_command,relative_path);
+                strcat(final_command, menu->text_for_action);               
+                strcat(final_command,python_command);
+                strcat(final_command,python_argument);
+                strcat(final_command,file_name);
+                system(final_command);
+
+                char new_glTF_relative_path[] = "../generated_glTF_files/";
+                char new_file_path[strlen(new_glTF_relative_path) + strlen(file_name)];
+                memset(new_file_path,0,strlen(new_file_path));
+                strcat(new_file_path,new_glTF_relative_path);
+                strcat(new_file_path,file_name);
+                add_element_with_model_path(new_file_path);
+                return;
+            }
+        }
+    }
+    //if not blend file
     add_element_with_model_path(menu->text_for_action);
 }
 

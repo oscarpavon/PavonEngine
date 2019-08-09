@@ -64,3 +64,5 @@ Engine/binaries/*
 
 .blend1
 .blend2
+
+Engine/generated_glTF_files/*
