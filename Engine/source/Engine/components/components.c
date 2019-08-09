@@ -198,7 +198,7 @@ void init_element_component(ComponentDefinition* element_component){
 
         memcpy(&mesh_component->inverse_bind_matrices,inverse_bind_matrices,sizeof(inverse_bind_matrices));
 
-        update_skeletal_node_uniform();
+        update_skeletal_node_uniform();       
 
         break;
     }

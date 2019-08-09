@@ -21,52 +21,64 @@ static inline void mvp_error(){
     raise(SIGINT);
 }
 
-static inline void check_send_matrix_error(){
-    GLenum error;
-    error = glGetError();
+static inline void check_send_matrix_error(const char* message){
+    GLenum error = glGetError();
     if(error != GL_NO_ERROR){
-        LOG("[X] Send matrix error, Error %08x \n",error);
+        LOG("[X] Send %s matrix error, Error %08x \n", message, error);
     }
 }
 
+static inline GLint get_uniform_location(GLuint shader, const char* name){
+    GLint uniform = glGetUniformLocation(shader,name);
+    if(uniform == -1){
+        mvp_error();
+    }
+    return uniform;
+}
+
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
+
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glUseProgram(shader);   
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
     GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
     if(mvp_uniform == -1){
-        GLint model_uniform = glGetUniformLocation(shader,"model");
-        if(model_uniform == -1){
-            mvp_error();
-        }
-        GLint projection_uniform = glGetUniformLocation(shader,"projection");
-        GLint view_uniform = glGetUniformLocation(shader,"view");
-        GLint joints_matrices_uniform = glGetUniformLocation(shader,"joint_matrix");
+        
+        GLint model_uniform = get_uniform_location(shader,"model");
+
+        GLint projection_uniform = get_uniform_location(shader,"projection");
+        GLint view_uniform = get_uniform_location(shader,"view");
+        GLint joints_matrices_uniform = get_uniform_location(shader,"joint_matrix");
 
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &model_matrix[0][0]);
         glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
         glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
+        check_send_matrix_error("view");
 
         SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
         glUniformMatrix4fv(joints_matrices_uniform,skin_component->node_uniform.joint_count , GL_FALSE, skin_component->node_uniform.joints_matrix);
-  
+        check_send_matrix_error("Skin");
         
         glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, joint));
 
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
+        
     }else{
         mat4 mvp;      
         update_mvp(model_matrix, mvp);  
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
+        check_send_matrix_error("MVP");
     }    
 
-    check_send_matrix_error();
+    
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+    
 }
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
@@ -174,7 +186,11 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
         return;
     }    
-       
+    
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    int id = textures_paths.count-1;
+    Texture* last_texturer = get_from_array(current_textures_array,current_textures_array->count-1);
+    skin_component->mesh->texture.id = last_texturer->id;
 }
 
 void load_simple_image(const char* path){

@@ -76,7 +76,7 @@ void new_text_menu(const char* name, Key* open_key, int mods_key,
     add_to_array(&menus,&menu);
 }
 
-const char* components_names[4] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component"};
+const char* components_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
 
 void draw_available_components(TextMenu* menu){
     float text_size = 12;
@@ -146,6 +146,9 @@ void draw_components_from_selected_element(TextMenu* menu){
             break;
         case LEVEL_OF_DETAIL_COMPONENT:
             name = "Level of Detail Component";
+            break;
+        case COMPONENT_SKINNED_MESH:
+            name = "Skinned Mesh";
             break;
         default:
             break;
