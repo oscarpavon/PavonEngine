@@ -55,7 +55,10 @@
 			"model.h": "c",
 			"input.h": "c",
 			"editor_shader.h": "c",
-			"__node_handle": "c"
+			"__node_handle": "c",
+			"stb_image_write.h": "c",
+			"ios": "c",
+			"random": "c"
 		}
 	}
 }
