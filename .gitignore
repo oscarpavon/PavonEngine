@@ -62,7 +62,7 @@ local.properties
 src/Game/assets
 Engine/binaries/*
 
-.blend1
-.blend2
+*.blend1
+*.blend2
 
 Engine/generated_glTF_files/*
