@@ -1,8 +1,14 @@
 set(components
         Engine/components/components.c
         )
-
-set(engine_source 
+set(core 
+        Engine/memory.c
+        Engine/array.c
+        Engine/threads.c
+         )
+         
+set(engine_source
+        ${core}
         model.c
         file_loader.c
         camera.c
@@ -15,9 +21,7 @@ set(engine_source
         Engine/shader.c        
         Engine/level.c
         third_party/jsmn.c
-        Engine/files_parser.c
-        Engine/memory.c
-        Engine/array.c
+        Engine/files_parser.c        
         Engine/animation/animation.c
         ${components}
 )

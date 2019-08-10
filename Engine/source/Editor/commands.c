@@ -1,13 +1,19 @@
 #include "commands.h"
 #include "editor.h"
 
+
 void system_command(const char* command, const char* argument){
     char final_command[strlen(command) + strlen(argument)];
     memset(final_command,0,strlen(final_command));
     strcat(final_command,command);
     strcat(final_command,argument);
-    system(final_command);
+
+    if(fork() == 0){
+        system(final_command);
+    }
 }
+
+
 
 static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
 {

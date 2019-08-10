@@ -16,6 +16,7 @@
 
 #include "Engine/array.h"
 #include "Engine/log.h"
+#include "Engine/threads.h"
 
 #include "model.h"
 #include "Engine/types.h"
