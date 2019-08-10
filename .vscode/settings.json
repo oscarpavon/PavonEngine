@@ -1,8 +1,5 @@
 {
-    "files.associations": {
-        "vector.h": "c",
-        "memory.h": "c"
-    },
+
     "cmake.configureOnOpen": true,
     "python.pythonPath": "/usr/bin/python",
     "python.linting.pylintEnabled": true,

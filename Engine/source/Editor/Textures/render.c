@@ -36,13 +36,20 @@ void draw()
     glm_mat4_identity(projection);
 
     glm_ortho(0, 512, 512, 0, 0, 1, projection);
+    //glm_mat4_inv(projection,projection);
 
     glm_scale(scale, (vec3){512, 512, 0});
 
     glm_translate(position_mat, (vec3){0, 0, 0});
 
     mat4 model;
-    glm_mul(position_mat, scale, model);
+    mat4 rotation;
+    glm_mat4_identity(rotation);
+    //glm_rotate(rotation,18,VEC3(0,0,1));
+
+    glm_mul(position_mat, rotation, model);
+    glm_mul(model,scale,model);
+    
 
     mat4 model_projection;
     glm_mat4_identity(model_projection);
@@ -98,8 +105,10 @@ void render_to_texture()
 
     //draw_editor_viewport();
     glClear(GL_DEPTH_BUFFER_BIT);
-
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     draw();
+    glEnable(GL_CULL_FACE);
 
     export_pixels = malloc(512 * 512 * 3);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);

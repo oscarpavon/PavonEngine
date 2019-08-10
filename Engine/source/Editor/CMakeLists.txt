@@ -7,7 +7,7 @@ editor.c
 text.c
 skeletal_editor.c
 data.c
-editor_gizmos.c
+gizmos.c
 editor_mode.c
 export_model.c
 geometry.c
@@ -21,6 +21,7 @@ set (game_source
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
+
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../Engine/binaries)
 

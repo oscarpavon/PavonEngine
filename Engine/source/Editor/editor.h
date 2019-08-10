@@ -12,7 +12,7 @@
 
 #include "editor_shader.h"
 
-#include "editor_gizmos.h"
+#include "gizmos.h"
 
 #include "export_model.h"
 

@@ -2,8 +2,8 @@
 #define EDITOR_TEXT_H
 
 
-#include <freetype2/ft2build.h>
-#include <freetype2/freetype/freetype.h>
+#include <ft2build.h>
+#include <freetype/freetype.h>
 
 #include <stdbool.h>
 #include "../Engine/array.h"
