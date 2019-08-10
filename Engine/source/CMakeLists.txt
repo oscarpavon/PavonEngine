@@ -5,6 +5,7 @@ set(core
         Engine/memory.c
         Engine/array.c
         Engine/threads.c
+        Engine/Renderer/OpenGL/opengl_es2.c
          )
          
 set(engine_source

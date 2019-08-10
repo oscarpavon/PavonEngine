@@ -47,7 +47,7 @@ void create_bounding_vertices(){
             LOG("No static mesh component\n");
             return;
         }
-        create_cube_vertex_geometry(&mesh_component->bounding_box[0]);          
+        create_cube_vertex_geometry(mesh_component->bounding_box[0]);          
 }
 
 bool bounding_box_initialized = false;
@@ -93,6 +93,7 @@ void draw_bounding_box(){
         Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
         update_bounding_vertices_array( bounding_model );
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
+        
         mat4 model;
         glm_mat4_identity(model);
         update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id, model);
@@ -106,6 +107,7 @@ void draw_bounding_box(){
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,bounding_model->index_buffer_id);
         glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
+
         glDrawElements(GL_LINES,bounding_model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
         
         return;

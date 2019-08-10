@@ -36,6 +36,8 @@
 
 #include "camera.h"
 
+#include "Engine/Renderer/OpenGL/opengl_es2.h"
+
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 
 static const char* const level_folder = "../assets/Game/levels/";
