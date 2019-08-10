@@ -1,2 +1,6 @@
 import bpy
-bpy.ops.import_scene.gltf(filepath="../assets/HLOD/out.gltf")
+import sys
+try:
+    bpy.ops.import_scene.gltf(filepath="../assets/HLOD/out.gltf")
+except Exception:
+    sys.exit(1)

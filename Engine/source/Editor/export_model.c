@@ -120,24 +120,6 @@ void load_mesh_for_proccess(const char* path){
     
 }
 
-void prepare_mesh_data(ComponentDefinition* component){
-    if(component->type == STATIC_MESH_COMPONENT){
-        StaticMeshComponent* mesh_component = component->data;
-        unsigned int *model_id_in_loaded_models = get_from_array(&mesh_component->meshes,0);
-        const char* path = get_from_array(&texts,*model_id_in_loaded_models);
-        //load_mesh_for_proccess(path);
-    }
-}
-
-void float_to_char(float number,unsigned char* char_number){
-    uint8_t      bytes[sizeof(float)];
-    *(float*)(bytes) = number;  // convert float to bytes
-    char_number[0] = bytes[0];
-    char_number[1] = bytes[1];
-    char_number[2] = bytes[2];
-    char_number[3] = bytes[3];
-}
-
 void uint8_to_char(unsigned short int number, unsigned char* char_number){
     uint8_t      bytes[sizeof(unsigned short int)];
     *(unsigned short int*)(bytes) = number;
@@ -151,8 +133,21 @@ typedef struct Encoded{
     char* data;
 }Encoded;
 
-Encoded vertices_encoded[3];
-int vertices_encoded_count = 0;
+void float_to_unsigned_char(float* numbers, char* data , int byte_count){
+    uint8_t      bytes[sizeof(float)];
+    *(float*)(bytes) = numbers[0]; 
+    int bytes_counter = 0;
+    int float_offset = 0;
+    for(int i = 0; i<byte_count ; i++){
+        if(bytes_counter==4){
+            float_offset++;
+            *(float*)(bytes) = numbers[float_offset]; 
+            bytes_counter = 0;
+        }
+        data[i] = bytes[bytes_counter];
+        bytes_counter++;
+    }
+}
 
 void float_array_to_base64_encoded_bytes(float* position, int count, Encoded* encoded){
     //float size equal 4
@@ -182,64 +177,6 @@ void float_array_to_base64_encoded_bytes(float* position, int count, Encoded* en
     memcpy(encoded,&encoded_data,sizeof(Encoded));
   
 }
-void vec3_to_base64_encoded_bytes(vec3 position, Encoded* encoded){
-    uint8_t      bytes[sizeof(float)];
-    *(float*)(bytes) = position[0];  
-
-    unsigned char data[12] = {bytes[0],bytes[1],bytes[2],bytes[3]};
-
-    *(float*)(bytes) = position[1]; 
-    data[4] = bytes[0];
-    data[5] = bytes[1];
-    data[6] = bytes[2];
-    data[7] = bytes[3];
-   
-    *(float*)(bytes) = position[2]; 
-    data[8] = bytes[0];
-    data[9] = bytes[1];
-    data[10] = bytes[2];
-    data[11] = bytes[3];
-
-    Encoded encoded_data;
-    encoded_data.char_len = 0;    
-    encoded_data.data = base64_encode(data,12,&encoded_data.char_len);
-    encoded_data.byte_size = 12;
-
-    memcpy(encoded,&encoded_data,sizeof(Encoded));
-  
-}
-
-void float_to_bytes(float x, float y, float z){
-    uint8_t      bytes[sizeof(float)];
-    *(float*)(bytes) = x;  // convert float to bytes
-    //printf("bytes = [ 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x ]\r\n", bytes[0], bytes[1], bytes[2], bytes[3]);
-
-    unsigned char data[12] = {bytes[0],bytes[1],bytes[2],bytes[3]};
-    //printf("Character [ %c , %c , %c , %c ]\n",data[0],data[1],data[2],data[3]);
-
-    *(float*)(bytes) = y;  // convert float to bytes
-    data[4] = bytes[0];
-    data[5] = bytes[1];
-    data[6] = bytes[2];
-    data[7] = bytes[3];
-   
-    *(float*)(bytes) = z;  // convert float to bytes
-    data[8] = bytes[0];
-    data[9] = bytes[1];
-    data[10] = bytes[2];
-    data[11] = bytes[3];
-
-    Encoded encoded_data;
-    encoded_data.char_len = 0;    
-    encoded_data.data = base64_encode(data,12,&encoded_data.char_len);
-    encoded_data.byte_size = 12;
-    printf("Encoded: %s\n",encoded_data.data);
-
-    memcpy(&vertices_encoded[vertices_encoded_count],&encoded_data,sizeof(Encoded));
-    vertices_encoded_count++;
-
-  
-}
 
 Array array_vertices_position_encoded;
 Array array_indices_encoded;
@@ -249,10 +186,6 @@ typedef unsigned char UCharInBytes[2];
 static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 
 int previous_indices_count = 0;
-
-void prepare_UV_data_from_model(Model* model){
-
-}
 
 void prepare_indices_data_from_model(Model* model){
     
@@ -280,7 +213,8 @@ void prepare_indices_data_from_model(Model* model){
 
 void prepare_vertices_data_from_model(Model* model){   
     vec2 UV_values[model->vertex_array.count];
-
+    vec3 vertex_position_array[model->vertex_array.count];
+    
     for(int i = 0; i<model->vertex_array.count; i++){
         Vertex* vertex = get_from_array(&model->vertex_array,i);
         mat4 position;
@@ -288,17 +222,56 @@ void prepare_vertices_data_from_model(Model* model){
         glm_translate(position,vertex->postion);
         glm_translate(position,selected_element->transform->position);
         
-        Encoded new_encoded;
-        float_array_to_base64_encoded_bytes(position[3],3,&new_encoded);
-        add_to_array(&array_vertices_position_encoded,&new_encoded);
-
+        vertex_position_array[i][0] = vertex->postion[0];
+        vertex_position_array[i][1] = vertex->postion[1];
+        vertex_position_array[i][2] = vertex->postion[2];
         UV_values[i][0] = vertex->uv[0];
         UV_values[i][1] = vertex->uv[1];
     } 
 
-    Encoded UV_position;
-    float_array_to_base64_encoded_bytes(UV_values,model->vertex_array.count*2,&UV_position);
-    add_to_array(&array_UV_position_encoded,&UV_position);
+    for(int i = 0; i < model->index_array.count; i++){
+
+    }
+    int vertex_position_char_byte_count = sizeof(float) * model->vertex_array.count*3;
+    unsigned char vertex_position_char[vertex_position_char_byte_count];
+    memset(vertex_position_char,0,vertex_position_char_byte_count);
+    float_to_unsigned_char(vertex_position_array,vertex_position_char,vertex_position_char_byte_count);
+
+    int uv_position_char_byte_count = sizeof(float) * model->vertex_array.count*2;
+    unsigned char uv_position_char[uv_position_char_byte_count];
+    memset(uv_position_char,0,uv_position_char_byte_count);
+    float_to_unsigned_char(UV_values,uv_position_char,uv_position_char_byte_count);
+
+    int indices_char_bytes_count = model->index_array.count*2;
+    unsigned char indices_charcters[indices_char_bytes_count];
+    unsigned short int count = 0;
+
+    for(int i = 0; i<model->index_array.count; i++){
+        unsigned short int* index = get_from_array(&model->index_array,i);
+        unsigned short int index_offset = (*index + previous_indices_count);  
+        UCharInBytes uchar_int_bytes;
+        uint8_to_char(index_offset,uchar_int_bytes);
+        indices_charcters[count] = uchar_int_bytes[0];
+        indices_charcters[count+1] = uchar_int_bytes[1];
+        count +=2;      
+    }
+    
+    previous_indices_count += model->vertex_array.count;
+
+
+
+    unsigned char vertex_char[vertex_position_char_byte_count + uv_position_char_byte_count + indices_char_bytes_count];
+    memset(vertex_char,0,vertex_position_char_byte_count + uv_position_char_byte_count + indices_char_bytes_count);
+    memcpy(vertex_char,vertex_position_char,vertex_position_char_byte_count);
+    memcpy(&vertex_char[vertex_position_char_byte_count],uv_position_char,uv_position_char_byte_count);
+    memcpy(&vertex_char[vertex_position_char_byte_count+uv_position_char_byte_count],indices_charcters,indices_char_bytes_count);
+
+    Encoded encoded_data;
+    encoded_data.char_len = 0;    
+    encoded_data.data = base64_encode(vertex_char,sizeof(vertex_char),&encoded_data.char_len);
+    encoded_data.byte_size = sizeof(vertex_char);
+    add_to_array(&array_vertices_position_encoded,&encoded_data);
+
 }
 
 
@@ -385,7 +358,7 @@ void encode_indices(ComponentDefinition* component){
         StaticMeshComponent* mesh_component = component->data;
         unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
         Model* model = get_from_array(actual_model_array,*mode_id);
-        prepare_indices_data_from_model(model);
+        //prepare_indices_data_from_model(model);
     }
 }
 
@@ -411,13 +384,16 @@ int export_gltf(const char *name){
     new_data.buffers[0].uri = coded_data.coded_buffer;
     new_data.buffers[0].size = coded_data.buffer_bytes_count;
 
-    new_data.buffer_views[0].size = vertex_count_merged * (sizeof(float)*3);
+    cgltf_buffer_view* buffer =  &new_data.buffer_views[0];
+    buffer->size = vertex_count_merged * (sizeof(float)*3);
 
-    new_data.buffer_views[1].size = UV_count_merged * (sizeof(float)*2);
-    new_data.buffer_views[1].offset = vertex_count_merged * (sizeof(float)*3);
-
-    new_data.buffer_views[2].size = indices_count_merged * sizeof(unsigned short int);
-    new_data.buffer_views[2].offset = (vertex_count_merged * (sizeof(float)*3)) + (UV_count_merged * (sizeof(float)*2));
+    buffer = &new_data.buffer_views[1];
+    buffer->size = UV_count_merged * (sizeof(float)*2);
+    buffer->offset = vertex_count_merged * (sizeof(float)*3);
+    
+    buffer = &new_data.buffer_views[2];
+    buffer->size = indices_count_merged * sizeof(unsigned short int);
+    buffer->offset = (vertex_count_merged * (sizeof(float)*3)) + (UV_count_merged * (sizeof(float)*2));
 
     new_data.accessors[0].count = vertex_count_merged;
     new_data.accessors[1].count = UV_count_merged;
