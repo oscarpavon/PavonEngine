@@ -502,6 +502,8 @@ void default_mode(){
                 strcat(new_file_path,relative_path);
                 strcat(new_file_path,selected_element->editor_data.blend_file_path);
                 system_command("blender ", new_file_path);
+                strcpy(editing_blender_file_path,new_file_path);
+                is_editing_blender_file = true;
             }
         }
     }

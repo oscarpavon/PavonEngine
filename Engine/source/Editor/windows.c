@@ -7,8 +7,8 @@
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 
-void create_window(Window *win){
-  
+void create_window(EditorWindow *win){
+    current_window = win;
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
@@ -38,4 +38,13 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
 
     update_viewport_size();
 
+}
+
+void window_focus_callback(GLFWwindow* window,int is_focus){
+    if(is_focus == GLFW_TRUE){
+        current_window->focus = true;
+    }
+    if(is_focus == GLFW_FALSE){
+       current_window->focus = false;
+    }
 }

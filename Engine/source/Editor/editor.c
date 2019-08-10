@@ -2,6 +2,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "windows.h"
+
 #include "../model.h"
 #include "../Engine/shader.h"
 
@@ -386,6 +389,10 @@ void draw_tringles_count(){
 }
 
 void draw_editor_viewport(){
+    if(current_window->focus){
+        
+    }
+
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     

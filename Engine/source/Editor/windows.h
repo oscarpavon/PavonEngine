@@ -9,13 +9,15 @@
 
 #include "../camera.h"
 
-typedef struct window{
-       GLFWwindow* window; 
-}Window;
+typedef struct EditorWindow{
+       GLFWwindow* window;
+       bool focus; 
+}EditorWindow;
 
+EditorWindow* current_window;
 void window_resize_callback(GLFWwindow* window, int width, int height);
-
-void create_window(Window *win);
+void window_focus_callback(GLFWwindow*,int);
+void create_window(EditorWindow *win);
 void update_envents();
 
 float actual_window_width;

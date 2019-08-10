@@ -10,6 +10,7 @@ void system_command(const char* command, const char* argument){
 
     if(fork() == 0){
         system(final_command);
+        exit(0);
     }
 }
 

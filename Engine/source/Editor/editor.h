@@ -85,4 +85,8 @@ Array selected_elements_id;
 char opened_file_name[20];
 
 bool controlling_camera_component;
+
+char editing_blender_file_path[30];
+bool is_editing_blender_file;
+
 #endif

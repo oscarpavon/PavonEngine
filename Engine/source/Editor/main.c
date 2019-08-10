@@ -9,7 +9,7 @@ int main(){
 
     init_engine_memory();
    
-    Window main_window;
+    EditorWindow main_window;
     create_window(&main_window);    
       
     glfwSetKeyCallback(main_window.window, key_callback);
@@ -17,6 +17,7 @@ int main(){
 	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
     glfwSetFramebufferSizeCallback(main_window.window, window_resize_callback);
     glfwSetCharCallback(main_window.window, character_callback);
+    glfwSetWindowFocusCallback(main_window.window,window_focus_callback);
 
     draw_loading_screen();
     glfwSwapBuffers(main_window.window);
