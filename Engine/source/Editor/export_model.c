@@ -195,13 +195,16 @@ int vertex_count_merged = 0;
 int indices_count_merged = 0;
 int UV_count_merged = 0;
 
+vec3 box[2];
+
 typedef unsigned char UCharInBytes[2];
 static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 
 int previous_indices_count = 0;
 
 
-void prepare_vertices_data_from_model(Model* model){   
+void prepare_vertices_data_from_model(Model* model){
+       
     vec2 UV_values[model->vertex_array.count];
     vec3 vertex_position_array[model->vertex_array.count];
     
@@ -312,11 +315,37 @@ void encode_vertices(ComponentDefinition* component){
         unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
         Model* model = get_from_array(actual_model_array,*mode_id);
         prepare_vertices_data_from_model(model);
+
+        if(mesh_component->bounding_box[1][0] > box[1][0]){
+            box[1][0] = mesh_component->bounding_box[1][0];
+        }
+        if(mesh_component->bounding_box[1][1] > box[1][1]){
+            box[1][1] = mesh_component->bounding_box[1][1];
+        }
+        if(mesh_component->bounding_box[1][2] > box[1][2]){
+            box[1][2] = mesh_component->bounding_box[1][2];
+        }
+
+        if(mesh_component->bounding_box[0][0] < box[0][0]){
+            box[0][0] = mesh_component->bounding_box[0][0];
+        }
+
+        if(mesh_component->bounding_box[0][1] < box[0][1]){
+            box[0][1] = mesh_component->bounding_box[0][1];
+        }
+        
+        if(mesh_component->bounding_box[0][2] < box[0][2]){
+            box[0][2] = mesh_component->bounding_box[0][2];
+        }
+
+        
+        
     }
 }
 
 
 int export_gltf(const char *name){
+    memset(&box,0,sizeof(box));
 
     load_mesh_for_proccess("test/export_template_with_uv.gltf");
     cgltf_data* data1 = data_array[0];
@@ -351,6 +380,9 @@ int export_gltf(const char *name){
     new_data.accessors[0].count = vertex_count_merged;
     new_data.accessors[1].count = UV_count_merged;
     new_data.accessors[2].count = indices_count_merged;
+
+    glm_vec3_copy(box[0],new_data.accessors[0].min);
+    glm_vec3_copy(box[1],new_data.accessors[0].max);
 
     cgltf_options options = {0};
     cgltf_data* data_to_export  = data_array[0];
