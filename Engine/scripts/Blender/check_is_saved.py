@@ -1,6 +1,6 @@
 import bpy
 import sys
-#raise Exception('Tests Failed')
+
 def run():
     print("hello from test")
     if bpy.data.is_dirty:        
@@ -8,6 +8,7 @@ def run():
     else:
         print("No dirty")
         bpy.wm.quit_blender()
+        
 
     if not bpy.data.is_saved:
         print("Saved")
@@ -16,3 +17,4 @@ try:
 except Exception:
     print("Test exception")
     sys.exit(1)
+

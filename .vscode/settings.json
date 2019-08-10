@@ -3,5 +3,16 @@
         "vector.h": "c",
         "memory.h": "c"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "python.pythonPath": "/usr/bin/python",
+    "python.linting.pylintEnabled": true,
+    "python.linting.pep8Enabled": false,
+    "python.linting.enabled": true,
+    "python.autoComplete.extraPaths": [
+        "/home/pavon/sources/blender_autocomplete/2.80"
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('/home/pavon/sources/blender_autocomplete/2.80')"
+    ],
 }
