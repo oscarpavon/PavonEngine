@@ -18,7 +18,7 @@
 #include "Engine/log.h"
 
 #include "model.h"
-#include "Engine/data.h"
+#include "Engine/types.h"
 #include "third_party/cglm/cglm.h"
 
 #include "file_loader.h"

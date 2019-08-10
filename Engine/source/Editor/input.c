@@ -23,6 +23,8 @@
 
 #include "../input.h"
 
+#include "commands.h"
+
 float horizontalAngle = 0;
 float verticalAngle = 0;
 
@@ -174,6 +176,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_UP:
         actual_key = &input.KEY_UP;
+        break;
+    case GLFW_KEY_TAB:
+        actual_key = &input.TAB;
         break;
     
     default:
@@ -488,6 +493,19 @@ void default_mode(){
 
     input_change_mode();
 
+    if(key_released(&input.TAB)){
+        if(selected_element){
+            if(selected_element->editor_data.has_blend_file){
+                char relative_path[] = "../assets/";
+                char new_file_path[strlen(relative_path) + strlen(selected_element->editor_data.blend_file_path) ];
+                memset(new_file_path,0,strlen(new_file_path));
+                strcat(new_file_path,relative_path);
+                strcat(new_file_path,selected_element->editor_data.blend_file_path);
+                system_command("blender ", new_file_path);
+            }
+        }
+    }
+
     if(key__released(&input.D,GLFW_MOD_SHIFT)){
        duplicate_selected_element();
        LOG("duplicated \n");
@@ -497,9 +515,6 @@ void default_mode(){
         LOG("deselect all \n");
         deselect_all();
         return;  
-    }
-    if(key_released(&input.S)){
-        //get_element_status(selected_element);
     }
     
     if(key__released(&input.P,GLFW_MOD_SHIFT)){
@@ -518,18 +533,13 @@ void default_mode(){
     if(key_released(&input.X)){
         remove_selected_element();            
         return; 
-    } 
-    
-    
-    if(key_released(&input.P)){
-       
-    }
+    }   
 
     if(key_released(&input.KEY_1)){
         if(can_draw_gizmos){
             can_draw_gizmos = false;
         }else can_draw_gizmos = true;
-
+        return;
     }
     if(key_released(&input.KEY_2)){
         init_skeletal_editor();

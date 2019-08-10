@@ -1,6 +1,14 @@
 #include "commands.h"
 #include "editor.h"
 
+void system_command(const char* command, const char* argument){
+    char final_command[strlen(command) + strlen(argument)];
+    memset(final_command,0,strlen(final_command));
+    strcat(final_command,command);
+    strcat(final_command,argument);
+    system(final_command);
+}
+
 static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
 {
     if (code <= 0x7F) {
@@ -223,3 +231,4 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
     //LOG("Converted: %s\n",character);
     parse_characters(character[0]);
 }
+

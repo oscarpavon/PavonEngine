@@ -1,6 +1,10 @@
 #ifndef ENGINE_DATA_TYPES
 #define ENGINE_DATA_TYPES
 
+#ifdef EDITOR
+    #include "../Editor/types.h"
+#endif 
+
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;
 
@@ -11,6 +15,9 @@ typedef struct Element{
     bool selected;
     Array components;
     TransformComponent* transform;
+#ifdef EDITOR
+    ElementEditorData editor_data;
+#endif
 }Element;
 
 typedef struct PlayerStart{

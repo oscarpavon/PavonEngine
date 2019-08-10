@@ -226,7 +226,8 @@ void menu_action_add_element(TextMenu* menu){
                 strcat(final_command,python_command);
                 strcat(final_command,python_argument);
                 strcat(final_command,file_name);
-                system(final_command);
+
+                system(final_command);//open and export selected objects
 
                 char new_glTF_relative_path[] = "../generated_glTF_files/";
                 char new_file_path[strlen(new_glTF_relative_path) + strlen(file_name)];
@@ -234,6 +235,9 @@ void menu_action_add_element(TextMenu* menu){
                 strcat(new_file_path,new_glTF_relative_path);
                 strcat(new_file_path,file_name);
                 add_element_with_model_path(new_file_path);
+                
+                selected_element->editor_data.has_blend_file = true;
+                strcpy(selected_element->editor_data.blend_file_path,menu->text_for_action);
                 return;
             }
         }
