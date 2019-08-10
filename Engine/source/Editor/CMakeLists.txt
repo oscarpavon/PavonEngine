@@ -12,6 +12,7 @@ editor_mode.c
 export_model.c
 geometry.c
 commands.c
+Textures/render.c
 )
 
 set (game_source

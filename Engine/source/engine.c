@@ -291,6 +291,8 @@ void set_selected_element_transform(vec3 position, versor rotation){
    
 }
 
+
+
 void draw_simgle_model(struct Model * new_model){
     glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
     update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
@@ -300,6 +302,8 @@ void draw_simgle_model(struct Model * new_model){
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
 
+    if(new_model->index_array.count == 0)
+        LOG("Index is equal to 0, model not render\n");
     glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
     GLenum error;

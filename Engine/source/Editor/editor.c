@@ -25,6 +25,9 @@
 
 #include "geometry.h"
 
+#include "Textures/render.h"
+
+
 Array editor_models;
 Array editor_textures;
 
@@ -354,9 +357,6 @@ void init_editor(){
     init_input();
 
     camera_velocity = 0.04;    
-
-    //init_skeletal_editor();  
-
 }
 
 void draw_count_of_draw_call(){
@@ -388,6 +388,7 @@ void draw_tringles_count(){
 
 }
 
+
 void draw_editor_viewport(){
     if(current_window->focus){
         if(is_editing_blender_file){
@@ -410,6 +411,8 @@ void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    draw_UV();
+
     if(controlling_camera_component){
         CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
         update_main_camera_with_camera_component_values(camera);
