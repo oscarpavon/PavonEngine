@@ -178,38 +178,28 @@ void float_array_to_base64_encoded_bytes(float* position, int count, Encoded* en
   
 }
 
-Array array_vertices_position_encoded;
-Array array_indices_encoded;
-Array array_UV_position_encoded;
+
+unsigned char* vertices_uchar;
+unsigned char* uv_uchar;
+unsigned char* indices_uchar;
+
+int offset_vertices;
+int offset_indices;
+int offset_uv;
+
+int indices_char_bytes = 0;
+int vertices_char_bytes = 0;
+int uv_char_bytes = 0;
+
+int vertex_count_merged = 0;
+int indices_count_merged = 0;
+int UV_count_merged = 0;
 
 typedef unsigned char UCharInBytes[2];
 static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 
 int previous_indices_count = 0;
 
-void prepare_indices_data_from_model(Model* model){
-    
-    unsigned char indices_charcters[model->index_array.count*2];
-    unsigned short int count = 0;
-
-    for(int i = 0; i<model->index_array.count; i++){
-        unsigned short int* index = get_from_array(&model->index_array,i);
-        unsigned short int index_offset = (*index + previous_indices_count);  
-        UCharInBytes uchar_int_bytes;
-        uint8_to_char(index_offset,uchar_int_bytes);
-        indices_charcters[count] = uchar_int_bytes[0];
-        indices_charcters[count+1] = uchar_int_bytes[1];
-        count +=2;      
-    }
-    Encoded indices_encodes;
-    indices_encodes.data = base64_encode(indices_charcters,model->index_array.count*2,&indices_encodes.char_len);
-    indices_encodes.byte_size = model->index_array.count*2;//2 bytes is the value of unsigned char
-    add_to_array(&array_indices_encoded,&indices_encodes); 
-    
-    previous_indices_count += model->vertex_array.count;
-    
-    printf("Indices encoded: %s\n",indices_encodes.data);
-}
 
 void prepare_vertices_data_from_model(Model* model){   
     vec2 UV_values[model->vertex_array.count];
@@ -222,25 +212,28 @@ void prepare_vertices_data_from_model(Model* model){
         glm_translate(position,vertex->postion);
         glm_translate(position,selected_element->transform->position);
         
-        vertex_position_array[i][0] = vertex->postion[0];
-        vertex_position_array[i][1] = vertex->postion[1];
-        vertex_position_array[i][2] = vertex->postion[2];
+        vertex_position_array[i][0] = position[3][0];
+        vertex_position_array[i][1] = position[3][1];
+        vertex_position_array[i][2] = position[3][2];
         UV_values[i][0] = vertex->uv[0];
         UV_values[i][1] = vertex->uv[1];
     } 
 
-    for(int i = 0; i < model->index_array.count; i++){
-
-    }
     int vertex_position_char_byte_count = sizeof(float) * model->vertex_array.count*3;
     unsigned char vertex_position_char[vertex_position_char_byte_count];
     memset(vertex_position_char,0,vertex_position_char_byte_count);
     float_to_unsigned_char(vertex_position_array,vertex_position_char,vertex_position_char_byte_count);
 
+    memcpy(&vertices_uchar[offset_vertices],vertex_position_char,vertex_position_char_byte_count);
+    offset_vertices += vertex_position_char_byte_count;
+
     int uv_position_char_byte_count = sizeof(float) * model->vertex_array.count*2;
     unsigned char uv_position_char[uv_position_char_byte_count];
     memset(uv_position_char,0,uv_position_char_byte_count);
     float_to_unsigned_char(UV_values,uv_position_char,uv_position_char_byte_count);
+
+    memcpy(&uv_uchar[offset_uv],uv_position_char,uv_position_char_byte_count);
+    offset_uv += uv_position_char_byte_count;
 
     int indices_char_bytes_count = model->index_array.count*2;
     unsigned char indices_charcters[indices_char_bytes_count];
@@ -258,22 +251,11 @@ void prepare_vertices_data_from_model(Model* model){
     
     previous_indices_count += model->vertex_array.count;
 
+    memcpy(&indices_uchar[offset_indices],indices_charcters,indices_char_bytes_count);
+    offset_indices += indices_char_bytes_count;
 
-
-    unsigned char vertex_char[vertex_position_char_byte_count + uv_position_char_byte_count + indices_char_bytes_count];
-    memset(vertex_char,0,vertex_position_char_byte_count + uv_position_char_byte_count + indices_char_bytes_count);
-    memcpy(vertex_char,vertex_position_char,vertex_position_char_byte_count);
-    memcpy(&vertex_char[vertex_position_char_byte_count],uv_position_char,uv_position_char_byte_count);
-    memcpy(&vertex_char[vertex_position_char_byte_count+uv_position_char_byte_count],indices_charcters,indices_char_bytes_count);
-
-    Encoded encoded_data;
-    encoded_data.char_len = 0;    
-    encoded_data.data = base64_encode(vertex_char,sizeof(vertex_char),&encoded_data.char_len);
-    encoded_data.byte_size = sizeof(vertex_char);
-    add_to_array(&array_vertices_position_encoded,&encoded_data);
 
 }
-
 
 typedef struct CodedData{
     int buffer_bytes_count;
@@ -281,45 +263,26 @@ typedef struct CodedData{
 }CodedData;
 
 CodedData merge_all_encoded_data(){
-    int bytes_count = 0;
-    int char_count = 0;
-    for(int i = 0; i<array_vertices_position_encoded.count ; i++){
-        Encoded* vertex_encoded = get_from_array(&array_vertices_position_encoded,i);
-        bytes_count += vertex_encoded->byte_size;       
-        char_count += vertex_encoded->char_len;
-    }
+    int uchar_buffer_size = vertices_char_bytes + uv_char_bytes + indices_char_bytes;
+    unsigned char vertex_char[uchar_buffer_size];
+    memset(vertex_char,0,uchar_buffer_size);
+    memcpy(vertex_char,vertices_uchar,vertices_char_bytes);
+    memcpy(&vertex_char[vertices_char_bytes],uv_uchar,uv_char_bytes);
+    memcpy(&vertex_char[vertices_char_bytes+uv_char_bytes],indices_uchar,indices_char_bytes);
+
+    Encoded encoded_data;
+    encoded_data.char_len = 0;    
+    encoded_data.data = base64_encode(vertex_char,sizeof(vertex_char),&encoded_data.char_len);
+    encoded_data.byte_size = sizeof(vertex_char);
+
+    int bytes_count = encoded_data.byte_size ;
+    int char_count = encoded_data.char_len;
     
-    for(int i =0; i<array_UV_position_encoded.count; i++){
-        Encoded* UV_encoded = get_from_array(&array_UV_position_encoded,i);
-        char_count += UV_encoded->char_len;
-        bytes_count += UV_encoded->byte_size;
-    }
-
-    for(int i =0; i<array_indices_encoded.count; i++){
-        Encoded* index_encode = get_from_array(&array_indices_encoded,i);
-        char_count += index_encode->char_len;
-        bytes_count += index_encode->byte_size;
-    }
-
-
-
     char* new_buffer = malloc(strlen(encoded_header)+char_count+1);
     memset(new_buffer,0,strlen(encoded_header)+char_count+1);
     strcat(new_buffer,encoded_header);
 
-    for(int i = 0; i<array_vertices_position_encoded.count ; i++){
-        Encoded* vertex_encoded = get_from_array(&array_vertices_position_encoded,i);
-        strcat(new_buffer,vertex_encoded->data);
-    }
-    for(int i = 0; i<array_UV_position_encoded.count ; i++){
-        Encoded* UV_encoded = get_from_array(&array_UV_position_encoded,i);
-        strcat(new_buffer,UV_encoded->data);
-    }
-
-    for(int i =0; i<array_indices_encoded.count; i++){
-        Encoded* index_encode = get_from_array(&array_indices_encoded,i);
-        strcat(new_buffer,index_encode->data);
-    }
+    strcat(new_buffer,encoded_data.data);
 
     CodedData data;
     data.coded_buffer = new_buffer;
@@ -327,10 +290,6 @@ CodedData merge_all_encoded_data(){
 
     return data;
 }
-
-int vertex_count_merged = 0;
-int indices_count_merged = 0;
-int UV_count_merged = 0;
 
 void data_count_merged(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
@@ -340,6 +299,9 @@ void data_count_merged(ComponentDefinition* component){
         vertex_count_merged += model->vertex_array.count;
         indices_count_merged += model->index_array.count;
         UV_count_merged += model->vertex_array.count;
+        vertices_char_bytes += sizeof(float) * (model->vertex_array.count*3);
+        uv_char_bytes += sizeof(float) * (model->vertex_array.count*2);
+        indices_char_bytes += 2 * (model->index_array.count);        
     }
 }
 
@@ -350,15 +312,6 @@ void encode_vertices(ComponentDefinition* component){
         unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
         Model* model = get_from_array(actual_model_array,*mode_id);
         prepare_vertices_data_from_model(model);
-    }
-}
-
-void encode_indices(ComponentDefinition* component){
-    if(component->type == STATIC_MESH_COMPONENT){
-        StaticMeshComponent* mesh_component = component->data;
-        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = get_from_array(actual_model_array,*mode_id);
-        //prepare_indices_data_from_model(model);
     }
 }
 
@@ -373,12 +326,12 @@ int export_gltf(const char *name){
 
 
     for_each_element_components(&data_count_merged);
-    init_array(&array_vertices_position_encoded,sizeof(Encoded),vertex_count_merged);
-    init_array(&array_indices_encoded,sizeof(Encoded),indices_count_merged);
-    init_array(&array_UV_position_encoded,sizeof(Encoded),UV_count_merged);
+
+    vertices_uchar = malloc(vertices_char_bytes);
+    indices_uchar = malloc(indices_char_bytes);
+    uv_uchar = malloc(uv_char_bytes);
 
     for_each_element_components(&encode_vertices);
-    for_each_element_components(&encode_indices);
 
     CodedData coded_data = merge_all_encoded_data();
     new_data.buffers[0].uri = coded_data.coded_buffer;
@@ -412,9 +365,6 @@ int export_gltf(const char *name){
 
     LOG("Exported\n");
     data_count = 0;
-    clean_array(&array_indices_encoded);
-    clean_array(&array_vertices_position_encoded);
-    clean_array(&array_UV_position_encoded);
     vertex_count_merged = 0;
     indices_count_merged = 0;
     UV_count_merged = 0;

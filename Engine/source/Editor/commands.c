@@ -136,8 +136,8 @@ void parse_command(const char* command){
             if(command[3] == 'p'){//player
                 player1 = selected_element;            
                 add_editor_native_element("Player Controller");
+                return;
             }
-            return;
 
             if(command[2] == 'n'){
                 switch (editor_mode)
