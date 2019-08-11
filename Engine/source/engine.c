@@ -417,6 +417,24 @@ void update_translation(vec3 translation){
     }
 }
 
+void update_scale(vec3 translation){
+    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    if(!transform)
+        return;
+
+    glm_vec3_add(transform->scale,translation,transform->scale);
+    vec3 identity;
+    glm_vec3_copy(GLM_VEC3_ONE,identity);
+    glm_vec3_add(identity,translation,translation);
+
+    glm_scale(transform->model_matrix,translation);
+    
+    for(int i = 0; i<selected_element->components.count; i++){
+        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        update_component(component);
+    }
+}
+
 void rotate_element(Element* element, versor quaternion){
     mat4 model_rot_mat;
     glm_quat_mat4(quaternion,model_rot_mat);

@@ -101,7 +101,8 @@ void update_bounding_vertices_array(Model* model){
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
         
-        Model* bounding_model = get_from_array(&bounding_boxes,selected_element->id);
+        Model* bounding_model = get_from_array(&bounding_boxes,0);
+        
         update_bounding_vertices_array( bounding_model );
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         

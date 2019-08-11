@@ -89,7 +89,10 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
 int load_and_initialize_simple_model(const char* model_gltf_path);
 
+//Transform
 void update_translation(vec3 translation);
+void update_scale(vec3 translation);
+//*******
 
 void load_simple_image(const char* path);
 

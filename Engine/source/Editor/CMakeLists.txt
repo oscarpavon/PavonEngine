@@ -13,6 +13,7 @@ export_model.c
 geometry.c
 commands.c
 Textures/render.c
+HLOD_factory.c
 )
 
 set (game_source

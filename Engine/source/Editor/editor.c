@@ -117,7 +117,7 @@ void editor_generate_and_add_cube_element(){
 
 
 }
-
+#include "HLOD_factory.h"
 void add_editor_native_element(const char* native_element_name){
     
     if( strcmp("Camera", native_element_name) == 0 ){        
@@ -180,7 +180,8 @@ void add_editor_native_element(const char* native_element_name){
         glm_vec3_copy(VEC3(1,1,1),box_component.bounding_box[0]);
         glm_vec3_copy(VEC3(-1,-1,-1),box_component.bounding_box[1]);
         add_component_to_selected_element(sizeof(HLODBoxComponent), &box_component, COMPONENT_HLOD_BOX);
-
+        HLOD_clusters[HLOD_cluster_count] = selected_element;
+        HLOD_cluster_count++;
     }
 }
 

@@ -35,7 +35,7 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
             menu->show = false;
         }
         if(key_released(&input.J)){
-            if(menu->element_count > menu->actual_element_select)
+            if(menu->element_count >= menu->actual_element_select)
                 menu->actual_element_select++;
             else
             {

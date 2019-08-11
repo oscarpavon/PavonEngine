@@ -254,6 +254,7 @@ void init_input(){
     
 }
 void input_change_mode(){
+   
     if(key_released(&input.G)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
     }
@@ -264,6 +265,7 @@ void input_change_mode(){
     if(key_released(&input.V)){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
     }
+
 }
 
 
@@ -295,6 +297,7 @@ void grab_mode(){
         }
     }
     input_change_mode();
+        
 
     if(editor_mode == EDITOR_DEFAULT_MODE){     
         
@@ -484,6 +487,48 @@ void navigate_mode(){
     
 }
 
+void scale_mode(){
+    
+    input_change_mode();
+
+    if(editor_mode == EDITOR_DEFAULT_MODE){     
+        
+        vec3 move;
+        bool update = false;
+                  
+            if(input.J.pressed){
+                glm_vec3_copy( VEC3(0,-move_object_value,0) , move );
+                update = true;
+            }
+            if(input.K.pressed){
+                glm_vec3_copy( VEC3(0,move_object_value,0) , move );
+                update = true;            }
+            if(input.D.pressed){
+                glm_vec3_copy( VEC3(-move_object_value,0,0) , move );
+                update = true;            
+            }
+            if(input.A.pressed){
+                glm_vec3_copy( VEC3(move_object_value,0,0) , move );
+                update = true;            
+            }
+            if(input.E.pressed){
+                glm_vec3_copy( VEC3(0,0,move_object_value) , move );
+                update = true;            
+            }
+            if(input.Q.pressed){
+                glm_vec3_copy( VEC3(0,0,-move_object_value) , move );
+                update = true;            
+            }
+            
+            if(update)
+                update_scale(move);
+         
+            
+            
+            
+        }
+}
+
 void default_mode(){
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
         return;
@@ -493,6 +538,11 @@ void default_mode(){
 
     input_change_mode();
 
+        
+    if(key_released(&input.S)){
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
+    }
+    //edit in blender
     if(key_released(&input.TAB)){
         if(selected_element){
             if(selected_element->editor_data.has_blend_file){
@@ -589,6 +639,7 @@ void rotate_input_mode(){
     if(key_released(&input.X)){
 
     }
+
     if(input.SHIFT.pressed){
         if(key_released(&input.J)){
             rotate_editor_element(selected_element, -5, (vec3){0,0,1});
@@ -676,13 +727,7 @@ void update_input(){
             break;
         case EDITOR_NAVIGATE_MODE:
             navigate_mode();
-            break;
-        case EDITOR_GRAB_MODE:
-            grab_mode();
-            break;
-        case EDITOR_ROTATE_MODE:
-            //rotate_input_mode();
-            break;
+            break;        
         case EDITOR_PLAY_MODE:
             input_mode_play();
             break;
@@ -707,7 +752,7 @@ void update_input(){
         grab_mode();            
         break;
     case EDITOR_SUB_MODE_SCALE:
-        
+        scale_mode();
         break;
     case EDITOR_SUB_MODE_ROTATE:
         rotate_input_mode();
