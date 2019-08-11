@@ -25,7 +25,7 @@
 
 #include "geometry.h"
 
-#include "Textures/render.h"
+#include "Textures/texture_factory.h"
 
 
 Array editor_models;
@@ -64,14 +64,7 @@ void editor_message(const char* message){
 }
 
 void editor_add_HLOD_element(){
-    if(export_gltf("../assets/HLOD/out.gltf") == -1){
-        LOG("Not exported\n");
-        return;
-    }
     
-    system("blender --python ../scripts/Blender/import.py");
-
-
     new_empty_element();
     strcpy(selected_element->name, "HLOD01");              
     add_transform_component_to_selected_element();

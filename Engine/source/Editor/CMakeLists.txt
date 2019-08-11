@@ -12,7 +12,7 @@ editor_mode.c
 export_model.c
 geometry.c
 commands.c
-Textures/render.c
+Textures/texture_factory.c
 HLOD_factory.c
 )
 

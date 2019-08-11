@@ -26,6 +26,15 @@ void generate_HLODS(){
        current_HLOD_box_component = get_component_from_element(elmeent,COMPONENT_HLOD_BOX);
        for_each_element_components(check_is_inside);
     }   
+    
+    if(export_gltf("../assets/HLOD/out.gltf") == -1){
+        LOG("Not exported\n");
+        return;
+    }
+    //system("blender --python ../scripts/Blender/import.py");
 
+    merge_textures();
+
+    editor_add_HLOD_element();
 
 }

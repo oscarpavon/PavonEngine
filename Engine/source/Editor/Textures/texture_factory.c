@@ -1,18 +1,37 @@
 
-#include "render.h"
+#include "texture_factory.h"
 #include "../../engine.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../third_party/stb_image_write.h"
 #include "../windows.h"
-
+#include "../HLOD_factory.h"
 Model *uv_model;
 GLuint renderedTexture;
-void *export_pixels;
+
 GLint old_fbo;
 Model *fireman;
 Model *UV_true;
 
-void draw()
+void * textures_pixels[2];
+int render_texture_count = 0; 
+
+int offsetU = 0;
+int offsetV = 0;
+
+Array model_in_UV_form;
+
+void export_texture(){
+    if(textures_pixels[0] == NULL){
+        LOG("Texture not exported\n");
+        return;
+    }
+    stbi_write_png("test.png", 512, 512, 3, textures_pixels[0], 512 * 3);
+}
+
+
+
+
+void draw_texture(int size,int atlas_texture_size)
 {
     glBindBuffer(GL_ARRAY_BUFFER, uv_model->vertex_buffer_id);
 
@@ -35,12 +54,12 @@ void draw()
     mat4 projection;
     glm_mat4_identity(projection);
 
-    glm_ortho(0, 512, 512, 0, 0, 1, projection);
+    glm_ortho(0, atlas_texture_size, atlas_texture_size, 0, 0, 1, projection);
     //glm_mat4_inv(projection,projection);
 
-    glm_scale(scale, (vec3){512, 512, 0});
+    glm_scale(scale, (vec3){size, size, 0});
 
-    glm_translate(position_mat, (vec3){0, 0, 0});
+    glm_translate(position_mat, (vec3){offsetU, offsetV, 0});
 
     mat4 model;
     mat4 rotation;
@@ -63,9 +82,24 @@ void draw()
     if (uv_model->index_array.count == 0)
         LOG("Index is equal to 0, model not render\n");
     glDrawElements(GL_TRIANGLES, uv_model->index_array.count, GL_UNSIGNED_SHORT, (void *)0);
+
+    offsetU += size;
 }
 
-void render_to_texture()
+
+
+void draw_textures(int per_texture_size, int atlas_size){
+    for(int i = 0; i<model_in_UV_form.count; i++)
+    {
+        Model** ppModel = get_from_array(&model_in_UV_form,i);
+        Model* model = ppModel[0];
+        uv_model = model;
+        draw_texture(per_texture_size,atlas_size);
+    }
+    
+}
+
+void render_to_texture(int size)
 {
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
 
@@ -79,7 +113,7 @@ void render_to_texture()
     glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
     // Give an empty image to OpenGL ( the last "0" )
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -87,7 +121,7 @@ void render_to_texture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 512, 512);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, size, size);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                            renderedTexture, 0);
@@ -96,29 +130,28 @@ void render_to_texture()
 
     glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
-    glViewport(0, 0, 512, 512); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+    glViewport(0, 0, size, size); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
     glClearColor(0.3, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    uv_model = UV_true;
 
     //draw_editor_viewport();
     glClear(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    draw();
+        draw_textures(256,size);
     glEnable(GL_CULL_FACE);
 
-    export_pixels = malloc(512 * 512 * 3);
-    glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, export_pixels);
+    
+    textures_pixels[render_texture_count] = malloc(size * size * 3);
 
-    stbi_write_png("test.png", 512, 512, 3, export_pixels, 512 * 3);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, textures_pixels[render_texture_count]);
 
     glBindFramebuffer(GL_FRAMEBUFFER, old_fbo);
     glViewport(0, 0, actual_window_width, actual_window_height);
 }
+
 
 void init_UV_draw(Model *model)
 {
@@ -141,7 +174,24 @@ void init_UV_draw(Model *model)
     selected_model->texture.id = model->texture.id;
     uv_model = fireman;
     UV_true = selected_model;
-    render_to_texture();
+
+    add_to_array(&model_in_UV_form,&selected_model);
+
+}
+
+void add_model_to_UV_proccessing(ComponentDefinition* component){
+    if(component->type == STATIC_MESH_COMPONENT){
+        StaticMeshComponent* mesh = component->data;
+        unsigned int* id = get_from_array(&mesh->meshes, 1);
+        Model* model = get_from_array(actual_model_array,*id);
+        init_UV_draw(model);
+    }
+}
+void init_model_to_draw_texture(){
+    if(!model_in_UV_form.initialized)
+        init_array(&model_in_UV_form,sizeof(Model*),20);
+    
+    for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,add_model_to_UV_proccessing);
 }
 
 bool initialized = false;
@@ -156,7 +206,7 @@ void draw_UV()
                 if (!uv_model)
                 {
                     initialized = true;
-                    init_UV_draw(selected_model);
+                    //init_UV_draw(selected_model);
                 }
                 else
                 {
@@ -198,4 +248,11 @@ void draw_UV()
     if (uv_model->index_array.count == 0)
         LOG("Index is equal to 0, model not render\n");
     glDrawElements(GL_TRIANGLES, uv_model->index_array.count, GL_UNSIGNED_SHORT, (void *)0);
+}
+
+void merge_textures(){
+    init_model_to_draw_texture();
+    render_to_texture(512);
+    export_texture();
+    free(textures_pixels[0]);
 }
