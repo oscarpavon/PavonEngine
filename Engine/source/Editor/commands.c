@@ -51,6 +51,35 @@ char first_char_command;
 char* command_array_pointer;
 char* argument_array_pointer;
 
+void parse_command_with_len(const char* command, int len){
+    
+}
+
+void parse_commmand_with_one_parameter(const char* command, float parameter){
+    if(strcmp(command,"cluster") == 0){
+        
+        add_editor_native_element("HLOD Cluster");
+        update_scale(VEC3(parameter,parameter,parameter));
+
+        
+        return;
+    }
+
+}
+
+void command_while_not_space(const char* command){
+    int command_len = strlen(command);
+    for(int i = 0; i<command_len; i++){
+        if(command[i] == ' '){
+            char new_command_text[i];
+            memcpy(new_command_text,command,i);
+            LOG("%s\n",new_command_text);
+            float parameter = atof(&command[i+1]);
+            parse_commmand_with_one_parameter(new_command_text,parameter);
+        }
+    }
+}
+
 void parse_command(const char* command){
     first_char_command = command[1];
 
@@ -63,7 +92,9 @@ void parse_command(const char* command){
         editor_generate_and_add_cube_element();
         return;
     }
+    command_while_not_space(&command[1]);
 
+    
     if(strcmp(&command[1],"hlod") == 0){
         generate_HLODS();
         editor_add_HLOD_element();
