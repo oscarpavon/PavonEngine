@@ -95,6 +95,7 @@ void draw_textures(int per_texture_size, int atlas_size){
         Model* model = ppModel[0];
         uv_model = model;
         draw_texture(per_texture_size,atlas_size);
+        
     }
     
 }
@@ -132,7 +133,7 @@ void render_to_texture(int size)
 
     glViewport(0, 0, size, size); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-    glClearColor(0.3, 0, 0, 1);
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //draw_editor_viewport();
@@ -196,13 +197,24 @@ void init_model_to_draw_texture(){
 
 bool initialized = false;
 
-void scale_UV(float size, Model* model){
+void scale_UV(float size, Model* model, vec2 UV_offset){
     for (int i = 0; i < model->vertex_array.count; i++)
     {
         Vertex *vertex = get_from_array(&model->vertex_array, i);
         vec3 position;
-        glm_vec3_copy(VEC3(vertex->uv[0], vertex->uv[1], 0), position);
+        glm_vec3_copy(VEC3(vertex->uv[0]+UV_offset[0], vertex->uv[1]+UV_offset[1], 0), position);
         glm_vec3_scale(position,size,position);
+        vertex->uv[0] = position[0];
+        vertex->uv[1] = position[1]*-1;
+    }
+}
+void translate_UV(vec3 tranlation, Model* model, vec2 UV_offset){
+    for (int i = 0; i < model->vertex_array.count; i++)
+    {
+        Vertex *vertex = get_from_array(&model->vertex_array, i);
+        vec3 position;
+        glm_vec3_copy(VEC3(vertex->uv[0]+UV_offset[0], vertex->uv[1]+UV_offset[1], 0), position);
+        glm_vec3_add(position,tranlation,position);
         vertex->uv[0] = position[0];
         vertex->uv[1] = position[1];
     }
@@ -211,7 +223,7 @@ void scale_UV(float size, Model* model){
 void draw_UV()
 {
     if(!initialized){
-    scale_UV(0.5,selected_model);
+    scale_UV(0.5,selected_model,(vec2){0,0});
     init_UV_draw(selected_model);
     initialized = true;
     }

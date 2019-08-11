@@ -62,7 +62,23 @@
 			"ios": "c",
 			"random": "c",
 			"gizmos.h": "c",
-			"ftheader.h": "c"
+			"ftheader.h": "c",
+			"hash_map": "c",
+			"bitset": "c",
+			"valarray": "c",
+			"__hash_table": "c",
+			"__split_buffer": "c",
+			"__tree": "c",
+			"deque": "c",
+			"iterator": "c",
+			"list": "c",
+			"map": "c",
+			"queue": "c",
+			"set": "c",
+			"stack": "c",
+			"string": "c",
+			"unordered_map": "c",
+			"unordered_set": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

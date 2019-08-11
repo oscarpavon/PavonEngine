@@ -88,6 +88,11 @@ void editor_add_HLOD_element(){
     new_empty_model();
     duplicate_model_data(selected_model, original);
     hlod->model = selected_model;
+    Texture new_texture;
+    memset(&new_texture,0,sizeof(Texture));
+    new_texture.image = load_image("../binaries/test.png");
+    load_model_texture_to_gpu(&new_texture); 
+    hlod->model->texture.id = new_texture.id;
 }
 
 void editor_generate_and_add_cube_element(){

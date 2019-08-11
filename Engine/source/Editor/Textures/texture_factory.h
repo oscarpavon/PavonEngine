@@ -13,5 +13,7 @@ void render_to_texture(int size);
 
 void init_model_to_draw_texture();
 
-void scale_UV(float size, Model* model);
+void scale_UV(float size, Model* model, vec2 UV_offset);
+
+void translate_UV(vec3 tranlation, Model* model, vec2 UV_offset);
 #endif // !TEXTURES_RENDER_H
