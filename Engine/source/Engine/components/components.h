@@ -15,7 +15,8 @@ typedef enum ComponentType{
     STATIC_MESH_COMPONENT,
     COMPONENT_SKINNED_MESH,
     LEVEL_OF_DETAIL_COMPONENT,
-    COMPONENT_HLOD
+    COMPONENT_HLOD,
+    COMPONENT_HLOD_BOX
 }ComponentType;
 
 
@@ -96,6 +97,11 @@ typedef struct HLODComponent{
     Array childs;//HLOD childs
     
 }HLODComponent;
+
+typedef struct HLODBoxComponent{
+    vec3 center;
+    vec3 bounding_box[2];     
+}HLODBoxComponent;
 
 typedef struct LevelOfDetailComponent{
     Array meshes;

@@ -100,6 +100,7 @@ void clean_component_value(ComponentDefinition* component){
     }
 }
 
+
 void update_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -127,10 +128,21 @@ void update_component(ComponentDefinition* element_component){
         }
         break;
      case TRASNFORM_COMPONENT:{
-        
-
+    
         break;
-    }      
+    }   
+
+    case COMPONENT_HLOD_BOX:{
+        HLODBoxComponent* mesh_component = element_component->data;
+        glm_vec3_copy(VEC3(1,1,1),mesh_component->bounding_box[0]);
+        glm_vec3_copy(VEC3(-1,-1,-1),mesh_component->bounding_box[1]);
+        glm_aabb_transform(mesh_component->bounding_box,
+                                element_component->parent->transform->model_matrix,
+                                mesh_component->bounding_box);
+        glm_aabb_center(mesh_component->bounding_box,mesh_component->center);
+        break;
+    }
+       
     default:
         break;
     }

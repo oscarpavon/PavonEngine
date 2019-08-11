@@ -175,6 +175,11 @@ void add_editor_native_element(const char* native_element_name){
         new_empty_element();
         strcpy(selected_element->name, "HLOD Cluster");
         add_transform_component_to_selected_element();
+        HLODBoxComponent box_component;
+        memset(&box_component,0,sizeof(HLODBoxComponent));
+        glm_vec3_copy(VEC3(1,1,1),box_component.bounding_box[0]);
+        glm_vec3_copy(VEC3(-1,-1,-1),box_component.bounding_box[1]);
+        add_component_to_selected_element(sizeof(HLODBoxComponent), &box_component, COMPONENT_HLOD_BOX);
 
     }
 }

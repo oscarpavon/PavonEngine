@@ -11,7 +11,7 @@ int init_array(Array * array, size_t element_bytes_size, int count){
     if(array->initialized != true){
        
     }else{
-        LOG("Array already initialized\n");
+        //LOG("Array already initialized\n");
         return -1;
     }  
     array->count = 0;

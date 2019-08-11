@@ -42,12 +42,22 @@ void add_debug_line(vec3 start, vec3 end){
 
 
 void create_bounding_vertices(){
-        StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-        if(!mesh_component){
-            LOG("No static mesh component\n");
+    float* bounding_box = NULL;
+    StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    if(mesh_component){
+        bounding_box = mesh_component->bounding_box[0];
+    }
+    if(!mesh_component){
+        
+        HLODBoxComponent* HLOD_box = get_component_from_selected_element(COMPONENT_HLOD_BOX);
+        if(!HLOD_box){
+            LOG("No valid component for draw bounding box\n");
             return;
         }
-        create_cube_vertex_geometry(mesh_component->bounding_box[0]);          
+        bounding_box = HLOD_box->bounding_box[0];
+        
+    }
+    create_cube_vertex_geometry(bounding_box);          
 }
 
 bool bounding_box_initialized = false;
@@ -58,7 +68,7 @@ void init_selected_object_bounding_box_vertices(){
 
         new_empty_model();
         
-        selected_model->id = actual_model_array->count-1;     
+        selected_model->id = actual_model_array->count-1;   
        
     
         create_cube_indices();
@@ -83,6 +93,7 @@ void update_bounding_vertices_array(Model* model){
     
     clean_array(&box->vertex_array);
     selected_model = box;
+    
     create_bounding_vertices();
 }
 
@@ -90,26 +101,12 @@ void update_bounding_vertices_array(Model* model){
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
         
-        Model* bounding_model = get_from_array(&bounding_boxes,bounding_boxes.count-1);
+        Model* bounding_model = get_from_array(&bounding_boxes,selected_element->id);
         update_bounding_vertices_array( bounding_model );
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         
-        mat4 model;
-        glm_mat4_identity(model);
-        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id, model);
-        GLint uniform_color = glGetUniformLocation(bounding_model->shader,"color");
-        
-        glUniform4fv(uniform_color, 1, (vec4){0.6,1,0,1});
-        GLenum error;
-        error = glGetError();
-        if(error != GL_NO_ERROR){
-            LOG("[X] Send uniform error, Error %08x \n",error);
-        }
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,bounding_model->index_buffer_id);
+        draw_model_like(bounding_model,GL_LINES,(vec4){0,1,0.2,1});
         glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
-
-        glDrawElements(GL_LINES,bounding_model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
-        
         return;
     }
     init_selected_object_bounding_box_vertices();
