@@ -64,7 +64,10 @@ void editor_message(const char* message){
 }
 
 void editor_add_HLOD_element(){
-    export_gltf("out.gltf");
+    if(export_gltf("out.gltf") == -1){
+        LOG("Not exported\n");
+        return;
+    }
     
     new_empty_element();
     strcpy(selected_element->name, "HLOD01");              

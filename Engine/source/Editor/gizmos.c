@@ -40,8 +40,10 @@ void add_debug_line(vec3 start, vec3 end){
     glm_vec3_copy(end,pnew_line->end);
 }
 
+bool bounding_box_initialized = false;
+bool can_draw_box = true;
 
-void create_bounding_vertices(){
+int create_bounding_vertices(){
     float* bounding_box = NULL;
     StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);
     if(mesh_component){
@@ -52,15 +54,19 @@ void create_bounding_vertices(){
         HLODBoxComponent* HLOD_box = get_component_from_selected_element(COMPONENT_HLOD_BOX);
         if(!HLOD_box){
             LOG("No valid component for draw bounding box\n");
-            return;
+            can_draw_box = false;
+            return -1;
+        }else{
+              can_draw_box = true;
         }
         bounding_box = HLOD_box->bounding_box[0];
         
     }
-    create_cube_vertex_geometry(bounding_box);          
+    create_cube_vertex_geometry(bounding_box);  
+    return 0;        
 }
 
-bool bounding_box_initialized = false;
+
 void init_selected_object_bounding_box_vertices(){
     if(bounding_box_initialized == false && selected_element != NULL) {
         Array* prev_model_array = actual_model_array;
@@ -73,7 +79,14 @@ void init_selected_object_bounding_box_vertices(){
     
         create_cube_indices();
 
-        create_bounding_vertices();
+        if(create_bounding_vertices() == -1){
+            can_draw_box = false;
+            return;
+        }else
+        {
+            can_draw_box = true;
+        }
+        
 
         init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
         init_static_gpu_index_buffer(&selected_model->index_array, &selected_model->index_buffer_id);
@@ -104,6 +117,8 @@ void draw_bounding_box(){
         Model* bounding_model = get_from_array(&bounding_boxes,0);
         
         update_bounding_vertices_array( bounding_model );
+        if(can_draw_box == false)
+            return;
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         
         draw_model_like(bounding_model,GL_LINES,(vec4){0,1,0.2,1});

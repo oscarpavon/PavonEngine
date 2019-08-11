@@ -603,13 +603,6 @@ void default_mode(){
         return; 
     }
            
-    can_open_text_menu_with_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
-    can_open_text_menu_with_key(&menu_editor_element_list,&input.L,NULL);
-    can_open_text_menu_with_key(&menu_add_texture,&input.T,GLFW_MOD_SHIFT); 
-
-    
-    can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
-
     if(key_released(&input.Q)){
         if(controlling_camera_component){
             controlling_camera_component = false;

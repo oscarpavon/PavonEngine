@@ -343,8 +343,11 @@ void encode_vertices(ComponentDefinition* component){
     }
 }
 
+#include "HLOD_factory.h"
 
 int export_gltf(const char *name){
+    if(array_elements_for_HLOD_generation.count == 0)
+        return -1;
     memset(&box,0,sizeof(box));
 
     load_mesh_for_proccess("test/export_template_with_uv.gltf");
@@ -353,14 +356,14 @@ int export_gltf(const char *name){
     cgltf_data new_data;
     memcpy(&new_data, data1, sizeof(cgltf_data));
 
-
-    for_each_element_components(&data_count_merged);
+    
+    for_each_element_components_in_array(&array_elements_for_HLOD_generation,&data_count_merged);
 
     vertices_uchar = malloc(vertices_char_bytes);
     indices_uchar = malloc(indices_char_bytes);
     uv_uchar = malloc(uv_char_bytes);
 
-    for_each_element_components(&encode_vertices);
+    for_each_element_components_in_array(&array_elements_for_HLOD_generation,&encode_vertices);
 
     CodedData coded_data = merge_all_encoded_data();
     new_data.buffers[0].uri = coded_data.coded_buffer;

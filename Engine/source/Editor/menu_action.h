@@ -35,7 +35,7 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
             menu->show = false;
         }
         if(key_released(&input.J)){
-            if(menu->element_count >= menu->actual_element_select)
+            if(menu->element_count > menu->actual_element_select)
                 menu->actual_element_select++;
             else
             {
@@ -44,7 +44,7 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
             
         }
         if(key_released(&input.K)){
-            if(menu->actual_element_select >= 1)
+            if(menu->actual_element_select >= 1 && menu->element_count > 0)
                 menu->actual_element_select--;
             else
             {
@@ -68,6 +68,7 @@ void new_text_menu_simple(const char* name, TextMenu* new_menu){
     menu.show = false;
     menu.open_key = new_menu->open_key;
     menu.mods_key = new_menu->mods_key;
+    menu.element_count = 0;
     strcpy(menu.name,name);
     add_to_array(&menus,&menu);
 }
@@ -83,6 +84,7 @@ void new_text_menu(const char* name, Key* open_key, int mods_key,
     menu.show = false;
     menu.open_key = open_key;
     menu.mods_key = mods_key;
+    menu.element_count = 0;
     strcpy(menu.name,name);
     add_to_array(&menus,&menu);
 }
@@ -312,7 +314,7 @@ void menu_action_draw_editor_elements(TextMenu* menu){
     if(editor_elements.count == 0){
         draw_element_text_list(menu,"No Elements",0);
     }
-
+    menu->element_count = 0;
     for(int i = 0; i < editor_elements.count ; i++){
         Element* element = (Element*)get_from_array(&editor_elements,i);
         char* name = element->name;
@@ -322,6 +324,7 @@ void menu_action_draw_editor_elements(TextMenu* menu){
             else
                 name = element->name;
         }
+        menu->element_count++;
         draw_element_text_list(menu,name,i);
     }
        

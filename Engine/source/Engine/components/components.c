@@ -351,3 +351,17 @@ void for_each_element_components(void(*do_to)(ComponentDefinition*)){
         }
     }
 }
+
+void for_each_element_components_in_array(Array* array, void(*do_to)(ComponentDefinition*)){
+     for(int i = 0; i < array->count ; i++){
+        Element* element = get_from_array(array,i);
+        if(!element->proccess)
+            continue;
+        if(element->components.count > 0){
+            for(int o = 0; o < element->components.count ; o++){
+                ComponentDefinition* component = get_from_array(&element->components,o);
+                do_to(component);
+            }
+        }
+    }
+}

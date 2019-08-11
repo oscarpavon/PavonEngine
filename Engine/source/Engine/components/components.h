@@ -131,4 +131,6 @@ void init_element_component(ComponentDefinition* element_component);
 void for_each_element_components(void(*do_to)(ComponentDefinition*));
 
 void component_add_HLOD_to_select_element();
+
+void for_each_element_components_in_array(Array* array, void(*do_to)(ComponentDefinition*));
 #endif
