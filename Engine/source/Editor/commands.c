@@ -141,6 +141,10 @@ void parse_command(const char* command){
         return;
     }
     break;
+    case 'u':{
+        isDrawUV = true;
+        break;
+    }
     case 'e':
     {
         export_gltf("../assets/HLOD/out.gltf");

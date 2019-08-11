@@ -121,7 +121,7 @@ void draw_bounding_box(){
             return;
         update_gpu_vertex_data(&bounding_model->vertex_array,bounding_model->vertex_buffer_id);
         
-        draw_model_like(bounding_model,GL_LINES,(vec4){0,1,0.2,1});
+        draw_model_with_color(bounding_model,GL_LINES,(vec4){0,1,0.2,1});
         glDrawArrays(GL_POINTS, 0, bounding_model->vertex_array.count);
         return;
     }

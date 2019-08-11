@@ -75,12 +75,20 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
     }    
 
 }
-void draw_model_like(Model* model, GLenum mode, vec4 color){
+void draw_model_with_color(Model* model, GLenum mode, vec4 color){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
     GLint uniform_color = get_uniform_location(model->shader,"color");
     
     glUniform4fv(uniform_color, 1, color);
     check_error("color matrix error");
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
+    
+    glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
+}
+
+void draw_model_like(Model* model, GLenum mode){
+    update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
     
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);

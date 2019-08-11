@@ -417,7 +417,8 @@ void draw_editor_viewport(){
     glClearColor(1,0.5,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //draw_UV();
+    if(isDrawUV)
+        draw_UV();
     
 
     if(controlling_camera_component){

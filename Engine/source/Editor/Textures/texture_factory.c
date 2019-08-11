@@ -155,7 +155,7 @@ void render_to_texture(int size)
 
 void init_UV_draw(Model *model)
 {
-    fireman = model;
+
     new_empty_model();
     init_array(&selected_model->vertex_array, sizeof(Vertex), model->vertex_array.count);
     for (int i = 0; i < model->vertex_array.count; i++)
@@ -172,11 +172,11 @@ void init_UV_draw(Model *model)
 
     selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
     selected_model->texture.id = model->texture.id;
-    uv_model = fireman;
-    UV_true = selected_model;
+    uv_model = selected_model;
 
+    if(model_in_UV_form.initialized)
     add_to_array(&model_in_UV_form,&selected_model);
-
+    
 }
 
 void add_model_to_UV_proccessing(ComponentDefinition* component){
@@ -196,36 +196,25 @@ void init_model_to_draw_texture(){
 
 bool initialized = false;
 
+void scale_UV(float size, Model* model){
+    for (int i = 0; i < model->vertex_array.count; i++)
+    {
+        Vertex *vertex = get_from_array(&model->vertex_array, i);
+        vec3 position;
+        glm_vec3_copy(VEC3(vertex->uv[0], vertex->uv[1], 0), position);
+        glm_vec3_scale(position,size,position);
+        vertex->uv[0] = position[0];
+        vertex->uv[1] = position[1];
+    }
+}
+
 void draw_UV()
 {
-    if (!uv_model)
-    {
-        if (selected_element)
-        {
-            if (selected_model->texture.id > 0)
-                if (!uv_model)
-                {
-                    initialized = true;
-                    //init_UV_draw(selected_model);
-                }
-                else
-                {
-                    return;
-                }
-        }
-        else
-        {
-            return;
-        }
+    if(!initialized){
+    scale_UV(0.5,selected_model);
+    init_UV_draw(selected_model);
+    initialized = true;
     }
-    if (!uv_model)
-        return;
-    if (!uv_model->vertex_array.initialized)
-    {
-
-        return;
-    }
-
     glBindBuffer(GL_ARRAY_BUFFER, uv_model->vertex_buffer_id);
 
     glUseProgram(uv_model->shader);
@@ -237,17 +226,20 @@ void draw_UV()
 
     glBindTexture(GL_TEXTURE_2D, uv_model->texture.id);
     GLint mvp_uniform = glGetUniformLocation(uv_model->shader, "MVP");
-    //glDrawArrays(GL_POINTS, 0, uv_model->vertex_array.count);
-    //draw_simgle_model(uv_model);
+
     mat4 mvp;
     glm_mat4_identity(mvp);
     glm_rotate(mvp, 180, VEC3(0, 1, 0));
     glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uv_model->index_buffer_id);
 
+    glm_mat4_copy(mvp,uv_model->model_mat);
+
     if (uv_model->index_array.count == 0)
         LOG("Index is equal to 0, model not render\n");
     glDrawElements(GL_TRIANGLES, uv_model->index_array.count, GL_UNSIGNED_SHORT, (void *)0);
+    //glDrawArrays(GL_LINE_STRIP,0,uv_model->vertex_array.count);
+    
 }
 
 void merge_textures(){

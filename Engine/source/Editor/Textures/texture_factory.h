@@ -12,4 +12,6 @@ void merge_textures();
 void render_to_texture(int size);
 
 void init_model_to_draw_texture();
+
+void scale_UV(float size, Model* model);
 #endif // !TEXTURES_RENDER_H

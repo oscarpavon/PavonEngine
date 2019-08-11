@@ -88,4 +88,6 @@ char opened_file_name[20];
 
 bool controlling_camera_component;
 
+bool isDrawUV;
+
 #endif
