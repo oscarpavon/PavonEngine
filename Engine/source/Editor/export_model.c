@@ -357,13 +357,13 @@ int export_gltf(const char *name){
     memcpy(&new_data, data1, sizeof(cgltf_data));
 
     
-    for_each_element_components_in_array(&array_elements_for_HLOD_generation,&data_count_merged);
+    for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,&data_count_merged);
 
     vertices_uchar = malloc(vertices_char_bytes);
     indices_uchar = malloc(indices_char_bytes);
     uv_uchar = malloc(uv_char_bytes);
 
-    for_each_element_components_in_array(&array_elements_for_HLOD_generation,&encode_vertices);
+    for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,&encode_vertices);
 
     CodedData coded_data = merge_all_encoded_data();
     new_data.buffers[0].uri = coded_data.coded_buffer;

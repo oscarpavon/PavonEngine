@@ -352,9 +352,10 @@ void for_each_element_components(void(*do_to)(ComponentDefinition*)){
     }
 }
 
-void for_each_element_components_in_array(Array* array, void(*do_to)(ComponentDefinition*)){
+void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(ComponentDefinition*)){
      for(int i = 0; i < array->count ; i++){
-        Element* element = get_from_array(array,i);
+        Element** ppElement = get_from_array(array,i);
+        Element* element = ppElement[0];
         if(!element->proccess)
             continue;
         if(element->components.count > 0){

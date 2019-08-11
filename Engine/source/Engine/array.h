@@ -8,6 +8,7 @@
 
 typedef struct Array{
     bool initialized;
+    bool isPointerToPointer;
     int element_capacity;
     size_t actual_bytes_size;
     size_t count;

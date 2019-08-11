@@ -64,11 +64,14 @@ void editor_message(const char* message){
 }
 
 void editor_add_HLOD_element(){
-    if(export_gltf("out.gltf") == -1){
+    if(export_gltf("../assets/HLOD/out.gltf") == -1){
         LOG("Not exported\n");
         return;
     }
     
+    system("blender --python ../scripts/Blender/import.py");
+
+
     new_empty_element();
     strcpy(selected_element->name, "HLOD01");              
     add_transform_component_to_selected_element();
@@ -86,7 +89,8 @@ void editor_add_HLOD_element(){
     glm_aabb_center(hlod->bounding_box,hlod->center);
     hlod->has_childs_HLOD = false;
 
-    load_and_initialize_simple_model("../binaries/out.gltf");
+    
+    load_and_initialize_simple_model("../assets/HLOD/out.gltf");
     Model* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);

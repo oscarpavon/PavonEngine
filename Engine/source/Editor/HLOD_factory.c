@@ -16,7 +16,8 @@ void check_is_inside(ComponentDefinition* component_definition){
 
 void generate_HLODS(){
     if(!array_elements_for_HLOD_generation.initialized){
-        init_array(&array_elements_for_HLOD_generation,sizeof(void*),30);
+        init_array(&array_elements_for_HLOD_generation,sizeof(Element*),30);
+        array_elements_for_HLOD_generation.isPointerToPointer = true;
     }
     clean_array(&array_elements_for_HLOD_generation);
 
