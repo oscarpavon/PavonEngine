@@ -20,6 +20,13 @@ typedef struct Element{
 #endif
 }Element;
 
+
+typedef struct Sphere{
+    vec3 center;
+    float radius;
+    float volume;
+}Sphere;
+
 typedef struct PlayerStart{
     vec3 position;
     versor rotation; 

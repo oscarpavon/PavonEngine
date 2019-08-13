@@ -10,6 +10,10 @@
 
 #include <ctype.h>
 
+
+#include "HLOD/HLOD_factory.h"
+
+
 int data_count = 0;
 cgltf_data* data_array[20];
 
@@ -342,8 +346,6 @@ void encode_vertices(ComponentDefinition* component){
         
     }
 }
-
-#include "HLOD_factory.h"
 
 int export_gltf(const char *name){
     if(array_elements_for_HLOD_generation.count == 0)

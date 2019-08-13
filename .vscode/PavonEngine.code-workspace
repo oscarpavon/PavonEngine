@@ -78,7 +78,8 @@
 			"stack": "c",
 			"string": "c",
 			"unordered_map": "c",
-			"unordered_set": "c"
+			"unordered_set": "c",
+			"ctype.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

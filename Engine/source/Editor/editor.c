@@ -27,6 +27,7 @@
 
 #include "Textures/texture_factory.h"
 
+#include "HLOD/HLOD_factory.h"
 
 Array editor_models;
 Array editor_textures;
@@ -122,7 +123,7 @@ void editor_generate_and_add_cube_element(){
 
 
 }
-#include "HLOD_factory.h"
+
 void add_editor_native_element(const char* native_element_name){
     
     if( strcmp("Camera", native_element_name) == 0 ){        

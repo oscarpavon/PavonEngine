@@ -6,6 +6,7 @@ typedef struct Element Element;
 #include "../../third_party/cglm/cglm.h"
 #include "../array.h"
 #include "../../skeletal.h"
+#include "../../Engine/types.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
@@ -102,6 +103,11 @@ typedef struct HLODBoxComponent{
     vec3 center;
     vec3 bounding_box[2];     
 }HLODBoxComponent;
+
+typedef struct HLODSphereComponent{
+    Sphere sphere;
+    float fill_factor;
+}HLODSphereComponent;
 
 typedef struct LevelOfDetailComponent{
     Array meshes;

@@ -339,7 +339,7 @@ void component_add_HLOD_to_select_element(){
 
 
 void for_each_element_components(void(*do_to)(ComponentDefinition*)){
-     for(int i = 0; i < actual_elements_array->count ; i++){
+    for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element = get_from_array(actual_elements_array,i);
         if(!element->proccess)
             continue;
@@ -353,7 +353,7 @@ void for_each_element_components(void(*do_to)(ComponentDefinition*)){
 }
 
 void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(ComponentDefinition*)){
-     for(int i = 0; i < array->count ; i++){
+    for(int i = 0; i < array->count ; i++){
         Element** ppElement = get_from_array(array,i);
         Element* element = ppElement[0];
         if(!element->proccess)
