@@ -33,7 +33,7 @@
 					],
 				},
 				{
-					"name" : "Bfireman",
+					"name" : "Cfireman",
 					"components" : [
 						{
 							"type" : 0,
@@ -48,7 +48,7 @@
 					],
 				},
 				{
-					"name" : "Cfireman",
+					"name" : "Dpmnt",
 					"components" : [
 						{
 							"type" : 0,
