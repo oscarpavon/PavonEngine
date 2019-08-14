@@ -1,0 +1,6 @@
+#ifndef ENGINE_COLLISION_H
+#define ENGINE_COLLISION_H
+
+
+
+#endif // !ENGINE_COLLISION_H
