@@ -17,6 +17,7 @@ typedef struct HLODCluster{
     float cost;
     bool is_valid;
     Array elements;
+    char names[8][20];
 }HLODCluster;
 
 Array HLOD_generated_cluster;
