@@ -15,6 +15,9 @@ typedef struct HLODCluster{
     Sphere bounding_sphere;
     float fill_factor;
     float cost;
+    bool is_valid;
+    Array elements;
 }HLODCluster;
 
+Array HLOD_generated_cluster;
 #endif // !HLOD_FACTORY_H
