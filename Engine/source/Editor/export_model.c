@@ -26,7 +26,7 @@ static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                 'w', 'x', 'y', 'z', '0', '1', '2', '3',
                                 '4', '5', '6', '7', '8', '9', '+', '/'};
 
-static char *decoding_table = NULL;
+static char decoding_table[256];;
 static int mod_table[] = {0, 2, 1};
  
  
@@ -60,50 +60,9 @@ char *base64_encode(const unsigned char *data,
 }
  
  void build_decoding_table() {
- 
-    decoding_table = malloc(256);
- 
+  
     for (int i = 0; i < 64; i++)
         decoding_table[(unsigned char) encoding_table[i]] = i;
-}
-
-unsigned char *base64_decode(const char *data,
-                             size_t input_length,
-                             size_t *output_length) {
- 
-    if (decoding_table == NULL) build_decoding_table();
- 
-    if (input_length % 4 != 0) return NULL;
- 
-    *output_length = input_length / 4 * 3;
-    if (data[input_length - 1] == '=') (*output_length)--;
-    if (data[input_length - 2] == '=') (*output_length)--;
- 
-    unsigned char *decoded_data = malloc(*output_length);
-    if (decoded_data == NULL) return NULL;
- 
-    for (int i = 0, j = 0; i < input_length;) {
- 
-        uint32_t sextet_a = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
-        uint32_t sextet_b = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
-        uint32_t sextet_c = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
-        uint32_t sextet_d = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
- 
-        uint32_t triple = (sextet_a << 3 * 6)
-        + (sextet_b << 2 * 6)
-        + (sextet_c << 1 * 6)
-        + (sextet_d << 0 * 6);
- 
-        if (j < *output_length) decoded_data[j++] = (triple >> 2 * 8) & 0xFF;
-        if (j < *output_length) decoded_data[j++] = (triple >> 1 * 8) & 0xFF;
-        if (j < *output_length) decoded_data[j++] = (triple >> 0 * 8) & 0xFF;
-    }
- 
-    return decoded_data;
-} 
-
-void base64_cleanup() {
-    free(decoding_table);
 }
 
 
@@ -186,9 +145,9 @@ unsigned char* vertices_uchar;
 unsigned char* uv_uchar;
 unsigned char* indices_uchar;
 
-int offset_vertices;
-int offset_indices;
-int offset_uv;
+int offset_vertices = 0;
+int offset_indices = 0;
+int offset_uv = 0;
 
 int indices_char_bytes = 0;
 int vertices_char_bytes = 0;
@@ -276,18 +235,41 @@ CodedData merge_all_encoded_data(){
     memcpy(&vertex_char[vertices_char_bytes],uv_uchar,uv_char_bytes);
     memcpy(&vertex_char[vertices_char_bytes+uv_char_bytes],indices_uchar,indices_char_bytes);
 
-    Encoded encoded_data;
-    encoded_data.char_len = 0;    
-    encoded_data.data = base64_encode(vertex_char,sizeof(vertex_char),&encoded_data.char_len);
-    encoded_data.byte_size = sizeof(vertex_char);
 
-    int bytes_count = encoded_data.byte_size ;
-    int char_count = encoded_data.char_len;
+    int char_len = 0;
+    int input_length = sizeof(vertex_char);
+
+    char_len = 4 * ((input_length+2) / 3);
+ 
+    char data_encoded_64[char_len+1];
+    memset(data_encoded_64,0,sizeof(data_encoded_64));
+    
+    for (int i = 0, j = 0; i < input_length;) {
+ 
+        uint32_t octet_a = i < input_length ? (unsigned char)vertex_char[i++] : 0;
+        uint32_t octet_b = i < input_length ? (unsigned char)vertex_char[i++] : 0;
+        uint32_t octet_c = i < input_length ? (unsigned char)vertex_char[i++] : 0;
+ 
+        uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
+ 
+        data_encoded_64[j++] = encoding_table[(triple >> 3 * 6) & 0x3F];
+        data_encoded_64[j++] = encoding_table[(triple >> 2 * 6) & 0x3F];
+        data_encoded_64[j++] = encoding_table[(triple >> 1 * 6) & 0x3F];
+        data_encoded_64[j++] = encoding_table[(triple >> 0 * 6) & 0x3F];
+    }
+ 
+    for (int i = 0; i < mod_table[input_length % 3]; i++)
+        data_encoded_64[char_len - 1 - i] = '=';
+
+
+
+    int bytes_count = sizeof(vertex_char);
+    int char_count = char_len;
     
     char new_buffer[strlen(encoded_header) + char_count];
     memset(new_buffer,0,sizeof(new_buffer));
     strcat(new_buffer,encoded_header);
-    strcat(new_buffer,encoded_data.data);
+    strcat(new_buffer,data_encoded_64);
 
     CodedData data;
     data.coded_buffer = malloc(sizeof(new_buffer));
@@ -400,6 +382,7 @@ int export_gltf(const char *name){
     cgltf_free(data_to_export);
 
     LOG("Exported\n");
+
     data_count = 0;
     vertex_count_merged = 0;
     indices_count_merged = 0;
@@ -409,5 +392,13 @@ int export_gltf(const char *name){
     indices_char_bytes = 0;
     vertices_char_bytes = 0;
     uv_char_bytes = 0;
+
+    offset_indices = 0;
+    offset_vertices = 0;
+    offset_uv = 0;
+
+    free(vertices_uchar);
+    free(uv_uchar);
+    free(indices_uchar);
     return 0;
 }

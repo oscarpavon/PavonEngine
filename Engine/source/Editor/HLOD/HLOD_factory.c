@@ -334,6 +334,7 @@ void generate_HLODS(){
     //compute_bounding_sphere_for_every_mesh();
 
     //export_actives_cluster();
+
     if(export_gltf("../assets/HLOD/out.gltf") == -1){
         LOG("Not exported\n");
         return;
