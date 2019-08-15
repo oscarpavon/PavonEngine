@@ -79,7 +79,9 @@
 			"string": "c",
 			"unordered_map": "c",
 			"unordered_set": "c",
-			"ctype.h": "c"
+			"ctype.h": "c",
+			"collision.h": "c",
+			"opengl_es2.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

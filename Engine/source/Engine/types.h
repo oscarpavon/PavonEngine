@@ -4,6 +4,12 @@
 #ifdef EDITOR
     #include "../Editor/types.h"
 #endif 
+#ifdef ANDROID
+    #include <common.h>
+    struct android_app* app;
+#else
+    #include <stdbool.h>
+#endif
 
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;

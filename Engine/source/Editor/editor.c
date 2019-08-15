@@ -416,6 +416,41 @@ void editor_focus_selected_element(){
     update_look_at();
 }
 
+
+void collision_test(){
+    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
+        return;
+    if(input.C.pressed){
+
+        Element* element1 = get_from_array(actual_elements_array,0);
+        if(!element1)
+            return;
+        
+
+        StaticMeshComponent* mesh = get_component_from_element(element1,STATIC_MESH_COMPONENT);
+        unsigned int* modelid = get_from_array(&mesh->meshes,1);
+
+        Element* element2 = get_from_array(actual_elements_array,1);
+        if(!element2)
+            return;
+        StaticMeshComponent* mesh2 = get_component_from_element(element2,STATIC_MESH_COMPONENT);
+        unsigned int* modelid2 = get_from_array(&mesh2->meshes,1);
+
+        Model* model1 = get_from_array(actual_model_array,*modelid);
+        Model* model2 = get_from_array(actual_model_array,*modelid2);
+    
+        if( collision_of(model1,model2) ){
+            LOG("collision SAT\n");
+            
+        }
+        else{
+            LOG("NO SAT\n");
+        }
+    }
+
+
+}
+
 void draw_editor_viewport(){
     if(current_window->focus){
         if(is_editing_blender_file){
@@ -481,4 +516,5 @@ void draw_editor_viewport(){
 
     editor_message("editor message");       
 
+    collision_test();
 }

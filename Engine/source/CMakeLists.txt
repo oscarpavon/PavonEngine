@@ -24,6 +24,7 @@ set(engine_source
         third_party/jsmn.c
         Engine/files_parser.c        
         Engine/animation/animation.c
+        Engine/Collision/collision.c
         ${components}
 )
 

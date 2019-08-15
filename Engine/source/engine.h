@@ -5,13 +5,6 @@
 #ifndef PAVON_ENGINE_H
 #define PAVON_ENGINE_H
 
-#ifdef ANDROID
-    #include <common.h>
-    struct android_app* app;
-#else
-    #include <stdbool.h>
-#endif
-
 #include <signal.h>
 
 #include "Engine/array.h"
@@ -37,6 +30,8 @@
 #include "camera.h"
 
 #include "Engine/Renderer/OpenGL/opengl_es2.h"
+
+#include "Engine/Collision/collision.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 
