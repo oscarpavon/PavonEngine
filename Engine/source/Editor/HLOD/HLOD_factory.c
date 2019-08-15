@@ -13,6 +13,31 @@ int saved_model_data_count = 0;
 HLODBoxComponent* current_HLOD_box_component;
 
 
+void atlas_resize_UV(Model* model){
+    Model new_model;
+    memset(&new_model,0,sizeof(Model));
+    init_array(&new_model.vertex_array,sizeof(Vertex),model->vertex_array.count);
+    void* data = new_model.vertex_array.data;
+    duplicate_model_data(&new_model,model);
+
+    new_model.vertex_array.data = data;
+    memcpy(new_model.vertex_array.data,model->vertex_array.data,model->vertex_array.actual_bytes_size);
+    
+    translate_UV(VEC3(UV_tranlation_offset[0],UV_tranlation_offset[1],0),&new_model,(vec2){0,0});
+    UV_tranlation_offset[0] += 1;
+    //UV_tranlation_offset[1] = 1;
+
+    scale_UV(0.5, &new_model,(vec2){0,0});
+
+    saved_vertex_model[saved_model_data_count] = model;
+
+    saved_vertex_data[saved_model_data_count] = model->vertex_array.data;
+    saved_model_data_count++;
+    
+
+    model->vertex_array.data = new_model.vertex_array.data;
+}
+
 void check_is_inside(ComponentDefinition* component_definition){
     
     if(component_definition->type == STATIC_MESH_COMPONENT){
@@ -25,28 +50,7 @@ void check_is_inside(ComponentDefinition* component_definition){
             unsigned int* id = get_from_array(&mesh->meshes,mesh->meshes.count-1);
             Model* model = get_from_array(actual_model_array,*id);
              
-            Model new_model;
-            memset(&new_model,0,sizeof(Model));
-            init_array(&new_model.vertex_array,sizeof(Vertex),model->vertex_array.count);
-            void* data = new_model.vertex_array.data;
-            duplicate_model_data(&new_model,model);
-
-            new_model.vertex_array.data = data;
-            memcpy(new_model.vertex_array.data,model->vertex_array.data,model->vertex_array.actual_bytes_size);
-           
-            translate_UV(VEC3(UV_tranlation_offset[0],UV_tranlation_offset[1],0),&new_model,(vec2){0,0});
-            UV_tranlation_offset[0] += 1;
-            //UV_tranlation_offset[1] = 1;
-
-            scale_UV(0.5, &new_model,(vec2){0,0});
-
-            saved_vertex_model[saved_model_data_count] = model;
-        
-            saved_vertex_data[saved_model_data_count] = model->vertex_array.data;
-            saved_model_data_count++;
             
-
-            model->vertex_array.data = new_model.vertex_array.data;
         }
     }
 }
@@ -249,10 +253,7 @@ void compute_bounding_sphere_for_every_mesh(){
                     Sphere new_bounding_sphere;
                     memset(&new_bounding_sphere,0,sizeof(Sphere));
                     new_bounding_sphere.radius = cluster->bounding_sphere.radius + cluster_for_merge->bounding_sphere.radius;
-                    //new_bounding_sphere.volume = cluster->bounding_sphere.volume + cluster_for_merge->bounding_sphere.volume;
                     new_cluster.bounding_sphere = new_bounding_sphere;
-
-                    //merge
                     
                     new_cluster.fill_factor = calculate_fill_factor(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,cluster->fill_factor,cluster_for_merge->fill_factor);
                     new_cluster.cost = (new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius ) / new_cluster.fill_factor;
@@ -300,6 +301,11 @@ void export_actives_cluster(){
                 Element** ppElement = get_from_array(&cluster->elements,j);
                 Element* element = ppElement[0];
                 add_to_array(&array_elements_for_HLOD_generation,&element);
+
+                StaticMeshComponent* mesh = get_component_from_element(element,STATIC_MESH_COMPONENT);
+                u32 *id = get_from_array(&mesh->meshes,mesh->meshes.count-1);
+                Model* model = get_from_array(actual_model_array,*id);
+                atlas_resize_UV(model);
             }
             
             char final_export_name[strlen(export_folder) + strlen(format) + 20];
@@ -317,6 +323,10 @@ void export_actives_cluster(){
             sprintf(texture_name,"../assets/HLOD/HLOD_texture%i.png",i);
             merge_textures(texture_name);
             saved_model_data_count = 0;
+
+            UV_tranlation_offset[0] = 0;
+            UV_tranlation_offset[1] = -2;
+
             clean_array(&array_elements_for_HLOD_generation);
         }
     }
