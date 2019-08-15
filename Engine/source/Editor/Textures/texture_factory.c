@@ -25,7 +25,7 @@ void export_texture(){
         LOG("Texture not exported\n");
         return;
     }
-    stbi_write_png("test.png", 512, 512, 3, textures_pixels[0], 512 * 3);
+    stbi_write_png(current_texture_name, 512, 512, 3, textures_pixels[0], 512 * 3);
 }
 
 
@@ -142,7 +142,7 @@ void render_to_texture(int size)
     glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         draw_textures(256,size);
     glEnable(GL_CULL_FACE);
-
+    offsetU = 0;
     
     textures_pixels[render_texture_count] = malloc(size * size * 3);
 
@@ -151,6 +151,7 @@ void render_to_texture(int size)
 
     glBindFramebuffer(GL_FRAMEBUFFER, old_fbo);
     glViewport(0, 0, actual_window_width, actual_window_height);
+    update_viewport_size();
 }
 
 
@@ -254,9 +255,11 @@ void draw_UV()
     
 }
 
-void merge_textures(){
+void merge_textures(const char* name){
+    current_texture_name = name;
     init_model_to_draw_texture();
     render_to_texture(512);
     export_texture();
     free(textures_pixels[0]);
+    clean_array(&model_in_UV_form);
 }

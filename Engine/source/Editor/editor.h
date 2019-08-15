@@ -66,7 +66,8 @@ void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
 
-void editor_add_HLOD_element();
+typedef struct HLODCluster HLODCluster;
+void editor_add_HLOD_element(HLODCluster*);
 
 void editor_generate_and_add_cube_element();
 

@@ -46,5 +46,6 @@ typedef struct ActionPointer{
 }ActionPointer;
 
 typedef unsigned short int u8;
+typedef unsigned int u32;
 
 #endif // !ENGINE_DATA_TYPES

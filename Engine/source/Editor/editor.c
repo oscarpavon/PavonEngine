@@ -64,34 +64,39 @@ void editor_message(const char* message){
     render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 }
 
-void editor_add_HLOD_element(){
+void editor_add_HLOD_element(HLODCluster* cluster){
     
     new_empty_element();
-    strcpy(selected_element->name, "HLOD01");              
+    char name[20];
+    sprintf(name,"HLODCluster_%i",cluster->id);
+    strcpy(selected_element->name, name);              
     add_transform_component_to_selected_element();
     component_add_HLOD_to_select_element();
     HLODComponent* hlod = get_component_from_selected_element(COMPONENT_HLOD);
-    init_array(&hlod->childs,sizeof(void*),actual_elements_array->count);//need be the spherical collision of elements
-    for(int i = 0; i<actual_elements_array->count; i++){
-        Element* element = get_from_array(actual_elements_array,i);
-        if(element->id != selected_element->id){
-            add_to_array(&hlod->childs, &element);
-            element->proccess = false;
-        }
+
+    init_array(&hlod->childs,sizeof(void*),cluster->elements.count);
+    for(int i = 0; i<cluster->elements.count; i++){
+        Element* element = get_from_array(&cluster->elements,i);        
+        add_to_array(&hlod->childs, &element);
+        element->proccess = false;
     }
+
     hlod->distance = 50;
     glm_aabb_center(hlod->bounding_box,hlod->center);
     hlod->has_childs_HLOD = false;
 
-    
-    load_and_initialize_simple_model("../assets/HLOD/out.gltf");
+    char path[40];
+    sprintf(path,"HLOD/HLOD_out%i.gltf",cluster->id);
+    load_and_initialize_simple_model(path);
     Model* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);
     hlod->model = selected_model;
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
-    new_texture.image = load_image("../binaries/test.png");
+
+    sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
+    new_texture.image = load_image(path);
     load_model_texture_to_gpu(&new_texture); 
     hlod->model->texture.id = new_texture.id;
 }

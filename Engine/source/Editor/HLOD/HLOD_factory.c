@@ -4,11 +4,11 @@
 #include "../Textures/texture_factory.h"
 #include <math.h>
 
+#define SAVED_DATA_COUNT
 vec2 UV_tranlation_offset;
-void* saved_vertex_data[6];
-int saved_vertex_data_count = 0;
-Model* saved_vertex_model[6];
-int saved_vertex_model_count = 0;
+void* saved_vertex_data[SAVED_DATA_COUNT];
+Model* saved_vertex_model[SAVED_DATA_COUNT];
+int saved_model_data_count = 0;
 
 HLODBoxComponent* current_HLOD_box_component;
 
@@ -40,10 +40,10 @@ void check_is_inside(ComponentDefinition* component_definition){
 
             scale_UV(0.5, &new_model,(vec2){0,0});
 
-            saved_vertex_model[saved_vertex_model_count] = model;
-            saved_vertex_model_count++;
-            saved_vertex_data[saved_vertex_data_count] = model->vertex_array.data;
-            saved_vertex_data_count++;
+            saved_vertex_model[saved_model_data_count] = model;
+        
+            saved_vertex_data[saved_model_data_count] = model->vertex_array.data;
+            saved_model_data_count++;
             
 
             model->vertex_array.data = new_model.vertex_array.data;
@@ -293,6 +293,7 @@ void export_actives_cluster(){
     for(int i = 0; i<HLOD_generated_cluster.count ; i++){
         HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
         if(cluster->is_valid){
+            cluster->id = i;
             clean_array(&array_elements_for_HLOD_generation);
             for (u8 j = 0; j < cluster->elements.count; j++)
             {
@@ -307,6 +308,15 @@ void export_actives_cluster(){
                 LOG("Not exported\n");
                 return;
             }
+            for (u8 i = 0; i < saved_model_data_count; i++)
+            {
+                saved_vertex_model[i]->vertex_array.data = saved_vertex_data[i];
+            }
+            
+            char texture_name[30];
+            sprintf(texture_name,"../assets/HLOD/HLOD_texture%i.png",i);
+            merge_textures(texture_name);
+            saved_model_data_count = 0;
             clean_array(&array_elements_for_HLOD_generation);
         }
     }
@@ -335,19 +345,11 @@ void generate_HLODS(){
 
     export_actives_cluster();
 
-    /* if(export_gltf("../assets/HLOD/out.gltf") == -1){
-        LOG("Not exported\n");
-        return;
-    } */
-
-   /*  saved_vertex_model[0]->vertex_array.data = saved_vertex_data[0];
-    saved_vertex_model[1]->vertex_array.data = saved_vertex_data[1];
+    for (u8 i = 0; i < HLOD_generated_cluster.count; i++)
+    {
+        HLODCluster* cluster  = get_from_array(&HLOD_generated_cluster,i);
+        editor_add_HLOD_element(cluster);
+    }
     
-    merge_textures(); */
-
-   
-    //system("blender --python ../scripts/Blender/import.py");
-
-   // editor_add_HLOD_element();
 
 }

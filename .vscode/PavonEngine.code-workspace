@@ -81,7 +81,8 @@
 			"unordered_set": "c",
 			"ctype.h": "c",
 			"collision.h": "c",
-			"opengl_es2.h": "c"
+			"opengl_es2.h": "c",
+			"typeindex": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

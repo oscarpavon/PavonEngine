@@ -389,6 +389,9 @@ int load_model(const char* path){
   result = cgltf_load_buffers(&options,data,new_file.path);
   if (result != cgltf_result_success){
     LOG("Buffer no loaded: %s \n", new_file.path);
+    if(result == cgltf_result_io_error){
+      LOG("IO ERROR\n");
+    }
     return -1;
   }
   close_file(&new_file);

@@ -3,11 +3,13 @@
 
 #include "../../model.h"
 
+const char* current_texture_name;
+
 void init_UV_draw(Model* model);
 
 void draw_UV();
 
-void merge_textures();
+void merge_textures(const char* name);
 
 void render_to_texture(int size);
 

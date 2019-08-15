@@ -12,6 +12,7 @@ int HLOD_cluster_count;
 Array array_elements_for_HLOD_generation;
 
 typedef struct HLODCluster{
+    u32 id;
     Sphere bounding_sphere;
     float fill_factor;
     float cost;
