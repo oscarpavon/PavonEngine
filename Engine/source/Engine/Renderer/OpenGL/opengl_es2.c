@@ -6,8 +6,8 @@
 #include "../../../camera.h"
 #include "../../../engine.h"
 
-static inline void mvp_error(){
-    LOG("MVP uniform not found\n");
+static inline void mvp_error(const char* uniform_name){
+    LOG("Uniform not found: %s\n",uniform_name);
     raise(SIGINT);
 }
 
@@ -29,7 +29,7 @@ static inline void check_error(const char* message){
 static inline GLint get_uniform_location(GLuint shader, const char* name){
     GLint uniform = glGetUniformLocation(shader,name);
     if(uniform == -1){
-        mvp_error();
+        mvp_error(name);
     }
     return uniform;
 }
@@ -43,7 +43,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
 
-    GLint mvp_uniform =  glGetUniformLocation(shader,"MVP");
+    GLint mvp_uniform =  get_uniform_location(shader,"MVP");
     if(mvp_uniform == -1){
         
         GLint model_uniform = get_uniform_location(shader,"model");

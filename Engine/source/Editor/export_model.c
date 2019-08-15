@@ -275,7 +275,7 @@ CodedData merge_all_encoded_data(){
     data.coded_buffer = malloc(sizeof(new_buffer)+1);
     memset(data.coded_buffer,0,sizeof(new_buffer)+1);
     memcpy(data.coded_buffer,new_buffer,sizeof(new_buffer));
-    data.buffer_bytes_count = sizeof(new_buffer);
+    data.buffer_bytes_count = bytes_count;
 
     return data;
 }

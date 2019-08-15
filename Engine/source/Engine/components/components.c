@@ -262,6 +262,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
     }
     case COMPONENT_HLOD:
         {
+            
             HLODComponent* hlod_component = element_component->data;
             
             float distance = glm_vec3_distance(main_camera.position,hlod_component->center);
@@ -274,6 +275,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
                 }
                 return;
             }
+            
             if(hlod_component->has_childs_HLOD){
 
             }else{
@@ -281,7 +283,6 @@ void update_per_frame_component(ComponentDefinition* element_component){
                     Element** ppElement = get_from_array(&hlod_component->childs,i);
                     Element* element = ppElement[0];
                     element->proccess = true;
-                    add_to_array(&array_skinned_mesh_pointers,&element);
                 }
             }
 

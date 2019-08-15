@@ -497,7 +497,7 @@ void test_elements_occlusion(){
     glm_mat4_mul(main_camera.projection,main_camera.view,view_projection_mat);
     glm_frustum_planes(view_projection_mat,frustrum_planes);
 
-    /*START: Deprecated in next update */
+
     for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
         Model** model = get_from_array(&models_for_test_occlusion,i);
         Model* test_model = model[0];
@@ -511,7 +511,7 @@ void test_elements_occlusion(){
         if(glm_aabb_frustum(box,frustrum_planes) == true)
             add_to_array(&frame_draw_elements,&model[0]);
     }   
-    /* END: Deprecated in next update */
+
 
     for(int i = 0; i<array_static_meshes_pointers.count; i++){
         StaticMeshComponent** static_mesh_component = get_from_array(&array_static_meshes_pointers,i);

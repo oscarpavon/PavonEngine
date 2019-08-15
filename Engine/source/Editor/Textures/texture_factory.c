@@ -150,8 +150,10 @@ void render_to_texture(int size)
     glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, textures_pixels[render_texture_count]);
 
     glBindFramebuffer(GL_FRAMEBUFFER, old_fbo);
-    glViewport(0, 0, actual_window_width, actual_window_height);
+    
+    glViewport(0, 0, camera_width_screen, camera_heigth_screen);
     update_viewport_size();
+    
 }
 
 
