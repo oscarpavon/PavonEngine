@@ -216,6 +216,11 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
     glm_quat_mat4(new_rot_quat,model_rot_mat);
 
     glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
+
+    for(int i = 0; i<selected_element->components.count; i++){
+        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        update_component(component);
+    }
     
 }
 
