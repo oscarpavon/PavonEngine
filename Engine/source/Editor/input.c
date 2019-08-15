@@ -180,6 +180,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_TAB:
         actual_key = &input.TAB;
         break;
+    case GLFW_KEY_F:
+        actual_key = &input.F;
+        break;
     
     default:
         break;
@@ -586,6 +589,10 @@ void default_mode(){
         remove_selected_element();            
         return; 
     }   
+
+    if(key_released(&input.F)){
+        editor_focus_selected_element();
+    }
 
     if(key_released(&input.KEY_1)){
         if(can_draw_gizmos){

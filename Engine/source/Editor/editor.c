@@ -400,6 +400,16 @@ void draw_tringles_count(){
 
 }
 
+void editor_focus_selected_element(){
+    vec3 new_position;
+    glm_vec3_copy(VEC3(selected_element->transform->position[0],
+                    selected_element->transform->position[1] - 4,
+                    selected_element->transform->position[2]),main_camera.position);
+    vec3 direction;
+    glm_vec3_sub(selected_element->transform->position, main_camera.position,direction);
+    glm_normalize_to(direction,main_camera.front);
+    update_look_at();
+}
 
 void draw_editor_viewport(){
     if(current_window->focus){

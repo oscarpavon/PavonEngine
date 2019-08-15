@@ -221,10 +221,10 @@ void draw_camera_direction(){
 }
 
 void init_grid_greometry(){
-    init_array(&new_grid.vertex_array, sizeof(Vertex), 500);
+    init_array(&new_grid.vertex_array, sizeof(Vertex), 1000);
 
-    for(int i = 1; i < 6; i++){
-        for(int o = 1; o < 6; o++){
+    for(int i = 1; i < 10; i++){
+        for(int o = 1; o < 10; o++){
             Vertex vertex1;
             Vertex vertex2;
             Vertex vertex3;

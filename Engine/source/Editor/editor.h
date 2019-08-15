@@ -70,6 +70,8 @@ void editor_add_HLOD_element();
 
 void editor_generate_and_add_cube_element();
 
+void editor_focus_selected_element();
+
 struct timespec diff(struct timespec start, struct timespec end);
 
 char* editor_mode_show_text;

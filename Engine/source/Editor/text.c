@@ -380,26 +380,28 @@ void text_renderer_loop(){
     draw_engine_memory();
     draw_editor_mode();
     draw_frame_time();
+
     if(editor_sub_mode != EDITOR_SUB_MODE_NULL){
         draw_editor_sub_mode();
     }
     
-    if(editor_mode == EDITOR_DEFAULT_MODE){
+    if(editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT){
         can_open_text_menu_with_key(&add_element_menu,&input.A,GLFW_MOD_SHIFT);
         can_open_text_menu_with_key(&menu_editor_element_list,&input.L,NULL);
         can_open_text_menu_with_key(&menu_add_texture,&input.T,GLFW_MOD_SHIFT);
         
         can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E,GLFW_MOD_SHIFT);
+        update_text_menu(&menu_add_texture);
+
+        update_text_menu(&add_element_menu);
+
+        update_text_menu(&menu_editor_element_list);
+
+        update_text_menu(&menu_add_native_editor_element);
+
+        update_text_menu(&menu_show_gui_elements);
     }
-    update_text_menu(&menu_add_texture);
 
-    update_text_menu(&add_element_menu);
-
-    update_text_menu(&menu_editor_element_list);
-
-    update_text_menu(&menu_add_native_editor_element);
-
-    update_text_menu(&menu_show_gui_elements);
 
     draw_menus();
 }
