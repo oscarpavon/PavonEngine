@@ -96,10 +96,10 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
 
-   /*  sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
+    sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
     new_texture.image = load_image(path);
     load_model_texture_to_gpu(&new_texture); 
-    hlod->model->texture.id = new_texture.id; */
+    hlod->model->texture.id = new_texture.id;
 }
 
 void editor_generate_and_add_cube_element(){
