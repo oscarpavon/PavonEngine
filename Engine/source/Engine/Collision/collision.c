@@ -21,9 +21,26 @@ void get_edges_axis(Model* model){
         vec3 edge1_normal;
         glm_cross(edge,surface_normal,edge1_normal);
         glm_normalize(edge1_normal);
-        
+
     }
         
+    //project on axis
+
+    float min = 1;
+    float max = -1;
+
+    for(u8 i = 0; i < vertex_count ; i++){
+       Vertex* vertex = get_from_array(&model->vertex_array,i);
+       vec3 dot_produt;
+       float point = glm_vec3_dot(axis[i],vertex->postion);
+        if(point < min){
+            min = point;
+        }else if (point > max) {
+            max = point;
+        }
+    }
+    
     
     
 }   
+
