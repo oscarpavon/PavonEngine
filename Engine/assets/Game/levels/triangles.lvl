@@ -3,11 +3,11 @@
 		{
 			"elements" : [
 				{
-					"name" : "New Element",
+					"name" : "t1",
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 0.000000 , 0.000000],
+							"position" : [0.000000 , 1.920000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -18,11 +18,11 @@
 					],
 				},
 				{
-					"name" : "New Element",
+					"name" : "t2",
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 0.940000 , 0.000000],
+							"position" : [0.000000 , -0.420000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -33,11 +33,11 @@
 					],
 				},
 				{
-					"name" : "New Element",
+					"name" : "s3",
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 2.419998 , 0.000000],
+							"position" : [23.939983 , 3.080001 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -48,11 +48,11 @@
 					],
 				},
 				{
-					"name" : "New Element",
+					"name" : "t4",
 					"components" : [
 						{
 							"type" : 0,
-							"position" : [0.000000 , 3.619998 , 0.000000],
+							"position" : [24.499981 , 1.120000 , 0.000000],
 							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
 						},
 						{
@@ -67,10 +67,10 @@
 		{
 			"data" : [
 				"models" : [
-					"test/triangle.gltf",
-					"test/triangle.gltf",
-					"test/triangle.gltf",
-					"test/triangle.gltf",
+					"triangle.gltf",
+					"triangle.gltf",
+					"triangle.gltf",
+					"triangle.gltf",
 				],
 				"textures" : [
 				],

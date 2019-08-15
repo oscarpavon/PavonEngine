@@ -78,7 +78,7 @@ void load_mesh_for_proccess(const char* path){
     if (result != cgltf_result_success){
         LOG("Model no loaded: %s \n", new_file.path);        
     }
-    data_count++;
+    //data_count++;
     
 }
 
@@ -272,7 +272,8 @@ CodedData merge_all_encoded_data(){
     strcat(new_buffer,data_encoded_64);
 
     CodedData data;
-    data.coded_buffer = malloc(sizeof(new_buffer));
+    data.coded_buffer = malloc(sizeof(new_buffer)+1);
+    memset(data.coded_buffer,0,sizeof(new_buffer)+1);
     memcpy(data.coded_buffer,new_buffer,sizeof(new_buffer));
     data.buffer_bytes_count = sizeof(new_buffer);
 

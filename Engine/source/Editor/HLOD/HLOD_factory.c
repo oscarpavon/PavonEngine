@@ -331,14 +331,14 @@ void generate_HLODS(){
         init_array(&HLOD_generated_cluster, sizeof(HLODCluster),8);
     }
     
-    //compute_bounding_sphere_for_every_mesh();
+    compute_bounding_sphere_for_every_mesh();
 
-    //export_actives_cluster();
+    export_actives_cluster();
 
-    if(export_gltf("../assets/HLOD/out.gltf") == -1){
+    /* if(export_gltf("../assets/HLOD/out.gltf") == -1){
         LOG("Not exported\n");
         return;
-    }
+    } */
 
    /*  saved_vertex_model[0]->vertex_array.data = saved_vertex_data[0];
     saved_vertex_model[1]->vertex_array.data = saved_vertex_data[1];
@@ -346,7 +346,7 @@ void generate_HLODS(){
     merge_textures(); */
 
    
-    system("blender --python ../scripts/Blender/import.py");
+    //system("blender --python ../scripts/Blender/import.py");
 
    // editor_add_HLOD_element();
 
