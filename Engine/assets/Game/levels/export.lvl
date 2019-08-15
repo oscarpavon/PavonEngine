@@ -1,0 +1,50 @@
+{
+	"level" : [
+		{
+			"elements" : [
+				{
+					"name" : "New Element",
+					"components" : [
+						{
+							"type" : 0,
+							"position" : [-3.919998 , 3.579998 , 0.100000],
+							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
+						},
+						{
+							"type" : 4,
+							"models" : [0,0,1,],
+							"textures" : [0,0,0,],
+						},
+					],
+				},
+				{
+					"name" : "New Element",
+					"components" : [
+						{
+							"type" : 0,
+							"position" : [3.639997 , -1.060000 , 0.000000],
+							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
+						},
+						{
+							"type" : 4,
+							"models" : [1,2,],
+							"textures" : [1,1,],
+						},
+					],
+				},
+			],
+		},
+		{
+			"data" : [
+				"models" : [
+					"module01.gltf",
+					"fireman.gltf",
+				],
+				"textures" : [
+					"modules_coust.png",
+					"fireman.png",
+				],
+			],
+		},
+	],
+},

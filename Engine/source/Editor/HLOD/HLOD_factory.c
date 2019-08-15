@@ -278,9 +278,6 @@ void compute_bounding_sphere_for_every_mesh(){
         HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
         if(cluster->is_valid){
             LOG("Cluster active, %i\n",i);
-            //LOG("   Element: %s\n",&cluster->names[0][0]);
-           // LOG("   Element: %s\n",&cluster->names[1][0]);
-            //LOG("   Element count = %i\n",cluster->elements.count);
             for(int o = 0; o<cluster->elements.count ; o++){
                 Element** ppElement = get_from_array(&cluster->elements,o);
                 Element* element = ppElement[0];
@@ -290,6 +287,30 @@ void compute_bounding_sphere_for_every_mesh(){
     }
 }
 
+char export_folder[] = "../assets/HLOD/";
+char format[] = ".gltf";
+void export_actives_cluster(){
+    for(int i = 0; i<HLOD_generated_cluster.count ; i++){
+        HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
+        if(cluster->is_valid){
+            clean_array(&array_elements_for_HLOD_generation);
+            for (u8 j = 0; j < cluster->elements.count; j++)
+            {
+                Element** ppElement = get_from_array(&cluster->elements,j);
+                Element* element = ppElement[0];
+                add_to_array(&array_elements_for_HLOD_generation,&element);
+            }
+            
+            char final_export_name[strlen(export_folder) + strlen(format) + 20];
+            sprintf(final_export_name,"%s%s%i%s",export_folder,"HLOD_out",i,format);
+            if(export_gltf(final_export_name) == -1){
+                LOG("Not exported\n");
+                return;
+            }
+            clean_array(&array_elements_for_HLOD_generation);
+        }
+    }
+}
 
 void generate_HLODS(){
     UV_tranlation_offset[0] = 0;
@@ -310,22 +331,22 @@ void generate_HLODS(){
         init_array(&HLOD_generated_cluster, sizeof(HLODCluster),8);
     }
     
-    compute_bounding_sphere_for_every_mesh();
+    //compute_bounding_sphere_for_every_mesh();
 
-
+    //export_actives_cluster();
     if(export_gltf("../assets/HLOD/out.gltf") == -1){
         LOG("Not exported\n");
         return;
     }
 
-    saved_vertex_model[0]->vertex_array.data = saved_vertex_data[0];
+   /*  saved_vertex_model[0]->vertex_array.data = saved_vertex_data[0];
     saved_vertex_model[1]->vertex_array.data = saved_vertex_data[1];
     
-    merge_textures();
+    merge_textures(); */
 
    
-    //system("blender --python ../scripts/Blender/import.py");
+    system("blender --python ../scripts/Blender/import.py");
 
-    editor_add_HLOD_element();
+   // editor_add_HLOD_element();
 
 }

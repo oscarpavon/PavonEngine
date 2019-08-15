@@ -34,7 +34,7 @@ char *base64_encode(const unsigned char *data,
                     size_t input_length,
                     size_t *output_length) {
  
-    *output_length = 4 * ((input_length + 2) / 3);
+    *output_length = 4 * ((input_length+2) / 3);
  
     char *encoded_data = malloc(*output_length+1);
     if (encoded_data == NULL) return NULL;
@@ -56,7 +56,6 @@ char *base64_encode(const unsigned char *data,
     for (int i = 0; i < mod_table[input_length % 3]; i++)
         encoded_data[*output_length - 1 - i] = '=';
     
-    encoded_data[*output_length] = '\0';
     return encoded_data;
 }
  
@@ -271,8 +270,8 @@ typedef struct CodedData{
 
 CodedData merge_all_encoded_data(){
     int uchar_buffer_size = vertices_char_bytes + uv_char_bytes + indices_char_bytes;
-    unsigned char vertex_char[uchar_buffer_size];
-    memset(vertex_char,0,uchar_buffer_size);
+    unsigned char vertex_char[uchar_buffer_size+1];
+    memset(vertex_char,0,uchar_buffer_size+1);
     memcpy(vertex_char,vertices_uchar,vertices_char_bytes);
     memcpy(&vertex_char[vertices_char_bytes],uv_uchar,uv_char_bytes);
     memcpy(&vertex_char[vertices_char_bytes+uv_char_bytes],indices_uchar,indices_char_bytes);
@@ -285,15 +284,15 @@ CodedData merge_all_encoded_data(){
     int bytes_count = encoded_data.byte_size ;
     int char_count = encoded_data.char_len;
     
-    char* new_buffer = malloc(strlen(encoded_header)+char_count+1);
-    memset(new_buffer,0,strlen(encoded_header)+char_count+1);
+    char new_buffer[strlen(encoded_header) + char_count];
+    memset(new_buffer,0,sizeof(new_buffer));
     strcat(new_buffer,encoded_header);
-
     strcat(new_buffer,encoded_data.data);
 
     CodedData data;
-    data.coded_buffer = new_buffer;
-    data.buffer_bytes_count = bytes_count;
+    data.coded_buffer = malloc(sizeof(new_buffer));
+    memcpy(data.coded_buffer,new_buffer,sizeof(new_buffer));
+    data.buffer_bytes_count = sizeof(new_buffer);
 
     return data;
 }
@@ -406,5 +405,9 @@ int export_gltf(const char *name){
     indices_count_merged = 0;
     UV_count_merged = 0;
     previous_indices_count = 0;
+
+    indices_char_bytes = 0;
+    vertices_char_bytes = 0;
+    uv_char_bytes = 0;
     return 0;
 }
