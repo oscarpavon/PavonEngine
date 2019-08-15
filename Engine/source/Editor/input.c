@@ -701,8 +701,7 @@ void input_mode_play(){
 void input_gui_editor(){
     if(editor_sub_mode != EDITOR_SUB_MODE_NULL)
         return;
-    can_open_text_menu_with_key(&menu_show_gui_elements,&input.L,NULL);
-
+    
     if(key_released(&input.ESC)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         //clean_array(actual_buttons_array);

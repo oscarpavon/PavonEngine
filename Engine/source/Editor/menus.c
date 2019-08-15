@@ -11,6 +11,7 @@
 #include "editor.h"
 #include "../gui.h"
 
+#include "menus.h"
 
 void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
@@ -340,4 +341,28 @@ void menu_action_draw_gui_elements(TextMenu* menu){
         Button* button = get_from_array(actual_buttons_array,i);
         draw_element_text_list(menu,button->name,i);
     }
+}
+
+void menus_init(){
+    memset(&add_element_menu,0,sizeof(TextMenu));
+    memset(&menu_add_texture,0,sizeof(TextMenu));
+    memset(&menu_editor_element_list,0,sizeof(TextMenu));
+
+    /*Text Menu functions */
+    add_element_menu.execute_function = &menu_action_add_element;
+    add_element_menu.type = MENU_TYPE_ADD_MODEL;
+
+    menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
+    menu_add_texture.execute_function = &menu_action_add_texture_to_element;
+
+    menu_editor_element_list.execute_function = &menu_action_select_element;
+    menu_editor_element_list.draw_text_funtion = &menu_action_draw_editor_elements;
+
+    menu_add_native_editor_element.execute_function = &menu_action_add_editor_native_element;
+    menu_add_native_editor_element.draw_text_funtion = &menu_action_draw_native_editor_elments;
+
+    menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
+    menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
+    
+    init_menus();
 }

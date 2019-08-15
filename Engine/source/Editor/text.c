@@ -10,6 +10,8 @@
 #include "editor.h"
 #include "../gui.h"
 
+#include "menus.h"
+
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
 
@@ -252,7 +254,7 @@ void draw_element_text_list(TextMenu* menu, const char* text, int i){
     render_text(text, 0 + ((camera_width_screen/2)-100) * pixel_size_x,   1 - (y_pos+100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
 }
 
-#include "menu_action.h"
+
 
 void init_text_renderer(){
     FT_Library ft;
@@ -279,27 +281,7 @@ void init_text_renderer(){
 
     mark_id = 0;
 
-    memset(&add_element_menu,0,sizeof(TextMenu));
-    memset(&menu_add_texture,0,sizeof(TextMenu));
-    memset(&menu_editor_element_list,0,sizeof(TextMenu));
-
-    /*Text Menu functions */
-    add_element_menu.execute_function = &menu_action_add_element;
-    add_element_menu.type = MENU_TYPE_ADD_MODEL;
-
-    menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
-    menu_add_texture.execute_function = &menu_action_add_texture_to_element;
-
-    menu_editor_element_list.execute_function = &menu_action_select_element;
-    menu_editor_element_list.draw_text_funtion = &menu_action_draw_editor_elements;
-
-    menu_add_native_editor_element.execute_function = &menu_action_add_editor_native_element;
-    menu_add_native_editor_element.draw_text_funtion = &menu_action_draw_native_editor_elments;
-
-    menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
-    menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
-    
-    init_menus();
+    menus_init();
 }
 
 void update_text_renderer_window_size(){
@@ -402,6 +384,8 @@ void text_renderer_loop(){
         update_text_menu(&menu_show_gui_elements);
     }
 
+    if(editor_mode == EDITOR_MODE_GUI_EDITOR)
+        can_open_text_menu_with_key(&menu_show_gui_elements,&input.L,NULL);
 
     draw_menus();
 }

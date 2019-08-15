@@ -14,6 +14,7 @@ geometry.c
 commands.c
 Textures/texture_factory.c
 HLOD/HLOD_factory.c
+menus.c
 )
 
 set (game_source
