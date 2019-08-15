@@ -55,7 +55,7 @@ void merge_sphere_to_cluster(Sphere* sphere, Sphere* sphere2){
 
 }
 
-bool sphere01_inside_sphere02(Sphere* sphere01, Sphere* sphere02){
+bool sphere_inside_sphere(Sphere* sphere01, Sphere* sphere02){
     vec3 distance;
     glm_vec3_sub(sphere02->center,sphere01->center,distance);
     float easy_distance = glm_vec3_dot(distance,distance);
@@ -87,15 +87,36 @@ inline static float get_sphere_volume(Sphere* sphere){
     
 }
 
+void add_spheres(Sphere* sphere01, Sphere* sphere02, Sphere* out){
+    if(sphere_inside_sphere(sphere02, sphere01)){
+        
+        out->radius = sphere01->radius;
+    }else if( sphere_inside_sphere(sphere01, sphere02) )
+    {
+        out->radius = sphere02->radius;
+
+    }else{
+        float new_radius = sphere01->radius + sphere02->radius;
+        vec3 center;
+        glm_vec3_sub(sphere01->center,sphere02->center,center);
+        float center_magnitude = sqrt(center[0] * center[0] + center[1] * center[1] + center[2] * center[2]);
+        new_radius = (new_radius+center_magnitude) * 0.5;// R = (r1 + r2 + |c1 - c2|) / 2
+        out->radius = new_radius;
+
+    }
+    
+
+}
+
 float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02){
     if( !sphere_intersect_with_sphere(sphere01, sphere02) ){
         return 0;
     }
 
-    if( sphere01_inside_sphere02(sphere01,sphere02) )
+    if( sphere_inside_sphere(sphere01,sphere02) )
         return get_sphere_volume(sphere01);
     
-    if( sphere01_inside_sphere02(sphere02, sphere01 ) )
+    if( sphere_inside_sphere(sphere02, sphere01 ) )
         return get_sphere_volume(sphere02);
 
 
@@ -106,7 +127,7 @@ float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_fact
     float overlap_volume = sphere_volume_overlap(sphere01,sphere02);
     Sphere merge_sphere;
     memset(&merge_sphere,0,sizeof(Sphere));
-    merge_sphere.radius = sphere01->radius + sphere02->radius;
+    add_spheres(sphere01,sphere02,&merge_sphere);
 
     float dividend = fill_factor_sphere01 * get_sphere_volume(sphere01) + 
             fill_factor_sphere02 * get_sphere_volume(sphere02) - overlap_volume;
@@ -140,6 +161,9 @@ bool check_if_cluster_contens_same_element(HLODCluster* cluster01, HLODCluster* 
 }
 
 void compute_bounding_sphere_for_every_mesh(){
+    int boanding_value = 500;
+    int percentage = 50;
+
    for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element01 = get_from_array(actual_elements_array,i);
         StaticMeshComponent* mesh01 = get_component_from_element(element01,STATIC_MESH_COMPONENT);
@@ -168,7 +192,7 @@ void compute_bounding_sphere_for_every_mesh(){
             glm_vec3_copy(mesh02->center,sphere02.center);
 
             Sphere cluster_sphere; 
-            cluster_sphere.radius = sphere01.radius + sphere02.radius;
+            add_spheres(&sphere01, &sphere02, &cluster_sphere);
 
             cluster.bounding_sphere = cluster_sphere;
             LOG("Procesing %s , %s\n",element01->name, element02->name);
@@ -178,8 +202,7 @@ void compute_bounding_sphere_for_every_mesh(){
             
             LOG("Fill factor= %f , cost= %f\n",cluster.fill_factor,cluster.cost);
 
-            int boanding_value = 500;
-            int percentage = 50;
+            
             float max_cost = (boanding_value * boanding_value * boanding_value) / percentage;
 
             if(cluster.cost <=  max_cost ){
@@ -234,7 +257,7 @@ void compute_bounding_sphere_for_every_mesh(){
                     new_cluster.fill_factor = calculate_fill_factor(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,cluster->fill_factor,cluster_for_merge->fill_factor);
                     new_cluster.cost = (new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius ) / new_cluster.fill_factor;
                     
-                    if(new_cluster.cost <= ( (500 * 500 * 500) / 50) ){
+                    if(new_cluster.cost <= ( (boanding_value * boanding_value * boanding_value) / percentage) ){
                         Element** ppMergerElement = get_from_array(&cluster_for_merge->elements,1);
                         Element* merger_element = ppMergerElement[0];
                         add_to_array(&cluster_for_merge->elements,&merger_element);
