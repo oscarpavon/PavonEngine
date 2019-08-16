@@ -157,8 +157,8 @@ int load_and_initialize_simple_model(const char* model_gltf_path){
 }
 
 void add_element_with_model_path(const char* model_gltf_path){
-    if(model_gltf_path == NULL){
-        LOG("Error to load, null path (add_editor_element\n");
+    if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
+        LOG("Error to load, null path (add_editor_element)\n");
         return;
     }
 
