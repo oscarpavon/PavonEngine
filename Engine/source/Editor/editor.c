@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "windows.h"
+#include "windows_manager.h"
 
 #include "../model.h"
 #include "../Engine/shader.h"
@@ -482,6 +482,7 @@ void draw_editor_viewport(){
     if(isDrawUV)
         draw_UV();
     
+    windows_update();
 
     if(controlling_camera_component){
         CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);

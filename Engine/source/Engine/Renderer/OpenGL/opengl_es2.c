@@ -6,33 +6,7 @@
 #include "../../../camera.h"
 #include "../../../engine.h"
 
-static inline void mvp_error(const char* uniform_name){
-    LOG("Uniform not found: %s\n",uniform_name);
-    raise(SIGINT);
-}
 
-
-static inline void check_send_matrix_error(const char* message){
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("[X] Send %s matrix error, Error %08x \n", message, error);
-    }
-}
-
-static inline void check_error(const char* message){
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("%s, Error %08x \n", message, error);
-    }
-}
-
-static inline GLint get_uniform_location(GLuint shader, const char* name){
-    GLint uniform = glGetUniformLocation(shader,name);
-    if(uniform == -1){
-        mvp_error(name);
-    }
-    return uniform;
-}
 
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
 
@@ -107,10 +81,5 @@ void draw_simgle_model(struct Model * new_model){
         LOG("Index is equal to 0, model not render\n");
     glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
-    GLenum error;
-    error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("draw error\n");
-        LOG("Error %08x \n",error);
-    }
+    check_error("sigle model error");
 }

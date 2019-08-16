@@ -1,4 +1,4 @@
-#include "windows.h"
+#include "windows_manager.h"
 #include <stdio.h>
 #include "text.h"
 #include "editor.h"
@@ -7,24 +7,34 @@
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 
-void create_window(EditorWindow *win){
-    current_window = win;
+void windows_manager_init(){
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    
     glfwInit();
+}
+
+void window_create(EditorWindow *win, EditorWindow* share_window, const char* name){
+
+    if(win->initialized)
+        return;
+
+    current_window = win;
     
-    win->window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,"Engine", NULL , NULL);
+    GLFWwindow* share_glfw_window = NULL;
+    if(share_window)
+     share_glfw_window = share_window->window;
+
+    win->window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
     glfwMakeContextCurrent(win->window);
-    //glfwSetWindowMonitor(win->window, glfwGetPrimaryMonitor(), 0 , 0 , 800, 600, 0); 
-  
     
     glViewport(0,0,INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     camera_heigth_screen = INIT_WINDOW_SIZE_Y;
     camera_width_screen = INIT_WINDOW_SIZE_X;
+    
+    win->initialized = true;
 }
 
 void update_envents(){
@@ -37,7 +47,6 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
     camera_width_screen = width;
 
     update_viewport_size();
-
 }
 
 void window_focus_callback(GLFWwindow* window,int is_focus){
@@ -46,5 +55,22 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
     if(is_focus == GLFW_FALSE){
        current_window->focus = false;
+    }
+}
+
+#include "Windows/content.h"
+
+void windows_update(){
+    if(key_released(&input.KEY_7)){
+        editor_window_content_open = true;
+    }
+
+    if(editor_window_content_open){
+        if(&window_content_browser.initialized){
+            window_create(&window_content_browser,&window_editor_main,"Engine");
+            editor_window_content_init();
+        }
+        editor_window_content_browser_draw();
+        glfwMakeContextCurrent(window_editor_main.window);
     }
 }

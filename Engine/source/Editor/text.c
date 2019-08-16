@@ -33,7 +33,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
 
     glUseProgram(text_shader_id);
    
-    GLint uniform_color =  glGetUniformLocation(text_shader_id,"color");
+    GLint uniform_color =  get_uniform_location(text_shader_id,"color");
 
     const char *p;
 

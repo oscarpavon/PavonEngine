@@ -1,31 +1,36 @@
 #include <stdlib.h>
-#include "windows.h"
+#include "windows_manager.h"
 #include "../engine.h"
 #include "input.h"
 
 #include "editor.h"
 
+#include "Windows/content.h"
+
 int main(){
 
     init_engine_memory();
-   
-    EditorWindow main_window;
-    create_window(&main_window);    
-      
-    glfwSetKeyCallback(main_window.window, key_callback);
-	glfwSetCursorPosCallback(main_window.window, mouse_callback);
-	glfwSetMouseButtonCallback(main_window.window, mouse_button_callback);
-    glfwSetFramebufferSizeCallback(main_window.window, window_resize_callback);
-    glfwSetCharCallback(main_window.window, character_callback);
-    glfwSetWindowFocusCallback(main_window.window,window_focus_callback);
+
+    windows_manager_init();
+
+    
+
+    window_create(&window_editor_main, NULL, "Engine"); 
+
+    glfwSetKeyCallback(window_editor_main.window, key_callback);
+	glfwSetCursorPosCallback(window_editor_main.window, mouse_callback);
+	glfwSetMouseButtonCallback(window_editor_main.window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main.window, window_resize_callback);
+    glfwSetCharCallback(window_editor_main.window, character_callback);
+    glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
 
     draw_loading_screen();
-    glfwSwapBuffers(main_window.window);
+    glfwSwapBuffers(window_editor_main.window);
     
     init_engine();
     init_editor();
 
-    while (!glfwWindowShouldClose(main_window.window))
+    while (!glfwWindowShouldClose(window_editor_main.window))
     {
         update_envents();
 
@@ -34,9 +39,9 @@ int main(){
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
         
         update_input();
-        draw_editor_viewport();     
-        
-        glfwSwapBuffers(main_window.window);
+        draw_editor_viewport();   
+
+        glfwSwapBuffers(window_editor_main.window);       
                 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 

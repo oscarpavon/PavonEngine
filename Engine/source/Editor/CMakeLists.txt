@@ -1,7 +1,7 @@
 
 set(editor_sources 
 main.c
-windows.c
+windows_manager.c
 input.c
 editor.c
 text.c
@@ -15,6 +15,7 @@ commands.c
 Textures/texture_factory.c
 HLOD/HLOD_factory.c
 menus.c
+Windows/content.c
 )
 
 set (game_source

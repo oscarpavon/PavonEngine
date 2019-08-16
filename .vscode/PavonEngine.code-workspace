@@ -12,7 +12,7 @@
 			"memory.h": "c",
 			"engine.h": "c",
 			"glfw3.h": "c",
-			"windows.h": "c",
+			"windows_manager.h": "c",
 			"camera.h": "c",
 			"cglm.h": "c",
 			"pthread.h": "c",

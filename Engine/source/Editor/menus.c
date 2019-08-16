@@ -248,7 +248,9 @@ void menu_action_add_element(TextMenu* menu){
     //if not blend file
     add_element_with_model_path(menu->text_for_action);
     update_translation(main_camera.position);
-    update_translation(VEC3(0,-5,0));
+    vec3 new_position;
+    glm_vec3_scale(main_camera.front,4,new_position);
+    update_translation(new_position);
 }
 
 void menu_action_add_texture_to_element(TextMenu* menu){

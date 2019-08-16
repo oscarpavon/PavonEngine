@@ -153,14 +153,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_I://letter "o"
         actual_key = &input.I;
         break;
+    case GLFW_KEY_0://number zero
+        actual_key = &input.KEY_0;
+        break;
     case GLFW_KEY_2:
         actual_key = &input.KEY_2;
         break;
     case GLFW_KEY_3:
         actual_key = &input.KEY_3;
         break;
-    case GLFW_KEY_0://number zero
-        actual_key = &input.KEY_0;
+    case GLFW_KEY_4:
+        actual_key = &input.KEY_4;
+        break;
+    case GLFW_KEY_5:
+        actual_key = &input.KEY_5;
+        break;
+    case GLFW_KEY_6:
+        actual_key = &input.KEY_6;
+        break;
+    case GLFW_KEY_7:
+        actual_key = &input.KEY_7;
+        break;
+    case GLFW_KEY_8:
+        actual_key = &input.KEY_8;
         break;
     case GLFW_KEY_9:
         actual_key = &input.KEY_9;
