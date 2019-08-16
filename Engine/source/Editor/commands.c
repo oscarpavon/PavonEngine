@@ -239,27 +239,27 @@ void text_input_mode(){
         command_text_buffer[character_count] = '\0';
     }
     if(key_released(&input.KEY_UP)){
-        File file;
-        load_file("../binaries/command_history.txt",&file);
-        const char* first = file.data;
-        
-        int log_character_count = 0;
-        for(int i = 0; i<(file.size_in_bytes-log_command_offset+1) ; i++){
-            const char* character = &first[i+log_command_offset];           
+       
+        FILE* file = fopen("../binaries/command_history.txt","r");
 
-            if(*character == '\n' || (*character == '\0' ) ){
-                log_character_count++;
-                memcpy(&command_text_buffer[character_count],&first[log_command_offset],log_character_count-1);
-                log_command_offset = log_character_count;
-                break;
-            }else{
-                log_character_count++;                   
-            }                
-           
-        
-        }
-       // strcpy(&command_text_buffer[character_count],file.data);  
-        close_file(&file);
+        fseek(file, 0, SEEK_END);
+     
+        static const long max_len = 55 + 1;
+
+        char buf[max_len + 1];
+
+        /* now read that many bytes from the end of the file */
+        fseek(file, -max_len, SEEK_END);
+        int len = fread(buf,1, 55, file);
+
+        buf[len] = '\0';
+
+        /* and find the last newline character (there must be one, right?) */
+        char *last_newline = strrchr(buf, '\n');
+        char *last_line = last_newline+1;
+
+        LOG("Last line: %s\n",last_line);
+        memcpy(&command_text_buffer[character_count],last_line,strlen(last_line));
 
     }
 
