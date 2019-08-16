@@ -82,7 +82,9 @@
 			"ctype.h": "c",
 			"collision.h": "c",
 			"opengl_es2.h": "c",
-			"typeindex": "c"
+			"typeindex": "c",
+			"__tuple": "c",
+			"hlod_factory.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

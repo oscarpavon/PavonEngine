@@ -27,11 +27,6 @@ typedef struct Element{
 }Element;
 
 
-typedef struct Sphere{
-    vec3 center;
-    float radius;
-    float volume;
-}Sphere;
 
 typedef struct PlayerStart{
     vec3 position;

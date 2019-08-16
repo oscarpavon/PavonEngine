@@ -155,13 +155,13 @@ void list_directory_files(TextMenu *menu)
                 }
                 if (strcmp(&de->d_name[n + 1], "jpg") == 0)
                 {
-                   strcpy(&texture_names[model_count][0], de->d_name);
+                   strcpy(&texture_names[texture_count][0], de->d_name);
                     texture_count++;
                     continue;
                 }
                 if (strcmp(&de->d_name[n + 1], "png") == 0)
                 {
-                    strcpy(&texture_names[model_count][0], de->d_name);
+                    strcpy(&texture_names[texture_count][0], de->d_name);
                     texture_count++;
                     continue;
                 }

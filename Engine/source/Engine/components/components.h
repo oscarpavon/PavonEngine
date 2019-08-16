@@ -104,10 +104,6 @@ typedef struct HLODBoxComponent{
     vec3 bounding_box[2];     
 }HLODBoxComponent;
 
-typedef struct HLODSphereComponent{
-    Sphere sphere;
-    float fill_factor;
-}HLODSphereComponent;
 
 typedef struct LevelOfDetailComponent{
     Array meshes;

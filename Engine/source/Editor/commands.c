@@ -96,7 +96,10 @@ void parse_command(const char* command){
 
     
     if(strcmp(&command[1],"hlod") == 0){
-        generate_HLODS();
+        generate_HLODS(false);
+    }
+    if(strcmp(&command[1],"hlode") == 0){
+        generate_HLODS(true);
     }
 
     switch (first_char_command)
@@ -168,6 +171,14 @@ void parse_command(const char* command){
     }
     case 's':
         {
+            if(command[2] == 'z'){
+                mat4 idenity;
+                glm_mat4_identity(idenity);
+                glm_mat4_copy(idenity,selected_element->transform->model_matrix);
+                update_translation(VEC3(0,0,0));
+                return;
+            }
+
             if(command[3] == 'p'){//player
                 player1 = selected_element;            
                 add_editor_native_element("Player Controller");
