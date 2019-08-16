@@ -80,7 +80,13 @@ inline static float sphere_get_height_cap(Sphere* sphere, float distance){
 }
 
 inline static bool sphere_equals(Sphere* sphere, Sphere* sphere2){
-    
+    if (glm_vec3_eqv(sphere2->center,sphere->center) )
+    {
+        if(sphere->radius == sphere2->radius){
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif

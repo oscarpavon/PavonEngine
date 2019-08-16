@@ -577,7 +577,7 @@ void default_mode(){
     }
 
     if(key__released(&input.D,GLFW_MOD_SHIFT)){
-       duplicate_selected_element();
+       duplicate_selected_element(1,selected_element);
        LOG("duplicated \n");
        return; 
     }

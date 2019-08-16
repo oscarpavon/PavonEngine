@@ -60,7 +60,7 @@ void reload_editor();
 
 void update_camera_aspect_ratio();
 
-void duplicate_selected_element();
+void duplicate_selected_element(int,Element*);
 
 void add_editor_native_element(const char* native_element_name);
 

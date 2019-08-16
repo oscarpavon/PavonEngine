@@ -282,23 +282,26 @@ void load_level_in_editor(const char* name){
     LOG("Level loading time: %ld ms\n",millisecond);
 } 
 
-void duplicate_selected_element(){
-    Element* original_elmenent = selected_element;    
+void duplicate_selected_element(int current_count, Element* original){
+    Element* last_copy = selected_element;
     new_empty_element();
-    for(int i = 0; i < original_elmenent->components.count ; i++){
-        ComponentDefinition* component_definition = get_from_array(&original_elmenent->components,i);
+    char new_name[30];
+    sprintf(new_name,"%s%i",original->name,current_count);
+    strcpy(selected_element->name,new_name);
+    for(int i = 0; i < last_copy->components.count ; i++){
+        ComponentDefinition* component_definition = get_from_array(&last_copy->components,i);
         switch (component_definition->type)
         {
         case TRASNFORM_COMPONENT:
             add_transform_component_to_selected_element();
             TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-            memcpy(transform,original_elmenent->transform, sizeof(TransformComponent));
+            memcpy(transform,last_copy->transform, sizeof(TransformComponent));
             break;
         case CAMERA_COMPONENT:
             add_camera_component_to_selected_element();
             break;
         case STATIC_MESH_COMPONENT:{
-            StaticMeshComponent* original_mesh = get_component_from_element(original_elmenent,STATIC_MESH_COMPONENT);
+            StaticMeshComponent* original_mesh = get_component_from_element(last_copy,STATIC_MESH_COMPONENT);
             StaticMeshComponent new_mesh;
             memset(&new_mesh,0,sizeof(StaticMeshComponent));
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));

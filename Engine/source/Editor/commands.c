@@ -206,10 +206,11 @@ void parse_command(const char* command){
     {
         unsigned int duplicate_count = atoi(&command[3]); 
         int duplicate_offset = atoi(&command[5]);
-        for(int i = 0; i< duplicate_count; i++){
-            duplicate_selected_element();        
+        Element* original = selected_element;
+        for(int i = 0; i< duplicate_count; i++){            
+            duplicate_selected_element(i,original);      
             vec3 move = {duplicate_offset,0,0};
-            update_translation(move);
+            update_translation(move);            
         }      
         LOG("duplicated %i\n",duplicate_count);
     }

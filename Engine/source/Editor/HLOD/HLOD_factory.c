@@ -69,8 +69,10 @@ float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02, float fill_facto
     if( sphere_inside_sphere(sphere02, sphere01 ) )
         return get_sphere_volume(sphere02);
 
-
-
+    if(sphere_equals(sphere01,sphere02)){
+        return get_sphere_volume(sphere01);
+    }
+  
     float distance = glm_vec3_distance(sphere01->center,sphere02->center);
 
     float height_cap_sphere01 = sphere_get_height_cap(sphere01,distance);
@@ -81,10 +83,14 @@ float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02, float fill_facto
     float distance_square = distance * distance;
 
     float part01 =  (sphere01->radius + sphere02->radius) * (sphere01->radius + sphere02->radius) - distance_square;
+    if(part01 <= 0){
+        return 0;
+    }
 
     float part02 = distance_square - ((sphere01->radius - sphere02->radius) * (sphere01->radius - sphere02->radius) );
 
     float cap_radius = sqrt(part01 * part02) / 2 * distance;
+
 
 
     float PI_divided_six = M_PI / 6.0f;
@@ -92,7 +98,10 @@ float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02, float fill_facto
     float volumen_cap02 = PI_divided_six*(3*(cap_radius*cap_radius) + height_cap_sphere02*height_cap_sphere02)*height_cap_sphere02;
 
     float volume_overlap = fill_factor01 * volumen_cap01 + fill_factor02*volumen_cap02;
-
+    if(volume_overlap < 0){
+        LOG("Negative result\n");
+        return 0;
+    }
     return volume_overlap;
 }
 
@@ -105,7 +114,10 @@ float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_fact
     float dividend = fill_factor_sphere01 * get_sphere_volume(sphere01) + 
             fill_factor_sphere02 * get_sphere_volume(sphere02) - overlap_volume;
     float merge_sphres_volumes = get_sphere_volume(&merge_sphere);
-    return dividend / merge_sphres_volumes;
+    float result = dividend / merge_sphres_volumes;
+    if(result < 0)
+        return 0;
+    return result;
 }
 
 int short_cluster(const void* cluster01 , const void* cluster02){
