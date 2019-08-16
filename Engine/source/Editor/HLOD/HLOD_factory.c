@@ -91,7 +91,7 @@ inline static float get_sphere_volume(Sphere* sphere){
     
 }
 
-void add_spheres(Sphere* sphere01, Sphere* sphere02, Sphere* out){
+void sphere_merge(Sphere* sphere01, Sphere* sphere02, Sphere* out){
     if(sphere_inside_sphere(sphere02, sphere01)){
         
         out->radius = sphere01->radius;
@@ -100,14 +100,26 @@ void add_spheres(Sphere* sphere01, Sphere* sphere02, Sphere* out){
         out->radius = sphere02->radius;
 
     }else{
+       /*  New radius
+        R = (r1 + r2 + |c1 - c2|) / 2 */
         float new_radius = sphere01->radius + sphere02->radius;
         vec3 center;
         glm_vec3_sub(sphere01->center,sphere02->center,center);
         float center_magnitude = sqrt(center[0] * center[0] + center[1] * center[1] + center[2] * center[2]);
-        new_radius = (new_radius+center_magnitude) * 0.5;// R = (r1 + r2 + |c1 - c2|) / 2
+        new_radius = (new_radius+center_magnitude) * 0.5;
         out->radius = new_radius;
 
-    }
+       /*  New center
+        C = c1 + (c2 - c1) * (R - r1) / |c2 - c1| (linear interpolation) */
+        vec3 differece;
+        glm_vec3_sub(sphere02->center,sphere01->center,differece);
+        vec3 new_center;
+        glm_vec3_add(sphere01->center,differece,new_center);
+        glm_vec3_scale(new_center,(new_radius-sphere01->radius),new_center);
+        float magniture2 = sqrt(differece[0] * differece[0] + differece[1] * differece[1] + differece[2] * differece[2]);
+        glm_vec3_divs(new_center,magniture2,out->center);
+        
+    }   
     
 
 }
@@ -156,7 +168,7 @@ float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_fact
     float overlap_volume = sphere_volume_overlap(sphere01,sphere02,fill_factor_sphere01,fill_factor_sphere02);
     Sphere merge_sphere;
     memset(&merge_sphere,0,sizeof(Sphere));
-    add_spheres(sphere01,sphere02,&merge_sphere);
+    sphere_merge(sphere01,sphere02,&merge_sphere);
 
     float dividend = fill_factor_sphere01 * get_sphere_volume(sphere01) + 
             fill_factor_sphere02 * get_sphere_volume(sphere02) - overlap_volume;
@@ -221,7 +233,7 @@ void compute_bounding_sphere_for_every_mesh(){
             glm_vec3_copy(mesh02->center,sphere02.center);
 
             Sphere cluster_sphere; 
-            add_spheres(&sphere01, &sphere02, &cluster_sphere);
+            sphere_merge(&sphere01, &sphere02, &cluster_sphere);
 
             cluster.bounding_sphere = cluster_sphere;
             LOG("Procesing %s , %s\n",element01->name, element02->name);
