@@ -5,15 +5,11 @@
 
 #include "editor.h"
 
-#include "Windows/content.h"
-
 int main(){
 
     init_engine_memory();
 
-    windows_manager_init();
-
-    
+    windows_manager_init();    
 
     window_create(&window_editor_main, NULL, "Engine"); 
 

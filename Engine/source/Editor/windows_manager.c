@@ -58,7 +58,7 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
 }
 
-#include "Windows/content.h"
+#include "Windows/content_browser.h"
 
 void windows_update(){
     if(key_released(&input.KEY_7)){
