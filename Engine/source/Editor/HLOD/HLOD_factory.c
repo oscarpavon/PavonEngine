@@ -112,7 +112,12 @@ void add_spheres(Sphere* sphere01, Sphere* sphere02, Sphere* out){
 
 }
 
-float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02){
+float sphere_get_height_cap(Sphere* sphere, float distance){
+    float height_sphere01 = (sphere->radius * sphere->radius ) - ( (sphere->radius - distance) * (sphere->radius - distance) );
+    return height_sphere01 / (2 * distance);
+}
+
+float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02, float fill_factor01 , float fill_factor02){
     if( !sphere_intersect_with_sphere(sphere01, sphere02) ){
         return 0;
     }
@@ -124,11 +129,31 @@ float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02){
         return get_sphere_volume(sphere02);
 
 
-    return 0;
+    float distance = glm_vec3_distance(sphere01->center,sphere02->center);
+
+    float height_cap_sphere01 = sphere_get_height_cap(sphere01,distance);
+    float height_cap_sphere02 = sphere_get_height_cap(sphere02,distance);
+
+    float distance_square = distance * distance;
+
+    float part01 =  (sphere01->radius + sphere02->radius) * (sphere01->radius + sphere02->radius) - distance_square;
+
+    float part02 = distance_square - ((sphere01->radius - sphere02->radius) * (sphere01->radius - sphere02->radius) );
+
+    float cap_radius = sqrt(part01 * part02) / 2 * distance;
+
+
+    float PI_divided_six = M_PI / 6.0f;
+    float volumen_cap01 = PI_divided_six*(3*(cap_radius*cap_radius) + height_cap_sphere01*height_cap_sphere01)*height_cap_sphere01;
+    float volumen_cap02 = PI_divided_six*(3*(cap_radius*cap_radius) + height_cap_sphere02*height_cap_sphere02)*height_cap_sphere02;
+
+    float volume_overlap = fill_factor01 * volumen_cap01 + fill_factor02*volumen_cap02;
+
+    return volume_overlap;
 }
 
 float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_factor_sphere01, float fill_factor_sphere02){
-    float overlap_volume = sphere_volume_overlap(sphere01,sphere02);
+    float overlap_volume = sphere_volume_overlap(sphere01,sphere02,fill_factor_sphere01,fill_factor_sphere02);
     Sphere merge_sphere;
     memset(&merge_sphere,0,sizeof(Sphere));
     add_spheres(sphere01,sphere02,&merge_sphere);
