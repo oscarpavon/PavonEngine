@@ -41,6 +41,9 @@ void add_debug_line(vec3 start, vec3 end){
 }
 
 bool bounding_box_initialized = false;
+
+bool bounding_sphere_initialized = false;
+
 bool can_draw_box = true;
 
 int create_bounding_vertices(){
@@ -62,7 +65,7 @@ int create_bounding_vertices(){
         bounding_box = HLOD_box->bounding_box[0];
         
     }
-    create_cube_vertex_geometry(bounding_box);  
+    geometry_cube_create_vertices(bounding_box);  
     return 0;        
 }
 
@@ -77,7 +80,7 @@ void init_selected_object_bounding_box_vertices(){
         selected_model->id = actual_model_array->count-1;   
        
     
-        create_cube_indices();
+        geometry_cube_create_indices();
 
         if(create_bounding_vertices() == -1){
             can_draw_box = false;
@@ -275,6 +278,40 @@ void draw_grid(){
     glDrawArrays(GL_LINES, 0, new_grid.vertex_array.count);
 }
 
+void gizmos_draw_bounding_sphere(){
+    if(bounding_sphere_initialized){
+        Model* bounding_model = get_from_array(&bounding_boxes,0);
+
+        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id,bounding_model->model_mat);
+         GLint uniform_color = get_uniform_location(bounding_model->shader,"color");
+    
+        glUniform4fv(uniform_color, 1, (vec4){1,0,0.2,1});
+        check_error("color matrix error");
+
+        glDrawArrays(GL_LINE_STRIP, 0, bounding_model->vertex_array.count);
+        return;
+    }
+
+
+    Array* prev_model_array = actual_model_array;
+    actual_model_array = &bounding_boxes;
+
+    new_empty_model();
+    
+    selected_model->id = actual_model_array->count-1;   
+    
+
+    //create vertex for sphere
+    geometry_sphere_create_vertices(32);
+
+    init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
+    init_static_gpu_index_buffer(&selected_model->index_array, &selected_model->index_buffer_id);
+
+    selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+    bounding_sphere_initialized = true;
+    actual_model_array = prev_model_array;
+}
+
 void draw_gizmos(){
     
     
@@ -288,8 +325,10 @@ void draw_gizmos(){
         draw_skeletal_bones();
     
     if(can_draw_gizmos){
-        if(can_draw_bounding_box_in_select_element)
+        if(can_draw_bounding_box_in_select_element){
             draw_bounding_box();
+            gizmos_draw_bounding_sphere();
+        }
         //draw_camera_direction();
    
        

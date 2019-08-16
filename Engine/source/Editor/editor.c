@@ -116,12 +116,12 @@ void editor_generate_and_add_cube_element(){
     add_to_array(&mesh_component.meshes,&selected_model->id);
 
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-    create_cube_indices();
+    geometry_cube_create_indices();
     vec3 box[2];
     glm_vec3_copy(VEC3(-1,-1,-1),box[0]);
     glm_vec3_copy(VEC3(1,1,1),box[1]);
     
-    create_cube_vertex_geometry(box);
+    geometry_sphere_create_vertices(box);
 
     init_model_gl_buffers(selected_model); 
     
@@ -527,4 +527,6 @@ void draw_editor_viewport(){
     editor_message("editor message");       
 
     collision_test();
+
+    
 }

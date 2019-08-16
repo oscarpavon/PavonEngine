@@ -83,14 +83,10 @@ float sphere_volume_overlap(Sphere* sphere01, Sphere* sphere02, float fill_facto
     float distance_square = distance * distance;
 
     float part01 =  (sphere01->radius + sphere02->radius) * (sphere01->radius + sphere02->radius) - distance_square;
-    if(part01 <= 0){
-        return 0;
-    }
-
+  
     float part02 = distance_square - ((sphere01->radius - sphere02->radius) * (sphere01->radius - sphere02->radius) );
 
     float cap_radius = sqrt(part01 * part02) / 2 * distance;
-
 
 
     float PI_divided_six = M_PI / 6.0f;
@@ -115,8 +111,6 @@ float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_fact
             fill_factor_sphere02 * get_sphere_volume(sphere02) - overlap_volume;
     float merge_sphres_volumes = get_sphere_volume(&merge_sphere);
     float result = dividend / merge_sphres_volumes;
-    if(result < 0)
-        return 0;
     return result;
 }
 
@@ -173,7 +167,7 @@ bool check_if_cluster_contens_same_element(HLODCluster* cluster01, HLODCluster* 
 }
 
 void compute_bounding_sphere_for_every_mesh(){
-    int bounding_value = 1000;
+    int bounding_value = 500;
     int percentage = 50;
 
    for(int i = 0; i < actual_elements_array->count ; i++){

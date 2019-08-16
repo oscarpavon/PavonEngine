@@ -2,9 +2,11 @@
 #define ENGINE_GEOMETRY
 
 /* Create indices in current_model->vertex_array */
-void create_cube_vertex_geometry( float* box );
+void geometry_cube_create_vertices( float* box );
 
 /* Create indices in current_model->index_array */
-void create_cube_indices();
+void geometry_cube_create_indices();
+
+void geometry_sphere_create_vertices(int);
 
 #endif
