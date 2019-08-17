@@ -45,7 +45,7 @@ bool bounding_box_initialized = false;
 
 bool bounding_sphere_initialized = false;
 
-bool gizmos_can_draw_spheres = false;
+
 
 bool can_draw_box = true;
 

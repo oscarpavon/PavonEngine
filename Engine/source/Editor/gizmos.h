@@ -17,8 +17,11 @@ bool draw_rotate_gizmo;
 bool can_draw_skeletal_bones;
 bool can_draw_bounding_box_in_select_element;
 
+bool gizmos_can_draw_spheres;
+
 Array gizmos;
 
 Element* selected_camera;
+
 
 #endif

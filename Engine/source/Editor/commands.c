@@ -100,6 +100,8 @@ void parse_command(const char* command){
     }
     if(strcmp(&command[1],"hlode") == 0){
         generate_HLODS(true);
+        gizmos_can_draw_spheres = false;
+        return;
     }
 
     switch (first_char_command)
