@@ -4,6 +4,8 @@
 #include "editor.h"
 #include "../game.h"
 
+#include "Windows/content_browser.h"
+
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 
@@ -58,7 +60,7 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
 }
 
-#include "Windows/content_browser.h"
+
 
 void windows_update(){
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
@@ -69,7 +71,7 @@ void windows_update(){
 
 
     if(editor_window_content_open){
-        if(&window_content_browser.initialized){
+        if(!window_content_browser.initialized){
             window_create(&window_content_browser,&window_editor_main,"Engine");
             editor_window_content_init();
         }

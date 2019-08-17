@@ -178,20 +178,6 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 }
 
 
-
-void init_menus(){
-    init_array(&menus,sizeof(TextMenu),10);
-    new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
-    new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
-    
-    TextMenu animation_menu;
-    animation_menu.open_key = &input.B;
-    animation_menu.mods_key = -1;
-    animation_menu.draw_text_funtion = &draw_animations_names;
-    animation_menu.execute_function = &menu_action_play_animation;
-    new_text_menu_simple("Animations", &animation_menu);
-}
-
 void draw_menus(){
     TextMenu* menus_list = get_from_array(&menus,0);
     for(int i = 0; i < menus.count ; i++){
@@ -358,5 +344,14 @@ void menus_init(){
     menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
     menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
     
-    init_menus();
+    init_array(&menus,sizeof(TextMenu),10);
+    new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
+    new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
+    
+    TextMenu animation_menu;
+    animation_menu.open_key = &input.B;
+    animation_menu.mods_key = -1;
+    animation_menu.draw_text_funtion = &draw_animations_names;
+    animation_menu.execute_function = &menu_action_play_animation;
+    new_text_menu_simple("Animations", &animation_menu);
 }

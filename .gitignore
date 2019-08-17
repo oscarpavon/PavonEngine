@@ -69,3 +69,4 @@ Engine/generated_glTF_files/*
 .vscode/.ropeproject
 
 Engine/assets/HLOD/*
+Project/*

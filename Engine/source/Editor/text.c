@@ -24,10 +24,11 @@ GLuint uniform_text_color_location;
 
 FT_GlyphSlot g;
 
-GLfloat black[4] = {1, 1, 1, 1};
-GLfloat red[4] = {1, 0, 0, 1};
+const GLfloat black[4] = {1, 1, 1, 1};
+const GLfloat red[4] = {1, 0, 0, 1};
 
-void render_text(const char *text, float x, float y, float sx, float sy, bool mark)
+
+void render_text(const char *text, float x, float y, float pixel_size_x, float pixel_size_y, bool mark)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -57,10 +58,12 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
             GL_UNSIGNED_BYTE,
             g->bitmap.buffer);
 
-        float x2 = x + g->bitmap_left * sx;
-        float y2 = -y - g->bitmap_top * sy;
-        float w = g->bitmap.width * sx;
-        float h = g->bitmap.rows * sy;
+        check_error("text texture");
+
+        float x2 = x + g->bitmap_left * pixel_size_x;
+        float y2 = -y - g->bitmap_top * pixel_size_y;
+        float w = g->bitmap.width * pixel_size_x;
+        float h = g->bitmap.rows * pixel_size_y;
 
         GLfloat box[4][4] = {
             {x2, -y2, 0, 0},
@@ -73,6 +76,7 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
             glUniform4fv(uniform_color, 1, red);
         else
             glUniform4fv(uniform_color, 1, black);
+        check_error("send text color");
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
@@ -81,17 +85,20 @@ void render_text(const char *text, float x, float y, float sx, float sy, bool ma
         glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-        x += (g->advance.x / 64) * sx;
-        y += (g->advance.y / 64) * sy;
+        x += (g->advance.x / 64) * pixel_size_x;
+        y += (g->advance.y / 64) * pixel_size_y;
 
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR)
-        {
-            LOG("text draw error \n");
-            LOG("Error %08x \n", error);
-        }
+        check_error("texture error");
     }
     glEnable(GL_CULL_FACE);
+}
+
+void render_text_in_screen_space( int text_size , const char* text, int x , int y){
+    float text_position_x = (-(camera_width_screen/2)+x) * pixel_size_x;    
+    float text_position_y = (((camera_heigth_screen/2)-text_size)+y) * pixel_size_y;
+
+    FT_Set_Pixel_Sizes(face, 0, text_size);
+    render_text(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
 }
 
 unsigned short int directory_show_type = 50;
@@ -210,6 +217,28 @@ void list_directory_files(TextMenu *menu)
     }
 }
 
+void draw_element_text_list(TextMenu *menu, const char *text, int i)
+{
+    if (text == NULL)
+        return;
+    int y_pos = i * menu->text_size + menu->text_size;
+    if (i == 0)
+    {
+        y_pos = menu->text_size;
+    }
+    bool can_mark = false;
+    if (menu->actual_element_select == i)
+    {
+        can_mark = true;
+        if (menu->element_selected)
+        {
+            strcpy(menu->text_for_action, text);
+        }
+    }
+
+    render_text(text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 1 - (y_pos + 100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+}
+
 void draw_directory_files()
 {
     FT_Set_Pixel_Sizes(face, 0, 20);
@@ -248,35 +277,11 @@ void init_text_shader()
 
     text_shader_id = create_engine_shader(text_vertex_shader, text_fragment_shader);
 
-    glGenBuffers(1, &text_vertex_buffer_id);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    
 
-    //uniform_text_color_location =  glGetUniformLocation(text_shader_id,"color");
 }
 
-void draw_element_text_list(TextMenu *menu, const char *text, int i)
-{
-    if (text == NULL)
-        return;
-    int y_pos = i * menu->text_size + menu->text_size;
-    if (i == 0)
-    {
-        y_pos = menu->text_size;
-    }
-    bool can_mark = false;
-    if (menu->actual_element_select == i)
-    {
-        can_mark = true;
-        if (menu->element_selected)
-        {
-            strcpy(menu->text_for_action, text);
-        }
-    }
 
-    render_text(text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 1 - (y_pos + 100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
-}
 
 void init_text_renderer()
 {
@@ -300,6 +305,7 @@ void init_text_renderer()
 
     init_text_shader();
     create_text_texture_buffer();
+    glGenBuffers(1, &text_vertex_buffer_id);
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;

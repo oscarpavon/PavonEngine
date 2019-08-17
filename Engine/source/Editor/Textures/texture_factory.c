@@ -20,12 +20,13 @@ int offsetV = 0;
 
 Array model_in_UV_form;
 
-void export_texture(){
+void texture_export(int size){
     if(textures_pixels[0] == NULL){
         LOG("Texture not exported\n");
         return;
     }
-    stbi_write_png(current_texture_name, 512, 512, 3, textures_pixels[0], 512 * 3);
+    stbi_write_png(texture_current_export_name, size, size, 3, textures_pixels[0], size * 3);
+    free(textures_pixels[0]);
 }
 
 
@@ -100,7 +101,21 @@ void draw_textures(int per_texture_size, int atlas_size){
     
 }
 
-void render_to_texture(int size)
+void texture_render_models_uv(int size){
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //draw_editor_viewport();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+    draw_textures(256,size);
+    glEnable(GL_CULL_FACE);
+
+    offsetU = 0;
+}
+
+void render_to_texture(int size, void(*function)(int) )
 {
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
 
@@ -133,17 +148,10 @@ void render_to_texture(int size)
 
     glViewport(0, 0, size, size); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      
+    function(size);  
 
-    //draw_editor_viewport();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_CULL_FACE);
-    glEnable(GL_BLEND);  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        draw_textures(256,size);
-    glEnable(GL_CULL_FACE);
-    offsetU = 0;
-    
+
     textures_pixels[render_texture_count] = malloc(size * size * 3);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -258,10 +266,9 @@ void draw_UV()
 }
 
 void merge_textures(const char* name){
-    current_texture_name = name;
+    texture_current_export_name = name;
     init_model_to_draw_texture();
-    render_to_texture(512);
-    export_texture();
-    free(textures_pixels[0]);
+    render_to_texture(512,texture_render_models_uv);
+    texture_export(512);    
     clean_array(&model_in_UV_form);
 }
