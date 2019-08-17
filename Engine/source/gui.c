@@ -17,12 +17,9 @@
 #include "engine.h"
 
 
-typedef unsigned short int ui_size;
-
 GLuint vert_shader;
 GLuint frag_shader;
 
-GLuint gui_vertex_buffer_id = -1;
 Array gui_vertex_array;
 
 GLuint logo_texture_id;
@@ -49,11 +46,11 @@ void create_gui_shaders(){
 }
 
 void check_if_pressed(struct Button* button){
-    ui_size minx = button->position[0] - button->size[0];
-    ui_size maxx = button->position[0] + button->size[0];
+    u8 minx = button->position[0] - button->size[0];
+    u8 maxx = button->position[0] + button->size[0];
 
-    ui_size miny = button->position[1] - button->size[1];
-    ui_size maxy = button->position[1] + button->size[1];
+    u8 miny = button->position[1] - button->size[1];
+    u8 maxy = button->position[1] + button->size[1];
 
     if(minx <= touch_position_x && maxy >= touch_position_y){
         if(miny <= touch_position_y && maxx >= touch_position_x){
@@ -66,7 +63,7 @@ void check_if_pressed(struct Button* button){
     }
 }
 
-void update_button_matrix(GLuint shader_id, vec2 size, vec2 position){
+void two_dimension_screen_space_send_matrix(GLuint shader_id, vec2 size, vec2 position){
     mat4 scale;
     glm_mat4_identity(scale);
 
@@ -92,10 +89,9 @@ void update_button_matrix(GLuint shader_id, vec2 size, vec2 position){
     glm_mul(projection, model, model_projection);
 
 
-    GLint mvp_uniform =  glGetUniformLocation(shader_id,"MVP");
+    GLint mvp_uniform =  get_uniform_location(shader_id,"MVP");
     glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &model_projection[0][0]);
-
-
+    check_error("Screen space send mat");
 }
 
 void draw_buttons(){
@@ -109,9 +105,9 @@ void draw_buttons(){
         glUseProgram(button->shader);
         glBindTexture(GL_TEXTURE_2D,0);
 
-        update_button_matrix(button->shader, button->size, button->position);
+        two_dimension_screen_space_send_matrix(button->shader, button->size, button->position);
 
-        glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
 
         glEnableVertexAttribArray(0);
 
@@ -133,8 +129,8 @@ void draw_buttons(){
 }
 
 void create_vertex_buffer(){
-    glGenBuffers(1,&gui_vertex_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
+    glGenBuffers(1,&UI_plane_vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, gui_vertex_array.count * sizeof(struct Vertex) , gui_vertex_array.data, GL_STATIC_DRAW);
     free_to_marker(previous_marker);
     //free(gui_vertex_array.vertices);
@@ -232,9 +228,9 @@ void draw_logo_image(){
     glUseProgram(button->shader);
     glBindTexture(GL_TEXTURE_2D,logo_texture_id);
 
-    update_button_matrix(button->shader, button->size, button->position);
+    two_dimension_screen_space_send_matrix(button->shader, button->size, button->position);
 
-    glBindBuffer(GL_ARRAY_BUFFER,gui_vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
@@ -244,13 +240,8 @@ void draw_logo_image(){
 
     glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("draw logo\n");
-        LOG("Error %08x \n",error);
-    }
+    check_error("logo");
 
-    //glDisable(GL_BLEND);
 }
 
 

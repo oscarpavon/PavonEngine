@@ -410,7 +410,7 @@ void draw_gizmos(){
                 if(selected_button == NULL)
                     return;
                 glUseProgram(actual_gizmo->shader);
-                update_button_matrix(actual_gizmo->shader, selected_button->size, selected_button->position);
+                two_dimension_screen_space_send_matrix(actual_gizmo->shader, selected_button->size, selected_button->position);
                 glBindTexture(GL_TEXTURE_2D, actual_gizmo->texture.id);
                 glBindBuffer(GL_ARRAY_BUFFER,actual_gizmo->vertex_buffer_id);
 

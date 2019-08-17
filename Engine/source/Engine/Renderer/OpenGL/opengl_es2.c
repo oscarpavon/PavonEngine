@@ -6,7 +6,25 @@
 #include "../../../camera.h"
 #include "../../../engine.h"
 
+void load_texture_to_GPU(Texture* texture){
+    glGenTextures(1, &texture->id);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
 
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, texture->image.width,
+                    texture->image.heigth, 0,
+                    GL_RGB, GL_UNSIGNED_BYTE, texture->image.pixels_data);
+
+    free_image(&texture->image);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    check_error("Texture to GPU");
+}
 
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
 

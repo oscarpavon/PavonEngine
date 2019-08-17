@@ -4,11 +4,12 @@
 #include "../text.h"
 #include <dirent.h>
 
+#include "../../gui.h"
+#include "../../engine.h"
+
 Model content_model;
 
 Array array_content_views;
-
-GLuint other_text_texture;
 
 void editor_window_content_browser_draw(){
     glfwMakeContextCurrent(window_content_browser.window);
@@ -22,9 +23,34 @@ void editor_window_content_browser_draw(){
     }
    
     //draw_engine_memory();
-    ContentView* content_view = get_from_array(&array_content_views,0);
-    if(content_view){
-        render_text_in_screen_space(12,content_view->content_name,0,0);
+    
+    
+    for (int i = 0; i < array_content_views.count; i++)
+    {
+        ContentView* content_view = get_from_array(&array_content_views,i);
+        if(!content_view)
+            continue;
+        
+        glDisable(GL_CULL_FACE);
+
+        glUseProgram(content_view->shader_id);
+        glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
+
+        two_dimension_screen_space_send_matrix(content_view->shader_id, content_view->size, content_view->position);
+
+        glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+        check_error("logo");
+
+        render_text_in_screen_space(12,content_view->content_name,128*i,-128);
     }
     
     glfwSwapBuffers(window_content_browser.window);
@@ -34,8 +60,16 @@ void editor_window_content_browser_draw(){
 ContentView first;
 
 void content_view_create_model_view(int image_size){
-    editor_window_content_browser_draw();
+    glfwMakeContextCurrent(window_content_browser.window);
 
+    glClearColor(1,0.2,0.4,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Model* model = get_from_array(actual_model_array,0);
+    if(model){
+        draw_simgle_model(model);
+    }
+    
 }
 
 void create_contents_view(){    
@@ -118,11 +152,33 @@ void editor_window_content_get_models_path(){
     closedir(dr);
 
     init_array(&array_content_views,sizeof(ContentView),(model_count+texture_count));
+    int max_x = camera_width_screen / 128;
+    int last_x = 64;
+    int last_y = 64;
     for (int i = 0; i < model_count; i++)
     {
         ContentView new_content_view;
         memset(&new_content_view,0,sizeof(ContentView));
         strcpy(new_content_view.content_name,model_names[i]);
+        Texture new_texture;
+        memset(&new_texture,0,sizeof(Texture));
+        new_texture.image = load_image("../../Project/.thumbnails/first.png");
+        load_texture_to_GPU(&new_texture); 
+
+        new_content_view.thumbnail_image_id = new_texture.id;
+
+        new_content_view.shader_id = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+        new_content_view.size[0] = 58;
+        new_content_view.size[1] = 58;
+        if(i*128 < max_x){
+            last_x = i*128;
+
+        }else{
+            last_y += 128;
+            max_x = 128;
+        }
+        new_content_view.position[0] = (last_y);
+        new_content_view.position[1] = last_x+64;
         add_to_array(&array_content_views,&new_content_view);
 
     }
@@ -135,19 +191,13 @@ void editor_window_content_init(){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    create_contents_view();
+    //create_contents_view();
 
-    editor_window_content_get_models_path();
-
-    
-    glGenTextures(1, &other_text_texture);
-    glBindTexture(GL_TEXTURE_2D, other_text_texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    editor_window_content_get_models_path();    
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    ContentView* content_view = get_from_array(&array_content_views,0);
+    
 }
 

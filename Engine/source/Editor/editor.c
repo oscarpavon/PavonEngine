@@ -98,7 +98,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
 
     sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
     new_texture.image = load_image(path);
-    load_model_texture_to_gpu(&new_texture); 
+    load_texture_to_GPU(&new_texture); 
     hlod->model->texture.id = new_texture.id;
 }
 

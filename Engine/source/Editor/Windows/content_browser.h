@@ -14,7 +14,9 @@ typedef struct ContentView{
     bool new_update;
     u32 thumbnail_image_id;
     vec2 position;
+    vec2 size;
     char thumbnail_image_path[30];
     char content_name[30];
+    u32 shader_id;
 }ContentView;
 #endif

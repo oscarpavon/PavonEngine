@@ -49,7 +49,7 @@ void add_to_array(Array* array, void* element){
 
 void *get_from_array(Array* array,int index){
     if(array->count == 0){
-        LOG("Array is empty\n");
+        //LOG("Array is empty\n");
         return NULL;
     }
     if(array->initialized == false){

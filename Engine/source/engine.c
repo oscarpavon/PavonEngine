@@ -97,10 +97,11 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         LOG("Error to load, null path (add_editor_texture - 154\n");
         return;
     }
+    
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
     new_texture.image = load_image(image_path);
-    load_model_texture_to_gpu(&new_texture); 
+    load_texture_to_GPU(&new_texture); 
     
     add_to_array(current_textures_array,&new_texture);
 
@@ -136,7 +137,7 @@ void load_simple_image(const char* path){
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
     new_texture.image = load_image(path);
-    load_model_texture_to_gpu(&new_texture); 
+    load_texture_to_GPU(&new_texture); 
     
     add_to_array(current_textures_array,&new_texture);    
 }
@@ -240,31 +241,6 @@ void draw_elements(Array *elements){
     }
     clean_array(elements);
     return;   
-}
-
-
-void load_model_texture_to_gpu(Texture* texture){
-    glGenTextures(1, &texture->id);
-    glBindTexture(GL_TEXTURE_2D, texture->id);
-
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, texture->image.width,
-                    texture->image.heigth, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, texture->image.pixels_data);
-
-    free_image(&texture->image);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("texture error \n");
-        LOG("Error %08x \n",error);
-    }
 }
 
 void init_model_gl_buffers(struct Model* new_model){    
@@ -399,7 +375,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
     init_model_gl_buffers(selected_model);
 
-    load_model_texture_to_gpu(&new_texture);
+    load_texture_to_GPU(&new_texture);
     selected_model->texture.id = new_texture.id;
 
     actual_model_array = prev_model_array;
