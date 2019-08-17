@@ -181,18 +181,19 @@ void merge_pairs(float bounding_value){
                     
                     HLODCluster new_cluster;
                     memset(&new_cluster,0,sizeof(HLODCluster));
-                    new_cluster.is_valid = true;
+                    new_cluster.is_valid = true;      
+
                     Sphere new_bounding_sphere;
                     memset(&new_bounding_sphere,0,sizeof(Sphere));
-                    new_bounding_sphere.radius = cluster->bounding_sphere.radius + cluster_for_merge->bounding_sphere.radius;
+                    sphere_merge(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,&new_bounding_sphere);
                     new_cluster.bounding_sphere = new_bounding_sphere;
-                    
+
                     new_cluster.fill_factor = calculate_fill_factor(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,cluster->fill_factor,cluster_for_merge->fill_factor);
                     new_cluster.cost = cube(new_cluster.bounding_sphere.radius) / new_cluster.fill_factor;
                     
                     if(new_cluster.cost <= ( cube(bounding_value) / percentage) ){
-                        
-                        cluster_merge(cluster,cluster_for_merge);                        
+                       
+                        cluster_merge(cluster,cluster_for_merge);                      
 
                         cluster_for_merge->fill_factor = new_cluster.fill_factor;
                         cluster_for_merge->bounding_sphere = new_cluster.bounding_sphere;
@@ -391,16 +392,16 @@ void HLODs_generated_debug(){
         }
     }
 /*     sphere01.radius = 1;
-    glm_vec3_copy(VEC3(0,0,0),sphere01.center);
+    glm_vec3_copy(VEC3(5.23,0,0),sphere01.center);
     sphere02.radius = 1;
-    glm_vec3_copy(VEC3(2,0,0),sphere02.center);
+    glm_vec3_copy(VEC3(8.23,0,0),sphere02.center);
 
-    gizmos_boanding_sphere_draw(&sphere01);
-    gizmos_boanding_sphere_draw(&sphere02);
+    gizmos_boanding_sphere_draw(&sphere01,(vec4){1,1,1,1});
+    gizmos_boanding_sphere_draw(&sphere02,(vec4){1,1,1,1});
 
     Sphere merge;
     sphere_merge(&sphere01,&sphere02,&merge);
 
-    gizmos_boanding_sphere_draw(&merge); */
+    gizmos_boanding_sphere_draw(&merge,(vec4){1,1,1,1}); */
 
 }

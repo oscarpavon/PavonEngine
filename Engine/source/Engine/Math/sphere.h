@@ -60,15 +60,8 @@ inline static void sphere_merge(Sphere* sphere01, Sphere* sphere02, Sphere* out)
         new_radius = (new_radius+center_magnitude) * 0.5;
         out->radius = new_radius;
 
-       /*  New center
-        C = c1 + (c2 - c1) * (R - r1) / |c2 - c1| (linear interpolation) */
-        vec3 differece;
-        glm_vec3_sub(sphere02->center,sphere01->center,differece);
-        vec3 new_center;
-        glm_vec3_add(sphere01->center,differece,new_center);
-        glm_vec3_scale(new_center,(new_radius-sphere01->radius),new_center);
-        float magniture2 = sqrt(differece[0] * differece[0] + differece[1] * differece[1] + differece[2] * differece[2]);
-        glm_vec3_divs(new_center,magniture2,out->center);
+       /*  New center*/
+        glm_vec3_center(sphere01->center,sphere02->center,out->center);
         
     }   
     

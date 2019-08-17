@@ -14,6 +14,7 @@ typedef struct HLODCluster{
     float cost;
     bool is_valid;
     Array elements;
+    float max_cost;
 }HLODCluster;
 
 

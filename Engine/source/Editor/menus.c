@@ -1,14 +1,5 @@
-#include "text.h"
-
-#include <stdio.h>
-#include "../utils.h"
-#include <GLES2/gl2.h>
-#include "../Engine/shader.h"
-#include "../camera.h"
-
-#include <stdlib.h>
-#include "../file_loader.h"
 #include "editor.h"
+
 #include "../gui.h"
 
 #include "menus.h"

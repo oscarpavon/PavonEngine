@@ -358,7 +358,7 @@ void grab_mode(){
             
             
             
-        }else{
+        }else{//grid translate
             if(key_released(&input.KEY_1)){
                 grid_translate = false;
             } 
