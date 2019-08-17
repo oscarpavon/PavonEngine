@@ -84,7 +84,9 @@
 			"opengl_es2.h": "c",
 			"typeindex": "c",
 			"__tuple": "c",
-			"hlod_factory.h": "c"
+			"hlod_factory.h": "c",
+			"sphere.h": "c",
+			"math.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

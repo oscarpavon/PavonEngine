@@ -2,9 +2,8 @@
 #include "../editor.h"
 
 #include "../Textures/texture_factory.h"
-#include <math.h>
-
 #include "../../Engine/Math/math.h"
+#include "../../Editor/gizmos.h"
 
 #define SAVED_DATA_COUNT
 vec2 UV_tranlation_offset;
@@ -13,7 +12,6 @@ Model* saved_vertex_model[SAVED_DATA_COUNT];
 int saved_model_data_count = 0;
 
 HLODBoxComponent* current_HLOD_box_component;
-
 
 void atlas_resize_UV(Model* model){
     Model new_model;
@@ -110,6 +108,7 @@ float calculate_fill_factor(Sphere* sphere01 , Sphere* sphere02, float fill_fact
     float dividend = fill_factor_sphere01 * get_sphere_volume(sphere01) + 
             fill_factor_sphere02 * get_sphere_volume(sphere02) - overlap_volume;
     float merge_sphres_volumes = get_sphere_volume(&merge_sphere);
+
     float result = dividend / merge_sphres_volumes;
     return result;
 }
@@ -166,9 +165,64 @@ bool check_if_cluster_contens_same_element(HLODCluster* cluster01, HLODCluster* 
     return false;
 }
 
-void compute_bounding_sphere_for_every_mesh(){
-    int bounding_value = 500;
+void merge_pairs(float bounding_value){
+    float percentage = 50;
+    LOG("Merging spheres edges...\n");
+    LOG("HLOD Cluster init count = %i\n",HLOD_generated_cluster.count);
+    for(int i = 0; i<HLOD_generated_cluster.count ; i++){
+        HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
+        if(cluster->is_valid){
+            for(int j = 0; j<i ; j++){
+                HLODCluster* cluster_for_merge = get_from_array(&HLOD_generated_cluster,j);
+
+                if(cluster_for_merge->is_valid){
+                    if(!check_if_cluster_contens_same_element(cluster,cluster_for_merge) )
+                        continue;
+                    
+                    HLODCluster new_cluster;
+                    memset(&new_cluster,0,sizeof(HLODCluster));
+                    new_cluster.is_valid = true;
+                    Sphere new_bounding_sphere;
+                    memset(&new_bounding_sphere,0,sizeof(Sphere));
+                    new_bounding_sphere.radius = cluster->bounding_sphere.radius + cluster_for_merge->bounding_sphere.radius;
+                    new_cluster.bounding_sphere = new_bounding_sphere;
+                    
+                    new_cluster.fill_factor = calculate_fill_factor(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,cluster->fill_factor,cluster_for_merge->fill_factor);
+                    new_cluster.cost = cube(new_cluster.bounding_sphere.radius) / new_cluster.fill_factor;
+                    
+                    if(new_cluster.cost <= ( cube(bounding_value) / percentage) ){
+                        
+                        cluster_merge(cluster,cluster_for_merge);                        
+
+                        cluster_for_merge->fill_factor = new_cluster.fill_factor;
+                        cluster_for_merge->bounding_sphere = new_cluster.bounding_sphere;
+                        cluster_for_merge->cost = new_cluster.cost;
+                        cluster->is_valid = false;
+                        
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i<HLOD_generated_cluster.count ; i++){
+        HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
+        if(cluster->is_valid){
+            LOG("Cluster active, %i\n",i);
+            for(int o = 0; o<cluster->elements.count ; o++){
+                Element** ppElement = get_from_array(&cluster->elements,o);
+                Element* element = ppElement[0];
+                LOG("Element name: %s\n",element->name);
+            }
+        }
+    }
+}
+
+void compute_bounding_sphere_for_every_mesh(float bounding_value){
+    
     int percentage = 50;
+    float max_cost = cube(bounding_value) / percentage;
 
    for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element01 = get_from_array(actual_elements_array,i);
@@ -198,21 +252,19 @@ void compute_bounding_sphere_for_every_mesh(){
             glm_vec3_copy(mesh02->center,sphere02.center);
 
             Sphere cluster_sphere; 
+            memset(&cluster_sphere,0,sizeof(Sphere));
             sphere_merge(&sphere01, &sphere02, &cluster_sphere);
 
             cluster.bounding_sphere = cluster_sphere;
             LOG("Procesing %s , %s\n",element01->name, element02->name);
 
             cluster.fill_factor = calculate_fill_factor(&sphere01,&sphere02,1.f,1.f);
-            cluster.cost = (cluster.bounding_sphere.radius * cluster.bounding_sphere.radius * cluster.bounding_sphere.radius ) / cluster.fill_factor;
+            cluster.cost = cube(cluster.bounding_sphere.radius) / cluster.fill_factor;
             
             LOG("Fill factor= %f , cost= %f\n",cluster.fill_factor,cluster.cost);
 
-            
-            float max_cost = (bounding_value * bounding_value * bounding_value) / percentage;
-
             if(cluster.cost <=  max_cost ){
-                init_array(&cluster.elements,sizeof(Element*),400);
+                init_array(&cluster.elements,sizeof(Element*),50);
                 cluster.elements.isPointerToPointer = true;
                 add_to_array(&cluster.elements, &element01);
                 add_to_array(&cluster.elements,&element02);
@@ -235,56 +287,8 @@ void compute_bounding_sphere_for_every_mesh(){
         LOG("After short: %f\n",cluster->cost);
     }
 
-    LOG("Merging spheres edges...\n");
-    LOG("HLOD Cluster init count = %i\n",HLOD_generated_cluster.count);
-    for(int i = 0; i<HLOD_generated_cluster.count ; i++){
-        HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
-        if(cluster->is_valid){
-            for(int j = 0; j<i ; j++){
-                HLODCluster* cluster_for_merge = get_from_array(&HLOD_generated_cluster,j);
+    merge_pairs(bounding_value);
 
-                if(cluster_for_merge->is_valid){
-                    if(!check_if_cluster_contens_same_element(cluster,cluster_for_merge) )
-                        continue;
-                    
-                    HLODCluster new_cluster;
-                    memset(&new_cluster,0,sizeof(HLODCluster));
-                    new_cluster.is_valid = true;
-                    Sphere new_bounding_sphere;
-                    memset(&new_bounding_sphere,0,sizeof(Sphere));
-                    new_bounding_sphere.radius = cluster->bounding_sphere.radius + cluster_for_merge->bounding_sphere.radius;
-                    new_cluster.bounding_sphere = new_bounding_sphere;
-                    
-                    new_cluster.fill_factor = calculate_fill_factor(&cluster->bounding_sphere,&cluster_for_merge->bounding_sphere,cluster->fill_factor,cluster_for_merge->fill_factor);
-                    new_cluster.cost = (new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius * new_cluster.bounding_sphere.radius ) / new_cluster.fill_factor;
-                    
-                    if(new_cluster.cost <= ( (bounding_value * bounding_value * bounding_value) / percentage) ){
-                        
-                        cluster_merge(cluster,cluster_for_merge);                        
-
-                        cluster_for_merge->fill_factor = new_cluster.fill_factor;
-                        cluster_for_merge->bounding_sphere = new_cluster.bounding_sphere;
-                        cluster_for_merge->cost = new_cluster.cost;
-                        cluster->is_valid = false;
-                        
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
-    for(int i = 0; i<HLOD_generated_cluster.count ; i++){
-        HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
-        if(cluster->is_valid){
-            LOG("Cluster active, %i\n",i);
-            for(int o = 0; o<cluster->elements.count ; o++){
-                Element** ppElement = get_from_array(&cluster->elements,o);
-                Element* element = ppElement[0];
-                LOG("Element name: %s\n",element->name);
-            }
-        }
-    }
 }
 
 char export_folder[] = "../assets/HLOD/";
@@ -331,9 +335,12 @@ void export_actives_cluster(){
     }
 }
 
+#define CLUSTER_SIZE 5
 void generate_HLODS(bool export){
+    clean_array(&HLOD_generated_cluster);
     UV_tranlation_offset[0] = 0;
     UV_tranlation_offset[1] = -2;
+
     if(!array_elements_for_HLOD_generation.initialized){
         init_array(&array_elements_for_HLOD_generation,sizeof(Element*),500);
         array_elements_for_HLOD_generation.isPointerToPointer = true;
@@ -350,7 +357,7 @@ void generate_HLODS(bool export){
         init_array(&HLOD_generated_cluster, sizeof(HLODCluster),200);
     }
     
-    compute_bounding_sphere_for_every_mesh();
+    compute_bounding_sphere_for_every_mesh(CLUSTER_SIZE);
 
     if(!export)
         return;
@@ -364,5 +371,36 @@ void generate_HLODS(bool export){
             editor_add_HLOD_element(cluster);
     }
     
+
+}
+Sphere sphere01;
+Sphere sphere02;
+
+void HLODs_generated_debug(){
+    Sphere main_cluster_size;
+    main_cluster_size.radius = CLUSTER_SIZE;
+    glm_vec3_copy(VEC3(0,0,0),main_cluster_size.center);
+    gizmos_boanding_sphere_draw(&main_cluster_size, (vec4){1,1,0,1});
+
+    for (u8 i = 0; i < HLOD_generated_cluster.count; i++)
+    {
+        HLODCluster* cluster  = get_from_array(&HLOD_generated_cluster,i);
+        if(cluster->is_valid)
+        {
+            gizmos_boanding_sphere_draw(&cluster->bounding_sphere, (vec4){1,0,0,1});
+        }
+    }
+/*     sphere01.radius = 1;
+    glm_vec3_copy(VEC3(0,0,0),sphere01.center);
+    sphere02.radius = 1;
+    glm_vec3_copy(VEC3(2,0,0),sphere02.center);
+
+    gizmos_boanding_sphere_draw(&sphere01);
+    gizmos_boanding_sphere_draw(&sphere02);
+
+    Sphere merge;
+    sphere_merge(&sphere01,&sphere02,&merge);
+
+    gizmos_boanding_sphere_draw(&merge); */
 
 }

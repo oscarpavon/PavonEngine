@@ -61,9 +61,12 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
 #include "Windows/content_browser.h"
 
 void windows_update(){
-    if(key_released(&input.KEY_7)){
-        editor_window_content_open = true;
+    if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
+        if(key_released(&input.KEY_7)){
+            editor_window_content_open = true;
+        }
     }
+
 
     if(editor_window_content_open){
         if(&window_content_browser.initialized){

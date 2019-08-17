@@ -7,12 +7,6 @@
 
 typedef struct Element Element;
 
-
-Element* HLOD_clusters[20];
-void generate_HLODS(bool);
-int HLOD_cluster_count;
-Array array_elements_for_HLOD_generation;
-
 typedef struct HLODCluster{
     u32 id;
     Sphere bounding_sphere;
@@ -22,5 +16,14 @@ typedef struct HLODCluster{
     Array elements;
 }HLODCluster;
 
+
+void generate_HLODS(bool);
+void HLODs_generated_debug();
+
+Element* HLOD_clusters[20];
+int HLOD_cluster_count;
+Array array_elements_for_HLOD_generation;
 Array HLOD_generated_cluster;
+
+
 #endif // !HLOD_FACTORY_H

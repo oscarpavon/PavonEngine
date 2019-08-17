@@ -3,7 +3,7 @@
 		{
 			"elements" : [
 				{
-					"name" : "module",
+					"name" : "cube",
 					"components" : [
 						{
 							"type" : 0,
@@ -12,8 +12,23 @@
 						},
 						{
 							"type" : 4,
-							"models" : [0,0,1,],
-							"textures" : [0,0,0,],
+							"models" : [0,0,],
+							"textures" : [0,],
+						},
+					],
+				},
+				{
+					"name" : "cube1",
+					"components" : [
+						{
+							"type" : 0,
+							"position" : [0.000000 , 2.099999 , 0.620001],
+							"rotation" : [0.000000 , 0.000000 , 0.000000 , 1.000000],
+						},
+						{
+							"type" : 4,
+							"models" : [0,0,],
+							"textures" : [0,],
 						},
 					],
 				},
@@ -22,10 +37,9 @@
 		{
 			"data" : [
 				"models" : [
-					"module01.gltf",
+					"test/cube.gltf",
 				],
 				"textures" : [
-					"modules_coust.png",
 				],
 			],
 		},

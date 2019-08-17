@@ -3,6 +3,7 @@
 
 #include "geometry.h"
 
+
 GLuint color_fragment_shader;
 
 Array debug_objects;
@@ -43,6 +44,8 @@ void add_debug_line(vec3 start, vec3 end){
 bool bounding_box_initialized = false;
 
 bool bounding_sphere_initialized = false;
+
+bool gizmos_can_draw_spheres = false;
 
 bool can_draw_box = true;
 
@@ -278,14 +281,23 @@ void draw_grid(){
     glDrawArrays(GL_LINES, 0, new_grid.vertex_array.count);
 }
 
-void gizmos_draw_bounding_sphere(){
+void gizmos_boanding_sphere_draw(Sphere* sphere, vec4 color){
     if(bounding_sphere_initialized){
-        Model* bounding_model = get_from_array(&bounding_boxes,0);
+        int bounding_id = 0;
+        if(bounding_boxes.count > 1){
+            bounding_id = 1;
+        }
+        Model* bounding_model = get_from_array(&bounding_boxes,bounding_id);
 
-        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id,bounding_model->model_mat);
-         GLint uniform_color = get_uniform_location(bounding_model->shader,"color");
+        mat4 new_model_mat;
+        glm_mat4_identity(new_model_mat);
+        glm_translate(new_model_mat,sphere->center);
+        glm_scale_uni(new_model_mat,sphere->radius*0.5);
+        update_draw_vertices(bounding_model->shader, bounding_model->vertex_buffer_id,new_model_mat);
+
+        GLint uniform_color = get_uniform_location(bounding_model->shader,"color");
     
-        glUniform4fv(uniform_color, 1, (vec4){1,0,0.2,1});
+        glUniform4fv(uniform_color, 1, color);
         check_error("color matrix error");
 
         glDrawArrays(GL_LINE_STRIP, 0, bounding_model->vertex_array.count);
@@ -312,6 +324,36 @@ void gizmos_draw_bounding_sphere(){
     actual_model_array = prev_model_array;
 }
 
+void init_gizmos(){
+    init_array(&gizmos,sizeof(Model),10);   
+    
+    init_array(&bounding_boxes,sizeof(Model),10);
+
+    init_array(&debug_objects, sizeof(DebugLine),300);
+
+    load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
+    load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");
+    load_model_to_array(&gizmos,"editor/camera.gltf", "editor/camera_gizmo.jpg");
+    load_model_to_array(&gizmos,"editor/player_start.gltf", "editor/player_start_gizmo.jpg");
+    
+
+    color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
+
+    can_draw_gizmos = true;
+    can_draw_skeletal_bones = false;
+    can_draw_bounding_box_in_select_element = false;
+
+    draw_translate_gizmo = false;
+    draw_rotate_gizmo = false;
+
+    add_debug_line((vec3){0,0,5},(vec3){0,0,-5});
+    add_debug_line((vec3){0,5,0},(vec3){0,-5,0});
+    add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
+
+    init_grid_greometry();    
+}
+
+
 void draw_gizmos(){
     
     
@@ -327,11 +369,25 @@ void draw_gizmos(){
     if(can_draw_gizmos){
         if(can_draw_bounding_box_in_select_element){
             draw_bounding_box();
-            gizmos_draw_bounding_sphere();
+            
         }
         //draw_camera_direction();
-   
-       
+        if(key_released(&input.KEY_4) )
+            gizmos_can_draw_spheres = true;
+        
+       if(gizmos_can_draw_spheres){
+
+        HLODs_generated_debug();
+        if(selected_element){
+            StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+            Sphere sphere;
+            sphere.radius = glm_aabb_radius(mesh->bounding_box);
+            glm_vec3_copy(mesh->center,sphere.center);
+            gizmos_boanding_sphere_draw(&sphere,(vec4){0,0,1,1});
+        }
+       }
+
+
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
             Model* actual_gizmo = get_from_array(&gizmos,0);
@@ -382,31 +438,3 @@ void draw_gizmos(){
     }    
 }
 
-void init_gizmos(){
-    init_array(&gizmos,sizeof(Model),10);   
-    
-    init_array(&bounding_boxes,sizeof(Model),10);
-
-    init_array(&debug_objects, sizeof(DebugLine),300);
-
-    load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
-    load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");
-    load_model_to_array(&gizmos,"editor/camera.gltf", "editor/camera_gizmo.jpg");
-    load_model_to_array(&gizmos,"editor/player_start.gltf", "editor/player_start_gizmo.jpg");
-    
-
-    color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
-
-    can_draw_gizmos = true;
-    can_draw_skeletal_bones = false;
-    can_draw_bounding_box_in_select_element = false;
-
-    draw_translate_gizmo = false;
-    draw_rotate_gizmo = false;
-
-    add_debug_line((vec3){0,0,5},(vec3){0,0,-5});
-    add_debug_line((vec3){0,5,0},(vec3){0,-5,0});
-    add_debug_line((vec3){5,0,0},(vec3){-5,0,0});
-
-    init_grid_greometry();    
-}

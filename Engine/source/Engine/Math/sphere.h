@@ -2,6 +2,7 @@
 #define ENGINE_MATH_SPHERE_H
 
 #include "../../third_party/cglm/cglm.h"
+#include "math.h"
 
 typedef struct Sphere{
     vec3 center;
@@ -35,7 +36,7 @@ inline static bool sphere_intersect_with_sphere(Sphere* sphere01, Sphere* sphere
 
 inline static float get_sphere_volume(Sphere* sphere){
     
-    float volume = ( (4.f/3.f) * M_PI * ( sphere->radius * sphere->radius * sphere->radius) );
+    float volume = ( (4.f/3.f) * M_PI * cube(sphere->radius) );
     sphere->volume = volume;
     return volume;
     
