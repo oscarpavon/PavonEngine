@@ -104,12 +104,18 @@ void render_text_in_screen_space( int text_size , const char* text, int x , int 
 unsigned short int directory_show_type = 50;
 
 #include <dirent.h>
+#include "ProjectManager/project_manager.h"
+
 void list_directory_files(TextMenu *menu)
 {
 
     struct dirent *de; // Pointer for directory entry
 
-    DIR *dr = opendir("../assets/");
+    char directory[sizeof(pavon_the_game_project_folder) + 30];
+    memset(directory,0,sizeof(directory));
+    sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
+    
+    DIR *dr = opendir(directory);
 
     if (dr == NULL)
     {
@@ -293,7 +299,7 @@ void init_text_renderer()
         return;
     }
 
-    if (FT_New_Face(ft, "../assets/editor/DejaVuSerif.ttf", 0, &face))
+    if (FT_New_Face(ft, "../NativeContent/Editor/DejaVuSerif.ttf", 0, &face))
     {
         LOG("Could not open font\n");
         return;

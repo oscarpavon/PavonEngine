@@ -26,7 +26,7 @@ include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Binaries)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../Binaries)
 
 add_executable(Editor ${editor_sources} ${game_source})
 

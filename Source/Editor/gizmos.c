@@ -330,10 +330,10 @@ void init_gizmos(){
 
     init_array(&debug_objects, sizeof(DebugLine),300);
 
-    load_model_to_array(&gizmos,"editor/transform.gltf","editor/transform_gizmo.jpg");
-    load_model_to_array(&gizmos,"editor/rotate.gltf", "editor/rotate_gizmo.png");
-    load_model_to_array(&gizmos,"editor/camera.gltf", "editor/camera_gizmo.jpg");
-    load_model_to_array(&gizmos,"editor/player_start.gltf", "editor/player_start_gizmo.jpg");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/transform.gltf","../NativeContent/Editor/transform_gizmo.jpg");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/rotate.gltf", "../NativeContent/Editor/rotate_gizmo.png");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/player_start.gltf", "../NativeContent/Editor/player_start_gizmo.jpg");
     
 
     color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);

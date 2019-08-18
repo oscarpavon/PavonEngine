@@ -306,10 +306,10 @@ void init_engine(){
     init_array(&engine_native_models,sizeof(Model),100);
 
     actual_standard_fragment_shader = standart_fragment_shader;    
-    load_model_to_array(&engine_native_models,"editor/sphere.glb", "editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"editor/cube.glb", "editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"editor/camera.gltf", "editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"editor/floor.glb", "editor/floor.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
 
 }
 
@@ -364,7 +364,8 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     Array* prev_model_array = actual_model_array;
     actual_model_array = array;
         
-    load_model(path_model);  
+    if(load_model(path_model) != 0)
+        return;  
 
     selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 

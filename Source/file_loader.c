@@ -10,18 +10,9 @@
 
 void close_file(File* file){
 #ifndef ANDROID
-        free((void*)file->path);
+        //free((void*)file->path);
 #endif
     free(file->data);
-}
-
-const char* get_path(const char* path){
-    char* editor_path = "../assets/";
-    char* buffer = malloc(500);
-    memset(buffer,0,500);
-    strcat(buffer,editor_path);
-    strcat(buffer,path);
-    return buffer;
 }
 
 
@@ -44,11 +35,11 @@ int load_file(const char* path, File* output){
     AAsset_close(file);
     return 0;
 #else
-    const char* new_path = get_path(path);
-    output->path = new_path;
-    FILE* file = fopen(new_path,"r");
+    
+    output->path = path;
+    FILE* file = fopen(path,"r");
     if(file == NULL){
-        LOG("error to load: %s\n", new_path);
+        LOG("error to load: %s\n", path);
         return -1;
     }
     fseek(file, 0, SEEK_END);
