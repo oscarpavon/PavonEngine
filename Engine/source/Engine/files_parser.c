@@ -150,12 +150,12 @@ Token* get_token_array_component_transform(Token* token){
 
   last_token_readed = get_token_array_float_values("position",token,transform->position);
   if(!last_token_readed)
-    raise(SIGINT);
+    debug_break();
 
 
   last_token_readed = get_token_array_float_values("rotation",last_token_readed,transform->rotation);
   if(!last_token_readed)
-    raise(SIGINT);
+    debug_break();
 
 
   return last_token_readed;

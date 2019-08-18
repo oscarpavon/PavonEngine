@@ -18,7 +18,7 @@ int main(){
     
     int level_result = load_level_to_elements_array("../levels/test.lvl", actual_elements_array);
     if(level_result != 0){
-        raise(SIGINT);
+        debug_break();
         return -1;   
     }
         

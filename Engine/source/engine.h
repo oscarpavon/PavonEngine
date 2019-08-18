@@ -5,8 +5,7 @@
 #ifndef PAVON_ENGINE_H
 #define PAVON_ENGINE_H
 
-#include <signal.h>
-
+#include "Engine/interruptions.h"
 #include "Engine/array.h"
 #include "Engine/log.h"
 #include "Engine/threads.h"

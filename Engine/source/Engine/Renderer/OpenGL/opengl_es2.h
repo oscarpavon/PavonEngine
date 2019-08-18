@@ -11,7 +11,7 @@ void load_texture_to_GPU(Texture*);
 
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
-    raise(SIGINT);
+    debug_break();
 }
 
 

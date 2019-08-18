@@ -1,11 +1,8 @@
 #include "array.h"
-#include <memory.h>
-#include "../vertex.h"
-
-#include "../utils.h"
-
 #include "memory.h"
-#include "../engine.h"
+#include "interruptions.h"
+#include "log.h"
+#include <string.h>
 
 int init_array(Array * array, u32 element_bytes_size, int count){
     if(array->initialized != true){
@@ -27,7 +24,7 @@ int init_array(Array * array, u32 element_bytes_size, int count){
 void add_to_array(Array* array, void* element){
     if(array->initialized == false){
         LOG("Array not initialized\n");
-        raise(SIGINT);
+        debug_break();;
         return;
     }
     if(array->count == 0){
@@ -38,7 +35,7 @@ void add_to_array(Array* array, void* element){
     }
     if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
         LOG("Array need reallocation\n");//TODO: reallocation engine memory
-        raise(SIGINT);
+        debug_break();;
     }
     size_t offset = array->actual_bytes_size;
     array->count++;
@@ -54,7 +51,7 @@ void *get_from_array(Array* array,int index){
     }
     if(array->initialized == false){
         LOG("Array not initialized\n");
-        raise(SIGINT);
+        debug_break();;
         return NULL;
     }
     if(index > array->count-1){
