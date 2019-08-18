@@ -6,5 +6,5 @@ add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
-add_subdirectory(Engine/source)
-add_subdirectory(Engine/source/Editor)
+add_subdirectory(Source)
+add_subdirectory(Source/Editor)

@@ -5,10 +5,10 @@
             "name": "Debug Editor",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Engine/binaries/Editor",
+            "program": "${workspaceFolder}/Binaries/Editor",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/Engine/binaries",
+            "cwd": "${workspaceFolder}/Binaries",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -21,27 +21,6 @@
             ],            
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "make"
-        },
-        {
-            "name": "Debug Game",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/Game/build/Game",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/Game/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],            
-            "miDebuggerPath": "/usr/bin/gdb",
-            "preLaunchTask": "make Game"
         }
     ]
 }
