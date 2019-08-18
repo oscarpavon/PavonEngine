@@ -14,6 +14,71 @@
 Model content_model;
 
 Array array_content_views;
+Array array_finding_content;
+
+void editor_window_content_browser_draw_content_view(ContentView* content_view){
+    glDisable(GL_CULL_FACE);
+
+    glUseProgram(content_view->shader_id);
+    glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
+
+    two_dimension_screen_space_send_matrix(content_view->shader_id, content_view->size, content_view->position);
+
+    glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    send_color_to_shader(content_view->shader_id,(vec4){1,1,1,1});
+    if(content_view->selected){
+        send_color_to_shader(content_view->shader_id,(vec4){1,0,0,1});            
+    }
+
+    glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
+
+    check_error("content thumbnail");
+
+    render_text_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
+
+}
+void content_find_per_name(const char* name){
+    for (int i = 0; i < array_content_views.count; i++)
+    {
+        bool found = false;
+        ContentView* content_view = get_from_array(&array_content_views,i);
+
+        if(content_view->content_name[0] != name[0])
+            continue;
+
+        for (u8 j = 0; j < strlen(name); j++)
+        {
+            if(content_view->content_name[j] != name[j]){
+                found = false;
+                break;
+            }
+
+            found = true;
+        }
+        if(found)
+        add_to_array(&array_finding_content,&content_view);
+    }
+}
+
+
+void editor_window_content_browser_search_mode(){
+    clean_array(&array_finding_content);
+    content_find_per_name(&command_text_buffer[1]);
+
+    for (int i = 0; i < array_finding_content.count; i++)
+    {
+        ContentView** ppContent_view = get_from_array(&array_finding_content,i);
+        ContentView* content_view = ppContent_view[0];
+        editor_window_content_browser_draw_content_view(content_view);
+    }
+}
 
 void editor_window_content_browser_draw(){
     glfwMakeContextCurrent(window_content_browser.window);
@@ -21,48 +86,22 @@ void editor_window_content_browser_draw(){
     glClearColor(0.1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
- /*    Model* model = get_from_array(actual_model_array,0);
-    if(model){
-        draw_simgle_model(model);
-    } */
-   
-
-    ContentView* mark_content = get_from_array(&array_content_views,0);
-    mark_content->selected = true;
-    
-    for (int i = 0; i < array_content_views.count; i++)
-    {
-        ContentView* content_view = get_from_array(&array_content_views,i);
-        if(!content_view)
-            continue;
+    if(editor_search_objects){
+        editor_window_content_browser_search_mode();
         
-        glDisable(GL_CULL_FACE);
-
-        glUseProgram(content_view->shader_id);
-        glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
-
-        two_dimension_screen_space_send_matrix(content_view->shader_id, content_view->size, content_view->position);
-
-        glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-        send_color_to_shader(content_view->shader_id,(vec4){1,1,1,1});
-        if(content_view->selected){
-            send_color_to_shader(content_view->shader_id,(vec4){1,0,0,1});            
+    }else{
+        ContentView* mark_content = get_from_array(&array_content_views,0);
+        mark_content->selected = true;
+        
+        for (int i = 0; i < array_content_views.count; i++)
+        {
+            ContentView* content_view = get_from_array(&array_content_views,i);
+            if(!content_view)
+                continue;
+            editor_window_content_browser_draw_content_view(content_view);
         }
-
-        glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
-
-        check_error("content thumbnail");
-
-        render_text_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
-    }
     
+    }    
 
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     {
@@ -89,6 +128,10 @@ void content_view_create_model_view(int image_size){
     }
     
 }
+
+
+
+
 
 void create_contents_view(){    
     render_to_texture(128,content_view_create_model_view);
@@ -126,6 +169,7 @@ void editor_window_content_get_models_path(){
 
     char directories_names[directory_count][30];
     memset(directories_names,0,sizeof(directories_names));
+
     char texture_names[directory_count][30];
     memset(texture_names,0,sizeof(texture_names));
     
@@ -176,7 +220,8 @@ void editor_window_content_get_models_path(){
     }
 
     closedir(dr);
-    
+
+    init_array(&array_finding_content,sizeof(ContentView*),(model_count+texture_count));
     init_array(&array_content_views,sizeof(ContentView),(model_count+texture_count));
     int max_x = camera_width_screen / 128;
     int last_x = 64;
@@ -187,6 +232,7 @@ void editor_window_content_get_models_path(){
         ContentView new_content_view;
         memset(&new_content_view,0,sizeof(ContentView));
         strcpy(new_content_view.content_name,model_names[i]);
+
         Texture new_texture;
         memset(&new_texture,0,sizeof(Texture));
         new_texture.image = load_image("/home/pavon/PavonTheGame/.thumbnails/content24.jpg");

@@ -93,5 +93,5 @@ bool controlling_camera_component;
 
 bool isDrawUV;
 
-
+bool editor_search_objects;
 #endif

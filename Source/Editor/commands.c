@@ -230,7 +230,15 @@ void parse_characters(unsigned char character){
         character_count++;        
         change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
         return;
+    }else if(character == '/'){
+        LOG("Search mode\n");
+        command_text_buffer[character_count] = character;
+        character_count++;
+        editor_search_objects = true;
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+        return;
     }
+
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
         command_text_buffer[character_count] = character;
         character_count++;

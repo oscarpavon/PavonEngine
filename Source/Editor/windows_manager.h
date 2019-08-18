@@ -16,6 +16,7 @@ typedef struct EditorWindow{
 }EditorWindow;
 
 EditorWindow* current_window;
+
 void window_resize_callback(GLFWwindow* window, int width, int height);
 void window_focus_callback(GLFWwindow*,int);
 void window_create(EditorWindow *win,EditorWindow* share_window,const char* name);
