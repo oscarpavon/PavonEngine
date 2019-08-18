@@ -5,8 +5,11 @@
 #include <dirent.h>
 
 #include "../../gui.h"
-#include "../../engine.h"
+
 #include "../ProjectManager/project_manager.h"
+#include "../editor_shader.h"
+#include "../editor.h"
+#include "../commands.h"
 
 Model content_model;
 
@@ -18,13 +21,14 @@ void editor_window_content_browser_draw(){
     glClearColor(0.1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Model* model = get_from_array(actual_model_array,0);
+ /*    Model* model = get_from_array(actual_model_array,0);
     if(model){
         draw_simgle_model(model);
-    }
+    } */
    
-    //draw_engine_memory();
-    
+
+    ContentView* mark_content = get_from_array(&array_content_views,0);
+    mark_content->selected = true;
     
     for (int i = 0; i < array_content_views.count; i++)
     {
@@ -47,13 +51,26 @@ void editor_window_content_browser_draw(){
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
 
-        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+        send_color_to_shader(content_view->shader_id,(vec4){1,1,1,1});
+        if(content_view->selected){
+            send_color_to_shader(content_view->shader_id,(vec4){1,0,0,1});            
+        }
 
-        check_error("logo");
+        glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
 
-        render_text_in_screen_space(12,content_view->content_name,128*i,-128);
+        check_error("content thumbnail");
+
+        render_text_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
     }
     
+
+    if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
+    {
+        set_text_size(12);
+        render_text(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    }
+
+
     glfwSwapBuffers(window_content_browser.window);
 }
 
@@ -77,12 +94,13 @@ void create_contents_view(){
     render_to_texture(128,content_view_create_model_view);
     char directory[sizeof(pavon_the_game_project_folder) + 30];
     memset(directory,0,sizeof(directory));
-    sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
+    sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","content",24,".jpg");
     texture_current_export_name = directory;
     texture_export(128);    
 }
 
 void editor_window_content_get_models_path(){
+    
     struct dirent *de; // Pointer for directory entry
 
     char directory[sizeof(pavon_the_game_project_folder) + 30];
@@ -158,11 +176,12 @@ void editor_window_content_get_models_path(){
     }
 
     closedir(dr);
-
+    
     init_array(&array_content_views,sizeof(ContentView),(model_count+texture_count));
     int max_x = camera_width_screen / 128;
     int last_x = 64;
     int last_y = 64;
+    int object_x_count = 0;
     for (int i = 0; i < model_count; i++)
     {
         ContentView new_content_view;
@@ -170,23 +189,28 @@ void editor_window_content_get_models_path(){
         strcpy(new_content_view.content_name,model_names[i]);
         Texture new_texture;
         memset(&new_texture,0,sizeof(Texture));
-        new_texture.image = load_image("../../Project/.thumbnails/first.png");
+        new_texture.image = load_image("/home/pavon/PavonTheGame/.thumbnails/content24.jpg");
         load_texture_to_GPU(&new_texture); 
 
         new_content_view.thumbnail_image_id = new_texture.id;
+        new_content_view.text_size = 12;
 
-        new_content_view.shader_id = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+        new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
         new_content_view.size[0] = 58;
         new_content_view.size[1] = 58;
-        if(i*128 < max_x){
-            last_x = i*128;
-
+        if(object_x_count < max_x){            
+            if(object_x_count != 0)
+                last_x += 128;
+            object_x_count++;
         }else{
-            last_y += 128;
-            max_x = 128;
+            last_y += 148;
+            object_x_count = 1;
+            last_x = 64;
         }
-        new_content_view.position[0] = (last_y);
-        new_content_view.position[1] = last_x+64;
+        new_content_view.position[0] = last_x;
+        new_content_view.position[1] = last_y;
+
+        new_content_view.pixel_size = 64 + 12;
         add_to_array(&array_content_views,&new_content_view);
 
     }
@@ -195,6 +219,13 @@ void editor_window_content_get_models_path(){
 
 void editor_window_content_init(){
     glfwMakeContextCurrent(window_content_browser.window);
+
+    glfwSetKeyCallback(window_content_browser.window, key_callback);
+	glfwSetCursorPosCallback(window_content_browser.window, mouse_callback);
+	glfwSetMouseButtonCallback(window_content_browser.window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window_content_browser.window, window_resize_callback);
+    glfwSetCharCallback(window_content_browser.window, character_callback);
+    glfwSetWindowFocusCallback(window_content_browser.window,window_focus_callback);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

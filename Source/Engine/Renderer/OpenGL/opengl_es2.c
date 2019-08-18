@@ -67,11 +67,14 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
     }    
 
 }
+
+
+
 void draw_model_with_color(Model* model, GLenum mode, vec4 color){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
-    GLint uniform_color = get_uniform_location(model->shader,"color");
     
-    glUniform4fv(uniform_color, 1, color);
+    send_color_to_shader(model->shader,color);
+
     check_error("color matrix error");
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
     

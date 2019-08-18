@@ -339,34 +339,7 @@ void draw_editor_sub_mode()
     render_text(editor_sub_mode_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 40) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
-void update_text_menu(TextMenu *menu)
-{
-    if (menu->execute)
-    {
-        if (menu->draw_text_funtion != NULL)
-            menu->draw_text_funtion(menu);
 
-        if (menu->type == MENU_TYPE_ADD_MODEL)
-            draw_directory_file_type(DIRECTORY_MODELS);
-        else if (menu->type == MENU_TYPE_ADD_TEXTURE)
-            draw_directory_file_type(DIRECTORY_TEXTURES);
-
-        if (menu->element_selected)
-        {
-            menu->execute = false;
-            menu->show = false;
-            menu->element_selected = false;
-
-            if (menu->execute_function == NULL)
-            {
-                LOG("Menu execute function not assigned\n");
-                return;
-            }
-
-            menu->execute_function(menu);
-        }
-    }
-}
 void draw_engine_memory()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
@@ -414,20 +387,20 @@ void text_renderer_loop()
 
     if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT)
     {
-        can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
+        //can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
         can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
         can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
 
         can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E, GLFW_MOD_SHIFT);
-        update_text_menu(&menu_add_texture);
+        text_menu_update(&menu_add_texture);
 
-        update_text_menu(&add_element_menu);
+        text_menu_update(&add_element_menu);
 
-        update_text_menu(&menu_editor_element_list);
+        text_menu_update(&menu_editor_element_list);
 
-        update_text_menu(&menu_add_native_editor_element);
+        text_menu_update(&menu_add_native_editor_element);
 
-        update_text_menu(&menu_show_gui_elements);
+        text_menu_update(&menu_show_gui_elements);
     }
 
     if (editor_mode == EDITOR_MODE_GUI_EDITOR)

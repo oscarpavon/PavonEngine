@@ -12,11 +12,15 @@ void editor_window_content_browser_draw();
 
 typedef struct ContentView{
     bool new_update;
-    u32 thumbnail_image_id;
+    u32 thumbnail_image_id;    
     vec2 position;
     vec2 size;
     char thumbnail_image_path[30];
     char content_name[30];
     u32 shader_id;
+    bool selected;
+    u8 pixel_size;//thumbnail + text size in pixel
+    u8 text_size;
+    u8 thumbnail_image_size;
 }ContentView;
 #endif

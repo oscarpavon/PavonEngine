@@ -36,4 +36,11 @@ static inline GLint get_uniform_location(GLuint shader, const char* name){
     }
     return uniform;
 }
+
+static inline void send_color_to_shader(u32 shader_id, vec4 color){
+    GLint uniform_color = get_uniform_location(shader_id,"color");
+    
+    glUniform4fv(uniform_color, 1, color);
+}
+
 #endif // !OPENGL_ES_2_RENDERER_H

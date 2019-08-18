@@ -64,7 +64,7 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
 
 void windows_update(){
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
-        if(key_released(&input.KEY_7)){
+        if(key__released(&input.A,GLFW_MOD_SHIFT)){
             editor_window_content_open = true;
         }
     }

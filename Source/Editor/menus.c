@@ -4,6 +4,35 @@
 
 #include "menus.h"
 
+void text_menu_update(TextMenu *menu)
+{
+    if (menu->execute)
+    {
+        if (menu->draw_text_funtion != NULL)
+            menu->draw_text_funtion(menu);
+
+/*         if (menu->type == MENU_TYPE_ADD_MODEL)
+            draw_directory_file_type(DIRECTORY_MODELS);
+        else if (menu->type == MENU_TYPE_ADD_TEXTURE)
+            draw_directory_file_type(DIRECTORY_TEXTURES); */
+
+        if (menu->element_selected)
+        {
+            menu->execute = false;
+            menu->show = false;
+            menu->element_selected = false;
+
+            if (menu->execute_function == NULL)
+            {
+                LOG("Menu execute function not assigned\n");
+                return;
+            }
+
+            menu->execute_function(menu);
+        }
+    }
+}
+
 void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
         if(input.SHIFT.pressed)
@@ -182,7 +211,7 @@ void draw_menus(){
     TextMenu* menus_list = get_from_array(&menus,0);
     for(int i = 0; i < menus.count ; i++){
         can_open_text_menu_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
-        update_text_menu(&menus_list[i]);
+        text_menu_update(&menus_list[i]);
     }
 }
 

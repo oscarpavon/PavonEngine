@@ -29,6 +29,10 @@ float horizontalAngle = 0;
 float verticalAngle = 0;
 
 
+float last_mouse_x = 400;
+float last_mouse_y = 300;
+bool first_mouse_movement = true;
+
 bool first_camera_rotate = true;
 vec3 init_front;
 void camera_rotate_control(float yaw, float pitch){
@@ -599,7 +603,7 @@ void default_mode(){
         play_game_standalone();
         return; 
     }
-  
+
     if(key_released(&input.X)){
         remove_selected_element();            
         return; 
@@ -779,11 +783,3 @@ void update_input(){
     }
    
 }
-
-float last_mouse_x = 400;
-float last_mouse_y = 300;
-bool first_mouse_movement = true;
-
-
-
-
