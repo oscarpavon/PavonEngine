@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
 void close_file(File* file){
 #ifndef ANDROID
         //free((void*)file->path);

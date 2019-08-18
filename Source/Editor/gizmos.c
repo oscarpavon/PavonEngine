@@ -335,7 +335,7 @@ void init_gizmos(){
     load_model_to_array(&gizmos,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&gizmos,"../NativeContent/Editor/player_start.gltf", "../NativeContent/Editor/player_start_gizmo.jpg");
     
-
+    
     color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 
     can_draw_gizmos = true;

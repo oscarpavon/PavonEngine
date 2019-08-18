@@ -364,8 +364,8 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     Array* prev_model_array = actual_model_array;
     actual_model_array = array;
         
-    if(load_model(path_model) != 0)
-        return;  
+    load_model(path_model);
+
 
     selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 

@@ -6,6 +6,7 @@
 
 #include "../../gui.h"
 #include "../../engine.h"
+#include "../ProjectManager/project_manager.h"
 
 Model content_model;
 
@@ -74,18 +75,25 @@ void content_view_create_model_view(int image_size){
 
 void create_contents_view(){    
     render_to_texture(128,content_view_create_model_view);
-    texture_current_export_name = "../../Project/.thumbnails/first.png";
+    char directory[sizeof(pavon_the_game_project_folder) + 30];
+    memset(directory,0,sizeof(directory));
+    sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
+    texture_current_export_name = directory;
     texture_export(128);    
 }
 
 void editor_window_content_get_models_path(){
     struct dirent *de; // Pointer for directory entry
 
-    DIR *dr = opendir("../assets/");
+    char directory[sizeof(pavon_the_game_project_folder) + 30];
+    memset(directory,0,sizeof(directory));
+    sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
+    DIR *dr = opendir(directory);
 
     if (dr == NULL)
     {
         LOG("Could not open current directory\n");
+        return;
     }
 
     int directory_count = 0;
@@ -191,7 +199,7 @@ void editor_window_content_init(){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    //create_contents_view();
+    create_contents_view();
 
     editor_window_content_get_models_path();    
 
