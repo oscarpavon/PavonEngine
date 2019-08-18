@@ -9,6 +9,8 @@
 
 #include "engine.h"
 
+#include "vertex.h"
+
 cgltf_data* current_data;
 cgltf_animation* current_animation;
 cgltf_animation_channel* current_channel;

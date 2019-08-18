@@ -1,6 +1,7 @@
 #ifndef ENGINE_GEOMETRY
 #define ENGINE_GEOMETRY
 
+#include "../vertex.h"
 /* Create indices in current_model->vertex_array */
 void geometry_cube_create_vertices( float* box );
 

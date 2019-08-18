@@ -4,6 +4,7 @@
 #include "editor.h"
 
 #include "../Engine/components/components.h"
+#include "../vertex.h"
 
 struct LoadGeometry skeletal_bones_gizmo_geometry;
 GLuint skeletal_gizmo_vertices_buffer_id;

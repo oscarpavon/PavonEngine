@@ -1,23 +1,21 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef ARRAY_H
+#define ARRAY_H
 
-#include "../vertex.h"
-
-#include <memory.h>
-
+#include "../Engine/numbers.h"
+#include <stdbool.h>
 
 typedef struct Array{
     bool initialized;
     bool isPointerToPointer;
     int element_capacity;
-    size_t actual_bytes_size;
-    size_t count;
-    size_t element_bytes_size;
-    size_t bytes_capacity;
+    u32 actual_bytes_size;
+    u32 count;
+    u32 element_bytes_size;
+    u32 bytes_capacity;
     void * data;
 }Array;
 
-int init_array(Array * array, size_t element_bytes_size, int count);
+int init_array(Array * array, u32 element_bytes_size, int count);
 
 void add_to_array(Array* array, void* element);
 
@@ -25,5 +23,4 @@ void *get_from_array(Array*,int index);
 
 void clean_array(Array* array);
 
-
-#endif // !VECTOR_H
+#endif // !ARRAY_H

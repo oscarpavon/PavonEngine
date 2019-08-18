@@ -86,7 +86,10 @@
 			"__tuple": "c",
 			"hlod_factory.h": "c",
 			"sphere.h": "c",
-			"math.h": "c"
+			"math.h": "c",
+			"numbers.h": "c",
+			"vertex.h": "c",
+			"geometry.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

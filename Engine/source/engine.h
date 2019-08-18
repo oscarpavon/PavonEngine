@@ -11,6 +11,8 @@
 #include "Engine/log.h"
 #include "Engine/threads.h"
 
+#include "vertex.h"
+
 #include "model.h"
 #include "Engine/types.h"
 #include "third_party/cglm/cglm.h"

@@ -1,4 +1,5 @@
 #include "array.h"
+#include <memory.h>
 #include "../vertex.h"
 
 #include "../utils.h"
@@ -6,8 +7,7 @@
 #include "memory.h"
 #include "../engine.h"
 
-
-int init_array(Array * array, size_t element_bytes_size, int count){
+int init_array(Array * array, u32 element_bytes_size, int count){
     if(array->initialized != true){
        
     }else{

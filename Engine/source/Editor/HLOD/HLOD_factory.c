@@ -5,7 +5,7 @@
 #include "../../Engine/Math/math.h"
 #include "../../Editor/gizmos.h"
 
-#define SAVED_DATA_COUNT
+#define SAVED_DATA_COUNT 20
 vec2 UV_tranlation_offset;
 void *saved_vertex_data[SAVED_DATA_COUNT];
 Model *saved_vertex_model[SAVED_DATA_COUNT];

@@ -6,11 +6,6 @@
 
 #include "windows_manager.h"
 
-#include "../model.h"
-#include "../Engine/shader.h"
-
-#include "../Engine/array.h"
-
 #include "../engine.h"
 
 #include "text.h"
@@ -121,7 +116,7 @@ void editor_generate_and_add_cube_element(){
     glm_vec3_copy(VEC3(-1,-1,-1),box[0]);
     glm_vec3_copy(VEC3(1,1,1),box[1]);
     
-    geometry_sphere_create_vertices(box);
+    geometry_sphere_create_vertices(64);
 
     init_model_gl_buffers(selected_model); 
     
@@ -524,7 +519,7 @@ void draw_editor_viewport(){
 
     text_renderer_loop();
 
-    editor_message("editor message");       
+    //editor_message("editor message");       
 
     collision_test();
 

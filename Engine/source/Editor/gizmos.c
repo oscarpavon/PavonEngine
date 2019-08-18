@@ -3,7 +3,6 @@
 
 #include "geometry.h"
 
-
 GLuint color_fragment_shader;
 
 Array debug_objects;

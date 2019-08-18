@@ -11,6 +11,9 @@
     #include <stdbool.h>
 #endif
 
+#include "numbers.h"
+#include "../third_party/cglm/types.h"
+
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;
 
@@ -26,8 +29,6 @@ typedef struct Element{
 #endif
 }Element;
 
-
-
 typedef struct PlayerStart{
     vec3 position;
     versor rotation; 
@@ -40,7 +41,6 @@ typedef struct ActionPointer{
     Action action;
 }ActionPointer;
 
-typedef unsigned short int u8;
-typedef unsigned int u32;
+
 
 #endif // !ENGINE_DATA_TYPES

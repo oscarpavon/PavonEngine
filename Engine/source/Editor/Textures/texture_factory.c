@@ -5,6 +5,7 @@
 #include "../../third_party/stb_image_write.h"
 #include "../windows_manager.h"
 #include "../HLOD/HLOD_factory.h"
+#include "../../vertex.h"
 Model *uv_model;
 GLuint renderedTexture;
 

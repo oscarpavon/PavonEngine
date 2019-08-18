@@ -13,6 +13,7 @@
 
 #include "HLOD/HLOD_factory.h"
 
+#include "../vertex.h"
 
 int data_count = 0;
 cgltf_data* data_array[20];
