@@ -16,6 +16,8 @@ Model content_model;
 Array array_content_views;
 Array array_finding_content;
 
+bool editor_window_content_browser_hint;
+
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
     glDisable(GL_CULL_FACE);
 
@@ -86,10 +88,19 @@ void editor_window_content_browser_draw(){
     glClearColor(0.1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    if(key_released(&input.F)){
+        if(editor_window_content_browser_hint){
+            editor_window_content_browser_hint = false;
+            
+        }else
+            editor_window_content_browser_hint = true;
+    }
+
     if(editor_search_objects){
         editor_window_content_browser_search_mode();
         
     }else{
+
         ContentView* mark_content = get_from_array(&array_content_views,0);
         mark_content->selected = true;
         
@@ -100,7 +111,55 @@ void editor_window_content_browser_draw(){
                 continue;
             editor_window_content_browser_draw_content_view(content_view);
         }
-    
+
+
+        if(editor_window_content_browser_hint){
+            for (int i = 0; i < array_content_views.count; i++)
+            {
+                ContentView* content_view = get_from_array(&array_content_views,i);
+                if(!content_view)
+                    continue;
+
+
+                
+                vec2 hint_position;
+                vec2 hint_size;
+                hint_position[0] = content_view->position[0]+35;
+                hint_position[1] = content_view->position[1];
+                hint_size[0] = 20;
+                hint_size[1] = 20;
+
+
+            glDisable(GL_CULL_FACE);
+
+            glUseProgram(content_view->shader_id);
+            glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
+
+            two_dimension_screen_space_send_matrix(content_view->shader_id, hint_size, hint_position);
+
+            glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+
+            send_color_to_shader(content_view->shader_id,(vec4){0,1,0,1});           
+
+
+            glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
+
+            check_error("hint thumbnail");
+            render_text_in_screen_space(12,"JK",hint_position[0],-hint_position[1]);
+
+
+            }
+        }
+            
+        
+        
     }    
 
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
@@ -273,7 +332,7 @@ void editor_window_content_init(){
     glfwSetCharCallback(window_content_browser.window, character_callback);
     glfwSetWindowFocusCallback(window_content_browser.window,window_focus_callback);
 
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
     create_contents_view();
