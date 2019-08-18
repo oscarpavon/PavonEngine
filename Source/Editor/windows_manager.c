@@ -32,6 +32,8 @@ void window_create(EditorWindow *win, EditorWindow* share_window, const char* na
     win->window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
     glfwMakeContextCurrent(win->window);
     
+    glfwSetWindowUserPointer(win->window,win);
+
     glViewport(0,0,INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     camera_heigth_screen = INIT_WINDOW_SIZE_Y;
     camera_width_screen = INIT_WINDOW_SIZE_X;
@@ -52,11 +54,12 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
 }
 
 void window_focus_callback(GLFWwindow* window,int is_focus){
+    EditorWindow* editor_window = glfwGetWindowUserPointer(window);
     if(is_focus == GLFW_TRUE){
-        current_window->focus = true;
+        editor_window->focus = true;
     }
     if(is_focus == GLFW_FALSE){
-       current_window->focus = false;
+       editor_window->focus = false;
     }
 }
 

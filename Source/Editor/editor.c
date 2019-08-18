@@ -410,6 +410,8 @@ void draw_tringles_count(){
 }
 
 void editor_focus_selected_element(){
+    if(!selected_element)
+        return;
     vec3 new_position;
     glm_vec3_copy(VEC3(selected_element->transform->position[0],
                     selected_element->transform->position[1] - 4,
@@ -456,7 +458,11 @@ void collision_test(){
 }
 
 void draw_editor_viewport(){
-    if(current_window->focus){
+    windows_update();
+
+    if( window_editor_main.focus){
+       
+
         if(is_editing_blender_file){
             if(!blender_file_checked){
             int result = system("blender -b ../assets/test_blender.blend --python-exit-code 2 --disable-abort-handler -P ../scripts/Blender/check_is_saved.py");
@@ -472,6 +478,7 @@ void draw_editor_viewport(){
         }
     }else{
         blender_file_checked = false;
+       
     }
 
     glClearColor(1,0.5,0,1);
@@ -480,7 +487,7 @@ void draw_editor_viewport(){
     if(isDrawUV)
         draw_UV();
     
-    windows_update();
+    
 
     if(controlling_camera_component){
         CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
