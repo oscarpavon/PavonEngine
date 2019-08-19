@@ -79,8 +79,12 @@ void clear_engine_memory(){
     free(engine_memory);
 }
 
-void free_to_marker(int marker){
+void engine_memory_free_to_marker(int marker){
     memory_used += memory_marker - marker;
     actual_free_memory += memory_marker - marker;
     memory_marker -= memory_marker - marker;
 }   
+
+int engine_memory_mark(){
+    return memory_marker;
+}

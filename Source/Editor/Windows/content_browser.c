@@ -181,24 +181,74 @@ void content_view_create_model_view(int image_size){
     glClearColor(1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Model* model = get_from_array(actual_model_array,0);
-    if(model){
-        draw_simgle_model(model);
-    }
-    
+    draw_simgle_model(selected_model);
+
 }
 
 
+void content_browser_window_create_contents_thumbnails(){
 
+    int memory_mark = engine_memory_mark();
+    Array models_loaded_for_create_thumbnails;
+    init_array(&models_loaded_for_create_thumbnails,sizeof(Model),array_content_views.count+5);
+    Array* prev_model_array = actual_model_array;
+    actual_model_array = &models_loaded_for_create_thumbnails;
+    int model_offset = 0;
 
+    Texture checker_texture;
+    memset(&checker_texture,0,sizeof(Texture));
+    checker_texture.image = load_image("../NativeContent/Editor/checker_texture.png");
+    load_texture_to_GPU(&checker_texture); 
 
-void create_contents_view(){    
-    render_to_texture(128,content_view_create_model_view);
-    char directory[sizeof(pavon_the_game_project_folder) + 30];
-    memset(directory,0,sizeof(directory));
-    sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","content",24,".jpg");
-    texture_current_export_name = directory;
-    texture_export(128);    
+    for (int i = 0; i < array_content_views.count; i++)
+    {
+        ContentView* content_view = get_from_array(&array_content_views,i);
+        if(!content_view)
+            continue;
+        char directory[sizeof(pavon_the_game_project_folder) + 30];
+        sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",content_view->content_name);
+        int models_count = load_and_initialize_simple_model(directory);
+        Model* model = get_from_array(&models_loaded_for_create_thumbnails,i+model_offset);
+        model_offset = 0;
+        if(models_count > 1){
+            
+            model_offset ++;
+            
+        }
+
+        model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
+
+        selected_model = model;
+        selected_model->texture.id = checker_texture.id;
+
+        vec3 center;
+        vec3 aabb[2];
+        glm_vec3_copy(selected_model->min,aabb[0]);
+        glm_vec3_copy(selected_model->max,aabb[1]);
+        glm_aabb_center(aabb,center);
+        
+        glm_vec3_sub(main_camera.position,center,main_camera.front);
+        glm_vec3_norm(main_camera.front);
+        //update_look_at();
+
+        //glm_vec3_copy(VEC3(0,-8,2),main_camera.position);
+        glm_vec3_add( VEC3(0,5,0) ,main_camera.position, main_camera.position );
+        glm_lookat(main_camera.position, center, main_camera.up , main_camera.view);  
+
+        glm_rotate(selected_model->model_mat,180,VEC3(0,1,0));
+
+        render_to_texture(128,content_view_create_model_view);        
+        memset(directory,0,sizeof(directory));
+        sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/",content_view->content_name,i,".jpg");
+        texture_current_export_name = directory;
+        texture_export(128);
+        
+    }
+    actual_model_array = prev_model_array;
+
+    //engine_memory_free_to_marker(memory_mark);
+    models_loaded_for_create_thumbnails.data = NULL;
+    
 }
 
 void editor_window_content_get_models_path(){
@@ -292,12 +342,13 @@ void editor_window_content_get_models_path(){
         memset(&new_content_view,0,sizeof(ContentView));
         strcpy(new_content_view.content_name,model_names[i]);
 
-        Texture new_texture;
+/*         Texture new_texture;
         memset(&new_texture,0,sizeof(Texture));
         new_texture.image = load_image("/home/pavon/PavonTheGame/.thumbnails/content24.jpg");
         load_texture_to_GPU(&new_texture); 
 
-        new_content_view.thumbnail_image_id = new_texture.id;
+        new_content_view.thumbnail_image_id = new_texture.id; */
+
         new_content_view.text_size = 12;
 
         new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
@@ -335,9 +386,9 @@ void editor_window_content_init(){
     //glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    create_contents_view();
 
     editor_window_content_get_models_path();    
+    //content_browser_window_create_contents_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

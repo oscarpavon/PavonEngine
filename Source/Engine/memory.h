@@ -22,8 +22,10 @@ typedef struct PoolMemory{
 void init_engine_memory();
 void* allocate_memory(int size);
 void clear_engine_memory();
-void free_to_marker();
+void engine_memory_free_to_marker(int);
 void* engine_memory;
+
+int engine_memory_mark();
 
 void* allocate_stack_memory(StackMemory* stack, int bytes_size);
 void free_stack_to_market(StackMemory* stack);

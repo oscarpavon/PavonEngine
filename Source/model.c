@@ -195,7 +195,8 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
     memcpy(new_node.translation,in_cgltf_node->translation,sizeof(vec3));
     memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
 
-    add_to_array(&model_nodes,&new_node);
+    if(model_nodes.initialized)
+      add_to_array(&model_nodes,&new_node);
   }
 
   if(in_cgltf_node->mesh != NULL)
