@@ -341,6 +341,25 @@ void reload_editor(){
     clean_array(&array_models_loaded);
 }
 
+void editor_add_element_with_model_path(const char* path){
+    add_element_with_model_path(path);
+    update_translation(main_camera.position);
+    vec3 new_position;
+    glm_vec3_scale(main_camera.front,4,new_position);
+    update_translation(new_position);
+
+    
+    StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);      
+               
+    for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
+
+        unsigned int* id = get_from_array(&mesh_component->meshes,i);
+        Model* model = get_from_array(actual_model_array,*id);
+        model->texture.id = editor_texture_checker.id;
+
+    }
+}
+
 void init_editor(){
     
     actual_model_array = &editor_models;
@@ -378,6 +397,9 @@ void init_editor(){
     init_input();
 
     camera_velocity = 0.04;    
+
+    editor_texture_checker.image = load_image("../NativeContent/Editor/checker_texture.png");
+    load_texture_to_GPU(&editor_texture_checker); 
 }
 
 void draw_count_of_draw_call(){

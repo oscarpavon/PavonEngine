@@ -170,6 +170,8 @@ void init_element_component(ComponentDefinition* element_component){
                     Texture* texture = get_from_array(current_textures_array,*texture_id);
                     if(texture)
                         selected_model->texture.id = texture->id;
+                }else{
+                    
                 }
                 glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);               
                 

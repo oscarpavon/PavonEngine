@@ -11,6 +11,8 @@
 #include "../editor.h"
 #include "../commands.h"
 
+#include "../../engine.h"
+
 Model content_model;
 
 Array array_content_views;
@@ -252,7 +254,11 @@ void editor_window_content_browser_draw(){
         }
             
         
-        
+        if(key_released(&input.ENTER)){
+            char directory[sizeof(pavon_the_game_project_folder) + 30];
+            sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",mark_content->content_name);
+            editor_add_element_with_model_path(directory);
+        }
     }    
 
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)

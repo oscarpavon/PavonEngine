@@ -73,6 +73,8 @@ void editor_generate_and_add_cube_element();
 
 void editor_focus_selected_element();
 
+void editor_add_element_with_model_path(const char*);
+
 struct timespec diff(struct timespec start, struct timespec end);
 
 char* editor_mode_show_text;
@@ -94,4 +96,6 @@ bool controlling_camera_component;
 bool isDrawUV;
 
 bool editor_search_objects;
+
+static Texture editor_texture_checker;
 #endif
