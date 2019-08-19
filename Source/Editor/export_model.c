@@ -335,7 +335,7 @@ int export_gltf(const char *name){
         return -1;
     memset(&box,0,sizeof(box));
 
-    load_mesh_for_proccess("test/export_template_with_uv.gltf");
+    load_mesh_for_proccess("/home/pavon/PavonTheGame/Content/test/export_template_with_uv.gltf");
     cgltf_data* data1 = data_array[0];
 
     cgltf_data new_data;

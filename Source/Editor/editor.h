@@ -18,6 +18,8 @@
 
 #include "Blender/blender.h"
 
+#include "ProjectManager/project_manager.h"
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,

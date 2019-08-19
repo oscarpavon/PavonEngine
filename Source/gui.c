@@ -27,8 +27,8 @@ GLuint logo_texture_id;
 Array buttons;
 
 void compile_shaders(){
-    vert_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    frag_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    vert_shader = standart_vertex_shader;
+    frag_shader = standart_fragment_shader;
 }
 
 void create_gui_shaders(){

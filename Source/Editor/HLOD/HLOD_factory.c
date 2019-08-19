@@ -104,6 +104,11 @@ float sphere_volume_overlap(Sphere *sphere01, Sphere *sphere02, float fill_facto
 
 float calculate_fill_factor(Sphere *sphere01, Sphere *sphere02, float fill_factor_sphere01, float fill_factor_sphere02)
 {
+    if (sphere_inside_sphere(sphere02, sphere01)){
+        return get_sphere_volume(sphere01);
+    }
+       
+
     float overlap_volume = sphere_volume_overlap(sphere01, sphere02, fill_factor_sphere01, fill_factor_sphere02);
 
     Sphere merge_sphere;
@@ -369,7 +374,7 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
 
 }
 
-char export_folder[] = "../assets/HLOD/";
+char export_folder[] = "Content/HLOD/";
 char format[] = ".gltf";
 void export_actives_cluster()
 {
@@ -392,8 +397,8 @@ void export_actives_cluster()
                 atlas_resize_UV(model);
             }
 
-            char final_export_name[strlen(export_folder) + strlen(format) + 20];
-            sprintf(final_export_name, "%s%s%i%s", export_folder, "HLOD_out", i, format);
+            char final_export_name[strlen(pavon_the_game_project_folder) + strlen(export_folder) + strlen(format) + 20];
+            sprintf(final_export_name, "%s%s%s%i%s",pavon_the_game_project_folder ,export_folder, "HLOD_out", i, format);
             if (export_gltf(final_export_name) == -1)
             {
                 LOG("Not exported\n");
@@ -404,8 +409,8 @@ void export_actives_cluster()
                 saved_vertex_model[i]->vertex_array.data = saved_vertex_data[i];
             }
 
-            char texture_name[30];
-            sprintf(texture_name, "../assets/HLOD/HLOD_texture%i.png", i);
+            char texture_name[strlen(pavon_the_game_project_folder) + 30];
+            sprintf(texture_name, "%s%s%i", pavon_the_game_project_folder,"Content/HLOD/HLOD_texture%i.png", i);
             merge_textures(texture_name);
             saved_model_data_count = 0;
 

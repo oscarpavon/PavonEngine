@@ -20,6 +20,7 @@ int main(){
     glfwSetCharCallback(window_editor_main.window, character_callback);
     glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
 
+    compiles_standard_shaders();
     draw_loading_screen();
     glfwSwapBuffers(window_editor_main.window);
     

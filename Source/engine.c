@@ -194,14 +194,15 @@ void add_element_with_model_path(const char* model_gltf_path){
         {
             StaticMeshComponent mesh_component;
             memset(&mesh_component,0,sizeof(StaticMeshComponent));    
-            init_array(&mesh_component.meshes,sizeof(unsigned int),models_loaded+1);
-            init_array(&mesh_component.textures,sizeof(unsigned int),models_loaded+1);
-            int model_path_id = texts.count-1;
+            init_array(&mesh_component.meshes,sizeof(u8),models_loaded+1);//the first element is the id of the model path in texts.array
+            init_array(&mesh_component.textures,sizeof(u8),models_loaded+1);
+
+            u8 model_path_id = texts.count-1;
             add_to_array(&mesh_component.meshes,&model_path_id);
 
             //add model loaded id
-            int id =        array_models_loaded.count-models_loaded;
-            for(int i = 0; i<models_loaded ; i++){
+            u8 id = array_models_loaded.count-models_loaded;
+            for(u8 i = 0; i<models_loaded ; i++){
                 add_to_array(&mesh_component.meshes,&id);
                 id++;
             }        
@@ -282,7 +283,7 @@ void init_engine(){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     
-    compiles_standard_shaders();
+    
 
     init_gui();    
 
@@ -426,7 +427,7 @@ static inline void check_static_mesh_component_distance_from_camera(StaticMeshCo
     float distance = glm_vec3_distance(main_camera.position,static_mesh_component->center);
     Model* draw_model;
     float distaces[3] = {0,24,40};
-    unsigned int * model_id;
+    u8 * model_id;
     int count = static_mesh_component->meshes.count-1;
     for(int i = 1; i <= count ; i++){
         float distance_value = distaces[i-1];            

@@ -24,7 +24,6 @@
 
 #include "HLOD/HLOD_factory.h"
 
-#include "ProjectManager/project_manager.h"
 
 Array editor_models;
 Array editor_textures;
@@ -351,7 +350,7 @@ void editor_add_element_with_model_path(const char* path){
                
     for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 
-        unsigned int* id = get_from_array(&mesh_component->meshes,i);
+        u8* id = get_from_array(&mesh_component->meshes,i);
         Model* model = get_from_array(actual_model_array,*id);
         model->texture.id = editor_texture_checker.id;
 

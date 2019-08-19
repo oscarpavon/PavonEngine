@@ -11,11 +11,10 @@ typedef struct Sphere{
 }Sphere;
 
 inline static bool sphere_inside_sphere(Sphere* sphere01, Sphere* sphere02){
-    vec3 distance;
-    glm_vec3_sub(sphere02->center,sphere01->center,distance);
-    float easy_distance = glm_vec3_dot(distance,distance);
+
+    float distance_cglm = glm_vec3_distance(sphere01,sphere02);
     
-    if( (easy_distance+sphere01->radius)<= sphere02->radius)
+    if( (distance_cglm+sphere01->radius)<= sphere02->radius)
         return true;
     return false;
 }

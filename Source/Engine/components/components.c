@@ -108,13 +108,13 @@ void update_component(ComponentDefinition* element_component){
         {
             StaticMeshComponent* mesh_component = element_component->data;            
                
-            for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){            
-                unsigned int* id = get_from_array(&mesh_component->meshes,i);
+            for(u8 i = 1; i<=mesh_component->meshes.count-1 ; i++){            
+                u8* id = get_from_array(&mesh_component->meshes,i);
                 Model* model  = get_from_array(actual_model_array,*id);
                 glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);                 
             }
             
-            unsigned int* id = get_from_array(&mesh_component->meshes,1);
+            u8* id = get_from_array(&mesh_component->meshes,1);
             Model* model  = get_from_array(actual_model_array,*id);
             if(!model)
                 return;
@@ -156,16 +156,17 @@ void init_element_component(ComponentDefinition* element_component){
         {
             StaticMeshComponent* mesh_component = element_component->data;            
                
-            for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
+            for(u32 i = 1; i <= mesh_component->meshes.count-1 ; i++){                
 
-                unsigned int* id = get_from_array(&mesh_component->meshes,i);
+                u8* id = get_from_array(&mesh_component->meshes,i);
             
-                new_empty_model();
                 Model* original_model = get_from_array(&array_models_loaded,*id);
-                
+
+                new_empty_model();
+
                 duplicate_model_data(selected_model,original_model);
                 selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
-                unsigned int* texture_id = get_from_array(&mesh_component->textures,i);
+                u8* texture_id = get_from_array(&mesh_component->textures,i);
                 if(texture_id){
                     Texture* texture = get_from_array(current_textures_array,*texture_id);
                     if(texture)
@@ -177,10 +178,10 @@ void init_element_component(ComponentDefinition* element_component){
                 
             }
 
-            int id =        actual_model_array->count - (mesh_component->meshes.count -1) ;
-            for(int i = 1; i<= mesh_component->meshes.count-1 ; i++){
-                unsigned int * geted_id = get_from_array(&mesh_component->meshes,i);
-                memcpy(geted_id,&id, sizeof(unsigned int));
+            u8 id = actual_model_array->count - ( mesh_component->meshes.count - 1) ;
+            for(u8 i = 1; i <= mesh_component->meshes.count-1 ; i++){
+                u8 * geted_id = get_from_array(&mesh_component->meshes,i);
+                memcpy(geted_id, &id , sizeof(u8));
                 id++;
             }
 
