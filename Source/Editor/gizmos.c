@@ -396,12 +396,19 @@ void draw_gizmos(){
                     if(!camera)
                         return;
                     glm_mat4_copy(camera->camera_gizmo->model_mat, actual_gizmo->model_mat);
+                    float distance = glm_vec3_distance(main_camera.position,actual_gizmo->model_mat[3]);
+                    distance *= 0.008;
+                    glm_scale(actual_gizmo->model_mat,VEC3(distance,distance,distance));
                     draw_simgle_model(actual_gizmo);
                 }                
                 if(selected_element != NULL){
                     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-                    if(transform)
+                    if(transform){
                         glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
+                        float distance = glm_vec3_distance(main_camera.position,actual_gizmo->model_mat[3]);
+                        distance *= 0.2;
+                        glm_scale(actual_gizmo->model_mat,VEC3(distance,distance,distance));
+                    }
                 }
                 draw_simgle_model(actual_gizmo);
             }

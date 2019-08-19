@@ -99,5 +99,5 @@ bool isDrawUV;
 
 bool editor_search_objects;
 
-static Texture editor_texture_checker;
+Texture editor_texture_checker;
 #endif

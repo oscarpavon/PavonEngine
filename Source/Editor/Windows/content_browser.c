@@ -1,5 +1,5 @@
 #include "content_browser.h"
-#include "../../engine.h"
+#include "../editor.h"
 #include "../Textures/texture_factory.h"
 #include "../text.h"
 #include <dirent.h>
@@ -8,10 +8,9 @@
 
 #include "../ProjectManager/project_manager.h"
 #include "../editor_shader.h"
-#include "../editor.h"
+
 #include "../commands.h"
 
-#include "../../engine.h"
 
 Model content_model;
 
@@ -315,17 +314,16 @@ void content_browser_window_create_contents_thumbnails(){
     actual_model_array = &models_loaded_for_create_thumbnails;
     int model_offset = 0;
 
-    Texture checker_texture;
-    memset(&checker_texture,0,sizeof(Texture));
-    checker_texture.image = load_image("../NativeContent/Editor/checker_texture.png");
-    load_texture_to_GPU(&checker_texture); 
+   
+
+    memcpy(&saved_camera,&main_camera,sizeof(CameraComponent));
 
     for (int i = 0; i < array_content_views.count; i++)
     {
         ContentView* content_view = get_from_array(&array_content_views,i);
         if(!content_view)
             continue;
-        char directory[sizeof(pavon_the_game_project_folder) + 30];
+        char directory[sizeof(pavon_the_game_project_folder) + 150];
         sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",content_view->content_name);
         int models_count = load_model(directory);
         Model* model = get_from_array(&models_loaded_for_create_thumbnails,i+model_offset);
@@ -339,7 +337,7 @@ void content_browser_window_create_contents_thumbnails(){
         model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
 
         selected_model = model;
-        selected_model->texture.id = checker_texture.id;
+        selected_model->texture.id = editor_texture_checker.id;
 
         vec3 center;
         vec3 aabb[2];
@@ -347,28 +345,64 @@ void content_browser_window_create_contents_thumbnails(){
         glm_vec3_copy(selected_model->max,aabb[1]);
         glm_aabb_center(aabb,center);
         
+        glm_vec3_copy(VEC3(0,0,0),main_camera.position);
+
+        vec3 frustrum_box[2];
+ /*        while ( !glm_aabb_contains(frustrum_box,aabb))
+        {
+            mat4 inverse_mat;
+            mat4 view_projection;
+            glm_mul(main_camera.projection,main_camera.view,view_projection);
+            glm_mat4_inv(view_projection,inverse_mat);
+
+            vec4 corners[8];
+            glm_frustum_corners(inverse_mat,corners);
+            
+            glm_frustum_box(corners,main_camera.view,frustrum_box);
+            glm_vec3_add(main_camera.position,VEC3(0,0.1,0),main_camera.position);
+            glm_lookat(main_camera.position, center, main_camera.up , main_camera.view);  
+        } */
+        
         glm_vec3_sub(main_camera.position,center,main_camera.front);
         glm_vec3_norm(main_camera.front);
-        //update_look_at();
 
-        //glm_vec3_copy(VEC3(0,-8,2),main_camera.position);
         glm_vec3_add( VEC3(0,5,0) ,main_camera.position, main_camera.position );
         glm_lookat(main_camera.position, center, main_camera.up , main_camera.view);  
 
-        glm_rotate(selected_model->model_mat,180,VEC3(0,1,0));
+        //glm_rotate(selected_model->model_mat,180,VEC3(0,1,0));
 
         render_to_texture(128,content_view_create_model_view);        
         memset(directory,0,sizeof(directory));
         sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/",content_view->content_name,i,".jpg");
         texture_current_export_name = directory;
         texture_export(128);
-        
+        strcpy(content_view->thumbnail_image_path,directory);
     }
+
+    main_camera = saved_camera;
     actual_model_array = prev_model_array;
 
-    //engine_memory_free_to_marker(memory_mark);
+    engine_memory_free_to_marker(memory_mark);
     models_loaded_for_create_thumbnails.data = NULL;
     
+}
+
+void editor_window_content_browser_load_thumbnails(){
+    for (int i = 0; i < array_content_views.count; i++)
+    {
+        ContentView* content_view = get_from_array(&array_content_views,i);
+        if(!content_view)
+            continue;
+        
+
+        Texture new_texture;
+        memset(&new_texture,0,sizeof(Texture));
+        new_texture.image = load_image(content_view->thumbnail_image_path);
+        load_texture_to_GPU(&new_texture); 
+
+        content_view->thumbnail_image_id = new_texture.id;
+
+    }
 }
 
 void editor_window_content_get_models_path(){
@@ -462,13 +496,6 @@ void editor_window_content_get_models_path(){
         memset(&new_content_view,0,sizeof(ContentView));
         strcpy(new_content_view.content_name,model_names[i]);
 
-        Texture new_texture;
-        memset(&new_texture,0,sizeof(Texture));
-        new_texture.image = load_image("/home/pavon/PavonTheGame/.thumbnails/content24.jpg");
-        load_texture_to_GPU(&new_texture); 
-
-        new_content_view.thumbnail_image_id = new_texture.id;
-
         new_content_view.text_size = 12;
 
         new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
@@ -508,7 +535,8 @@ void editor_window_content_init(){
 
 
     editor_window_content_get_models_path();    
-    //content_browser_window_create_contents_thumbnails();
+    content_browser_window_create_contents_thumbnails();
+    editor_window_content_browser_load_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

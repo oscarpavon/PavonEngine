@@ -16,8 +16,8 @@ typedef struct ContentView{
     u32 thumbnail_image_id;    
     vec2 position;
     vec2 size;
-    char thumbnail_image_path[30];
-    char content_name[30];
+    char thumbnail_image_path[100];
+    char content_name[100];
     u32 shader_id;
     bool selected;
     u8 pixel_size;//thumbnail + text size in pixel
