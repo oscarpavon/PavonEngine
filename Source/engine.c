@@ -224,11 +224,10 @@ void set_selected_element_transform(vec3 position, versor rotation){
 void draw_elements(Array *elements){
     for(size_t i = 0; i < elements->count ; i++) { 
         Model** model = get_from_array(elements,i);
-        
-        draw_simgle_model(model[0]);
+        Model* draw_model = model[0];        
+        draw_simgle_model(draw_model);
     }
     clean_array(elements);
-    return;   
 }
 
 void init_model_gl_buffers(struct Model* new_model){    
@@ -245,9 +244,6 @@ void init_model_gl_buffers(struct Model* new_model){
                     new_model->index_array.count * sizeof(unsigned short int),
                     new_model->index_array.data , GL_STATIC_DRAW);
 
-    //free_to_marker(previous_marker); 
-    //new_model->vertex_array.vertices = NULL;
-    //new_model->index_array.data = NULL;
 }
 
 void set_element_position(Element* element, vec3 position){    
@@ -412,14 +408,16 @@ void rotate_element(Element* element, versor quaternion){
 
 static inline void check_static_mesh_component_distance_from_camera(StaticMeshComponent* static_mesh_component){
     float distance = glm_vec3_distance(main_camera.position,static_mesh_component->center);
-    Model* draw_model;
+    
     float distaces[3] = {0,24,40};
-    u8 * model_id;
+
+    u8 id;
     int count = static_mesh_component->meshes.count-1;
     for(int i = 1; i <= count ; i++){
         float distance_value = distaces[i-1];            
         if(distance_value==0){
-            model_id = get_from_array(&static_mesh_component->meshes,i);
+            u8* model_id = get_from_array(&static_mesh_component->meshes,i);
+            id = *model_id;
             continue;
         }
         float next_distace_value = distance_value+1;
@@ -427,21 +425,21 @@ static inline void check_static_mesh_component_distance_from_camera(StaticMeshCo
             next_distace_value = distaces[i];
             
         if(distance >= distance_value && distance_value < next_distace_value){
-            model_id = get_from_array(&static_mesh_component->meshes,i);
-            continue;
+            u8* model_id = get_from_array(&static_mesh_component->meshes,i);
+            id = *model_id;            
         }
         
     }
-    draw_model = get_from_array(actual_model_array,*model_id);
+    //Model* draw_model = get_from_array(actual_model_array,id);
+    Model* other = get_from_array(actual_model_array,1);
     
-    add_to_array(&frame_draw_elements,&draw_model);
+    add_to_array(&frame_draw_elements,&other);
 }  
 
 void check_meshes_distance(){
     for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
-        StaticMeshComponent** 
-        static_mesh_component_pointer_to_pointer = get_from_array(&array_static_meshes_pointers_for_test_distance,i);
-        StaticMeshComponent* mesh_component = static_mesh_component_pointer_to_pointer[0];
+        StaticMeshComponent** ppStaticMesh = get_from_array(&array_static_meshes_pointers_for_test_distance,i);
+        StaticMeshComponent* mesh_component = ppStaticMesh[0];
 
         /*Simple LOD */
         check_static_mesh_component_distance_from_camera(mesh_component);
@@ -449,9 +447,8 @@ void check_meshes_distance(){
     }
 
     for(int i = 0; i < array_skinned_mesh_for_distance_test.count ; i++) { 
-        SkinnedMeshComponent**
-        skin_component_pointer_to_pointer = get_from_array(&array_skinned_mesh_for_distance_test,i);
-        add_to_array(&frame_draw_elements,&skin_component_pointer_to_pointer[0]->mesh);
+        SkinnedMeshComponent** ppSkinComponent = get_from_array(&array_skinned_mesh_for_distance_test,i);
+        add_to_array(&frame_draw_elements,&ppSkinComponent[0]->mesh);
     }
     
 }

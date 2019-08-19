@@ -20,8 +20,7 @@ bool copy_nodes = false;
 Array* actual_vertex_array;
 Array* actual_index_array;
 Array* current_array;
-struct Model* actual_model;
-bool model_loaded = false;
+
 int models_parsed = 0;
 
 Node* get_node_by_name(Array* array, const char* name){
@@ -34,9 +33,9 @@ Node* get_node_by_name(Array* array, const char* name){
 }
 
 void read_accessor_indices(cgltf_accessor* accessor){
-  init_array(actual_index_array,sizeof(unsigned short int),accessor->count);
-  for(size_t i = 0 ; i < accessor->count ; i++){
-      unsigned short int index = cgltf_accessor_read_index(accessor,i);
+  init_array(actual_index_array,sizeof(u8),accessor->count);
+  for(u8 i = 0 ; i < accessor->count ; i++){
+      u8 index = cgltf_accessor_read_index(accessor,i);
       add_to_array(actual_index_array,&index);
   }
 }
@@ -149,20 +148,21 @@ void load_attribute(cgltf_attribute* attribute){
 
   if(attribute->data->has_min){
     
-    glm_vec3_copy(attribute->data->min,actual_model->min);
+    glm_vec3_copy(attribute->data->min,selected_model->min);
     
   }
   if(attribute->data->has_max){
     
-    glm_vec3_copy(attribute->data->max,actual_model->max);
+    glm_vec3_copy(attribute->data->max,selected_model->max);
     
   }
+  
 }
 
 
 void load_primitive(cgltf_primitive* primitive){
   
-  for(unsigned short int i = 0; i < primitive->attributes_count; i++){
+  for(u8 i = 0; i < primitive->attributes_count; i++){
     load_attribute(&primitive->attributes[i]);
   }
   
@@ -170,15 +170,16 @@ void load_primitive(cgltf_primitive* primitive){
 }
 
 void load_mesh(cgltf_mesh* mesh){
-  new_empty_model();
-  actual_vertex_array = &selected_model->vertex_array;
-  actual_index_array = &selected_model->index_array;
-  actual_model = selected_model;
 
   for(int i = 0; i < mesh->primitives_count ; i++){
+    new_empty_model();
+    actual_vertex_array = &selected_model->vertex_array;
+    actual_index_array = &selected_model->index_array;
     load_primitive(&mesh->primitives[i]);
+    init_model_gl_buffers(selected_model);
+    models_parsed++;
   }  
-  model_loaded = true;
+
 }
 
 void check_LOD_names(cgltf_node* node){
@@ -233,9 +234,7 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
 
   if(in_cgltf_node->mesh != NULL){
     check_LOD_names(in_cgltf_node);
-    load_mesh(in_cgltf_node->mesh);
-    init_model_gl_buffers(selected_model);
-    models_parsed++;
+    load_mesh(in_cgltf_node->mesh);   
   }
 
   if(in_cgltf_node->skin != NULL){    
@@ -341,7 +340,6 @@ int load_model(const char* path){
   memset(&model_animation,0,sizeof(Array));
   memset(&model_nodes,0,sizeof(Array));
 
-  model_loaded = false;
   File new_file;
 
   if(load_file(path,&new_file) == -1)
@@ -370,15 +368,6 @@ int load_model(const char* path){
 
   current_loaded_component_type = STATIC_MESH_COMPONENT;
 
-  if(model_loaded){
-    LOG("gltf loaded with LODs. \n");
- 
-    cgltf_free(data);
-    
-    int model_result = models_parsed;
-    models_parsed = 0;
-    return model_result;
-  }
 
   if(data->skins_count >= 1){
     init_array(&model_nodes,sizeof(Node),data->nodes_count+1);
@@ -390,7 +379,7 @@ int load_model(const char* path){
     load_node(NULL, data->scene->nodes[i],(Node*)model_nodes.data,0);
   }
   
-  /* NULL vertex/index array beacouse not needed anymore */
+  /* NULL vertex/index array because not needed anymore */
   actual_vertex_array = NULL;
   actual_index_array = NULL;
 
@@ -406,9 +395,7 @@ int load_model(const char* path){
 
   cgltf_free(data);
   current_data = NULL;
- 
-  
-  actual_model = NULL;
+
 
   int model_result = models_parsed;
   models_parsed = 0;
