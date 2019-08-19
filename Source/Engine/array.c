@@ -35,7 +35,7 @@ void add_to_array(Array* array, void* element){
     }
     if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
         LOG("Array need reallocation\n");//TODO: reallocation engine memory
-        debug_break();;
+        debug_break();
     }
     size_t offset = array->actual_bytes_size;
     array->count++;

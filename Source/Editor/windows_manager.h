@@ -11,6 +11,7 @@
 
 typedef struct EditorWindow{
        GLFWwindow* window;
+       char name[20];
        bool focus;
        bool initialized; 
 }EditorWindow;
@@ -22,9 +23,11 @@ void window_focus_callback(GLFWwindow*,int);
 void window_create(EditorWindow *win,EditorWindow* share_window,const char* name);
 void update_envents();
 
+void window_set_focus(EditorWindow* window);
+
 void windows_manager_init();
 
-void windows_update();
+void window_update_windows_input();
 
 float actual_window_width;
 float actual_window_height;

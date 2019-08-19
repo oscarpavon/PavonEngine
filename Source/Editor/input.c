@@ -736,7 +736,7 @@ void input_gui_editor(){
     }
 }
 
-void update_input(){
+void editor_window_level_editor_input_update(){
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         switch (editor_mode)
         {    

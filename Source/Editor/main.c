@@ -34,9 +34,8 @@ int main(){
         int temp;
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
         
-        if(window_editor_main.focus)
-            update_input();
-            
+        window_update_windows_input();    
+        
         draw_editor_viewport();   
 
         glfwSwapBuffers(window_editor_main.window);       

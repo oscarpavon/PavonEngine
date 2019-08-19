@@ -9,6 +9,7 @@ void editor_window_content_init();
 
 void editor_window_content_browser_draw();
 
+void editor_window_content_browser_input_update();
 
 typedef struct ContentView{
     bool new_update;

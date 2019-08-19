@@ -18,6 +18,7 @@ Model content_model;
 Array array_content_views;
 Array array_finding_content;
 
+ContentView* editor_content_view_found = NULL;
 
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
     glDisable(GL_CULL_FACE);
@@ -91,10 +92,12 @@ struct Hint{
 
 void selection_create_hint(struct Hint* out){
     int hint_count = array_content_views.count;
-    int divided = hint_count / 4;
+    int max_hint_key_count = 4;
+    char available_keys[] = "jhdgksl";
+    int divided = hint_count / max_hint_key_count;
 
     int key_letters_count = 0;
-    char available_keys[] = "jhdgksl";
+    
     char current_key = 'j';
    
     for (int i = 0; i < hint_count; i++)
@@ -115,20 +118,22 @@ void selection_create_hint(struct Hint* out){
         
         out[i] = new_hint;
     }    
+    key_letters_count = 1;
 
+    /* Start in one becouse the first letter has already been assigned */
     for (u8 j = 1; j < divided; j++)
     {
         for (int i = 0; i < hint_count; i++)
         {
             struct Hint* hint = &out[i];
 
-            if(key_letters_count < divided+1){
+            if(key_letters_count < strlen(available_keys)){
                 current_key = available_keys[key_letters_count];
                 hint->keys[j] = current_key;
                 key_letters_count++;
             }else{
                 current_key = available_keys[key_letters_count];
-                key_letters_count = 0;
+                key_letters_count = 1;
                 
             }
         }
@@ -138,19 +143,38 @@ void selection_create_hint(struct Hint* out){
 
 }
 
-void editor_window_content_browser_draw(){
-    glfwMakeContextCurrent(window_content_browser.window);
-
-    glClearColor(0.1,0.2,0.4,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if(key_released(&input.F)){
+void editor_window_content_browser_input_update(){
+     if(key_released(&input.F)){
         if(editor_window_content_browser_hint){
             editor_window_content_browser_hint = false;
             
         }else
             editor_window_content_browser_hint = true;
     }
+
+     if(key_released(&input.ENTER)){
+            memset(command_text_buffer,0,sizeof(command_text_buffer));
+            command_character_count = 0;
+            editor_window_content_browser_hint = false;
+            if(editor_content_view_found){
+                char directory[sizeof(pavon_the_game_project_folder) + 30];
+                sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name);
+
+                editor_add_element_with_model_path(directory);
+                window_set_focus(&window_editor_main);
+               
+                return;
+            }
+
+    }
+}
+
+void editor_window_content_browser_draw(){
+    glfwMakeContextCurrent(window_content_browser.window);
+
+    glClearColor(0.1,0.2,0.4,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   
 
     if(editor_search_objects){
         editor_window_content_browser_search_mode();
@@ -168,7 +192,7 @@ void editor_window_content_browser_draw(){
             editor_window_content_browser_draw_content_view(content_view);
         }
 
-
+        
         if(editor_window_content_browser_hint){
             struct Hint hints[array_content_views.count];
             selection_create_hint(hints);
@@ -216,34 +240,39 @@ void editor_window_content_browser_draw(){
 
             }
 
-           
-            if(strlen(command_text_buffer) == 1){
+            
+            if(strlen(command_text_buffer) >= 1){
                 int count_found = 0;
+                bool fount = false;
                 for (u8 i = 0; i < array_content_views.count; i++)
                 {
+                    if(fount)
+                        break;
+
                     struct Hint hint = hints[i];
+
                     for (u8 j = 0; j < strlen(command_text_buffer); j++)
                     {  
-                        char character = command_text_buffer[j];
+                        
                         for (u8 k = 0; k < strlen(hint.keys); k++)
                         {
-                            if( character != hint.keys[k]){
-                                if(count_found > 0)
-                                count_found--;
+                            
+                            if(command_text_buffer[k] != hint.keys[k]){
+                                fount = false;
                                 break;
                             }
-                            count_found++;
-                            if(count_found == 1){
-                                ContentView* content_view = get_from_array(&array_content_views,i);
-                                if(!content_view)
-                                    continue;
-
-                                LOG("%s\n",content_view->content_name);
-                                
-                            }
+                            fount = true;
                         }
-                        
+                        if(fount){
+                        editor_content_view_found = get_from_array(&array_content_views,i);
+                        if(!editor_content_view_found)
+                            continue;
+
+                            //LOG("%s\n",content_view->content_name);
+                            
+                        }
                     }
+                    
                 }
             }                
 
@@ -254,11 +283,7 @@ void editor_window_content_browser_draw(){
         }
             
         
-        if(key_released(&input.ENTER)){
-            char directory[sizeof(pavon_the_game_project_folder) + 30];
-            sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",mark_content->content_name);
-            editor_add_element_with_model_path(directory);
-        }
+       
     }    
 
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)

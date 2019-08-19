@@ -63,15 +63,34 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
 }
 
+void window_set_focus(EditorWindow* window){
+    current_window->focus = false;
+    glfwShowWindow(window->window);
+    glfwFocusWindow(window->window);
+    glfwMakeContextCurrent(window->window);
+    window->focus = true;
+    current_window = window;
+    LOG("Focus windows change\n");
+}
 
 
-void windows_update(){
+void window_update_windows_input(){
+
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
+            if(editor_window_content_open){
+                window_set_focus(&window_content_browser);
+            }
             editor_window_content_open = true;
+            
         }
     }
 
+    if(window_editor_main.focus)
+        editor_window_level_editor_input_update();
+
+    if(window_content_browser.focus)
+        editor_window_content_browser_input_update();
 
     if(editor_window_content_open){
         if(!window_content_browser.initialized){

@@ -480,7 +480,6 @@ void collision_test(){
 }
 
 void draw_editor_viewport(){
-    windows_update();
 
     if( window_editor_main.focus){
        
@@ -550,7 +549,7 @@ void draw_editor_viewport(){
 
     //editor_message("editor message");       
 
-    collision_test();
+    //collision_test();
 
     
 }

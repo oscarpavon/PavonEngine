@@ -45,7 +45,7 @@ static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
 
 
 bool activate_text_input_mode = false;
-unsigned short int character_count = 0;
+
 
 char first_char_command;
 char* command_array_pointer;
@@ -227,27 +227,27 @@ void parse_command(const char* command){
 void parse_characters(unsigned char character){
     if(character == ':'){
         LOG("Command mode\n");
-        command_text_buffer[character_count] = character;
-        character_count++;        
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;        
         change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
         return;
     }else if(character == '/'){
         LOG("Search mode\n");
-        command_text_buffer[character_count] = character;
-        character_count++;
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;
         editor_search_objects = true;
         change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
         return;
     }
 
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
-        command_text_buffer[character_count] = character;
-        character_count++;
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;
     }
 
-    if(editor_window_content_browser_hint){
-        command_text_buffer[character_count] = character;
-        character_count++;
+    if(editor_window_content_browser_hint && window_content_browser.focus){
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;
     }
 }
 
@@ -255,7 +255,7 @@ int log_command_offset = 0;
 void text_input_mode(){
     if(key_released(&input.ENTER)){
         parse_command(command_text_buffer);
-        character_count = 0;
+        command_character_count = 0;
         save_commnad_history(command_text_buffer);
         memset(command_text_buffer,0,sizeof(command_text_buffer));
         
@@ -263,8 +263,8 @@ void text_input_mode(){
         return;
     }
     if(key_released(&input.BACKSPACE)){
-        character_count--;
-        command_text_buffer[character_count] = '\0';
+        command_character_count--;
+        command_text_buffer[command_character_count] = '\0';
     }
     if(key_released(&input.KEY_UP)){
        
@@ -287,7 +287,7 @@ void text_input_mode(){
         char *last_line = last_newline+1;
 
         LOG("Last line: %s\n",last_line);
-        memcpy(&command_text_buffer[character_count],last_line,strlen(last_line));
+        memcpy(&command_text_buffer[command_character_count],last_line,strlen(last_line));
 
     }
 
