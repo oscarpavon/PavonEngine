@@ -23,4 +23,7 @@ typedef struct ContentView{
     u8 text_size;
     u8 thumbnail_image_size;
 }ContentView;
+
+bool editor_window_content_browser_hint;
+
 #endif

@@ -3,7 +3,7 @@
 
 void parse_command(const char* command);
 void text_input_mode();
-unsigned char command_text_buffer[100];
+char command_text_buffer[100];
 
 void system_command(const char* command, const char* argument);
 

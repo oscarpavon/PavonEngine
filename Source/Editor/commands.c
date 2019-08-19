@@ -223,6 +223,7 @@ void parse_command(const char* command){
 
 }
 
+#include "Windows/content_browser.h"
 void parse_characters(unsigned char character){
     if(character == ':'){
         LOG("Command mode\n");
@@ -240,6 +241,11 @@ void parse_characters(unsigned char character){
     }
 
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
+        command_text_buffer[character_count] = character;
+        character_count++;
+    }
+
+    if(editor_window_content_browser_hint){
         command_text_buffer[character_count] = character;
         character_count++;
     }

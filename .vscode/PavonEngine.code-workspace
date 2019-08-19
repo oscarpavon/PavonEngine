@@ -93,7 +93,8 @@
 			"numbers.h": "c",
 			"vertex.h": "c",
 			"geometry.h": "c",
-			"string.h": "c"
+			"string.h": "c",
+			"__bit_reference": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}
