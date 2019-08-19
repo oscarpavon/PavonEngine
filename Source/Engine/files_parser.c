@@ -302,14 +302,14 @@ Token* parse_element_object_token(Token* object_token){
     Token* name_token = object_token+1;
     if( name_token->type == JSMN_STRING ){
       if( string_equal(name_token,"name") == 0 ){
-        char name[20];
+        char name[100];
         get_token_string(name,name_token+1);
         LOG("Name: %s\n",name);
         strcpy(selected_element->name,name);
         Token* last_element_parsed = get_components_from_token(name_token+3);
         return last_element_parsed;
       }else{
-        char text[20];
+        char text[100];
         get_token_string(text,name_token);
         LOG("Found: %s\n",text);
       }
@@ -370,13 +370,13 @@ void parse_level_tokens(Token* tokens, int count){
   
   Token* texture_array = last_element_parsed+1;
   
-/*   for(int i = 0; i < texture_array->size; i++){
+  for(int i = 0; i < texture_array->size; i++){
     Token* value = last_element_parsed + 2;
-    char text[20];
+    char text[100];
     get_token_string(text,value+i);
     add_to_array(&textures_paths,text);
   }
- */
+
 }
 
 int parse_tokens(const char* json_file, int json_file_size){

@@ -258,8 +258,7 @@ void editor_load_level(const char* name){
     actual_model_array = &array_models_loaded;
     for(int i = 0; i< texts.count ; i++){
         char* model_path = get_from_array(&texts,i);
-        sprintf(new_file_name_with_path,"%s%s%s",pavon_the_game_project_folder,"Content/",model_path);
-        load_and_initialize_simple_model(new_file_name_with_path);
+        load_and_initialize_simple_model(model_path);
     }    
     actual_model_array = &editor_models;
 
