@@ -181,6 +181,38 @@ void load_mesh(cgltf_mesh* mesh){
   model_loaded = true;
 }
 
+void check_LOD_names(cgltf_node* node){
+  int node_name_size = strlen(node->name);
+  char name[node_name_size];
+  strcpy(name,node->name);    
+
+  for(int n = 0; n<node_name_size; n++){
+    if(name[n] == '_'){
+      if(strcmp("LOD0",&name[n]+1) == 0){
+        
+
+        LOG("Found LOD0\n");
+
+        
+        break;
+      }
+      if(strcmp("LOD1",&name[n]+1) == 0){
+        LOG("Found LOD1\n");
+
+
+        break;
+      }
+      
+      if(strcmp("LOD2",&name[n]+1) == 0){
+        LOG("Found LOD2\n");
+
+        break;
+      }
+      
+    }
+  }
+}
+
 int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int index_to_store){
 
   if(copy_nodes){
@@ -199,8 +231,12 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
       add_to_array(&model_nodes,&new_node);
   }
 
-  if(in_cgltf_node->mesh != NULL)
+  if(in_cgltf_node->mesh != NULL){
+    check_LOD_names(in_cgltf_node);
     load_mesh(in_cgltf_node->mesh);
+    init_model_gl_buffers(selected_model);
+    models_parsed++;
+  }
 
   if(in_cgltf_node->skin != NULL){    
     current_nodes_array = &model_nodes;
@@ -222,73 +258,6 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
 
 }
 
-void check_LOD(cgltf_data* data){
-  cgltf_mesh* meshes[4];
-  memset(meshes,0,sizeof(meshes));
-
-  HierarchicalLevelOfDetail* hirarchical_level_of_detail;
-  if(data->nodes_count > 1){
-    for(int i = 0; i < data->nodes_count; i++){
-      int node_name_size = strlen(data->nodes[i].name);
-      char name[node_name_size];
-      strcpy(name,data->nodes[i].name);    
-
-      for(int n = 0; n<node_name_size; n++){
-        if(name[n] == '_'){
-          if(strcmp("LOD0",&name[n]+1) == 0){
-            
-
-            LOG("Found LOD0\n");
-            meshes[models_parsed] = data->nodes[i].mesh;
-            models_parsed++;
-            
-            break;
-          }
-          if(strcmp("LOD1",&name[n]+1) == 0){
-            LOG("Found LOD1\n");
-            meshes[models_parsed] = data->nodes[i].mesh;
-            models_parsed++;
-
-            break;
-          }
-          
-          if(strcmp("LOD2",&name[n]+1) == 0){
-            LOG("Found LOD2\n");
-            meshes[models_parsed] = data->nodes[i].mesh;
-            models_parsed++;
-            break;
-          }
-          if(strcmp("HLOD",&name[n]+1) == 0){
-            HierarchicalLevelOfDetail new_hirarchical;
-            memset(&new_hirarchical,0,sizeof(HierarchicalLevelOfDetail));
-            memset(&new_hirarchical.model,0,sizeof(Model));
-            actual_vertex_array = &new_hirarchical.model.vertex_array;
-            actual_index_array = &new_hirarchical.model.index_array;
-            actual_model = &new_hirarchical.model;
-
-            //load_mesh(data->nodes[i].mesh);
-            init_model_gl_buffers(&new_hirarchical.model);
-            new_hirarchical.model.shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-
-
-            add_to_array(&array_hirarchical_level_of_detail,&new_hirarchical);
-            hirarchical_level_of_detail = 
-            get_from_array(&array_hirarchical_level_of_detail,
-            array_hirarchical_level_of_detail.count-1);
-          }
-        }
-      }
-    }
-   
-  }
-  if(models_parsed > 1){
-
-    for(int i = 0; i< models_parsed; i++){
-      load_mesh(meshes[i]);
-      init_model_gl_buffers(selected_model);
-    }
-  }
-}
 
 void load_current_sampler_to_channel(AnimationChannel* channel){
   AnimationSampler sampler;
@@ -400,7 +369,6 @@ int load_model(const char* path){
   close_file(&new_file);
 
   current_loaded_component_type = STATIC_MESH_COMPONENT;
-  check_LOD(data);
 
   if(model_loaded){
     LOG("gltf loaded with LODs. \n");
@@ -433,7 +401,7 @@ int load_model(const char* path){
       load_current_animation();
     }
   }
-  models_parsed++;
+
   LOG("gltf loaded: %s. \n",path);
 
   cgltf_free(data);

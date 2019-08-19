@@ -84,7 +84,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
 
     char path[40];
     sprintf(path,"HLOD/HLOD_out%i.gltf",cluster->id);
-    load_and_initialize_simple_model(path);
+    load_model(path);
     Model* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);
@@ -257,7 +257,7 @@ void editor_load_level(const char* name){
     actual_model_array = &array_models_loaded;
     for(int i = 0; i< texts.count ; i++){
         char* model_path = get_from_array(&texts,i);
-        load_and_initialize_simple_model(model_path);
+        load_model(model_path);
     }    
     actual_model_array = &editor_models;
 

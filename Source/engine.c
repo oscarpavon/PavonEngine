@@ -142,20 +142,6 @@ void load_simple_image(const char* path){
     add_to_array(current_textures_array,&new_texture);    
 }
 
-int load_and_initialize_simple_model(const char* model_gltf_path){ 
-
-    int load_model_result = load_model(model_gltf_path);
-    if( load_model_result == -1){
-        return -1;
-    }
-    if(load_model_result == 1){
-        selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
-
-        init_model_gl_buffers(selected_model); 
-
-    }
-    return load_model_result; 
-}
 
 void add_element_with_model_path(const char* model_gltf_path){
     if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
@@ -165,9 +151,10 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     Array* prev_array = actual_model_array;
     actual_model_array = &array_models_loaded;
-    int models_loaded = load_and_initialize_simple_model(model_gltf_path);
-    if(models_loaded == -1)
+    int models_loaded = load_model(model_gltf_path);
+    if( models_loaded == -1){
         return;
+    }
     actual_model_array = prev_array;
     
     new_empty_element();
