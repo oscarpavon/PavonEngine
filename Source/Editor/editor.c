@@ -24,6 +24,8 @@
 
 #include "HLOD/HLOD_factory.h"
 
+#include "ProjectManager/project_manager.h"
+
 Array editor_models;
 Array editor_textures;
 
@@ -239,28 +241,25 @@ void update_camera_aspect_ratio(){
 }
 
 
-void load_level_in_editor(const char* name){
+void editor_load_level(const char* name){
     strcpy(opened_file_name,name);
 
     struct timespec time1, time2;
     int temp;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-    char* level_folder = "Game/levels/";
-    char save_name[50];
-    memset(save_name,0,sizeof(save_name));
-    strcat(save_name, level_folder);
-    strcat(save_name,name);
-    strcat(save_name,".lvl");
-    LOG("%s\n",save_name);
+    char new_file_name_with_path[strlen(pavon_the_game_project_folder) + 40];
+    sprintf(new_file_name_with_path,"%s%s%s.lvl",pavon_the_game_project_folder,"Content/levels/",name);
 
-    int level_result = load_level_to_elements_array(save_name, actual_elements_array);
+    int level_result = load_level_to_elements_array(new_file_name_with_path, actual_elements_array);
     if(level_result != 0)
         return;   
     
     actual_model_array = &array_models_loaded;
     for(int i = 0; i< texts.count ; i++){
-       load_and_initialize_simple_model(get_from_array(&texts,i));
+        char* model_path = get_from_array(&texts,i);
+        sprintf(new_file_name_with_path,"%s%s%s",pavon_the_game_project_folder,"Content/",model_path);
+        load_and_initialize_simple_model(new_file_name_with_path);
     }    
     actual_model_array = &editor_models;
 

@@ -325,6 +325,8 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
         LOG("After short: %f\n", cluster->cost);
     }
     HLODCluster* last_cluster = get_from_array(&HLOD_generated_cluster,HLOD_generated_cluster.count-1);
+    if(!last_cluster)
+        return;
     if(merge_pairs(bounding_value,last_cluster->cost) == 0){
         //create cluster spheres pair
         for (int i = 0; i < HLOD_generated_cluster.count; i++)

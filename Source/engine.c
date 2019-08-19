@@ -273,7 +273,7 @@ void compiles_standard_shaders(){
 }
 
 void init_engine(){
-    init_array(&texts,sizeof(char[20]),50);
+    init_array(&texts,sizeof(char[100]),50);
     init_array(&textures_paths,sizeof(char[20]),50);
     init_array(&array_models_loaded,sizeof(Model),100);
 

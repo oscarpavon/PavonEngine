@@ -2,6 +2,7 @@
 #include "editor.h"
 #include "../camera.h"
 #include "../gui.h"
+#include "ProjectManager/project_manager.h"
 
 FILE* actual_file;
 
@@ -234,16 +235,12 @@ void save_level_data(const char* level_name){
         level_name = opened_file_name;
     }
         
-
-    char save_name[50];
-    memset(save_name,0,sizeof(save_name));
-    strcat(save_name, level_folder);
-    strcat(save_name,level_name);
-    strcat(save_name,".lvl");    
+    char new_file_name_with_path[strlen(pavon_the_game_project_folder) + 30];
+    sprintf(new_file_name_with_path,"%s%s%s.lvl",pavon_the_game_project_folder,"Content/levels/",level_name);
   
-    FILE* new_file = fopen(save_name,"w");
+    FILE* new_file = fopen(new_file_name_with_path,"w");
     if(!new_file){
-        LOG("File not created: %s\n",save_name);
+        LOG("File not created: %s\n",new_file_name_with_path);
         return;
     }
     actual_file = new_file;
@@ -255,7 +252,7 @@ void save_level_data(const char* level_name){
     
     fclose(new_file);
     previous_id_saved = 0;
-    LOG("Saved to %s\n",save_name);
+    LOG("Saved to %s\n",new_file_name_with_path);
 }
 
 void save_buttons_data(int id){    

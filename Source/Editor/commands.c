@@ -132,7 +132,7 @@ void parse_command(const char* command){
             return;
             
         case EDITOR_DEFAULT_MODE:
-            load_level_in_editor(&command[3]);
+            editor_load_level(&command[3]);
             LOG("Level loaded\n");
             return;
             

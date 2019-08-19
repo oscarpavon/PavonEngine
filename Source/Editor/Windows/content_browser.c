@@ -275,10 +275,6 @@ void editor_window_content_browser_draw(){
                     
                 }
             }                
-
-            
-            
-            
             
         }
             

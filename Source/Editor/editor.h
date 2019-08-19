@@ -40,7 +40,7 @@ void draw_editor_viewport();
 
 void get_element_status(Element* element);
 
-void load_level_in_editor(const char*);
+void editor_load_level(const char*);
 
 void list_directory_files();
 

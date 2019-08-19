@@ -370,13 +370,13 @@ void parse_level_tokens(Token* tokens, int count){
   
   Token* texture_array = last_element_parsed+1;
   
-  for(int i = 0; i < texture_array->size; i++){
+/*   for(int i = 0; i < texture_array->size; i++){
     Token* value = last_element_parsed + 2;
     char text[20];
     get_token_string(text,value+i);
     add_to_array(&textures_paths,text);
   }
-
+ */
 }
 
 int parse_tokens(const char* json_file, int json_file_size){
