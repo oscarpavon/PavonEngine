@@ -430,10 +430,10 @@ static inline void check_static_mesh_component_distance_from_camera(StaticMeshCo
         }
         
     }
-    //Model* draw_model = get_from_array(actual_model_array,id);
-    Model* other = get_from_array(actual_model_array,1);
+    Model* draw_model = get_from_array(actual_model_array,id);
+    //Model* other = get_from_array(actual_model_array,1);
     
-    add_to_array(&frame_draw_elements,&other);
+    add_to_array(&frame_draw_elements,&draw_model);
 }  
 
 void check_meshes_distance(){
