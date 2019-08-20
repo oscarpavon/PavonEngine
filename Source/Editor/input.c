@@ -290,6 +290,98 @@ void input_change_mode(){
 
 }
 
+float rotate_value = 100;
+void editor_input_camera_rotate_control(){
+    if(input.J.pressed){
+        horizontalAngle += camera_width_screen/2 - rotate_value ;
+        rotate_value -= 30;
+        if(rotate_value < -10000){
+            rotate_value = -100;
+        }
+
+        verticalAngle  += 600/2 - 100 ;
+
+        horizontalAngle *= 0.05;
+        verticalAngle *= 0.05;
+        
+        camera_rotate_control(0, horizontalAngle);
+    }
+    if(input.K.pressed){
+         horizontalAngle += camera_width_screen/2 - rotate_value ;
+        rotate_value += 30;
+        if(rotate_value > 10000){
+            rotate_value = 100;
+        }
+
+        verticalAngle  += 600/2 - 100 ;
+
+        horizontalAngle *= 0.05;
+        verticalAngle *= 0.05;
+
+        camera_rotate_control(0, horizontalAngle);
+    }
+}
+void editor_input_navigate(){
+    input_change_mode();
+
+    if(input.I.pressed){
+        camera_velocity += 0.02;
+    }
+    if(input.O.pressed){
+        camera_velocity -= 0.02;
+    }
+
+
+    vec3 velocity_vector;
+    glm_vec3_copy((vec3){camera_velocity,camera_velocity,camera_velocity}, velocity_vector);
+
+    if(input.E.pressed){
+        vec3 move;
+        glm_vec3_mul(velocity_vector,main_camera.up,move);
+        glm_vec3_add(main_camera.position,move,main_camera.position);
+        update_look_at();
+    }
+    if(input.Q.pressed){
+        vec3 move;
+        glm_vec3_mul(velocity_vector,main_camera.up,move);
+        glm_vec3_sub(main_camera.position,move,main_camera.position);
+        update_look_at();
+    }
+
+    editor_input_camera_rotate_control();
+
+    if(input.W.pressed){
+        vec3 move;
+        glm_vec3_mul(velocity_vector,main_camera.front,move);
+        glm_vec3_add(main_camera.position,move,main_camera.position);
+        update_look_at();
+    }
+    if(input.S.pressed){
+        vec3 move;
+        glm_vec3_mul(velocity_vector,main_camera.front,move);
+        glm_vec3_sub(main_camera.position,move,main_camera.position);
+        update_look_at();
+    }
+    if(input.D.pressed){
+        vec3 cross;
+        glm_vec3_cross(main_camera.front, main_camera.up, cross);
+        glm_normalize(cross);
+        vec3 move;
+        glm_vec3_mul(velocity_vector, cross, move );
+        glm_vec3_add(main_camera.position, move,main_camera.position);
+        update_look_at();
+    }
+    if(input.A.pressed){
+        vec3 cross;
+        glm_vec3_cross(main_camera.front, main_camera.up, cross);
+        glm_normalize(cross);
+        vec3 move;
+        glm_vec3_mul(velocity_vector, cross, move );
+        glm_vec3_sub(main_camera.position, move,main_camera.position);
+        update_look_at();
+    }
+    
+}
 
 float move_object_value = 0.02;
 bool grid_translate = false;
@@ -321,34 +413,70 @@ void grab_mode(){
     input_change_mode();
         
 
-    if(editor_mode == EDITOR_DEFAULT_MODE){     
-        
+    if(editor_mode == EDITOR_DEFAULT_MODE){
+        editor_input_camera_rotate_control();     
+        if(input.SHIFT.pressed){
+            editor_input_navigate();
+        }
         vec3 move;
         bool update = false;
-        if(!grid_translate){            
-            if(input.W.pressed){
-                glm_vec3_copy( VEC3(0,-move_object_value,0) , move );
-                update = true;
-            }
-            if(input.S.pressed){
-                glm_vec3_copy( VEC3(0,move_object_value,0) , move );
-                update = true;            }
-            if(input.D.pressed){
-                glm_vec3_copy( VEC3(-move_object_value,0,0) , move );
-                update = true;            
-            }
-            if(input.A.pressed){
-                glm_vec3_copy( VEC3(move_object_value,0,0) , move );
-                update = true;            
-            }
-            if(input.E.pressed){
-                glm_vec3_copy( VEC3(0,0,move_object_value) , move );
-                update = true;            
-            }
-            if(input.Q.pressed){
-                glm_vec3_copy( VEC3(0,0,-move_object_value) , move );
-                update = true;            
-            }
+        bool camera_space = true;
+        if(!grid_translate){
+            if(camera_space){
+                vec3 velocity_vector;
+                glm_vec3_copy(VEC3(move_object_value,move_object_value,move_object_value) , velocity_vector);
+                if(input.D.pressed){                    
+                    vec3 cross;
+                    glm_vec3_crossn(main_camera.front, main_camera.up, cross);                    
+                    glm_vec3_mul(velocity_vector, cross , move );
+                    update = true;
+                }else if(input.A.pressed){
+                    vec3 cross;
+                    glm_vec3_crossn(main_camera.front, main_camera.up, cross);
+                    glm_vec3_inv(velocity_vector); 
+                    glm_vec3_mul(velocity_vector, cross , move );
+                    update = true;
+                }else if(input.W.pressed){
+                    glm_vec3_mul(velocity_vector,main_camera.front,move);
+                    update = true;
+                }else if(input.S.pressed){
+                    glm_vec3_inv(velocity_vector);
+                    glm_vec3_mul(velocity_vector,main_camera.front,move);
+                    update = true;
+                }else if(input.E.pressed){
+                    glm_vec3_mul(velocity_vector,main_camera.up,move);
+                    update = true;
+                }else if(input.Q.pressed){
+                    glm_vec3_inv(velocity_vector);
+                    glm_vec3_mul(velocity_vector,main_camera.up,move);
+                    update = true;
+                }                                
+            }else{//World Transform
+                if(input.W.pressed){
+                    glm_vec3_copy( VEC3(0,-move_object_value,0) , move );
+                    update = true;
+                }
+                if(input.S.pressed){
+                    glm_vec3_copy( VEC3(0,move_object_value,0) , move );
+                    update = true;            }
+                if(input.D.pressed){
+                    glm_vec3_copy( VEC3(-move_object_value,0,0) , move );                
+                    update = true;            
+                }
+                if(input.A.pressed){
+                    glm_vec3_copy( VEC3(move_object_value,0,0) , move );
+                    update = true;            
+                }
+                if(input.E.pressed){
+                    glm_vec3_copy( VEC3(0,0,move_object_value) , move );
+                    update = true;            
+                }
+                if(input.Q.pressed){
+                    glm_vec3_copy( VEC3(0,0,-move_object_value) , move );
+                    update = true;            
+                }
+            }           
+            
             if(current_component_selected != NULL){
                 if(update){
                     CameraComponent* camera = current_component_selected->data;
@@ -358,8 +486,7 @@ void grab_mode(){
             {
                 if(update)
                     update_translation(move);
-            }
-            
+            }            
             
             
         }else{//grid translate
@@ -419,95 +546,8 @@ void grab_mode(){
     
 }
 
-float rotate_value = 100;
-
-void navigate_mode(){
-    input_change_mode();
-
-    if(input.I.pressed){
-        camera_velocity += 0.02;
-    }
-    if(input.O.pressed){
-        camera_velocity -= 0.02;
-    }
 
 
-    vec3 velocity_vector;
-    glm_vec3_copy((vec3){camera_velocity,camera_velocity,camera_velocity}, velocity_vector);
-
-    if(input.E.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.up,move);
-        glm_vec3_add(main_camera.position,move,main_camera.position);
-        update_look_at();
-    }
-    if(input.Q.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.up,move);
-        glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update_look_at();
-    }
-    if(input.J.pressed){
-        horizontalAngle += camera_width_screen/2 - rotate_value ;
-        rotate_value -= 30;
-        if(rotate_value < -10000){
-            rotate_value = -100;
-        }
-
-        verticalAngle  += 600/2 - 100 ;
-
-        horizontalAngle *= 0.05;
-        verticalAngle *= 0.05;
-        
-        camera_rotate_control(0, horizontalAngle);
-    }
-    if(input.K.pressed){
-         horizontalAngle += camera_width_screen/2 - rotate_value ;
-        rotate_value += 30;
-        if(rotate_value > 10000){
-            rotate_value = 100;
-        }
-
-        verticalAngle  += 600/2 - 100 ;
-
-        horizontalAngle *= 0.05;
-        verticalAngle *= 0.05;
-
-        camera_rotate_control(0, horizontalAngle);
-    }
-
-    if(input.W.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.front,move);
-        glm_vec3_add(main_camera.position,move,main_camera.position);
-        update_look_at();
-    }
-    if(input.S.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.front,move);
-        glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update_look_at();
-    }
-    if(input.D.pressed){
-        vec3 cross;
-        glm_vec3_cross(main_camera.front, main_camera.up, cross);
-        glm_normalize(cross);
-        vec3 move;
-        glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_add(main_camera.position, move,main_camera.position);
-        update_look_at();
-    }
-    if(input.A.pressed){
-        vec3 cross;
-        glm_vec3_cross(main_camera.front, main_camera.up, cross);
-        glm_normalize(cross);
-        vec3 move;
-        glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_sub(main_camera.position, move,main_camera.position);
-        update_look_at();
-    }
-    
-}
 
 void scale_mode(){
     
@@ -744,7 +784,7 @@ void editor_window_level_editor_input_update(){
             default_mode();
             break;
         case EDITOR_NAVIGATE_MODE:
-            navigate_mode();
+            editor_input_navigate();
             break;        
         case EDITOR_PLAY_MODE:
             input_mode_play();
