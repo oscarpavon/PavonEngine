@@ -376,6 +376,8 @@ void draw_gizmos(){
         HLODs_generated_debug();
         if(selected_element){
             StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+            if(!mesh)
+                return;
             Sphere sphere;
             sphere.radius = glm_aabb_radius(mesh->bounding_box);
             glm_vec3_copy(mesh->center,sphere.center);

@@ -149,6 +149,9 @@ void update_component(ComponentDefinition* element_component){
 }
 #include "../../model.h"
 #include "../animation/animation.h"
+#ifdef EDITOR
+#include "../../Editor/editor.h"
+#endif
 void init_element_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -172,7 +175,9 @@ void init_element_component(ComponentDefinition* element_component){
                     if(texture)
                         selected_model->texture.id = texture->id;
                 }else{
-                    
+                    #ifdef EDITOR
+                    selected_model->texture.id = editor_texture_checker.id;
+                    #endif
                 }
                 glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);               
                 

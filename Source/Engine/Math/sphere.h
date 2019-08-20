@@ -43,11 +43,12 @@ inline static float get_sphere_volume(Sphere* sphere){
 
 inline static void sphere_merge(Sphere* sphere01, Sphere* sphere02, Sphere* out){
     if(sphere_inside_sphere(sphere02, sphere01)){
-        
+        glm_vec3_copy(sphere01->center,out->center);       
         out->radius = sphere01->radius;
     }else if( sphere_inside_sphere(sphere01, sphere02) )
     {
         out->radius = sphere02->radius;
+        glm_vec3_copy(sphere02->center,out->center);
 
     }else{
        /*  New radius

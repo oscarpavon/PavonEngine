@@ -195,7 +195,7 @@ void init_UV_draw(Model *model)
 void add_model_to_UV_proccessing(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh = component->data;
-        unsigned int* id = get_from_array(&mesh->meshes, 1);
+        u8* id = get_from_array(&mesh->meshes, 1);
         Model* model = get_from_array(actual_model_array,*id);
         init_UV_draw(model);
     }

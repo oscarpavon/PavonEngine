@@ -198,10 +198,11 @@ int merge_pairs(float bounding_value, float max_cost)
                     if (!check_if_cluster_contens_same_element(cluster, cluster_for_merge))
                         continue;
 
-
+                    
                     Sphere new_bounding_sphere;
                     memset(&new_bounding_sphere, 0, sizeof(Sphere));
                     sphere_merge(&cluster->bounding_sphere, &cluster_for_merge->bounding_sphere, &new_bounding_sphere);
+                    
                     
 
                     float fill_factor = calculate_fill_factor(&cluster->bounding_sphere, 
@@ -298,8 +299,9 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
             float cost = cube(cluster_sphere.radius) / fill_factor;
             
             LOG("Fill factor= %f , cost= %f\n", fill_factor, cost);
+            
 
-            if (cost <= max_cost)
+            if (cost <= max_cost || sphere_inside_sphere(&sphere01,&sphere02) || sphere_inside_sphere(&sphere02,&sphere01) )
             {
                 HLODCluster cluster;
                 memset(&cluster, 0, sizeof(HLODCluster));

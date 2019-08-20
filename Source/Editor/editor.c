@@ -82,12 +82,13 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     glm_aabb_center(hlod->bounding_box,hlod->center);
     hlod->has_childs_HLOD = false;
 
-    char path[40];
-    sprintf(path,"HLOD/HLOD_out%i.gltf",cluster->id);
+    char path[strlen(pavon_the_game_project_folder) + 40];
+    sprintf(path,"%sContent/HLOD/HLOD_out%i.gltf",pavon_the_game_project_folder,cluster->id);
     load_model(path);
     Model* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);
+    selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     hlod->model = selected_model;
     Texture new_texture;
     sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
@@ -295,16 +296,16 @@ void duplicate_selected_element(int current_count, Element* original){
             memset(&new_mesh,0,sizeof(StaticMeshComponent));
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
             memset(&new_mesh.meshes,0,sizeof(Array));
-            init_array(&new_mesh.meshes,sizeof(unsigned int),original_mesh->meshes.count);
-            unsigned int* model_id_in_loaded_model = get_from_array(&original_mesh->meshes,0);
+            init_array(&new_mesh.meshes,sizeof(u8),original_mesh->meshes.count);
+            u8* model_id_in_loaded_model = get_from_array(&original_mesh->meshes,0);
             add_to_array(&new_mesh.meshes, model_id_in_loaded_model);
             for(int i = 1 ; i < original_mesh->meshes.count ; i++){
                 new_empty_model();
-                unsigned int* original_model_id = get_from_array(&original_mesh->meshes,i);
+                u8* original_model_id = get_from_array(&original_mesh->meshes,i);
                 Model* original_model = get_from_array(actual_model_array,*original_model_id);
                 duplicate_model_data(selected_model,original_model);
                 selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);                
-                unsigned int new_id = actual_model_array->count -1;
+                u8 new_id = actual_model_array->count -1;
                 add_to_array(&new_mesh.meshes, &new_id);
             }  
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
