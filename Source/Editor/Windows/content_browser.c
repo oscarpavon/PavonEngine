@@ -396,13 +396,45 @@ void editor_window_content_browser_load_thumbnails(){
         
 
         Texture new_texture;
-        memset(&new_texture,0,sizeof(Texture));
-        new_texture.image = load_image(content_view->thumbnail_image_path);
-        load_texture_to_GPU(&new_texture); 
+        texture_load(content_view->thumbnail_image_path,&new_texture);       
 
         content_view->thumbnail_image_id = new_texture.id;
 
     }
+}
+
+struct ContentViewPort{
+    int max_x;
+    int last_x;
+    int last_y;
+    int object_x_count;
+};
+
+
+void editor_window_content_browser_new_content_view(const char* name, struct ContentViewPort* view_port){
+    ContentView new_content_view;
+    memset(&new_content_view,0,sizeof(ContentView));
+    strcpy(new_content_view.content_name,name);
+
+    new_content_view.text_size = 12;
+
+    new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
+    new_content_view.size[0] = 58;
+    new_content_view.size[1] = 58;
+    if(view_port->object_x_count < view_port->max_x){            
+        if(view_port->object_x_count  != 0)
+            view_port->last_x += 128;
+        view_port->object_x_count ++;
+    }else{
+        view_port->last_y += 148;
+        view_port->object_x_count  = 1;
+        view_port->last_x = 64;
+    }
+    new_content_view.position[0] = view_port->last_x;
+    new_content_view.position[1] = view_port->last_y;
+
+    new_content_view.pixel_size = 64 + 12;
+    add_to_array(&array_content_views,&new_content_view);
 }
 
 void editor_window_content_get_models_path(){
@@ -486,37 +518,19 @@ void editor_window_content_get_models_path(){
 
     init_array(&array_finding_content,sizeof(ContentView*),(model_count+texture_count));
     init_array(&array_content_views,sizeof(ContentView),(model_count+texture_count));
-    int max_x = camera_width_screen / 128;
-    int last_x = 64;
-    int last_y = 64;
-    int object_x_count = 0;
+    
+    struct ContentViewPort new_view_port;
+    memset(&new_view_port,0,sizeof(struct ContentViewPort));
+    new_view_port.last_x = 64;
+    new_view_port.last_y = 64;
+    new_view_port.max_x = camera_width_screen / 128;
     for (int i = 0; i < model_count; i++)
     {
-        ContentView new_content_view;
-        memset(&new_content_view,0,sizeof(ContentView));
-        strcpy(new_content_view.content_name,model_names[i]);
-
-        new_content_view.text_size = 12;
-
-        new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
-        new_content_view.size[0] = 58;
-        new_content_view.size[1] = 58;
-        if(object_x_count < max_x){            
-            if(object_x_count != 0)
-                last_x += 128;
-            object_x_count++;
-        }else{
-            last_y += 148;
-            object_x_count = 1;
-            last_x = 64;
-        }
-        new_content_view.position[0] = last_x;
-        new_content_view.position[1] = last_y;
-
-        new_content_view.pixel_size = 64 + 12;
-        add_to_array(&array_content_views,&new_content_view);
+        editor_window_content_browser_new_content_view(model_names[i],&new_view_port);
 
     }
+
+
     
 }
 
@@ -526,7 +540,7 @@ void editor_window_content_init(){
     glfwSetKeyCallback(window_content_browser.window, key_callback);
 	glfwSetCursorPosCallback(window_content_browser.window, mouse_callback);
 	glfwSetMouseButtonCallback(window_content_browser.window, mouse_button_callback);
-    glfwSetFramebufferSizeCallback(window_content_browser.window, window_resize_callback);
+   // glfwSetFramebufferSizeCallback(window_content_browser.window, window_resize_callback);
     glfwSetCharCallback(window_content_browser.window, character_callback);
     glfwSetWindowFocusCallback(window_content_browser.window,window_focus_callback);
 
@@ -535,7 +549,7 @@ void editor_window_content_init(){
 
 
     editor_window_content_get_models_path();    
-    content_browser_window_create_contents_thumbnails();
+   // content_browser_window_create_contents_thumbnails();
     editor_window_content_browser_load_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

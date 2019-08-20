@@ -3,15 +3,15 @@
 #include "third_party/stb_image.h"
 
 #include "file_loader.h"
+#include "Engine/log.h"
 
-Image load_image(const char* path){
+int image_load(const char* path, Image* image){
     File new_file;
 
     if( load_file(path,&new_file) == -1 ){
-        exit(-1);//TODO: load error image
+        LOG("Image not loaded: %s",path);
+        return -1;
     }
-
-    Image new_image;
 
     int width, height, comp, req_comp;
     req_comp = 3;
@@ -19,10 +19,19 @@ Image load_image(const char* path){
     unsigned char* decoded = stbi_load_from_memory(new_file.data, (int)new_file.size_in_bytes, &width, &height, &comp, req_comp);
     free(new_file.data);
 
-    new_image.heigth = (unsigned short)height;
-    new_image.width = (unsigned short)width;
-    new_image.pixels_data = decoded;
-    return new_image;
+    image->heigth = (unsigned short)height;
+    image->width = (unsigned short)width;
+    image->pixels_data = decoded;
+    return 0;
+}
+
+int texture_load(const char* path, Texture* new_texture){
+    memset(new_texture,0,sizeof(Texture));
+    if(image_load(path,&new_texture->image) == -1){
+        new_texture->id = 0;
+        return -1;
+    }
+    load_texture_to_GPU(new_texture); 
 }
 
 int load_image_with_format(const char* path, GLint format, Image* out_image){

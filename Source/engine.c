@@ -99,8 +99,8 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
-    new_texture.image = load_image(image_path);
-    load_texture_to_GPU(&new_texture); 
+    texture_load(image_path,&new_texture);
+    
     
     add_to_array(current_textures_array,&new_texture);
 
@@ -134,10 +134,8 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 
 void load_simple_image(const char* path){
     Texture new_texture;
-    memset(&new_texture,0,sizeof(Texture));
-    new_texture.image = load_image(path);
-    load_texture_to_GPU(&new_texture); 
-    
+    texture_load(path,&new_texture);
+       
     add_to_array(current_textures_array,&new_texture);    
 }
 
@@ -355,11 +353,10 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     glUseProgram(selected_model->shader);
 
     Texture new_texture;
-    new_texture.image = load_image(color_texture_path);
+    texture_load(color_texture_path,&new_texture);
 
     init_model_gl_buffers(selected_model);
 
-    load_texture_to_GPU(&new_texture);
     selected_model->texture.id = new_texture.id;
 
     actual_model_array = prev_model_array;

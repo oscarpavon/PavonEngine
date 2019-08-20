@@ -14,8 +14,10 @@ typedef struct Texture{
     unsigned int id;
 }Texture;
 
-Image load_image(const char* path);
+int image_load(const char* path, Image* image);
 int load_image_with_format(const char* path, GLint format, Image* out_image);
 void free_image(Image*);
+
+int texture_load(const char* path, Texture*);
 
 #endif

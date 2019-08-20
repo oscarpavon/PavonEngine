@@ -90,11 +90,8 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     duplicate_model_data(selected_model, original);
     hlod->model = selected_model;
     Texture new_texture;
-    memset(&new_texture,0,sizeof(Texture));
-
     sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
-    new_texture.image = load_image(path);
-    load_texture_to_GPU(&new_texture); 
+    texture_load(path,&new_texture);
     hlod->model->texture.id = new_texture.id;
 }
 
@@ -397,8 +394,7 @@ void init_editor(){
 
     camera_velocity = 0.04;    
 
-    editor_texture_checker.image = load_image("../NativeContent/Editor/checker_texture.png");
-    load_texture_to_GPU(&editor_texture_checker); 
+    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);
 }
 
 void draw_count_of_draw_call(){
