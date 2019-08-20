@@ -28,9 +28,10 @@ void load_texture_to_GPU(Texture* texture){
 
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glUseProgram(shader);   
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
@@ -68,7 +69,12 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
 
 }
 
-
+void draw_vertices_like(GLenum mode, Model* model, vec4 color){
+    update_draw_vertices(model->shader,model->vertex_buffer_id,model->model_mat);
+    //send_color_to_shader(model->shader,color);
+    glDrawArrays(GL_POINTS,0,model->vertex_array.count);
+    check_error("simple draw");
+}
 
 void draw_model_with_color(Model* model, GLenum mode, vec4 color){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);

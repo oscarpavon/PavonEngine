@@ -364,7 +364,7 @@ int load_model(const char* path){
     }
     return -1;
   }
-  close_file(&new_file);
+  
 
   current_loaded_component_type = STATIC_MESH_COMPONENT;
 
@@ -395,7 +395,7 @@ int load_model(const char* path){
 
   cgltf_free(data);
   current_data = NULL;
-
+  close_file(&new_file);
 
   int model_result = models_parsed;
   models_parsed = 0;

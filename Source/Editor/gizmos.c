@@ -3,7 +3,7 @@
 
 #include "geometry.h"
 
-GLuint color_fragment_shader;
+
 
 Array debug_objects;
 Array bounding_boxes;
@@ -96,7 +96,7 @@ void init_selected_object_bounding_box_vertices(){
         init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
         init_static_gpu_index_buffer(&selected_model->index_array, &selected_model->index_buffer_id);
 
-        selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+        selected_model->shader = create_engine_shader(standart_vertex_shader,shader_source_color_fragment_shader);
         bounding_box_initialized = true;
         actual_model_array = prev_model_array;
    }
@@ -159,7 +159,7 @@ void update_line_vertices(DebugLine* line){
 
 void init_line(DebugLine* line){
     init_line_vertices(line);
-    line->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader); 
+    line->shader = create_engine_shader(standart_vertex_shader,shader_source_color_fragment_shader); 
     glm_vec4_copy((vec4){1,1,1,1},line->color);
    
 }
@@ -264,7 +264,7 @@ void init_grid_greometry(){
     }
 
     init_static_gpu_vertex_buffer(&new_grid.vertex_array,&new_grid.vertex_buffer_id);
-    new_grid.shader = create_engine_shader(standart_vertex_shader,color_fragment_shader); 
+    new_grid.shader = create_engine_shader(standart_vertex_shader,shader_source_color_fragment_shader); 
 
 }
 
@@ -318,7 +318,7 @@ void gizmos_boanding_sphere_draw(Sphere* sphere, vec4 color){
     init_static_gpu_vertex_buffer(&selected_model->vertex_array,&selected_model->vertex_buffer_id);
     init_static_gpu_index_buffer(&selected_model->index_array, &selected_model->index_buffer_id);
 
-    selected_model->shader = create_engine_shader(standart_vertex_shader,color_fragment_shader);
+    selected_model->shader = create_engine_shader(standart_vertex_shader,shader_source_color_fragment_shader);
     bounding_sphere_initialized = true;
     actual_model_array = prev_model_array;
 }
@@ -335,9 +335,6 @@ void init_gizmos(){
     load_model_to_array(&gizmos,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&gizmos,"../NativeContent/Editor/player_start.gltf", "../NativeContent/Editor/player_start_gizmo.jpg");
     
-    
-    color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
-
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
     can_draw_bounding_box_in_select_element = false;

@@ -511,6 +511,13 @@ void draw_editor_viewport(){
     }
 
     for_each_element_components(&update_per_frame_component);
+    Model* draw_model = get_from_array(actual_model_array,1);
+    if(draw_model){
+       
+        //draw_vertices_like(GL_POINTS,draw_model,(vec4){1,0,0,0});
+       // draw_simgle_model(draw_model);
+    }
+    
 
     test_elements_occlusion();
     check_meshes_distance();

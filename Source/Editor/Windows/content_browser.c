@@ -530,7 +530,9 @@ void editor_window_content_get_models_path(){
 
     }
 
-
+    for(int i = 0; i<texture_count ; i++){
+        //editor_window_content_browser_new_content_view(texture_names[i],&new_view_port);
+    }
     
 }
 

@@ -4,6 +4,7 @@
 
 void init_engine_memory(){
     engine_memory = malloc(INIT_MEMORY);
+    memset(engine_memory,0,INIT_MEMORY);
     actual_free_memory = INIT_MEMORY;
     memory_marker = 0;
 

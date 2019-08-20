@@ -229,17 +229,16 @@ void draw_elements(Array *elements){
 
 void init_model_gl_buffers(struct Model* new_model){    
 
-    Array vertex_array = new_model->vertex_array;
+    Array* vertex_array = &new_model->vertex_array;
+    Array* index_array = &new_model->index_array;
 
     glGenBuffers(1,&new_model->vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
-    glBufferData(GL_ARRAY_BUFFER, vertex_array.count * sizeof(struct Vertex) , vertex_array.data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex) , vertex_array->data, GL_STATIC_DRAW);
 
     glGenBuffers(1,&new_model->index_buffer_id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    new_model->index_array.count * sizeof(unsigned short int),
-                    new_model->index_array.data , GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_array->count * sizeof(u8), index_array->data , GL_STATIC_DRAW);
 
 }
 
@@ -251,6 +250,7 @@ void set_element_position(Element* element, vec3 position){
 void compiles_standard_shaders(){
     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
     standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 }
 
 void init_engine(){
@@ -261,10 +261,8 @@ void init_engine(){
     init_camera();
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);   
     
-    
-
     init_gui();    
 
     init_array(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
