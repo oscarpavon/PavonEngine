@@ -15,6 +15,10 @@
 
 #include "../vertex.h"
 
+bool data_export_in_binary = false;
+FILE *binary_file;
+int data_export_binary_bytes_size = 0;
+
 int data_count = 0;
 cgltf_data* data_array[20];
 
@@ -166,7 +170,7 @@ static const char encoded_header[] = {"data:application/octet-stream;base64,"};
 int previous_indices_count = 0;
 
 
-void prepare_vertices_data_from_model(Model* model){
+int prepare_vertices_data_from_model(Model* model){
        
     vec2 UV_values[model->vertex_array.count];
     vec3 vertex_position_array[model->vertex_array.count];
@@ -183,6 +187,22 @@ void prepare_vertices_data_from_model(Model* model){
         vertex_position_array[i][2] = position[3][2];
         UV_values[i][0] = vertex->uv[0];
         UV_values[i][1] = vertex->uv[1];
+    }
+
+    if(data_export_in_binary){      
+        fwrite(vertex_position_array,sizeof(vertex_position_array),1,binary_file); // write 10 bytes from our buffer
+        fwrite(UV_values,sizeof(UV_values),1,binary_file); // write 10 bytes from our buffer
+        u8 indices[model->index_array.count];
+        for(int i = 0; i<model->index_array.count; i++){
+            u8* index = get_from_array(&model->index_array,i);
+            indices[i] = *index;
+        }
+        fwrite(indices,sizeof(indices),1,binary_file); // write 10 bytes from our buffer
+        fclose(binary_file);
+        //return 1;
+        data_export_binary_bytes_size = sizeof(vertex_position_array) + 
+        sizeof(UV_values) + sizeof(indices);
+        return 0;
     } 
 
     int vertex_position_char_byte_count = sizeof(float) * model->vertex_array.count*3;
@@ -220,7 +240,7 @@ void prepare_vertices_data_from_model(Model* model){
     memcpy(&indices_uchar[offset_indices],indices_charcters,indices_char_bytes_count);
     offset_indices += indices_char_bytes_count;
 
-
+    return 0;
 }
 
 typedef struct CodedData{
@@ -331,10 +351,27 @@ void encode_vertices(ComponentDefinition* component){
 }
 
 int data_export_encoded_data(cgltf_data new_data, const char* name){
-
-    CodedData coded_data = merge_all_encoded_data();
-    new_data.buffers[0].uri = coded_data.coded_buffer;
-    new_data.buffers[0].size = coded_data.buffer_bytes_count;
+    char* saved_uri = NULL;
+    char* new_path = NULL;
+    if(!data_export_in_binary){
+        CodedData coded_data = merge_all_encoded_data();
+        new_data.buffers[0].uri = coded_data.coded_buffer;
+        new_data.buffers[0].size = coded_data.buffer_bytes_count;
+    }else{
+        saved_uri = new_data.buffers[0].uri;
+        for (u8 i = strlen(name); i > 0; i--)
+        {
+            if(name[i] == '/'){
+                new_path = malloc(strlen(name)-(i+1));
+                sprintf(new_path,"%s%s",&name[i+1],".bin");
+                new_data.buffers[0].uri = new_path;
+                break;
+            }
+        }
+        
+        
+        new_data.buffers[0].size = data_export_binary_bytes_size;
+    }
 
     cgltf_buffer_view* buffer =  &new_data.buffer_views[0];
     buffer->size = vertex_count_merged * (sizeof(float)*3);
@@ -363,6 +400,8 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
         LOG("Error can't save\n");
         return -1;
     }
+    
+    new_data.buffers[0].uri = saved_uri;
     cgltf_free(data_to_export);
 
     LOG("Exported\n");
@@ -381,13 +420,25 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
     offset_vertices = 0;
     offset_uv = 0;
 
-    free(vertices_uchar);
-    free(uv_uchar);
-    free(indices_uchar);
+    if(!data_export_in_binary){
+        free(vertices_uchar);
+        free(uv_uchar);
+        free(indices_uchar);
+    }else{
+        free(new_path);
+    }
+
+
+    data_export_in_binary = false;
 }
 
 
-int data_export_select_element(const char* name){
+int data_export_select_element(const char* name,bool binary){
+    data_export_in_binary = binary;
+    char new_path[strlen(name) + 4];
+    sprintf(new_path,"%s%s",name,".bin");
+    binary_file = fopen(new_path,"wb");  // w for write, b for binary
+    
     memset(&box,0,sizeof(box));
 
     load_mesh_for_proccess("/home/pavon/PavonTheGame/Content/test/export_template_with_uv.gltf");
@@ -398,10 +449,11 @@ int data_export_select_element(const char* name){
     
     ComponentDefinition* component = get_from_array(&selected_element->components,1);
     data_count_merged(component);
-    vertices_uchar = malloc(vertices_char_bytes);
-    indices_uchar = malloc(indices_char_bytes);
-    uv_uchar = malloc(uv_char_bytes);
-
+    if(!binary){
+        vertices_uchar = malloc(vertices_char_bytes);
+        indices_uchar = malloc(indices_char_bytes);
+        uv_uchar = malloc(uv_char_bytes);
+    }
     encode_vertices(component);
 
     data_export_encoded_data(new_data,name);
