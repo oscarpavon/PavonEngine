@@ -330,25 +330,7 @@ void encode_vertices(ComponentDefinition* component){
     }
 }
 
-int export_gltf(const char *name){
-    if(array_elements_for_HLOD_generation.count == 0)
-        return -1;
-    memset(&box,0,sizeof(box));
-
-    load_mesh_for_proccess("/home/pavon/PavonTheGame/Content/test/export_template_with_uv.gltf");
-    cgltf_data* data1 = data_array[0];
-
-    cgltf_data new_data;
-    memcpy(&new_data, data1, sizeof(cgltf_data));
-
-    
-    for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,&data_count_merged);
-
-    vertices_uchar = malloc(vertices_char_bytes);
-    indices_uchar = malloc(indices_char_bytes);
-    uv_uchar = malloc(uv_char_bytes);
-
-    for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,&encode_vertices);
+int data_export_encoded_data(cgltf_data new_data, const char* name){
 
     CodedData coded_data = merge_all_encoded_data();
     new_data.buffers[0].uri = coded_data.coded_buffer;
@@ -402,5 +384,52 @@ int export_gltf(const char *name){
     free(vertices_uchar);
     free(uv_uchar);
     free(indices_uchar);
-    return 0;
+}
+
+
+int data_export_select_element(const char* name){
+    memset(&box,0,sizeof(box));
+
+    load_mesh_for_proccess("/home/pavon/PavonTheGame/Content/test/export_template_with_uv.gltf");
+    cgltf_data* data1 = data_array[0];
+
+    cgltf_data new_data;
+    memcpy(&new_data, data1, sizeof(cgltf_data));
+    
+    ComponentDefinition* component = get_from_array(&selected_element->components,1);
+    data_count_merged(component);
+    vertices_uchar = malloc(vertices_char_bytes);
+    indices_uchar = malloc(indices_char_bytes);
+    uv_uchar = malloc(uv_char_bytes);
+
+    encode_vertices(component);
+
+    data_export_encoded_data(new_data,name);
+}
+
+
+int data_export_models_in_array(Array* array, const char *name){
+    if(array->count == 0){
+        LOG("Not exported, Array is empty\n");
+        return -1;
+    }
+    memset(&box,0,sizeof(box));
+
+    load_mesh_for_proccess("/home/pavon/PavonTheGame/Content/test/export_template_with_uv.gltf");
+    cgltf_data* data1 = data_array[0];
+
+    cgltf_data new_data;
+    memcpy(&new_data, data1, sizeof(cgltf_data));
+
+    
+    for_each_element_components_in_array_of_pp(array,&data_count_merged);
+
+    vertices_uchar = malloc(vertices_char_bytes);
+    indices_uchar = malloc(indices_char_bytes);
+    uv_uchar = malloc(uv_char_bytes);
+
+    for_each_element_components_in_array_of_pp(array,&encode_vertices);
+
+
+    return data_export_encoded_data(new_data,name);
 }

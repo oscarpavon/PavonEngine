@@ -399,7 +399,7 @@ void export_actives_cluster()
 
             char final_export_name[strlen(pavon_the_game_project_folder) + strlen(export_folder) + strlen(format) + 20];
             sprintf(final_export_name, "%s%s%s%i%s",pavon_the_game_project_folder ,export_folder, "HLOD_out", i, format);
-            if (export_gltf(final_export_name) == -1)
+            if (data_export_models_in_array(&array_elements_for_HLOD_generation,final_export_name) == -1)
             {
                 LOG("Not exported\n");
                 return;

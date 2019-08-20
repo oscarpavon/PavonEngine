@@ -346,7 +346,9 @@ void editor_add_element_with_model_path(const char* path){
     update_translation(new_position);
 
     
-    StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT);      
+    StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT); 
+    if(!mesh_component)
+        return;     
                
     for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 

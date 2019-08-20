@@ -152,15 +152,15 @@ void parse_command(const char* command){
     }
     case 'e':
     {
-        export_gltf("../assets/HLOD/out.gltf");
-        system("blender --python ../scripts/Blender/import.py");
-        reload_editor();
-        add_element_with_model_path("../assets/HLOD/out.gltf");
+        data_export_select_element("/home/pavon/PavonTheGame/exports/export.gltf");
+        //system("blender --python ../scripts/Blender/import.py");
+        //reload_editor();
+        //add_element_with_model_path("../assets/HLOD/out.gltf");
         return;
     }
     case 'a':
     {
-        add_element_with_model_path(&command[3]);
+        editor_add_element_with_model_path(&command[3]);
         return;
     }
     case 'q':{
@@ -232,12 +232,15 @@ void parse_characters(unsigned char character){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
         return;
     }else if(character == '/'){
-        LOG("Search mode\n");
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;
-        editor_search_objects = true;
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-        return;
+        if(editor_sub_mode == EDITOR_SUB_MODE_NULL)
+        { 
+            LOG("Search mode\n");
+            command_text_buffer[command_character_count] = character;
+            command_character_count++;
+            editor_search_objects = true;
+            change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+            return;
+        }
     }
 
     if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
@@ -268,7 +271,9 @@ void text_input_mode(){
     }
     if(key_released(&input.KEY_UP)){
        
-        FILE* file = fopen("../binaries/command_history.txt","r");
+        FILE* file = fopen("/home/pavon/sources/PavonEngineC/Binaries/command_history.txt","r");
+        if(!file)
+            return;
 
         fseek(file, 0, SEEK_END);
      
