@@ -3,7 +3,7 @@
 //
 
 #include "game.h"
-#include "input.h"
+#include "Engine/input.h"
 
 #include "gui.h"
 #include "third_party/cglm/cglm.h"

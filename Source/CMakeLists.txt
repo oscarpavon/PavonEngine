@@ -13,8 +13,7 @@ set(engine_source
         model.c
         file_loader.c
         camera.c
-        images.c
-        input.c        
+        images.c       
         gui.c
         object_select.c
         engine.c

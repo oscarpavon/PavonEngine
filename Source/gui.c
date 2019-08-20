@@ -6,7 +6,7 @@
 #include "third_party/cglm/cglm.h"
 #include "camera.h"
 
-#include "input.h"
+#include "Engine/input.h"
 
 #include "Engine/shader.h"
 

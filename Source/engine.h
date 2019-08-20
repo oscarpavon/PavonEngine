@@ -10,6 +10,8 @@
 #include "Engine/log.h"
 #include "Engine/threads.h"
 
+#include "Engine/input.h"
+
 #include "vertex.h"
 
 #include "model.h"

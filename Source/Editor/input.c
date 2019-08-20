@@ -21,8 +21,6 @@
 
 #include "../gui.h"
 
-#include "../input.h"
-
 #include "commands.h"
 
 float horizontalAngle = 0;

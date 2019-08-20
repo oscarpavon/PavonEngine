@@ -89,4 +89,7 @@ static inline bool key__released(Key* key, int mods){
     return false;
 }
 
+float touch_position_x;
+float touch_position_y;
+
 #endif // !EDITOR_INPUT_H
