@@ -25,7 +25,7 @@ int main(){
     glfwSwapBuffers(window_editor_main.window);
     
     init_engine();
-    init_editor();
+    editor_init();
 
     while (!glfwWindowShouldClose(window_editor_main.window))
     {

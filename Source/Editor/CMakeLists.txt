@@ -16,6 +16,7 @@ Textures/texture_factory.c
 HLOD/HLOD_factory.c
 menus.c
 Windows/content_browser.c
+content_manager.c
 )
 
 set (game_source

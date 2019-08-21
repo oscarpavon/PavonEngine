@@ -20,6 +20,8 @@
 
 #include "ProjectManager/project_manager.h"
 
+#include "content_manager.h"
+
 #include "windows_manager.h"
 
 typedef enum EditorMode{
@@ -38,7 +40,7 @@ typedef enum EditorMode{
     EDITOR_SUB_MODE_ROTATE
 }EditorMode;
 
-void init_editor();
+void editor_init();
 
 void draw_editor_viewport();
 

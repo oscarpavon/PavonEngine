@@ -4,87 +4,13 @@
 #include "../gui.h"
 #include "ProjectManager/project_manager.h"
 
-FILE* actual_file;
+#include "Serialization/json_writer.h"
 
 Element* current_element = NULL;
-int hirarchical_count = 0;
+
 int previous_id_saved = 0;
 int previous_path_id = 0;
 StaticMeshComponent* previous_component = NULL;
-
-void hirachical_tab(){
-    for(int i = 0; i< hirarchical_count ; i++){
-        fputs("\t", actual_file);
-    }
-}
-int add_array_of_numbers(int count){
-    
-    return 0;
-}
-int token_count = 0;
-void new_text_token(const char* type, const char* value){
-    hirachical_tab(); 
-    fprintf(actual_file,"\"%s\" : \"%s\",\n",type,value);
-    token_count += 2;
-}
-void new_text_primitive_token(const char* type, int value){
-    hirachical_tab(); 
-    fprintf(actual_file,"\"%s\" : %i,\n",type,value);
-    token_count += 2;
-}
-
-void new_text_vec4_token(const char* text,vec4 vec){
-    hirachical_tab();
-    fprintf(actual_file,"\"%s\" : [%f , %f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2], vec[3]);
-    token_count += 6;
-}
-
-void new_text_vec3_token(const char* text,vec3 vec){
-    hirachical_tab();
-    fprintf(actual_file,"\"%s\" : [%f , %f , %f],\n", text ,vec[0] , vec[1] , vec[2]);
-    token_count += 5;
-}
-
-void new_text_vec2_token(const char* text,vec2 vec){
-    hirachical_tab();
-    fprintf(actual_file,"\"%s\" : [%f , %f],\n", text ,vec[0] , vec[1]);
-    token_count += 4;
-}
-
-void new_array_data_with_pointer(const char* text,void(*function)(void*),void* data){
-    hirachical_tab(); fprintf(actual_file,"\"%s\" : [",text);
-    hirarchical_count++;
-    function(data);
-    hirarchical_count--;    
-    fputs("],\n",actual_file);
-    
-}
-void new_array_data(const char* text,void(*function)(void)){
-    hirachical_tab(); fprintf(actual_file,"\"%s\" : [\n",text);
-    hirarchical_count++;
-    function();
-    hirarchical_count--;    
-    hirachical_tab(); fputs("],\n",actual_file);
-    
-}
-
-void new_element(void(*function)(void)){
-    hirachical_tab(); fputs("{\n", actual_file);
-    hirarchical_count++;
-    function();
-    hirarchical_count--;
-    hirachical_tab(); fputs("},\n",actual_file);
-}
-
-void new_save_element(SaveDataFunction function, int data_id){
-    hirachical_tab(); fputs("{\n", actual_file);
-    hirarchical_count++;
-    function(data_id);
-    hirarchical_count--;
-    hirachical_tab(); fputs("},\n",actual_file);   
-   
-    token_count++;
-}
 
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;
@@ -253,6 +179,27 @@ void save_level_data(const char* level_name){
     fclose(new_file);
     previous_id_saved = 0;
     LOG("Saved to %s\n",new_file_name_with_path);
+}
+
+void serializer_serialize_data(const char* path, void(*function)(void)){
+    if(strcmp(path, "") == 0){
+        if( strcmp(opened_file_name,"") == 0)
+            return;
+        path = opened_file_name;
+    }      
+  
+    FILE* new_file = fopen(path,"w");
+    if(!new_file){
+        LOG("File not created: %s\n",path);
+        return;
+    }
+    actual_file = new_file;     
+ 
+    function();    
+    
+    fclose(new_file);
+    previous_id_saved = 0;
+    LOG("Saved to %s\n",path);
 }
 
 void save_buttons_data(int id){    

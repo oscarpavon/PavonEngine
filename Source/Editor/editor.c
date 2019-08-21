@@ -355,13 +355,14 @@ void editor_add_element_with_model_path(const char* path){
     }
 }
 
-void init_editor(){
+void editor_init(){
     
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
     
-
+    content_manager_init();
+    
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
     init_vec3(-6,0,2, main_camera.position);

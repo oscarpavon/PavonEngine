@@ -8,4 +8,6 @@ void save_gui_data(const char* gui_name);
 
 void save_commnad_history(const char* entered_commnad);
 
+void serializer_serialize_data(const char* path, void(*function)(void));
+
 #endif

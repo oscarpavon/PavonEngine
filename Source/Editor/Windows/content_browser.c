@@ -2,7 +2,7 @@
 #include "../editor.h"
 #include "../Textures/texture_factory.h"
 #include "../text.h"
-#include <dirent.h>
+
 
 #include "../../gui.h"
 
@@ -11,6 +11,8 @@
 
 #include "../commands.h"
 
+#include "../content_manager.h"
+ 
 
 Model content_model;
 
