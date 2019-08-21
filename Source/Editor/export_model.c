@@ -16,7 +16,6 @@
 #include "../vertex.h"
 
 bool data_export_in_binary = false;
-FILE *binary_file;
 u32 data_export_binary_bytes_size = 0;
 FILE* glb_file;
 u32 data_export_bytes_writed = 0;
@@ -24,6 +23,30 @@ u32 data_export_JSON_bytes_size = 0;
 
 int data_count = 0;
 cgltf_data* data_array[20];
+
+
+unsigned char* vertices_uchar;
+unsigned char* uv_uchar;
+unsigned char* indices_uchar;
+
+int offset_vertices = 0;
+int offset_indices = 0;
+int offset_uv = 0;
+
+int indices_char_bytes = 0;
+int vertices_char_bytes = 0;
+int uv_char_bytes = 0;
+
+int vertex_count_merged = 0;
+int indices_count_merged = 0;
+int UV_count_merged = 0;
+
+vec3 box[2];
+
+typedef unsigned char UCharInBytes[2];
+static const char encoded_header[] = {"data:application/octet-stream;base64,"};
+
+int previous_indices_count = 0;
 
 static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -148,31 +171,6 @@ void float_array_to_base64_encoded_bytes(float* position, int count, Encoded* en
   
 }
 
-
-unsigned char* vertices_uchar;
-unsigned char* uv_uchar;
-unsigned char* indices_uchar;
-
-int offset_vertices = 0;
-int offset_indices = 0;
-int offset_uv = 0;
-
-int indices_char_bytes = 0;
-int vertices_char_bytes = 0;
-int uv_char_bytes = 0;
-
-int vertex_count_merged = 0;
-int indices_count_merged = 0;
-int UV_count_merged = 0;
-
-vec3 box[2];
-
-typedef unsigned char UCharInBytes[2];
-static const char encoded_header[] = {"data:application/octet-stream;base64,"};
-
-int previous_indices_count = 0;
-
-
 int prepare_vertices_data_from_model(Model* model){
        
     vec2 UV_values[model->vertex_array.count];
@@ -207,29 +205,22 @@ int prepare_vertices_data_from_model(Model* model){
         fwrite(&t,sizeof(t),1,glb_file);
         data_export_bytes_writed += 3;
 
-/*         fwrite(vertex_position_array,sizeof(vertex_position_array),1,binary_file); 
-        fwrite(UV_values,sizeof(UV_values),1,binary_file);  */
 
         fwrite(vertex_position_array,sizeof(vertex_position_array),1,glb_file); 
         fwrite(UV_values,sizeof(UV_values),1,glb_file); 
 
         data_export_bytes_writed += sizeof(UV_values);
         data_export_bytes_writed += sizeof(vertex_position_array);
-        data_export_bytes_writed += sizeof(indices);
-        
+        data_export_bytes_writed += sizeof(indices);        
 
-/*         
-        fwrite(indices,sizeof(indices),1,binary_file);  */
+
         fwrite(indices,sizeof(indices),1,glb_file); 
 
 
-        fclose(binary_file);
-        //return 1;
-        data_export_binary_bytes_size = sizeof(vertex_position_array) + 
-        sizeof(UV_values) + sizeof(indices);
         return 0;
     } 
 
+    /* Base 64 */
     int vertex_position_char_byte_count = sizeof(float) * model->vertex_array.count*3;
     unsigned char vertex_position_char[vertex_position_char_byte_count];
     memset(vertex_position_char,0,vertex_position_char_byte_count);
@@ -340,6 +331,43 @@ void data_count_merged(ComponentDefinition* component){
     }
 }
 
+void data_export_buffer_count_and_AABB(ComponentDefinition* component, cgltf_data* data){
+    selected_element = component->parent;
+    if(component->type == STATIC_MESH_COMPONENT){
+        StaticMeshComponent* mesh_component = component->data;
+        unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = array_get(actual_model_array,*mode_id);
+
+        if(mesh_component->bounding_box[1][0] > box[1][0]){
+            box[1][0] = mesh_component->bounding_box[1][0];
+        }
+        if(mesh_component->bounding_box[1][1] > box[1][1]){
+            box[1][1] = mesh_component->bounding_box[1][1];
+        }
+        if(mesh_component->bounding_box[1][2] > box[1][2]){
+            box[1][2] = mesh_component->bounding_box[1][2];
+        }
+
+        if(mesh_component->bounding_box[0][0] < box[0][0]){
+            box[0][0] = mesh_component->bounding_box[0][0];
+        }
+
+        if(mesh_component->bounding_box[0][1] < box[0][1]){
+            box[0][1] = mesh_component->bounding_box[0][1];
+        }
+        
+        if(mesh_component->bounding_box[0][2] < box[0][2]){
+            box[0][2] = mesh_component->bounding_box[0][2];
+        }
+
+        int vertices_bytes = model->vertex_array.count * (3*sizeof(float));
+        int uv_bytes = model->vertex_array.count * (2 *sizeof(float));
+        int index_bytes = model->index_array.count * (sizeof(u8));
+
+        data->buffers[0].size = vertices_bytes + uv_bytes + index_bytes;
+    }
+}
+
 void encode_vertices(ComponentDefinition* component){
     selected_element = component->parent;
     if(component->type == STATIC_MESH_COMPONENT){
@@ -406,6 +434,63 @@ void data_export_finish(){
     data_export_in_binary = false;
 }
 
+void data_export_remove_JSON_white_space(char* json){
+    int size = strlen(json);
+    char buffer[size];
+    memset(buffer,0,sizeof(buffer));
+    strcpy(buffer,json);
+    memset(json,0,size);
+
+    bool can_remove_white_space = true;
+    int valid_char_count = 0;
+    bool checked_buffer = false;
+    for (int i = 0; i < size; i++)
+    {
+        if(can_remove_white_space == false){
+            if(checked_buffer==true){
+                if(buffer[i] == ','){
+                    can_remove_white_space = true;
+                    checked_buffer = false;
+                    continue;
+                }
+                continue;
+            }
+            if(buffer[i] == '\"'){
+                can_remove_white_space = true;
+            }
+        }else{
+            if(buffer[i] == '\"'){
+                can_remove_white_space = false;
+                if(checked_buffer == false){
+                    if(buffer[i+1] == 'u'){
+                        if( buffer[i+2] == 'r'){
+                            if( buffer[i+3] == 'i'){
+                                checked_buffer = true;
+                                continue;
+                            }
+
+                        }
+                    }
+                }
+            }           
+
+        }
+
+        if(can_remove_white_space){
+            if(buffer[i] != ' '){
+                if(buffer[i] != '\n'){
+                    json[valid_char_count] = buffer[i];
+                    valid_char_count++;
+                }
+            }
+        }else{
+            json[valid_char_count] = buffer[i];
+            valid_char_count++;
+        }
+    }
+    
+}
+
 int data_export_encoded_data(cgltf_data new_data, const char* name){
     char* saved_uri = NULL;
     char* new_path = NULL;
@@ -426,7 +511,7 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
         }
         
         
-        new_data.buffers[0].size = data_export_binary_bytes_size;
+        //new_data.buffers[0].size = data_export_binary_bytes_size;
     }
 
     cgltf_buffer_view* buffer =  &new_data.buffer_views[0];
@@ -454,24 +539,26 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
     if(!data_export_in_binary){
         result = cgltf_write_file(&options, name, data_to_export);
     }else{
-        size_t expected = cgltf_write(&options, NULL, 0, data_to_export);
+       
+        /* Write JSON in memory */
+        size_t expected = cgltf_write(&options, NULL, 0, &new_data);
         char* buffer = (char*) malloc(expected);
-        size_t actual = cgltf_write(&options, buffer, expected, data_to_export);
+        size_t actual = cgltf_write(&options, buffer, expected, &new_data);
         if (expected != actual) {
             fprintf(stderr, "Error: expected %zu bytes but wrote %zu bytes.\n", expected, actual);
         }
-        expected -= 2;// /n and ramdon number
+        //expected -= 2;// /n and random number
+        data_export_remove_JSON_white_space(buffer);
 
-        fwrite(buffer,expected,1,glb_file);
-
+        fwrite(buffer,strlen(buffer),1,glb_file);
         
-        data_export_bytes_writed += expected;
-        data_export_JSON_bytes_size = expected;
+        data_export_bytes_writed += strlen(buffer);
+        data_export_JSON_bytes_size = strlen(buffer);
         LOG("JSON bytes size: %i\n",data_export_JSON_bytes_size);
 
-        if ( (expected % 4) != 0 ) {
+        if ( (strlen(buffer) % 4) != 0 ) {
             LOG("Data analigned\n");
-            int un = expected % 4;
+            int un = strlen(buffer) % 4;
             LOG("Unaligned %i\n",un);
             for (u8 i = 0; i < un; i++)
             {
@@ -479,10 +566,10 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
                 data_export_bytes_writed += 1;
                 data_export_JSON_bytes_size += 1;
             }
-            
+            LOG("JSON afet align bytes size: %i\n",data_export_JSON_bytes_size);
 
         }
-        LOG("JSON afet align bytes size: %i\n",data_export_JSON_bytes_size);
+        
         free(buffer);
     }
 
@@ -506,9 +593,6 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
 
 int data_export_select_element(const char* name,bool binary){
     data_export_in_binary = binary;
-    char new_path[strlen(name) + 4];
-    sprintf(new_path,"%s%s",name,".bin");
-    binary_file = fopen(new_path,"wb"); 
 
     char glb_path[strlen(name) + 4];
     sprintf(glb_path,"%s%s",name,".glb");
@@ -541,6 +625,7 @@ int data_export_select_element(const char* name,bool binary){
         encode_vertices(component);
         data_export_encoded_data(new_data,name);
     }else{
+        data_export_buffer_count_and_AABB(component,&new_data);
         data_export_encoded_data(new_data,name);
         encode_vertices(component);
     } 
