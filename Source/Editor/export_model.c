@@ -17,7 +17,10 @@
 
 bool data_export_in_binary = false;
 FILE *binary_file;
-int data_export_binary_bytes_size = 0;
+u32 data_export_binary_bytes_size = 0;
+FILE* glb_file;
+u32 data_export_bytes_writed = 0;
+u32 data_export_JSON_bytes_size = 0;
 
 int data_count = 0;
 cgltf_data* data_array[20];
@@ -189,15 +192,37 @@ int prepare_vertices_data_from_model(Model* model){
         UV_values[i][1] = vertex->uv[1];
     }
 
-    if(data_export_in_binary){      
-        fwrite(vertex_position_array,sizeof(vertex_position_array),1,binary_file); // write 10 bytes from our buffer
-        fwrite(UV_values,sizeof(UV_values),1,binary_file); // write 10 bytes from our buffer
+    if(data_export_in_binary){ 
         u8 indices[model->index_array.count];
-        for(int i = 0; i<model->index_array.count; i++){
+        for(u8 i = 0; i<model->index_array.count; i++){
             u8* index = array_get(&model->index_array,i);
             indices[i] = *index;
         }
-        fwrite(indices,sizeof(indices),1,binary_file); // write 10 bytes from our buffer
+
+        u32 binary_byte_size = sizeof(vertex_position_array) + sizeof(UV_values) + sizeof(indices);
+        fwrite(&binary_byte_size,sizeof(u32),1,glb_file);
+        LOG("Binary byte size: %i\n",binary_byte_size);
+
+        unsigned int t = 0x004E4942;
+        fwrite(&t,sizeof(t),1,glb_file);
+        data_export_bytes_writed += 3;
+
+/*         fwrite(vertex_position_array,sizeof(vertex_position_array),1,binary_file); 
+        fwrite(UV_values,sizeof(UV_values),1,binary_file);  */
+
+        fwrite(vertex_position_array,sizeof(vertex_position_array),1,glb_file); 
+        fwrite(UV_values,sizeof(UV_values),1,glb_file); 
+
+        data_export_bytes_writed += sizeof(UV_values);
+        data_export_bytes_writed += sizeof(vertex_position_array);
+        data_export_bytes_writed += sizeof(indices);
+        
+
+/*         
+        fwrite(indices,sizeof(indices),1,binary_file);  */
+        fwrite(indices,sizeof(indices),1,glb_file); 
+
+
         fclose(binary_file);
         //return 1;
         data_export_binary_bytes_size = sizeof(vertex_position_array) + 
@@ -350,6 +375,37 @@ void encode_vertices(ComponentDefinition* component){
     }
 }
 
+void data_export_finish(){
+
+    cgltf_data* data_to_export  = data_array[0];
+    cgltf_free(data_to_export);
+
+    data_count = 0;
+    vertex_count_merged = 0;
+    indices_count_merged = 0;
+    UV_count_merged = 0;
+    previous_indices_count = 0;
+
+    indices_char_bytes = 0;
+    vertices_char_bytes = 0;
+    uv_char_bytes = 0;
+
+    offset_indices = 0;
+    offset_vertices = 0;
+    offset_uv = 0;
+
+    data_export_bytes_writed = 0;
+    data_export_JSON_bytes_size = 0;
+
+    if(!data_export_in_binary){
+        free(vertices_uchar);
+        free(uv_uchar);
+        free(indices_uchar);
+    }
+
+    data_export_in_binary = false;
+}
+
 int data_export_encoded_data(cgltf_data new_data, const char* name){
     char* saved_uri = NULL;
     char* new_path = NULL;
@@ -394,7 +450,42 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
     cgltf_options options = {0};
     cgltf_data* data_to_export  = data_array[0];
     
-    cgltf_result result = cgltf_write_file(&options, name, data_to_export);
+    cgltf_result result;
+    if(!data_export_in_binary){
+        result = cgltf_write_file(&options, name, data_to_export);
+    }else{
+        size_t expected = cgltf_write(&options, NULL, 0, data_to_export);
+        char* buffer = (char*) malloc(expected);
+        size_t actual = cgltf_write(&options, buffer, expected, data_to_export);
+        if (expected != actual) {
+            fprintf(stderr, "Error: expected %zu bytes but wrote %zu bytes.\n", expected, actual);
+        }
+        expected -= 2;// /n and ramdon number
+
+        fwrite(buffer,expected,1,glb_file);
+
+        
+        data_export_bytes_writed += expected;
+        data_export_JSON_bytes_size = expected;
+        LOG("JSON bytes size: %i\n",data_export_JSON_bytes_size);
+
+        if ( (expected % 4) != 0 ) {
+            LOG("Data analigned\n");
+            int un = expected % 4;
+            LOG("Unaligned %i\n",un);
+            for (u8 i = 0; i < un; i++)
+            {
+                fprintf(glb_file," ");
+                data_export_bytes_writed += 1;
+                data_export_JSON_bytes_size += 1;
+            }
+            
+
+        }
+        LOG("JSON afet align bytes size: %i\n",data_export_JSON_bytes_size);
+        free(buffer);
+    }
+
     if (result != cgltf_result_success)
     {
         LOG("Error can't save\n");
@@ -402,34 +493,14 @@ int data_export_encoded_data(cgltf_data new_data, const char* name){
     }
     
     new_data.buffers[0].uri = saved_uri;
-    cgltf_free(data_to_export);
+    
+    LOG("Exported: %s\n",name);
 
-    LOG("Exported\n");
-
-    data_count = 0;
-    vertex_count_merged = 0;
-    indices_count_merged = 0;
-    UV_count_merged = 0;
-    previous_indices_count = 0;
-
-    indices_char_bytes = 0;
-    vertices_char_bytes = 0;
-    uv_char_bytes = 0;
-
-    offset_indices = 0;
-    offset_vertices = 0;
-    offset_uv = 0;
-
-    if(!data_export_in_binary){
-        free(vertices_uchar);
-        free(uv_uchar);
-        free(indices_uchar);
-    }else{
+    if(data_export_in_binary){
         free(new_path);
+
     }
 
-
-    data_export_in_binary = false;
 }
 
 
@@ -437,7 +508,21 @@ int data_export_select_element(const char* name,bool binary){
     data_export_in_binary = binary;
     char new_path[strlen(name) + 4];
     sprintf(new_path,"%s%s",name,".bin");
-    binary_file = fopen(new_path,"wb");  // w for write, b for binary
+    binary_file = fopen(new_path,"wb"); 
+
+    char glb_path[strlen(name) + 4];
+    sprintf(glb_path,"%s%s",name,".glb");
+    glb_file = fopen(glb_path,"wb");
+
+    fprintf(glb_file,"glTF");
+    u32 version = 2;
+    u32 file_size = 0;
+    u32 json_bytes_size = 0;
+    fwrite(&version,sizeof(u32),1,glb_file); 
+    fwrite(&file_size,sizeof(u32),1,glb_file); 
+    fwrite(&json_bytes_size,sizeof(u32),1,glb_file);
+
+    fprintf(glb_file,"JSON");    
     
     memset(&box,0,sizeof(box));
 
@@ -453,10 +538,32 @@ int data_export_select_element(const char* name,bool binary){
         vertices_uchar = malloc(vertices_char_bytes);
         indices_uchar = malloc(indices_char_bytes);
         uv_uchar = malloc(uv_char_bytes);
-    }
-    encode_vertices(component);
+        encode_vertices(component);
+        data_export_encoded_data(new_data,name);
+    }else{
+        data_export_encoded_data(new_data,name);
+        encode_vertices(component);
+    } 
 
-    data_export_encoded_data(new_data,name);
+    version = 2;
+    data_export_bytes_writed += 12;//header
+    data_export_bytes_writed += 12;//two chunk length and chunk type of JSON
+
+    LOG("GLB bytes size = %i\n",data_export_bytes_writed);
+
+    rewind(glb_file);
+    fprintf(glb_file,"glTF");
+
+    file_size = data_export_bytes_writed;
+    json_bytes_size = data_export_JSON_bytes_size;
+
+    fwrite(&version,sizeof(u32),1,glb_file); 
+    fwrite(&file_size,sizeof(u32),1,glb_file);
+
+    fwrite(&json_bytes_size,sizeof(u32),1,glb_file);
+
+    int glb_saved = fclose(glb_file); 
+    data_export_finish();
 }
 
 

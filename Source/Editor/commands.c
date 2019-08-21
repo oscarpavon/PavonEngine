@@ -152,7 +152,7 @@ void parse_command(const char* command){
     }
     case 'e':
     {
-        data_export_select_element("/home/pavon/PavonTheGame/exports/export.gltf",true);
+        data_export_select_element("/home/pavon/PavonTheGame/Content/export",true);
         //system("blender --python ../scripts/Blender/import.py");
         //reload_editor();
         //add_element_with_model_path("../assets/HLOD/out.gltf");
