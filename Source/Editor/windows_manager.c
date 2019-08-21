@@ -67,6 +67,7 @@ void window_set_focus(EditorWindow* window){
     current_window->focus = false;
     glfwShowWindow(window->window);
     glfwFocusWindow(window->window);
+    memset(&input,0,sizeof(Input));
     glfwMakeContextCurrent(window->window);
     window->focus = true;
     current_window = window;

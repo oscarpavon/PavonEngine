@@ -20,6 +20,8 @@
 
 #include "ProjectManager/project_manager.h"
 
+#include "windows_manager.h"
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,

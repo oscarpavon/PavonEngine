@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "windows_manager.h"
-
 #include "../engine.h"
 
 #include "text.h"
