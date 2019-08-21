@@ -35,6 +35,13 @@ struct LoadGeometry{
     Array index_array;
 };
 
+typedef struct DrawData{
+    u32 shader;
+    u32 texture;
+    u32 vertex;
+    u32 index;
+}DrawData;
+
 int load_model(const char* path);
 
 Array model_nodes;

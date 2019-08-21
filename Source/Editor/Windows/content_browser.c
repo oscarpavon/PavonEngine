@@ -20,30 +20,8 @@ Array array_finding_content;
 ContentView* editor_content_view_found = NULL;
 
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
-    glDisable(GL_CULL_FACE);
 
-    glUseProgram(content_view->shader_id);
-    glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
-
-    two_dimension_screen_space_send_matrix(content_view->shader_id, content_view->size, content_view->position);
-
-    glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-    send_color_to_shader(content_view->shader_id,(vec4){1,1,1,1});
-    if(content_view->selected){
-        send_color_to_shader(content_view->shader_id,(vec4){1,0,0,1});            
-    }
-
-    glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
-
-    check_error("content thumbnail");
-
+    draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
     render_text_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
 
 }
@@ -212,28 +190,7 @@ void editor_window_content_browser_draw(){
                 hint_size[1] = 20;
 
 
-                glDisable(GL_CULL_FACE);
-
-                glUseProgram(content_view->shader_id);
-                glBindTexture(GL_TEXTURE_2D,content_view->thumbnail_image_id);
-
-                two_dimension_screen_space_send_matrix(content_view->shader_id, hint_size, hint_position);
-
-                glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
-
-                glEnableVertexAttribArray(0);
-                glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
-                glEnableVertexAttribArray(1);
-                glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-
-                send_color_to_shader(content_view->shader_id,(vec4){0,1,0,1});           
-
-
-                glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
-
-                check_error("hint thumbnail");
+                draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
                 render_text_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
 
 
@@ -398,7 +355,7 @@ void editor_window_content_browser_load_thumbnails(){
         Texture new_texture;
         texture_load(content_view->thumbnail_image_path,&new_texture);       
 
-        content_view->thumbnail_image_id = new_texture.id;
+        content_view->draw.texture = new_texture.id;
 
     }
 }
@@ -418,7 +375,8 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
 
     new_content_view.text_size = 12;
 
-    new_content_view.shader_id = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
+    new_content_view.draw.shader = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
+    new_content_view.draw.vertex = UI_plane_vertex_buffer_id;
     new_content_view.size[0] = 58;
     new_content_view.size[1] = 58;
     if(view_port->object_x_count < view_port->max_x){            

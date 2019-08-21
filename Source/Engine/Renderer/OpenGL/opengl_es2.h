@@ -5,6 +5,7 @@
 void draw_vertices_like(GLenum mode, Model* model, vec4 color);
 void draw_model_with_color(Model* model, GLenum mode, vec4 color);
 void draw_model_like(Model* model, GLenum mode);
+void draw_two_dimention_element(DrawData* data, vec2 position , vec2 size, vec4 color);
 
 void load_texture_to_GPU(Texture*);
 

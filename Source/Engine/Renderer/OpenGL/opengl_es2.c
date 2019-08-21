@@ -76,6 +76,29 @@ void draw_vertices_like(GLenum mode, Model* model, vec4 color){
     check_error("simple draw");
 }
 
+void draw_two_dimention_element(DrawData* data, vec2 position , vec2 size, vec4 color){
+    glDisable(GL_CULL_FACE);
+
+    glUseProgram(data->shader);
+    glBindTexture(GL_TEXTURE_2D,data->texture);
+
+    two_dimension_screen_space_send_matrix(data->shader, size, position);
+
+    glBindBuffer(GL_ARRAY_BUFFER,data->vertex);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    send_color_to_shader(data->shader,color);
+
+    glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
+
+    check_error("Two dimension");
+}
+
 void draw_model_with_color(Model* model, GLenum mode, vec4 color){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
     
