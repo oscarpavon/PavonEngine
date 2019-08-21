@@ -71,7 +71,7 @@ int init_game(){
 }
 
 void update_game(){
-    selected_element = get_from_array(actual_elements_array,0);
+    selected_element = array_get(actual_elements_array,0);
     CameraComponent* camera = get_component_from_element(selected_element,CAMERA_COMPONENT);
     update_main_camera_with_camera_component_values(camera);
 }

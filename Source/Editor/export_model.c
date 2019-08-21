@@ -176,7 +176,7 @@ int prepare_vertices_data_from_model(Model* model){
     vec3 vertex_position_array[model->vertex_array.count];
     
     for(int i = 0; i<model->vertex_array.count; i++){
-        Vertex* vertex = get_from_array(&model->vertex_array,i);
+        Vertex* vertex = array_get(&model->vertex_array,i);
         mat4 position;
         glm_mat4_identity(position);
         glm_translate(position,vertex->postion);
@@ -194,7 +194,7 @@ int prepare_vertices_data_from_model(Model* model){
         fwrite(UV_values,sizeof(UV_values),1,binary_file); // write 10 bytes from our buffer
         u8 indices[model->index_array.count];
         for(int i = 0; i<model->index_array.count; i++){
-            u8* index = get_from_array(&model->index_array,i);
+            u8* index = array_get(&model->index_array,i);
             indices[i] = *index;
         }
         fwrite(indices,sizeof(indices),1,binary_file); // write 10 bytes from our buffer
@@ -226,7 +226,7 @@ int prepare_vertices_data_from_model(Model* model){
     unsigned short int count = 0;
 
     for(int i = 0; i<model->index_array.count; i++){
-        unsigned short int* index = get_from_array(&model->index_array,i);
+        unsigned short int* index = array_get(&model->index_array,i);
         unsigned short int index_offset = (*index + previous_indices_count);  
         UCharInBytes uchar_int_bytes;
         uint8_to_char(index_offset,uchar_int_bytes);
@@ -304,8 +304,8 @@ CodedData merge_all_encoded_data(){
 void data_count_merged(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh_component = component->data;
-        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = get_from_array(actual_model_array,*mode_id);
+        unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = array_get(actual_model_array,*mode_id);
         vertex_count_merged += model->vertex_array.count;
         indices_count_merged += model->index_array.count;
         UV_count_merged += model->vertex_array.count;
@@ -319,8 +319,8 @@ void encode_vertices(ComponentDefinition* component){
     selected_element = component->parent;
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh_component = component->data;
-        unsigned int *mode_id = get_from_array(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = get_from_array(actual_model_array,*mode_id);
+        unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
+        Model* model = array_get(actual_model_array,*mode_id);
         prepare_vertices_data_from_model(model);
 
         if(mesh_component->bounding_box[1][0] > box[1][0]){
@@ -447,7 +447,7 @@ int data_export_select_element(const char* name,bool binary){
     cgltf_data new_data;
     memcpy(&new_data, data1, sizeof(cgltf_data));
     
-    ComponentDefinition* component = get_from_array(&selected_element->components,1);
+    ComponentDefinition* component = array_get(&selected_element->components,1);
     data_count_merged(component);
     if(!binary){
         vertices_uchar = malloc(vertices_char_bytes);

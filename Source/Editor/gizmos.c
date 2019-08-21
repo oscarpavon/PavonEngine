@@ -34,8 +34,8 @@ typedef struct DebugLine{
 void add_debug_line(vec3 start, vec3 end){
     DebugLine new_line;
     memset(&new_line,0,sizeof(DebugLine));
-    add_to_array(&debug_objects, &new_line);
-    DebugLine* pnew_line = get_from_array(&debug_objects,debug_objects.count-1);
+    array_add(&debug_objects, &new_line);
+    DebugLine* pnew_line = array_get(&debug_objects,debug_objects.count-1);
     glm_vec3_copy(start,pnew_line->start);
     glm_vec3_copy(end,pnew_line->end);
 }
@@ -107,9 +107,9 @@ void update_bounding_vertices_array(Model* model){
 
     glm_vec3_copy(selected_element->transform->position,last_position);
 
-    Model* box = get_from_array(&bounding_boxes,0);
+    Model* box = array_get(&bounding_boxes,0);
     
-    clean_array(&box->vertex_array);
+    array_clean(&box->vertex_array);
     selected_model = box;
     
     create_bounding_vertices();
@@ -119,7 +119,7 @@ void update_bounding_vertices_array(Model* model){
 void draw_bounding_box(){
     if(bounding_box_initialized == true){
         
-        Model* bounding_model = get_from_array(&bounding_boxes,0);
+        Model* bounding_model = array_get(&bounding_boxes,0);
         
         update_bounding_vertices_array( bounding_model );
         if(can_draw_box == false)
@@ -134,14 +134,14 @@ void draw_bounding_box(){
 }
 
 void init_line_vertices(DebugLine* line){
-    init_array(&line->vertex_array, sizeof(Vertex),2);
+    array_init(&line->vertex_array, sizeof(Vertex),2);
 
     struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};
     struct Vertex vert2 = {{line->end[0],line->end[1], line->end[2]},{0,0}};
 
 
-    add_to_array(&line->vertex_array, &vert);
-    add_to_array(&line->vertex_array, &vert2);
+    array_add(&line->vertex_array, &vert);
+    array_add(&line->vertex_array, &vert2);
 
     init_static_gpu_vertex_buffer(&line->vertex_array,&line->vertex_buffer_id);
 
@@ -152,7 +152,7 @@ void update_line_vertices(DebugLine* line){
     struct Vertex vert = {{line->start[0],line->start[1], line->start[2]},{0,0}};
     struct Vertex vert2 = {{line->end[0],line->end[1], line->end[2]},{0,0}};
 
-    Vertex* vertices = get_from_array(&line->vertex_array,0);
+    Vertex* vertices = array_get(&line->vertex_array,0);
     memcpy(&vertices[0], &vert, sizeof(struct Vertex));
     memcpy(&vertices[1], &vert2, sizeof(struct Vertex));
 }
@@ -166,7 +166,7 @@ void init_line(DebugLine* line){
 
 void draw_axis_lines(){
     for(int i = 0 ; i< debug_objects.count ; i++){
-        DebugLine* line = get_from_array(&debug_objects,i);
+        DebugLine* line = array_get(&debug_objects,i);
         if(line->initialized == true){
             mat4 model;
             glm_mat4_identity(model);            
@@ -187,25 +187,25 @@ void draw_axis_lines(){
         line->initialized = true;
     }
     DebugLine* line;
-    line = get_from_array(&debug_objects,0);
+    line = array_get(&debug_objects,0);
     glm_vec4_copy((vec4){0,0,1,1},line->color);
 
-    line = get_from_array(&debug_objects,2);
+    line = array_get(&debug_objects,2);
     glm_vec4_copy((vec4){1,0,0,1},line->color);
 
-    line = get_from_array(&debug_objects,1);
+    line = array_get(&debug_objects,1);
     glm_vec4_copy((vec4){0,1,0,1},line->color);
 
 }
 void draw_camera_direction(){
     if(selected_element != NULL){
         vec3 direction;
-        CameraComponent* camera = get_from_array(&components,0);
+        CameraComponent* camera = array_get(&components,0);
         vec3 look_pos;
         glm_vec3_add(selected_element->transform->position, camera->front, look_pos);        
         glm_vec3_sub(look_pos,selected_element->transform->position,direction);
 
-        DebugLine* line = get_from_array(&debug_objects,2);
+        DebugLine* line = array_get(&debug_objects,2);
         glm_vec3_copy(selected_element->transform->position,line->start);
         
         vec3 front_dir;
@@ -226,7 +226,7 @@ void draw_camera_direction(){
 }
 
 void init_grid_greometry(){
-    init_array(&new_grid.vertex_array, sizeof(Vertex), 1000);
+    array_init(&new_grid.vertex_array, sizeof(Vertex), 1000);
 
     for(int i = 1; i < 10; i++){
         for(int o = 1; o < 10; o++){
@@ -251,14 +251,14 @@ void init_grid_greometry(){
             glm_vec3_copy((vec3){-o,i,0}, vertex7.postion);
             glm_vec3_copy((vec3){-o,-i,0}, vertex8.postion);
 
-            add_to_array(&new_grid.vertex_array,&vertex1);
-            add_to_array(&new_grid.vertex_array,&vertex2);
-            add_to_array(&new_grid.vertex_array,&vertex3);
-            add_to_array(&new_grid.vertex_array,&vertex4);
-            add_to_array(&new_grid.vertex_array,&vertex5);
-            add_to_array(&new_grid.vertex_array,&vertex6);
-            add_to_array(&new_grid.vertex_array,&vertex7);
-            add_to_array(&new_grid.vertex_array,&vertex8);
+            array_add(&new_grid.vertex_array,&vertex1);
+            array_add(&new_grid.vertex_array,&vertex2);
+            array_add(&new_grid.vertex_array,&vertex3);
+            array_add(&new_grid.vertex_array,&vertex4);
+            array_add(&new_grid.vertex_array,&vertex5);
+            array_add(&new_grid.vertex_array,&vertex6);
+            array_add(&new_grid.vertex_array,&vertex7);
+            array_add(&new_grid.vertex_array,&vertex8);
         }
         
     }
@@ -286,7 +286,7 @@ void gizmos_boanding_sphere_draw(Sphere* sphere, vec4 color){
         if(bounding_boxes.count > 1){
             bounding_id = 1;
         }
-        Model* bounding_model = get_from_array(&bounding_boxes,bounding_id);
+        Model* bounding_model = array_get(&bounding_boxes,bounding_id);
 
         mat4 new_model_mat;
         glm_mat4_identity(new_model_mat);
@@ -324,11 +324,11 @@ void gizmos_boanding_sphere_draw(Sphere* sphere, vec4 color){
 }
 
 void init_gizmos(){
-    init_array(&gizmos,sizeof(Model),10);   
+    array_init(&gizmos,sizeof(Model),10);   
     
-    init_array(&bounding_boxes,sizeof(Model),10);
+    array_init(&bounding_boxes,sizeof(Model),10);
 
-    init_array(&debug_objects, sizeof(DebugLine),300);
+    array_init(&debug_objects, sizeof(DebugLine),300);
 
     load_model_to_array(&gizmos,"../NativeContent/Editor/transform.gltf","../NativeContent/Editor/transform_gizmo.jpg");
     load_model_to_array(&gizmos,"../NativeContent/Editor/rotate.gltf", "../NativeContent/Editor/rotate_gizmo.png");
@@ -388,7 +388,7 @@ void draw_gizmos(){
 
         glClear(GL_DEPTH_BUFFER_BIT);
         if(draw_translate_gizmo){
-            Model* actual_gizmo = get_from_array(&gizmos,0);
+            Model* actual_gizmo = array_get(&gizmos,0);
             if(editor_mode == EDITOR_DEFAULT_MODE){
                 if(current_component_selected){
                     CameraComponent* camera = current_component_selected->data;
@@ -430,7 +430,7 @@ void draw_gizmos(){
             }
         }
         if(draw_rotate_gizmo){
-            Model* actual_gizmo = get_from_array(&gizmos,1);
+            Model* actual_gizmo = array_get(&gizmos,1);
             if(selected_element != NULL){
                 TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
                 if(transform)

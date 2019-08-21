@@ -4,7 +4,7 @@
 #include "log.h"
 #include <string.h>
 
-int init_array(Array * array, u32 element_bytes_size, int count){
+int array_init(Array * array, u32 element_bytes_size, int count){
     if(array->initialized != true){
        
     }else{
@@ -21,7 +21,7 @@ int init_array(Array * array, u32 element_bytes_size, int count){
     return 0;
 }
 
-void add_to_array(Array* array, void* element){
+void array_add(Array* array, void* element){
     if(array->initialized == false){
         LOG("Array not initialized\n");
         debug_break();;
@@ -44,7 +44,7 @@ void add_to_array(Array* array, void* element){
     memcpy(array->data+(offset),element,array->element_bytes_size);
 }
 
-void *get_from_array(Array* array,int index){
+void *array_get(Array* array,int index){
     if(array->count == 0){
         //LOG("Array is empty\n");
         return NULL;
@@ -75,7 +75,7 @@ void *get_from_array(Array* array,int index){
     return &array->data[0] + (index*offset);
 }
 
-void clean_array(Array* array){
+void array_clean(Array* array){
     array->count = 0;    
     array->actual_bytes_size = 0;
 }

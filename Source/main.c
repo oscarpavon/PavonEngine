@@ -149,11 +149,11 @@ void android_main(struct android_app* main_app){
     load_gui("gui/test.gui");
 
     for(int i = 0; i< texts.count ; i++){
-        load_and_initialize_simple_model(get_from_array(&texts,i));
+        load_and_initialize_simple_model(array_get(&texts,i));
     }
 
     for(int i = 0; i< textures_paths.count ; i++){
-        load_simple_image(get_from_array(&textures_paths,i));
+        load_simple_image(array_get(&textures_paths,i));
     }
 
 

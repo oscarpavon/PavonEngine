@@ -14,7 +14,7 @@ void update_skeletal_node_uniform(){
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = get_from_array(&skin_component->joints,2);
+    new_skeletal.joints = array_get(&skin_component->joints,2);
     new_skeletal.joints_count = skin_component->joints.count-2;
     Skeletal* skeletal = &new_skeletal;
 
@@ -48,15 +48,15 @@ void play_animation(Animation* animation){
     animation->time += 0.01;
     float time = animation->time;
     for(int i = 0; i<animation->channels.count ; i++){
-        AnimationChannel* channel = get_from_array(&animation->channels,i);
+        AnimationChannel* channel = array_get(&animation->channels,i);
         AnimationSampler* sampler = &channel->sampler;
 
         Node* node = channel->node;        
         
 
         for(int j = 0; j < sampler->inputs.count - 1 ; j++){
-            float* input0 = get_from_array(&sampler->inputs,j);
-            float* input1 = get_from_array(&sampler->inputs,j+1);
+            float* input0 = array_get(&sampler->inputs,j);
+            float* input1 = array_get(&sampler->inputs,j+1);
             
             if( (time >= *input0) && (time <= *input1) ){
                 float time_mix = (time - *input0) / (*input1 - *input0);
@@ -64,8 +64,8 @@ void play_animation(Animation* animation){
                 {
                     case PATH_TYPE_ROTATION:
                     {
-                        float* quaternion0 = get_from_array(&sampler->outputs,j);
-                        float* quaternion1 = get_from_array(&sampler->outputs,j+1);
+                        float* quaternion0 = array_get(&sampler->outputs,j);
+                        float* quaternion1 = array_get(&sampler->outputs,j+1);
                         
                         vec4 interpolated;
                         glm_vec4_lerp(quaternion0,quaternion1,time_mix,interpolated);
@@ -74,8 +74,8 @@ void play_animation(Animation* animation){
                     }          
                     case PATH_TYPE_TRANSLATION:
                     {
-                        float* position1 = get_from_array(&sampler->outputs,j);
-                        float* position2 = get_from_array(&sampler->outputs,j+1);                        
+                        float* position1 = array_get(&sampler->outputs,j);
+                        float* position2 = array_get(&sampler->outputs,j+1);                        
                         glm_vec3_lerp(position1,position2,time_mix,node->translation);
                         break;
                     }          
@@ -92,7 +92,7 @@ void play_animation(Animation* animation){
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop){
     Animation* animation; 
     for( int i = 0 ; i<skin_component->animations.count ; i++){
-        Animation* geted_animation = get_from_array(&skin_component->animations, i);
+        Animation* geted_animation = array_get(&skin_component->animations, i);
         if( strcmp(name , geted_animation->name) == 0 ){
             animation = geted_animation;
             break;
@@ -104,14 +104,14 @@ void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* n
         return;
     }
     animation->loop = loop;
-    add_to_array(&array_animation_play_list,&animation);
+    array_add(&array_animation_play_list,&animation);
     
 }
 
 
 void play_animation_list(){    
     for(int i = 0; i< array_animation_play_list.count; i++){
-        Animation** ppAnimation = get_from_array(&array_animation_play_list,i);
+        Animation** ppAnimation = array_get(&array_animation_play_list,i);
         Animation* animation = ppAnimation[0];
         if(animation->time <= animation->end){
             play_animation(animation);

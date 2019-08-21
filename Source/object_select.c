@@ -8,9 +8,9 @@
 void init_menu(){
 
 
-    init_array(&menu_select.buttons, sizeof(Button), 10);
-    add_to_array(&menu_select.buttons, &next_item_button);
-    add_to_array(&menu_select.buttons, &previous_item_button);
+    array_init(&menu_select.buttons, sizeof(Button), 10);
+    array_add(&menu_select.buttons, &next_item_button);
+    array_add(&menu_select.buttons, &previous_item_button);
 
 
 

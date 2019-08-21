@@ -88,7 +88,7 @@ void new_save_element(SaveDataFunction function, int data_id){
 
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;
-    int* path_id = get_from_array(&mesh->meshes,0);
+    int* path_id = array_get(&mesh->meshes,0);
     int count = 0;
     int offset = 0;
     if(previous_path_id != *path_id){
@@ -116,13 +116,13 @@ void save_textures_id(void* component){
         fprintf(actual_file,"%i,",0);
     }  
    for(int i = 0; i<mesh->textures.count; i++){
-       int* texture_id = get_from_array(&mesh->textures,i);
+       int* texture_id = array_get(&mesh->textures,i);
        fprintf(actual_file,"%i,",*texture_id);
    }
 }
 
 void save_element_component_data(int id){
-    ComponentDefinition* component = get_from_array(&current_element->components,id);
+    ComponentDefinition* component = array_get(&current_element->components,id);
     new_text_primitive_token("type",component->type);
     switch (component->type)
     {
@@ -169,7 +169,7 @@ void components_data(){
 
 void save_level_element_data(int id){ 
     
-    Element* element = get_from_array(&editor_elements,id);
+    Element* element = array_get(&editor_elements,id);
     current_element = element;
 
     new_text_token("name",element->name); 
@@ -191,7 +191,7 @@ void save_model_paths(){
 
     for(int i = 0; i< texts.count ; i++){       
         hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",get_from_array(&texts,i));
+        fprintf(actual_file,"\"%s\",\n",array_get(&texts,i));
     }
    
 }
@@ -199,7 +199,7 @@ void save_textures_paths(){
 
     for(int i = 0; i< textures_paths.count ; i++){       
         hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",get_from_array(&textures_paths,i));
+        fprintf(actual_file,"\"%s\",\n",array_get(&textures_paths,i));
     }
    
 }
@@ -256,7 +256,7 @@ void save_level_data(const char* level_name){
 }
 
 void save_buttons_data(int id){    
-    Button* button = get_from_array(actual_buttons_array,id);
+    Button* button = array_get(actual_buttons_array,id);
     if(button != NULL){
         new_text_token("name",button->name);
         new_text_vec2_token("position",button->position);

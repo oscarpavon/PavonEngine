@@ -93,7 +93,7 @@ void draw_texture(int size,int atlas_texture_size)
 void draw_textures(int per_texture_size, int atlas_size){
     for(int i = 0; i<model_in_UV_form.count; i++)
     {
-        Model** ppModel = get_from_array(&model_in_UV_form,i);
+        Model** ppModel = array_get(&model_in_UV_form,i);
         Model* model = ppModel[0];
         uv_model = model;
         draw_texture(per_texture_size,atlas_size);
@@ -170,13 +170,13 @@ void init_UV_draw(Model *model)
 {
 
     new_empty_model();
-    init_array(&selected_model->vertex_array, sizeof(Vertex), model->vertex_array.count);
+    array_init(&selected_model->vertex_array, sizeof(Vertex), model->vertex_array.count);
     for (int i = 0; i < model->vertex_array.count; i++)
     {
-        Vertex *vertex = get_from_array(&model->vertex_array, i);
+        Vertex *vertex = array_get(&model->vertex_array, i);
         vec3 position;
         glm_vec3_copy(VEC3(vertex->uv[0], vertex->uv[1], 0), position);
-        add_to_array(&selected_model->vertex_array, position);
+        array_add(&selected_model->vertex_array, position);
     }
 
     init_model_gl_buffers(selected_model);
@@ -188,21 +188,21 @@ void init_UV_draw(Model *model)
     uv_model = selected_model;
 
     if(model_in_UV_form.initialized)
-    add_to_array(&model_in_UV_form,&selected_model);
+    array_add(&model_in_UV_form,&selected_model);
     
 }
 
 void add_model_to_UV_proccessing(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh = component->data;
-        u8* id = get_from_array(&mesh->meshes, 1);
-        Model* model = get_from_array(actual_model_array,*id);
+        u8* id = array_get(&mesh->meshes, 1);
+        Model* model = array_get(actual_model_array,*id);
         init_UV_draw(model);
     }
 }
 void init_model_to_draw_texture(){
     if(!model_in_UV_form.initialized)
-        init_array(&model_in_UV_form,sizeof(Model*),20);
+        array_init(&model_in_UV_form,sizeof(Model*),20);
     
     for_each_element_components_in_array_of_pp(&array_elements_for_HLOD_generation,add_model_to_UV_proccessing);
 }
@@ -212,7 +212,7 @@ bool initialized = false;
 void scale_UV(float size, Model* model, vec2 UV_offset){
     for (int i = 0; i < model->vertex_array.count; i++)
     {
-        Vertex *vertex = get_from_array(&model->vertex_array, i);
+        Vertex *vertex = array_get(&model->vertex_array, i);
         vec3 position;
         glm_vec3_copy(VEC3(vertex->uv[0]+UV_offset[0], vertex->uv[1]+UV_offset[1], 0), position);
         glm_vec3_scale(position,size,position);
@@ -223,7 +223,7 @@ void scale_UV(float size, Model* model, vec2 UV_offset){
 void translate_UV(vec3 tranlation, Model* model, vec2 UV_offset){
     for (int i = 0; i < model->vertex_array.count; i++)
     {
-        Vertex *vertex = get_from_array(&model->vertex_array, i);
+        Vertex *vertex = array_get(&model->vertex_array, i);
         vec3 position;
         glm_vec3_copy(VEC3(vertex->uv[0]+UV_offset[0], vertex->uv[1]+UV_offset[1], 0), position);
         glm_vec3_add(position,tranlation,position);
@@ -271,5 +271,5 @@ void merge_textures(const char* name){
     init_model_to_draw_texture();
     render_to_texture(512,texture_render_models_uv);
     texture_export(512);    
-    clean_array(&model_in_UV_form);
+    array_clean(&model_in_UV_form);
 }

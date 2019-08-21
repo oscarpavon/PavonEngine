@@ -191,15 +191,15 @@ void init_gui_element_geometry(){
     vert4.uv[1] = 0;
 
 
-    init_array(&gui_vertex_array, sizeof(Vertex),4);
-    add_to_array(&gui_vertex_array,&vert1);
-    add_to_array(&gui_vertex_array,&vert2);
-    add_to_array(&gui_vertex_array,&vert3);
-    add_to_array(&gui_vertex_array,&vert4);
+    array_init(&gui_vertex_array, sizeof(Vertex),4);
+    array_add(&gui_vertex_array,&vert1);
+    array_add(&gui_vertex_array,&vert2);
+    array_add(&gui_vertex_array,&vert3);
+    array_add(&gui_vertex_array,&vert4);
 }
 void init_gui(){
 
-    init_array(&buttons, sizeof(Button),20);
+    array_init(&buttons, sizeof(Button),20);
 
     create_gui_shaders();
 
@@ -288,10 +288,10 @@ void draw_loading_screen(){
 
 void update_user_iterface_status(){
      for(size_t i = 0; i < buttons.count ; i++){
-         Button* button = get_from_array(&buttons,i);
+         Button* button = array_get(&buttons,i);
          check_if_pressed(button);
          if(button->pressed){
-             ActionPointer* action_pointer = get_from_array(&actions_pointers,button->action_function_id);
+             ActionPointer* action_pointer = array_get(&actions_pointers,button->action_function_id);
              if(action_pointer->action == NULL){
                  LOG("No button action added\n");
                  return;
@@ -313,9 +313,9 @@ void new_empty_button(){
     
     init_button(&new_button, camera_width_screen/2, camera_heigth_screen/2, 15, 15);
 
-    add_to_array(actual_buttons_array,&new_button);
+    array_add(actual_buttons_array,&new_button);
 
-    Button* button = get_from_array(actual_buttons_array,actual_buttons_array->count-1);
+    Button* button = array_get(actual_buttons_array,actual_buttons_array->count-1);
     button->shader = create_engine_shader(vert_shader,frag_shader);
     button->action_function_id = 0;
     button->pressed = false;
@@ -344,7 +344,7 @@ void load_gui(const char* name){
     close_file(&level_file);
 
     for(int i = 0; i < buttons.count; i++){
-        Button* button = get_from_array(&buttons,i);
+        Button* button = array_get(&buttons,i);
         button->shader = create_engine_shader(vert_shader,frag_shader);
         button->pressed = false;
     }

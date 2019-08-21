@@ -12,7 +12,7 @@ const unsigned short int cube_indices[] = {
 
 void geometry_cube_create_vertices(float *box)
 {
-    init_array(&selected_model->vertex_array, sizeof(Vertex), 8);
+    array_init(&selected_model->vertex_array, sizeof(Vertex), 8);
 
     struct Vertex back_right_down; //min
     memset(&back_right_down, 0, sizeof(Vertex));
@@ -41,29 +41,29 @@ void geometry_cube_create_vertices(float *box)
 
     glm_vec3_copy((vec3){back_right_down.postion[0], front_left_up.postion[1], front_left_up.postion[2]}, front_right_up.postion);
 
-    add_to_array(&selected_model->vertex_array, &front_right_up);
-    add_to_array(&selected_model->vertex_array, &front_left_up);
-    add_to_array(&selected_model->vertex_array, &front_left_down);
-    add_to_array(&selected_model->vertex_array, &front_right_down);
+    array_add(&selected_model->vertex_array, &front_right_up);
+    array_add(&selected_model->vertex_array, &front_left_up);
+    array_add(&selected_model->vertex_array, &front_left_down);
+    array_add(&selected_model->vertex_array, &front_right_down);
 
-    add_to_array(&selected_model->vertex_array, &back_right_up);
-    add_to_array(&selected_model->vertex_array, &back_right_down);
-    add_to_array(&selected_model->vertex_array, &back_left_down);
-    add_to_array(&selected_model->vertex_array, &back_left_up);
+    array_add(&selected_model->vertex_array, &back_right_up);
+    array_add(&selected_model->vertex_array, &back_right_down);
+    array_add(&selected_model->vertex_array, &back_left_down);
+    array_add(&selected_model->vertex_array, &back_left_up);
 }
 
 void geometry_cube_create_indices()
 {
-    init_array(&selected_model->index_array, sizeof(unsigned short int), 36);
+    array_init(&selected_model->index_array, sizeof(unsigned short int), 36);
     for (int i = 0; i < 36; i++)
     {
-        add_to_array(&selected_model->index_array, &cube_indices[i]);
+        array_add(&selected_model->index_array, &cube_indices[i]);
     }
 }
 
 void geometry_sphere_create_vertices(int vertice_count)
 {
-    init_array(&selected_model->vertex_array, sizeof(Vertex), 360);
+    array_init(&selected_model->vertex_array, sizeof(Vertex), 360);
     const int NUMPOINTS = 24;
 
     int i;
@@ -84,7 +84,7 @@ void geometry_sphere_create_vertices(int vertice_count)
 		Y = (float)(0 - 2 * sin(Theta));
         Vertex vertex;
 		glm_vec3_copy(VEC3(X,Y,0),vertex.postion);
-        add_to_array(&selected_model->vertex_array,&vertex);
+        array_add(&selected_model->vertex_array,&vertex);
 	}
 
     for(i=0; i<=NUMPOINTS; i++)
@@ -97,6 +97,6 @@ void geometry_sphere_create_vertices(int vertice_count)
 		Y = (float)(0 - 2 * sin(Theta));
         Vertex vertex;
 		glm_vec3_copy(VEC3(0,X,Y),vertex.postion);
-        add_to_array(&selected_model->vertex_array,&vertex);
+        array_add(&selected_model->vertex_array,&vertex);
 	}
 }

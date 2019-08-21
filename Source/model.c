@@ -25,7 +25,7 @@ int models_parsed = 0;
 
 Node* get_node_by_name(Array* array, const char* name){
   for( int i = 0; i < array->count ; i++ ){
-    Node* node = get_from_array(array,i);
+    Node* node = array_get(array,i);
     if( strcmp( node->name , name ) == 0){
       return node;
     }
@@ -33,10 +33,10 @@ Node* get_node_by_name(Array* array, const char* name){
 }
 
 void read_accessor_indices(cgltf_accessor* accessor){
-  init_array(actual_index_array,sizeof(u8),accessor->count);
+  array_init(actual_index_array,sizeof(u8),accessor->count);
   for(u8 i = 0 ; i < accessor->count ; i++){
       u8 index = cgltf_accessor_read_index(accessor,i);
-      add_to_array(actual_index_array,&index);
+      array_add(actual_index_array,&index);
   }
 }
 /*Read accessor and allocate data in current_array or actual_vertex_array */
@@ -45,7 +45,7 @@ void read_accessor(cgltf_accessor* accessor, float* out){
   {
   case cgltf_type_vec2:
     for(size_t i = 0 ; i < accessor->count ; i++){
-        Vertex* vertex = get_from_array(actual_vertex_array,i);
+        Vertex* vertex = array_get(actual_vertex_array,i);
         cgltf_accessor_read_float(accessor, i, &vertex->uv[0], 2);
     }
     break;
@@ -69,7 +69,7 @@ void read_accessor(cgltf_accessor* accessor, float* out){
     for(int i = 0 ; i < accessor->count ; i++){
       float number;      
       cgltf_accessor_read_float(accessor, i, &number, 1);
-      add_to_array(current_array,&number);
+      array_add(current_array,&number);
     }
     
     break;
@@ -101,7 +101,7 @@ void load_attribute(cgltf_attribute* attribute){
     vec3 vertices_position[attribute->data->count];
     memset(&vertices_position,0,sizeof(vertices_position));
 
-    init_array(actual_vertex_array,sizeof(Vertex),attribute->data->count);
+    array_init(actual_vertex_array,sizeof(Vertex),attribute->data->count);
 
     read_accessor(attribute->data, vertices_position);
 
@@ -109,7 +109,7 @@ void load_attribute(cgltf_attribute* attribute){
         struct Vertex vertex;
         memset(&vertex,0,sizeof(struct Vertex));
         glm_vec3_copy(vertices_position[i],vertex.postion);
-        add_to_array(actual_vertex_array,&vertex);
+        array_add(actual_vertex_array,&vertex);
     }
     break;
   }
@@ -123,7 +123,7 @@ void load_attribute(cgltf_attribute* attribute){
 
     read_accessor(attribute->data,joints);
     for(int i = 0; i < attribute->data->count ; i++){
-      Vertex* vertex = get_from_array(actual_vertex_array,i);
+      Vertex* vertex = array_get(actual_vertex_array,i);
       glm_vec4_copy(joints[i],vertex->joint);
     }
 
@@ -136,7 +136,7 @@ void load_attribute(cgltf_attribute* attribute){
 
     read_accessor(attribute->data,weight);
     for(int i = 0; i < attribute->data->count ; i++){
-      Vertex* vertex = get_from_array(actual_vertex_array,i);
+      Vertex* vertex = array_get(actual_vertex_array,i);
       glm_vec4_copy(weight[i],vertex->weight);
     }
 
@@ -229,7 +229,7 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
     memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
 
     if(model_nodes.initialized)
-      add_to_array(&model_nodes,&new_node);
+      array_add(&model_nodes,&new_node);
   }
 
   if(in_cgltf_node->mesh != NULL){
@@ -246,7 +246,7 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
     LOG("Nodes assigned to current_nodes_array\n");
   }
   
-  Node* loaded_parent = get_from_array(&model_nodes,model_nodes.count-1);
+  Node* loaded_parent = array_get(&model_nodes,model_nodes.count-1);
   if(in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL)
     return 1;
 
@@ -261,7 +261,7 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
 void load_current_sampler_to_channel(AnimationChannel* channel){
   AnimationSampler sampler;
   memset(&sampler,0,sizeof(AnimationSampler));
-  init_array(&sampler.inputs,sizeof(float),current_sampler->input->count);
+  array_init(&sampler.inputs,sizeof(float),current_sampler->input->count);
   
   current_array = &sampler.inputs;
 
@@ -269,13 +269,13 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
   read_accessor(current_sampler->input,inputs);
 
   if(channel->path_type == PATH_TYPE_ROTATION){
-    init_array(&sampler.outputs,sizeof(float)*4,current_sampler->output->count);
+    array_init(&sampler.outputs,sizeof(float)*4,current_sampler->output->count);
     vec4 outputs[current_sampler->output->count];  
     read_accessor(current_sampler->output,outputs);
     memcpy(sampler.outputs.data,outputs,sizeof(outputs));
   }else if( channel->path_type == PATH_TYPE_TRANSLATION){
     vec3 outputs[current_sampler->output->count];
-    init_array(&sampler.outputs,sizeof(float)*3,current_sampler->output->count);
+    array_init(&sampler.outputs,sizeof(float)*3,current_sampler->output->count);
     read_accessor(current_sampler->output,outputs);
     memcpy(sampler.outputs.data,outputs,sizeof(outputs));
   }
@@ -308,7 +308,7 @@ void load_current_channel_to_animation(Animation* animation){
   current_sampler = current_channel->sampler;
   load_current_sampler_to_channel(&channel);
    
-  add_to_array(&animation->channels,&channel);
+  array_add(&animation->channels,&channel);
 }
 
 
@@ -317,7 +317,7 @@ void load_current_animation(){
   Animation new_animation;
   memset(&new_animation,0,sizeof(Animation));
   strcpy(new_animation.name,current_animation->name);
-  init_array(&new_animation.channels,sizeof(AnimationChannel),current_animation->channels_count);
+  array_init(&new_animation.channels,sizeof(AnimationChannel),current_animation->channels_count);
   for(int i = 0; i< current_animation->channels_count ; i++){
     current_channel = &current_animation->channels[i];
     load_current_channel_to_animation(&new_animation);
@@ -325,15 +325,15 @@ void load_current_animation(){
   
   float max = 0;
   for(int i  = 0; i < new_animation.channels.count ; i++){
-    AnimationChannel* channel = get_from_array(&new_animation.channels,i);
-    float* max_from_channel = get_from_array(&channel->sampler.inputs,channel->sampler.inputs.count-1);
+    AnimationChannel* channel = array_get(&new_animation.channels,i);
+    float* max_from_channel = array_get(&channel->sampler.inputs,channel->sampler.inputs.count-1);
     if(*max_from_channel > max){
       max = *max_from_channel;
     }
   }
   new_animation.end = max;
 
-  add_to_array(&model_animation,&new_animation);
+  array_add(&model_animation,&new_animation);
 }
 
 int load_model(const char* path){
@@ -370,7 +370,7 @@ int load_model(const char* path){
 
 
   if(data->skins_count >= 1){
-    init_array(&model_nodes,sizeof(Node),data->nodes_count+1);
+    array_init(&model_nodes,sizeof(Node),data->nodes_count+1);
     memset(model_nodes.data,0,sizeof(Node) * data->nodes_count);
     copy_nodes = true; 
   }
@@ -384,7 +384,7 @@ int load_model(const char* path){
   actual_index_array = NULL;
 
   if(data->animations_count >= 1){
-    init_array(&model_animation,sizeof(Animation),data->animations_count);
+    array_init(&model_animation,sizeof(Animation),data->animations_count);
     for(int i = 0; i < data->animations_count; i++){
       current_animation = &data->animations[i];
       load_current_animation();

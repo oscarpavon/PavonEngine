@@ -6,7 +6,7 @@ void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
     //project on axis
      u8 vertex_count = model->vertex_array.count;
 
-     Vertex* vertex = get_from_array(&model->vertex_array,0);
+     Vertex* vertex = array_get(&model->vertex_array,0);
        vec3 global_position;
         mat4 position;
         glm_mat4_identity(position);
@@ -22,7 +22,7 @@ void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
     float min = max;
 
     for(u8 i = 1; i < vertex_count ; i++){
-       Vertex* vertex = get_from_array(&model->vertex_array,i);
+       Vertex* vertex = array_get(&model->vertex_array,i);
 
        vec3 global_position;
         mat4 position;
@@ -52,9 +52,9 @@ void get_edges_axis(Model* model, vec3* axis){
     {
         
 
-        Vertex* vertex = get_from_array(&model->vertex_array,i);
-        Vertex* vertex2 = get_from_array(&model->vertex_array,i+1);
-        Vertex* vertex3 = get_from_array(&model->vertex_array,i+2);
+        Vertex* vertex = array_get(&model->vertex_array,i);
+        Vertex* vertex2 = array_get(&model->vertex_array,i+1);
+        Vertex* vertex3 = array_get(&model->vertex_array,i+2);
 
 
         vec3 edge;

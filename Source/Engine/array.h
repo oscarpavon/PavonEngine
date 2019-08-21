@@ -15,12 +15,12 @@ typedef struct Array{
     void * data;
 }Array;
 
-int init_array(Array * array, u32 element_bytes_size, int count);
+int array_init(Array * array, u32 element_bytes_size, int count);
 
-void add_to_array(Array* array, void* element);
+void array_add(Array* array, void* element);
 
-void *get_from_array(Array*,int index);
+void *array_get(Array*,int index);
 
-void clean_array(Array* array);
+void array_clean(Array* array);
 
 #endif // !ARRAY_H

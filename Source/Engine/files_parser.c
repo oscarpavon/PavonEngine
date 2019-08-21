@@ -220,13 +220,13 @@ Token * fill_components_values(ComponentType type, Token* token_value_name_strin
 
     if( string_equal(token_value_name_string, "models") == 0){
       int model_id_count = (last_element_readed+1)->size;
-      init_array(&mesh->meshes,sizeof(unsigned int),model_id_count);
+      array_init(&mesh->meshes,sizeof(unsigned int),model_id_count);
       mesh->meshes.count = model_id_count;
       unsigned int * models_id_array = mesh->meshes.data;
       last_element_readed = get_token_array_uint_values("models",last_element_readed,models_id_array);
 
       int textures_id_count = (last_element_readed+1)->size;
-      init_array(&mesh->textures,sizeof(unsigned int) , textures_id_count);
+      array_init(&mesh->textures,sizeof(unsigned int) , textures_id_count);
       unsigned int * textures_id_array = mesh->textures.data;
       mesh->textures.count = textures_id_count;
       last_element_readed = get_token_array_uint_values("textures",last_element_readed,textures_id_array);
@@ -353,7 +353,7 @@ void parse_level_tokens(Token* tokens, int count){
           for (int i = 0; i < (last_element_parsed+1)->size; i++) {   
             char text[20];
             get_token_string(text,array_value_token+i);
-            add_to_array(&texts,text);
+            array_add(&texts,text);
           }
           break;
         }
@@ -374,7 +374,7 @@ void parse_level_tokens(Token* tokens, int count){
     Token* value = last_element_parsed + 2;
     char text[100];
     get_token_string(text,value+i);
-    add_to_array(&textures_paths,text);
+    array_add(&textures_paths,text);
   }
 
 }
@@ -383,11 +383,11 @@ int parse_tokens(const char* json_file, int json_file_size){
    
   jsmn_parser parser;
   int max_tokens = 1000;
-  init_array(&tokens_array_memory,sizeof(Token),max_tokens);
+  array_init(&tokens_array_memory,sizeof(Token),max_tokens);
   for(int i = 0; i<max_tokens ; i++){
     Token token;
     memset(&token,0,sizeof(Token));
-    add_to_array(&tokens_array_memory,&token);
+    array_add(&tokens_array_memory,&token);
   }
   tokens = &tokens_array_memory.data[0];
 
@@ -423,7 +423,7 @@ void load_level_elements_from_json(const char* json_file, int json_file_size){
   
   LOG("json level parsed\n");
 
-  clean_array(&tokens_array_memory);
+  array_clean(&tokens_array_memory);
 }
 /*End Level Parser */
 
@@ -437,7 +437,7 @@ void parse_ui_tokens(int count){
   for(int i = 0; i< tokens[0].size ; i++){
       
     new_empty_button();
-    Button* new_button = get_from_array(actual_buttons_array,actual_buttons_array->count-1);
+    Button* new_button = array_get(actual_buttons_array,actual_buttons_array->count-1);
     
     Token* name_value = last_token_readed;
     get_token_string(new_button->name,name_value);
@@ -457,7 +457,7 @@ void parse_gui_file(const char* json_file, int json_file_size){
 
   LOG("json UI parsed\n");
 
-  clean_array(&tokens_array_memory);
+  array_clean(&tokens_array_memory);
 
 }
 /*UI file parser end*/

@@ -91,7 +91,7 @@ void new_text_menu_simple(const char* name, TextMenu* new_menu){
     menu.mods_key = new_menu->mods_key;
     menu.element_count = 0;
     strcpy(menu.name,name);
-    add_to_array(&menus,&menu);
+    array_add(&menus,&menu);
 }
 
 void new_text_menu(const char* name, Key* open_key, int mods_key, 
@@ -107,7 +107,7 @@ void new_text_menu(const char* name, Key* open_key, int mods_key,
     menu.mods_key = mods_key;
     menu.element_count = 0;
     strcpy(menu.name,name);
-    add_to_array(&menus,&menu);
+    array_add(&menus,&menu);
 }
 
 const char* components_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
@@ -135,7 +135,7 @@ void draw_animations_names(TextMenu* menu){
     set_text_size(text_size);
     menu->text_size  = text_size;
     for(int i = 0; i < skin_component->animations.count ; i++){
-        Animation* animation = get_from_array(&skin_component->animations,i);
+        Animation* animation = array_get(&skin_component->animations,i);
         char* name = animation->name;
         
         draw_element_text_list(menu,name,i);
@@ -148,7 +148,7 @@ void menu_action_play_animation(TextMenu* menu){
 }
 
 void menu_action_select_component_from_selected_element(TextMenu* menu){
-    current_component_selected = get_from_array(&selected_element->components,2);
+    current_component_selected = array_get(&selected_element->components,2);
     if(current_component_selected)
         LOG("Component selected\n");
 
@@ -166,7 +166,7 @@ void draw_components_from_selected_element(TextMenu* menu){
 
     for(int i = 0; i < selected_element->components.count ; i++){
         char* name;
-        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        ComponentDefinition* component = array_get(&selected_element->components,i);
         switch (component->type)
         {
         case TRASNFORM_COMPONENT:
@@ -208,7 +208,7 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 
 
 void draw_menus(){
-    TextMenu* menus_list = get_from_array(&menus,0);
+    TextMenu* menus_list = array_get(&menus,0);
     for(int i = 0; i < menus.count ; i++){
         can_open_text_menu_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
         text_menu_update(&menus_list[i]);
@@ -272,20 +272,20 @@ void menu_action_select_element(TextMenu* menu){
         if(selected_element != NULL)
             selected_element->selected = false;
     }else{
-        add_to_array(&selected_elements_id,&selected_element->id);
+        array_add(&selected_elements_id,&selected_element->id);
     }   
 
-    element = get_from_array(&editor_elements,id);
+    element = array_get(&editor_elements,id);
     if(element == NULL)
         return;
     element->selected = true;
     selected_element = element;
     if(input.SHIFT.pressed){
-        add_to_array(&selected_elements_id,&selected_element->id);
+        array_add(&selected_elements_id,&selected_element->id);
     }
 
     for(int i = 0 ; i < selected_elements_id.count ; i++){
-        unsigned short int *id = get_from_array(&selected_elements_id,i);
+        unsigned short int *id = array_get(&selected_elements_id,i);
         unsigned short int id_number;
         memcpy(&id_number,id,sizeof(unsigned short int));
         LOG("seleteted: %i\n", id_number);
@@ -326,7 +326,7 @@ void menu_action_draw_editor_elements(TextMenu* menu){
     }
     menu->element_count = 0;
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = (Element*)get_from_array(&editor_elements,i);
+        Element* element = (Element*)array_get(&editor_elements,i);
         char* name = element->name;
         if( strcmp(element->name,"") == 0){
             if(strcmp(element->name,"") == 0)
@@ -340,14 +340,14 @@ void menu_action_draw_editor_elements(TextMenu* menu){
        
 }
 void menu_action_select_gui_element(TextMenu* menu){
-    selected_button = get_from_array(actual_buttons_array,menu->actual_element_select);    
+    selected_button = array_get(actual_buttons_array,menu->actual_element_select);    
 }
 
 void menu_action_draw_gui_elements(TextMenu* menu){
     menu->text_size = 12;
     for (int i = 0; i < actual_buttons_array->count ; i++)
     {
-        Button* button = get_from_array(actual_buttons_array,i);
+        Button* button = array_get(actual_buttons_array,i);
         draw_element_text_list(menu,button->name,i);
     }
 }
@@ -373,7 +373,7 @@ void menus_init(){
     menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
     menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
     
-    init_array(&menus,sizeof(TextMenu),10);
+    array_init(&menus,sizeof(TextMenu),10);
     new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
     new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
     

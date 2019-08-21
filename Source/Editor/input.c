@@ -761,7 +761,7 @@ void input_gui_editor(){
     
     if(key_released(&input.ESC)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
-        //clean_array(actual_buttons_array);
+        //array_clean(actual_buttons_array);
     }
         
         

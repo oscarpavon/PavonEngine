@@ -49,7 +49,7 @@ void play_game_standalone(){
 
 void deselect_all(){
     for(int i = 0; i < editor_elements.count ; i++){
-        Element* element = get_from_array(&editor_elements,i);
+        Element* element = array_get(&editor_elements,i);
         element->selected = false;
     }
     current_component_selected = NULL;
@@ -70,11 +70,11 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     component_add_HLOD_to_select_element();
     HLODComponent* hlod = get_component_from_selected_element(COMPONENT_HLOD);
 
-    init_array(&hlod->childs,sizeof(void*),cluster->elements.count);
+    array_init(&hlod->childs,sizeof(void*),cluster->elements.count);
     for(int i = 0; i<cluster->elements.count; i++){
-        Element** ppElement = get_from_array(&cluster->elements,i);        
+        Element** ppElement = array_get(&cluster->elements,i);        
         Element* element = ppElement[0];
-        add_to_array(&hlod->childs, &element);
+        array_add(&hlod->childs, &element);
         element->proccess = false;
     }
 
@@ -101,13 +101,13 @@ void editor_generate_and_add_cube_element(){
     add_transform_component_to_selected_element();
 
     StaticMeshComponent mesh_component;    
-    init_array(&mesh_component.meshes,sizeof(unsigned int),2);
-    init_array(&mesh_component.textures,sizeof(unsigned int),2);
+    array_init(&mesh_component.meshes,sizeof(unsigned int),2);
+    array_init(&mesh_component.textures,sizeof(unsigned int),2);
     int model_path_id = texts.count-1;
-    add_to_array(&mesh_component.meshes,&model_path_id);
+    array_add(&mesh_component.meshes,&model_path_id);
 
     new_empty_model();
-    add_to_array(&mesh_component.meshes,&selected_model->id);
+    array_add(&mesh_component.meshes,&selected_model->id);
 
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     geometry_cube_create_indices();
@@ -218,7 +218,7 @@ void rotate_editor_element(Element* element, float angle, vec3 axis){
     glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
 
     for(int i = 0; i<selected_element->components.count; i++){
-        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        ComponentDefinition* component = array_get(&selected_element->components,i);
         update_component(component);
     }
     
@@ -254,13 +254,13 @@ void editor_load_level(const char* name){
     
     actual_model_array = &array_models_loaded;
     for(int i = 0; i< texts.count ; i++){
-        char* model_path = get_from_array(&texts,i);
+        char* model_path = array_get(&texts,i);
         load_model(model_path);
     }    
     actual_model_array = &editor_models;
 
     for(int i = 0; i< textures_paths.count ; i++){
-       load_simple_image(get_from_array(&textures_paths,i));
+       load_simple_image(array_get(&textures_paths,i));
     } 
 
     for_each_element_components(&init_element_component);
@@ -279,7 +279,7 @@ void duplicate_selected_element(int current_count, Element* original){
     sprintf(new_name,"%s%i",original->name,current_count);
     strcpy(selected_element->name,new_name);
     for(int i = 0; i < last_copy->components.count ; i++){
-        ComponentDefinition* component_definition = get_from_array(&last_copy->components,i);
+        ComponentDefinition* component_definition = array_get(&last_copy->components,i);
         switch (component_definition->type)
         {
         case TRASNFORM_COMPONENT:
@@ -296,17 +296,17 @@ void duplicate_selected_element(int current_count, Element* original){
             memset(&new_mesh,0,sizeof(StaticMeshComponent));
             memcpy(&new_mesh,original_mesh,sizeof(StaticMeshComponent));
             memset(&new_mesh.meshes,0,sizeof(Array));
-            init_array(&new_mesh.meshes,sizeof(u8),original_mesh->meshes.count);
-            u8* model_id_in_loaded_model = get_from_array(&original_mesh->meshes,0);
-            add_to_array(&new_mesh.meshes, model_id_in_loaded_model);
+            array_init(&new_mesh.meshes,sizeof(u8),original_mesh->meshes.count);
+            u8* model_id_in_loaded_model = array_get(&original_mesh->meshes,0);
+            array_add(&new_mesh.meshes, model_id_in_loaded_model);
             for(int i = 1 ; i < original_mesh->meshes.count ; i++){
                 new_empty_model();
-                u8* original_model_id = get_from_array(&original_mesh->meshes,i);
-                Model* original_model = get_from_array(actual_model_array,*original_model_id);
+                u8* original_model_id = array_get(&original_mesh->meshes,i);
+                Model* original_model = array_get(actual_model_array,*original_model_id);
                 duplicate_model_data(selected_model,original_model);
                 selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);                
                 u8 new_id = actual_model_array->count -1;
-                add_to_array(&new_mesh.meshes, &new_id);
+                array_add(&new_mesh.meshes, &new_id);
             }  
             add_component_to_selected_element(sizeof(StaticMeshComponent),&new_mesh,STATIC_MESH_COMPONENT);
         }          
@@ -328,12 +328,12 @@ void remove_selected_element(){
 void reload_editor(){
     element_id_count = 0;
     
-    clean_array(&editor_elements);   
-    clean_array(&editor_models);
-    clean_array(&texts);
-    clean_array(&textures_paths);
-    clean_array(actual_buttons_array);
-    clean_array(&array_models_loaded);
+    array_clean(&editor_elements);   
+    array_clean(&editor_models);
+    array_clean(&texts);
+    array_clean(&textures_paths);
+    array_clean(actual_buttons_array);
+    array_clean(&array_models_loaded);
 }
 
 void editor_add_element_with_model_path(const char* path){
@@ -350,8 +350,8 @@ void editor_add_element_with_model_path(const char* path){
                
     for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 
-        u8* id = get_from_array(&mesh_component->meshes,i);
-        Model* model = get_from_array(actual_model_array,*id);
+        u8* id = array_get(&mesh_component->meshes,i);
+        Model* model = array_get(actual_model_array,*id);
         model->texture.id = editor_texture_checker.id;
 
     }
@@ -375,11 +375,11 @@ void init_editor(){
 
     init_text_renderer();    
     
-    init_array(&selected_elements_id,sizeof(unsigned short int),100);
-    init_array(&LOD_models,sizeof(Model),10);
-    init_array(&editor_elements,sizeof(Element),100);
-    init_array(&editor_models, sizeof(Model),100);
-    init_array(&editor_textures, sizeof(Texture),100);
+    array_init(&selected_elements_id,sizeof(unsigned short int),100);
+    array_init(&LOD_models,sizeof(Model),10);
+    array_init(&editor_elements,sizeof(Element),100);
+    array_init(&editor_models, sizeof(Model),100);
+    array_init(&editor_textures, sizeof(Texture),100);
     
     
 
@@ -412,7 +412,7 @@ void draw_count_of_draw_call(){
 void draw_tringles_count(){
     int triangles = 0;
     for(int i = 0; i<frame_draw_elements.count; i++){
-        Model** model = get_from_array(&frame_draw_elements,i);
+        Model** model = array_get(&frame_draw_elements,i);
         int vertices_count = model[0]->vertex_array.count;
         triangles += vertices_count/3;
     }
@@ -446,22 +446,22 @@ void collision_test(){
         return;
     if(input.C.pressed){
 
-        Element* element1 = get_from_array(actual_elements_array,0);
+        Element* element1 = array_get(actual_elements_array,0);
         if(!element1)
             return;
         
 
         StaticMeshComponent* mesh = get_component_from_element(element1,STATIC_MESH_COMPONENT);
-        unsigned int* modelid = get_from_array(&mesh->meshes,1);
+        unsigned int* modelid = array_get(&mesh->meshes,1);
 
-        Element* element2 = get_from_array(actual_elements_array,1);
+        Element* element2 = array_get(actual_elements_array,1);
         if(!element2)
             return;
         StaticMeshComponent* mesh2 = get_component_from_element(element2,STATIC_MESH_COMPONENT);
-        unsigned int* modelid2 = get_from_array(&mesh2->meshes,1);
+        unsigned int* modelid2 = array_get(&mesh2->meshes,1);
 
-        Model* model1 = get_from_array(actual_model_array,*modelid);
-        Model* model2 = get_from_array(actual_model_array,*modelid2);
+        Model* model1 = array_get(actual_model_array,*modelid);
+        Model* model2 = array_get(actual_model_array,*modelid2);
     
         if( collision_of(model1,model2) ){
             LOG("collision SAT\n");
@@ -512,7 +512,7 @@ void draw_editor_viewport(){
     }
 
     for_each_element_components(&update_per_frame_component);
-    Model* draw_model = get_from_array(actual_model_array,1);
+    Model* draw_model = array_get(actual_model_array,1);
     if(draw_model){
        
         //draw_vertices_like(GL_POINTS,draw_model,(vec4){1,0,0,0});
@@ -534,11 +534,11 @@ void draw_editor_viewport(){
     draw_elements(&frame_draw_elements);
 
     //clean frame
-    clean_array(&models_for_test_occlusion);
-    clean_array(&array_static_meshes_pointers);
-    clean_array(&array_static_meshes_pointers_for_test_distance);
-    clean_array(&array_skinned_mesh_pointers);
-    clean_array(&array_skinned_mesh_for_distance_test);
+    array_clean(&models_for_test_occlusion);
+    array_clean(&array_static_meshes_pointers);
+    array_clean(&array_static_meshes_pointers_for_test_distance);
+    array_clean(&array_skinned_mesh_pointers);
+    array_clean(&array_skinned_mesh_for_distance_test);
     for_each_element_components(&clean_component_value);
     //end clean frame
 

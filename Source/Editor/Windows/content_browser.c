@@ -52,7 +52,7 @@ void content_find_per_name(const char* name){
     for (int i = 0; i < array_content_views.count; i++)
     {
         bool found = false;
-        ContentView* content_view = get_from_array(&array_content_views,i);
+        ContentView* content_view = array_get(&array_content_views,i);
 
         if(content_view->content_name[0] != name[0])
             continue;
@@ -67,18 +67,18 @@ void content_find_per_name(const char* name){
             found = true;
         }
         if(found)
-        add_to_array(&array_finding_content,&content_view);
+        array_add(&array_finding_content,&content_view);
     }
 }
 
 
 void editor_window_content_browser_search_mode(){
-    clean_array(&array_finding_content);
+    array_clean(&array_finding_content);
     content_find_per_name(&command_text_buffer[1]);
 
     for (int i = 0; i < array_finding_content.count; i++)
     {
-        ContentView** ppContent_view = get_from_array(&array_finding_content,i);
+        ContentView** ppContent_view = array_get(&array_finding_content,i);
         ContentView* content_view = ppContent_view[0];
         editor_window_content_browser_draw_content_view(content_view);
     }
@@ -180,12 +180,12 @@ void editor_window_content_browser_draw(){
         
     }else{
 
-        ContentView* mark_content = get_from_array(&array_content_views,0);
+        ContentView* mark_content = array_get(&array_content_views,0);
         mark_content->selected = true;
         
         for (int i = 0; i < array_content_views.count; i++)
         {
-            ContentView* content_view = get_from_array(&array_content_views,i);
+            ContentView* content_view = array_get(&array_content_views,i);
             if(!content_view)
                 continue;
             editor_window_content_browser_draw_content_view(content_view);
@@ -198,7 +198,7 @@ void editor_window_content_browser_draw(){
 
             for (int i = 0; i < array_content_views.count; i++)
             {
-                ContentView* content_view = get_from_array(&array_content_views,i);
+                ContentView* content_view = array_get(&array_content_views,i);
                 if(!content_view)
                     continue;
 
@@ -263,7 +263,7 @@ void editor_window_content_browser_draw(){
                             fount = true;
                         }
                         if(fount){
-                        editor_content_view_found = get_from_array(&array_content_views,i);
+                        editor_content_view_found = array_get(&array_content_views,i);
                         if(!editor_content_view_found)
                             continue;
 
@@ -309,7 +309,7 @@ void content_browser_window_create_contents_thumbnails(){
 
     int memory_mark = engine_memory_mark();
     Array models_loaded_for_create_thumbnails;
-    init_array(&models_loaded_for_create_thumbnails,sizeof(Model),array_content_views.count+5);
+    array_init(&models_loaded_for_create_thumbnails,sizeof(Model),array_content_views.count+5);
     Array* prev_model_array = actual_model_array;
     actual_model_array = &models_loaded_for_create_thumbnails;
     int model_offset = 0;
@@ -320,13 +320,13 @@ void content_browser_window_create_contents_thumbnails(){
 
     for (int i = 0; i < array_content_views.count; i++)
     {
-        ContentView* content_view = get_from_array(&array_content_views,i);
+        ContentView* content_view = array_get(&array_content_views,i);
         if(!content_view)
             continue;
         char directory[sizeof(pavon_the_game_project_folder) + 150];
         sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",content_view->content_name);
         int models_count = load_model(directory);
-        Model* model = get_from_array(&models_loaded_for_create_thumbnails,i+model_offset);
+        Model* model = array_get(&models_loaded_for_create_thumbnails,i+model_offset);
         model_offset = 0;
         if(models_count > 1){
             
@@ -390,7 +390,7 @@ void content_browser_window_create_contents_thumbnails(){
 void editor_window_content_browser_load_thumbnails(){
     for (int i = 0; i < array_content_views.count; i++)
     {
-        ContentView* content_view = get_from_array(&array_content_views,i);
+        ContentView* content_view = array_get(&array_content_views,i);
         if(!content_view)
             continue;
         
@@ -434,7 +434,7 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
     new_content_view.position[1] = view_port->last_y;
 
     new_content_view.pixel_size = 64 + 12;
-    add_to_array(&array_content_views,&new_content_view);
+    array_add(&array_content_views,&new_content_view);
 }
 
 void editor_window_content_get_models_path(){
@@ -516,8 +516,8 @@ void editor_window_content_get_models_path(){
 
     closedir(dr);
 
-    init_array(&array_finding_content,sizeof(ContentView*),(model_count+texture_count));
-    init_array(&array_content_views,sizeof(ContentView),(model_count+texture_count));
+    array_init(&array_finding_content,sizeof(ContentView*),(model_count+texture_count));
+    array_init(&array_content_views,sizeof(ContentView),(model_count+texture_count));
     
     struct ContentViewPort new_view_port;
     memset(&new_view_port,0,sizeof(struct ContentViewPort));
@@ -556,7 +556,7 @@ void editor_window_content_init(){
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    ContentView* content_view = get_from_array(&array_content_views,0);
+    ContentView* content_view = array_get(&array_content_views,0);
     
 }
 

@@ -17,7 +17,7 @@ void atlas_resize_UV(Model *model)
 {
     Model new_model;
     memset(&new_model, 0, sizeof(Model));
-    init_array(&new_model.vertex_array, sizeof(Vertex), model->vertex_array.count);
+    array_init(&new_model.vertex_array, sizeof(Vertex), model->vertex_array.count);
     void *data = new_model.vertex_array.data;
     duplicate_model_data(&new_model, model);
 
@@ -48,10 +48,10 @@ void check_is_inside(ComponentDefinition *component_definition)
         if (glm_aabb_contains(current_HLOD_box_component->bounding_box, mesh->bounding_box))
         {
 
-            add_to_array(&array_elements_for_HLOD_generation, &component_definition->parent);
+            array_add(&array_elements_for_HLOD_generation, &component_definition->parent);
             LOG("%s\n", component_definition->parent->name);
-            unsigned int *id = get_from_array(&mesh->meshes, mesh->meshes.count - 1);
-            Model *model = get_from_array(actual_model_array, *id);
+            unsigned int *id = array_get(&mesh->meshes, mesh->meshes.count - 1);
+            Model *model = array_get(actual_model_array, *id);
         }
     }
 }
@@ -135,7 +135,7 @@ bool element_inside_cluster_element_array(Element *element, HLODCluster *cluster
 {
     for (int i = 0; i < cluster->elements.count; i++)
     {
-        Element **ppElement = get_from_array(&cluster->elements, i);
+        Element **ppElement = array_get(&cluster->elements, i);
         Element *array_element = ppElement[0];
         if (array_element->id == element->id)
             return true;
@@ -151,7 +151,7 @@ void cluster_merge(HLODCluster *cluster01, HLODCluster *cluster02)
     int count = 0;
     for (int e = 0; e < cluster01->elements.count; e++)
     {
-        Element **ppElement = get_from_array(&cluster01->elements, e);
+        Element **ppElement = array_get(&cluster01->elements, e);
         Element *element01 = ppElement[0];
         if (element_inside_cluster_element_array(element01, cluster02))
             continue;
@@ -162,14 +162,14 @@ void cluster_merge(HLODCluster *cluster01, HLODCluster *cluster02)
 
     for (u8 i = 0; i < count; i++)
     {
-        add_to_array(&cluster02->elements, &elements[i]);
+        array_add(&cluster02->elements, &elements[i]);
     }
 }
 bool check_if_cluster_contens_same_element(HLODCluster *cluster01, HLODCluster *cluster02)
 {
     for (int e = 0; e < cluster01->elements.count; e++)
     {
-        Element **ppElement = get_from_array(&cluster01->elements, e);
+        Element **ppElement = array_get(&cluster01->elements, e);
         Element *element01 = ppElement[0];
 
         if (element_inside_cluster_element_array(element01, cluster02))
@@ -186,12 +186,12 @@ int merge_pairs(float bounding_value, float max_cost)
     LOG("HLOD Cluster init count = %i\n", HLOD_generated_cluster.count);
     for (int i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         if (cluster->is_valid)
         {
             for (int j = 0; j < i; j++)
             {
-                HLODCluster *cluster_for_merge = get_from_array(&HLOD_generated_cluster, j);
+                HLODCluster *cluster_for_merge = array_get(&HLOD_generated_cluster, j);
 
                 if (cluster_for_merge->is_valid)
                 {
@@ -239,13 +239,13 @@ int merge_pairs(float bounding_value, float max_cost)
 
     for (int i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         if (cluster->is_valid)
         {
             LOG("Cluster active, %i\n", i);
             for (int o = 0; o < cluster->elements.count; o++)
             {
-                Element **ppElement = get_from_array(&cluster->elements, o);
+                Element **ppElement = array_get(&cluster->elements, o);
                 Element *element = ppElement[0];
                 LOG("Element name: %s\n", element->name);
             }
@@ -263,14 +263,14 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
 
     for (int i = 0; i < actual_elements_array->count; i++)
     {
-        Element *element01 = get_from_array(actual_elements_array, i);
+        Element *element01 = array_get(actual_elements_array, i);
         StaticMeshComponent *mesh01 = get_component_from_element(element01, STATIC_MESH_COMPONENT);
         if (!mesh01)
             continue;
 
         for (int j = i + 1; j < actual_elements_array->count; j++)
         {
-            Element *element02 = get_from_array(actual_elements_array, j);
+            Element *element02 = array_get(actual_elements_array, j);
             StaticMeshComponent *mesh02 = get_component_from_element(element02, STATIC_MESH_COMPONENT);
             if (!mesh02)
                 continue;
@@ -308,19 +308,19 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
                 cluster.is_valid = true;
                 cluster.bounding_sphere = cluster_sphere;
 
-                init_array(&cluster.elements, sizeof(Element *), 50);
+                array_init(&cluster.elements, sizeof(Element *), 50);
                 cluster.elements.isPointerToPointer = true;
-                add_to_array(&cluster.elements, &element01);
-                add_to_array(&cluster.elements, &element02);
+                array_add(&cluster.elements, &element01);
+                array_add(&cluster.elements, &element02);
 
-                add_to_array(&HLOD_generated_cluster, &cluster);
+                array_add(&HLOD_generated_cluster, &cluster);
             }
         }
     }
 
     for (int i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         LOG("Before, Cluster %i: with %f\n", i, cluster->cost);
     }
 
@@ -328,21 +328,21 @@ void compute_bounding_sphere_for_every_mesh(float bounding_value)
 
     for (int i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         LOG("After short: %f\n", cluster->cost);
     }
-    HLODCluster* last_cluster = get_from_array(&HLOD_generated_cluster,HLOD_generated_cluster.count-1);
+    HLODCluster* last_cluster = array_get(&HLOD_generated_cluster,HLOD_generated_cluster.count-1);
     if(!last_cluster)
         return;
     if(merge_pairs(bounding_value,last_cluster->cost) == 0){
         //create cluster spheres pair
         for (int i = 0; i < HLOD_generated_cluster.count; i++)
         {
-            HLODCluster* cluster = get_from_array(&HLOD_generated_cluster,i);
+            HLODCluster* cluster = array_get(&HLOD_generated_cluster,i);
             if(cluster && cluster->is_valid){
                 for (int j = i + 1; j < HLOD_generated_cluster.count; j++)
                 {
-                    HLODCluster* cluster2 = get_from_array(&HLOD_generated_cluster,j);
+                    HLODCluster* cluster2 = array_get(&HLOD_generated_cluster,j);
                     if(cluster2 && cluster2->is_valid){
                         HLODCluster new_cluster;
                         memset(&new_cluster, 0, sizeof(HLODCluster));
@@ -382,20 +382,20 @@ void export_actives_cluster()
 {
     for (int i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         if (cluster->is_valid)
         {
             cluster->id = i;
-            clean_array(&array_elements_for_HLOD_generation);
+            array_clean(&array_elements_for_HLOD_generation);
             for (u8 j = 0; j < cluster->elements.count; j++)
             {
-                Element **ppElement = get_from_array(&cluster->elements, j);
+                Element **ppElement = array_get(&cluster->elements, j);
                 Element *element = ppElement[0];
-                add_to_array(&array_elements_for_HLOD_generation, &element);
+                array_add(&array_elements_for_HLOD_generation, &element);
 
                 StaticMeshComponent *mesh = get_component_from_element(element, STATIC_MESH_COMPONENT);
-                u32 *id = get_from_array(&mesh->meshes, mesh->meshes.count - 1);
-                Model *model = get_from_array(actual_model_array, *id);
+                u32 *id = array_get(&mesh->meshes, mesh->meshes.count - 1);
+                Model *model = array_get(actual_model_array, *id);
                 atlas_resize_UV(model);
             }
 
@@ -419,7 +419,7 @@ void export_actives_cluster()
             UV_tranlation_offset[0] = 0;
             UV_tranlation_offset[1] = -2;
 
-            clean_array(&array_elements_for_HLOD_generation);
+            array_clean(&array_elements_for_HLOD_generation);
         }
     }
 }
@@ -427,16 +427,16 @@ void export_actives_cluster()
 #define CLUSTER_SIZE 20
 void generate_HLODS(bool export)
 {
-    clean_array(&HLOD_generated_cluster);
+    array_clean(&HLOD_generated_cluster);
     UV_tranlation_offset[0] = 0;
     UV_tranlation_offset[1] = -2;
 
     if (!array_elements_for_HLOD_generation.initialized)
     {
-        init_array(&array_elements_for_HLOD_generation, sizeof(Element *), 500);
+        array_init(&array_elements_for_HLOD_generation, sizeof(Element *), 500);
         array_elements_for_HLOD_generation.isPointerToPointer = true;
     }
-    clean_array(&array_elements_for_HLOD_generation);
+    array_clean(&array_elements_for_HLOD_generation);
 
     for (int i = 0; i < HLOD_cluster_count; i++)
     {
@@ -447,7 +447,7 @@ void generate_HLODS(bool export)
 
     if (!HLOD_generated_cluster.initialized)
     {
-        init_array(&HLOD_generated_cluster, sizeof(HLODCluster), 200);
+        array_init(&HLOD_generated_cluster, sizeof(HLODCluster), 200);
     }
 
     compute_bounding_sphere_for_every_mesh(CLUSTER_SIZE);
@@ -459,7 +459,7 @@ void generate_HLODS(bool export)
 
     for (u8 i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         if (cluster->is_valid)
             editor_add_HLOD_element(cluster);
     }
@@ -476,7 +476,7 @@ void HLODs_generated_debug()
 
     for (u8 i = 0; i < HLOD_generated_cluster.count; i++)
     {
-        HLODCluster *cluster = get_from_array(&HLOD_generated_cluster, i);
+        HLODCluster *cluster = array_get(&HLOD_generated_cluster, i);
         if (cluster->is_valid)
         {
             gizmos_boanding_sphere_draw(&cluster->bounding_sphere, (vec4){1, 0, 0, 1});

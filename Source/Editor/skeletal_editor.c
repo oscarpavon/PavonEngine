@@ -25,22 +25,22 @@ void update_joints_vertex(){
 }
 
 void clear_skeletal_vertices(){
-    clean_array(&skeletal_bones_gizmo_geometry.vertex_array);
+    array_clean(&skeletal_bones_gizmo_geometry.vertex_array);
 }
 
 void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-    add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
+    array_add(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
 
     if(current_joint->parent != NULL){
         if(i == 2){
             int id = i-1;
-            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&id);
+            array_add(&skeletal_bones_gizmo_geometry.index_array,&id);
         }else if(i >= 3){
-            add_to_array(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
+            array_add(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
         }
     }
-    add_to_array(&skeletal_bones_gizmo_geometry.index_array,&i);
+    array_add(&skeletal_bones_gizmo_geometry.index_array,&i);
 
     LOG("Created vertices for: %s\n",current_joint->name);
 
@@ -48,7 +48,7 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
 void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
     if(skeletal_bones_gizmo_geometry.vertex_array.initialized)
-    add_to_array(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
+    array_add(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
 }
 
 void create_skeletal_vertices(){
@@ -60,7 +60,7 @@ void create_skeletal_vertices(){
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = get_from_array(&skin_component->joints,2);
+    new_skeletal.joints = array_get(&skin_component->joints,2);
     new_skeletal.joints_count = skin_component->joints.count-2;
     Skeletal* skeletal = &new_skeletal;
     assign_nodes_indices(skeletal);
@@ -70,8 +70,8 @@ void create_skeletal_vertices(){
     struct Vertex vertices[vertex_count];
     memset(vertices,0,sizeof(vertices));
 
-    init_array(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),50);
-    init_array(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
+    array_init(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),50);
+    array_init(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
 
     for(int i = 0; i < skeletal->joints_count ; i++){
         mat4 local;

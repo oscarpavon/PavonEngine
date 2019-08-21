@@ -11,7 +11,7 @@ void add_component_to_selected_element(int component_byte_size, void* new_compon
     new_element_component.data = allocate_stack_memory_alignmed(component_byte_size,16);
     memcpy(new_element_component.data,new_component,component_byte_size);
 
-    add_to_array(&selected_element->components,&new_element_component);    
+    array_add(&selected_element->components,&new_element_component);    
     
 }
 
@@ -20,7 +20,7 @@ void init_sphere_component(SphereComponent* component){
     actual_model_array = &engine_native_models;
     new_empty_model();
     actual_model_array = previous_models_array;
-    Model* sphere_model = get_from_array(&engine_native_models,0);
+    Model* sphere_model = array_get(&engine_native_models,0);
     memcpy(selected_model,sphere_model,sizeof(Model));
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     component->model = selected_model;
@@ -31,7 +31,7 @@ void init_cube_component(CubeComponent* component){
     actual_model_array = &engine_native_models;
     new_empty_model();
     actual_model_array = previous_models_array;
-    Model* cube_model = get_from_array(&engine_native_models,1);
+    Model* cube_model = array_get(&engine_native_models,1);
     memcpy(selected_model,cube_model,sizeof(Model));
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     component->model = selected_model;
@@ -42,7 +42,7 @@ void init_camera_component(CameraComponent* component){
     actual_model_array = &engine_native_models;
     new_empty_model();
     actual_model_array = previous_models_array;
-    Model* camera_model = get_from_array(&engine_native_models,2);
+    Model* camera_model = array_get(&engine_native_models,2);
     memcpy(selected_model,camera_model,sizeof(Model));
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     component->camera_gizmo = selected_model;
@@ -109,13 +109,13 @@ void update_component(ComponentDefinition* element_component){
             StaticMeshComponent* mesh_component = element_component->data;            
                
             for(u8 i = 1; i<=mesh_component->meshes.count-1 ; i++){            
-                u8* id = get_from_array(&mesh_component->meshes,i);
-                Model* model  = get_from_array(actual_model_array,*id);
+                u8* id = array_get(&mesh_component->meshes,i);
+                Model* model  = array_get(actual_model_array,*id);
                 glm_mat4_copy(element_component->parent->transform->model_matrix,model->model_mat);                 
             }
             
-            u8* id = get_from_array(&mesh_component->meshes,1);
-            Model* model  = get_from_array(actual_model_array,*id);
+            u8* id = array_get(&mesh_component->meshes,1);
+            Model* model  = array_get(actual_model_array,*id);
             if(!model)
                 return;
             glm_vec3_copy(model->min,mesh_component->bounding_box[0]);
@@ -161,17 +161,17 @@ void init_element_component(ComponentDefinition* element_component){
                
             for(u32 i = 1; i <= mesh_component->meshes.count-1 ; i++){                
 
-                u8* id = get_from_array(&mesh_component->meshes,i);
+                u8* id = array_get(&mesh_component->meshes,i);
             
-                Model* original_model = get_from_array(&array_models_loaded,*id);
+                Model* original_model = array_get(&array_models_loaded,*id);
 
                 new_empty_model();
 
                 duplicate_model_data(selected_model,original_model);
                 selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
-                u8* texture_id = get_from_array(&mesh_component->textures,i);
+                u8* texture_id = array_get(&mesh_component->textures,i);
                 if(texture_id){
-                    Texture* texture = get_from_array(current_textures_array,*texture_id);
+                    Texture* texture = array_get(current_textures_array,*texture_id);
                     if(texture)
                         selected_model->texture.id = texture->id;
                 }else{
@@ -185,7 +185,7 @@ void init_element_component(ComponentDefinition* element_component){
 
             u8 id = actual_model_array->count - ( mesh_component->meshes.count - 1) ;
             for(u8 i = 1; i <= mesh_component->meshes.count-1 ; i++){
-                u8 * geted_id = get_from_array(&mesh_component->meshes,i);
+                u8 * geted_id = array_get(&mesh_component->meshes,i);
                 memcpy(geted_id, &id , sizeof(u8));
                 id++;
             }
@@ -203,7 +203,7 @@ void init_element_component(ComponentDefinition* element_component){
     case COMPONENT_SKINNED_MESH:{
         SkinnedMeshComponent* mesh_component = element_component->data;
         new_empty_model();
-        Model* original_model = get_from_array(&array_models_loaded,array_models_loaded.count-1);
+        Model* original_model = array_get(&array_models_loaded,array_models_loaded.count-1);
         
         duplicate_model_data(selected_model,original_model);
         GLuint skin_vertex_shader = load_shader_file("../assets/shaders/skin_vertex_shader.glsl",GL_VERTEX_SHADER);
@@ -234,13 +234,13 @@ void update_per_frame_component(ComponentDefinition* element_component){
     case SPHERE_COMPONENT:{
         SphereComponent* component = element_component->data;
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&models_for_test_occlusion,&component->model);
+        array_add(&models_for_test_occlusion,&component->model);
         break;
     }
     case CUBE_COMPONENT:{
         CubeComponent* component = element_component->data;
         glm_mat4_copy(element_component->parent->transform->model_matrix,component->model->model_mat);
-        add_to_array(&models_for_test_occlusion,&component->model);
+        array_add(&models_for_test_occlusion,&component->model);
         break;
     }   
     case CAMERA_COMPONENT:{
@@ -250,7 +250,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
         glm_translate(local,component->position);
    
         glm_mat4_mul(element_component->parent->transform->model_matrix, local , component->camera_gizmo->model_mat);      
-        add_to_array(&models_for_test_occlusion,&component->camera_gizmo);
+        array_add(&models_for_test_occlusion,&component->camera_gizmo);
         
         break;
     }
@@ -259,13 +259,13 @@ void update_per_frame_component(ComponentDefinition* element_component){
         StaticMeshComponent* static_mesh_component = element_component->data; 
         /* Add to  array_static_meshes_pointers for test occlusion
         array_static_meshes_pointers it cleaned every frame*/    
-        add_to_array(&array_static_meshes_pointers,&static_mesh_component);
+        array_add(&array_static_meshes_pointers,&static_mesh_component);
         break;
     }
 
     case COMPONENT_SKINNED_MESH:{
         SkinnedMeshComponent* skinned_mesh_component = element_component->data;
-        add_to_array(&array_skinned_mesh_pointers,&skinned_mesh_component);
+        array_add(&array_skinned_mesh_pointers,&skinned_mesh_component);
         break;
     }
     case COMPONENT_HLOD:
@@ -275,9 +275,9 @@ void update_per_frame_component(ComponentDefinition* element_component){
             
             float distance = glm_vec3_distance(main_camera.position,hlod_component->center);
             if(distance>=hlod_component->distance){
-                add_to_array(&models_for_test_occlusion,&hlod_component->model);
+                array_add(&models_for_test_occlusion,&hlod_component->model);
                 for(int i = 0; i<hlod_component->childs.count ; i++){
-                    Element** ppElement = get_from_array(&hlod_component->childs,i);
+                    Element** ppElement = array_get(&hlod_component->childs,i);
                     Element* element = ppElement[0];
                     element->proccess = false;
                 }
@@ -288,7 +288,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
 
             }else{
                 for(int i = 0; i<hlod_component->childs.count ; i++){
-                    Element** ppElement = get_from_array(&hlod_component->childs,i);
+                    Element** ppElement = array_get(&hlod_component->childs,i);
                     Element* element = ppElement[0];
                     element->proccess = true;
                 }
@@ -305,7 +305,7 @@ void* get_component_from_selected_element(ComponentType type){
         return NULL;
     
     for(int i = 0; i< selected_element->components.count ; i++){       
-        ComponentDefinition* component = get_from_array(&selected_element->components,i);
+        ComponentDefinition* component = array_get(&selected_element->components,i);
         if(component->type == type){
             return &component->data[0];
         }           
@@ -349,12 +349,12 @@ void component_add_HLOD_to_select_element(){
 
 void for_each_element_components(void(*do_to)(ComponentDefinition*)){
     for(int i = 0; i < actual_elements_array->count ; i++){
-        Element* element = get_from_array(actual_elements_array,i);
+        Element* element = array_get(actual_elements_array,i);
         if(!element->proccess)
             continue;
         if(element->components.count > 0){
             for(int o = 0; o < element->components.count ; o++){
-                ComponentDefinition* component = get_from_array(&element->components,o);
+                ComponentDefinition* component = array_get(&element->components,o);
                 do_to(component);
             }
         }
@@ -363,13 +363,13 @@ void for_each_element_components(void(*do_to)(ComponentDefinition*)){
 
 void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(ComponentDefinition*)){
     for(int i = 0; i < array->count ; i++){
-        Element** ppElement = get_from_array(array,i);
+        Element** ppElement = array_get(array,i);
         Element* element = ppElement[0];
         if(!element->proccess)
             continue;
         if(element->components.count > 0){
             for(int o = 0; o < element->components.count ; o++){
-                ComponentDefinition* component = get_from_array(&element->components,o);
+                ComponentDefinition* component = array_get(&element->components,o);
                 do_to(component);
             }
         }
