@@ -25,6 +25,21 @@ typedef struct ContentView{
     u8 thumbnail_image_size;
 }ContentView;
 
+typedef enum ContentType{
+    CONTENT_TYPE_STATIC_MESH,
+    CONTENT_TYPE_SKINNED_MESH,
+    CONTENT_TYPE_TEXTURE,
+    CONTENT_TYPE_SOUND,
+    CONTENT_TYPE_SHADER,
+    CONTENT_TYPE_MATERIAL
+}ContentType;
+
+typedef struct Content{
+    ContentType type;
+    char path[100];
+    
+}Content;
+
 bool editor_window_content_browser_hint;
 
 #endif
