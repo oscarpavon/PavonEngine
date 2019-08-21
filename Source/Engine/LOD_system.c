@@ -56,6 +56,8 @@ void LOD_check_distance_static_mesh_component_and_add_to_draw_elements(StaticMes
     DrawData new_draw;
     new_draw.vertex = UI_plane_vertex_buffer_id;
     Model* model = array_get(actual_model_array,0);
+    if(!model)
+        return;
     new_draw.shader = model->shader;
     //draw_two_dimention_element(&new_draw,center,(vec2){20,20},(vec4){1,0,0,1});
     

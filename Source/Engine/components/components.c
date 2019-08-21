@@ -164,6 +164,8 @@ void init_element_component(ComponentDefinition* element_component){
                 u8* id = array_get(&mesh_component->meshes,i);
             
                 Model* original_model = array_get(&array_models_loaded,*id);
+                if(!original_model)
+                    return;
 
                 new_empty_model();
 

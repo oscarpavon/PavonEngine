@@ -362,7 +362,7 @@ void editor_init(){
     current_textures_array = &editor_textures;
     
     content_manager_init();
-    
+
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
     init_vec3(-6,0,2, main_camera.position);
@@ -501,8 +501,7 @@ void draw_editor_viewport(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     if(isDrawUV)
-        draw_UV();
-    
+        draw_UV();    
     
 
     if(controlling_camera_component){
@@ -511,14 +510,7 @@ void draw_editor_viewport(){
     }
 
     for_each_element_components(&update_per_frame_component);
-    Model* draw_model = array_get(actual_model_array,1);
-    if(draw_model){
-       
-        //draw_vertices_like(GL_POINTS,draw_model,(vec4){1,0,0,0});
-       // draw_simgle_model(draw_model);
-    }
-    
-
+   
     test_elements_occlusion();
     check_meshes_distance();
 
