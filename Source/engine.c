@@ -15,6 +15,8 @@
 
 #include <unistd.h>
 
+#include "Engine/LOD_system.h"
+
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
@@ -400,35 +402,6 @@ void rotate_element(Element* element, versor quaternion){
 
 }
 
-static inline void check_static_mesh_component_distance_from_camera(StaticMeshComponent* static_mesh_component){
-    float distance = glm_vec3_distance(main_camera.position,static_mesh_component->center);
-    
-    float distaces[3] = {0,24,40};
-
-    u8 id;
-    int count = static_mesh_component->meshes.count-1;
-    for(int i = 1; i <= count ; i++){
-        float distance_value = distaces[i-1];            
-        if(distance_value==0){
-            u8* model_id = array_get(&static_mesh_component->meshes,i);
-            id = *model_id;
-            continue;
-        }
-        float next_distace_value = distance_value+1;
-        if(i != count)
-            next_distace_value = distaces[i];
-            
-        if(distance >= distance_value && distance_value < next_distace_value){
-            u8* model_id = array_get(&static_mesh_component->meshes,i);
-            id = *model_id;            
-        }
-        
-    }
-    Model* draw_model = array_get(actual_model_array,id);
-    //Model* other = array_get(actual_model_array,1);
-    
-    array_add(&frame_draw_elements,&draw_model);
-}  
 
 void check_meshes_distance(){
     for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
@@ -436,7 +409,7 @@ void check_meshes_distance(){
         StaticMeshComponent* mesh_component = ppStaticMesh[0];
 
         /*Simple LOD */
-        check_static_mesh_component_distance_from_camera(mesh_component);
+        LOD_check_distance_static_mesh_component_and_add_to_draw_elements(mesh_component);
 
     }
 
