@@ -1,7 +1,7 @@
-import bpy
 import sys
 import traceback
 import math
+import bpy
 def import_mesh():
     bpy.ops.object.delete(use_global=False)
     bpy.ops.import_scene.gltf(filepath="../assets/HLOD/out.gltf")
