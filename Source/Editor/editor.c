@@ -336,6 +336,10 @@ void reload_editor(){
     array_clean(&array_models_loaded);
 }
 
+void editor_update_command_queue(){
+
+}
+
 void editor_add_element_with_model_path(const char* path){
     add_element_with_model_path(path);
     update_translation(main_camera.position);
@@ -358,12 +362,14 @@ void editor_add_element_with_model_path(const char* path){
 }
 
 void editor_init(){
-    
+    editor_running = true;
+        
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
     
     content_manager_init();
+    editor_command_queue_init();
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     
@@ -478,6 +484,8 @@ void collision_test(){
 }
 
 void draw_editor_viewport(){
+
+    editor_command_queue_udpate();
 
     if( window_editor_main.focus){
        

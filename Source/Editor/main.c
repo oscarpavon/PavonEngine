@@ -46,6 +46,7 @@ int main(){
         struct timespec result = diff(time1,time2);
         frame_time = result.tv_nsec / 1000000;        
     }
+    editor_running = false;
     editor_finish();
     
     glfwTerminate();

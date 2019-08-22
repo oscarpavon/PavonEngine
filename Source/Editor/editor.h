@@ -24,6 +24,8 @@
 
 #include "windows_manager.h"
 
+#include "editor_command_queue.h"
+
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -104,4 +106,6 @@ bool isDrawUV;
 bool editor_search_objects;
 
 Texture editor_texture_checker;
+
+bool editor_running;
 #endif
