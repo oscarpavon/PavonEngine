@@ -148,6 +148,7 @@ void editor_window_content_browser_input_update(){
     }
 }
 
+
 void editor_window_content_browser_draw(){
     glfwMakeContextCurrent(window_content_browser.window);
 

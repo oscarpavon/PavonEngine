@@ -8,14 +8,24 @@ import bpy
 
 path = "/home/pavon/PavonTheGame/Content/"
 
+        
 def export_current_collection():
+    bpy.ops.object.select_all(action='DESELECT')
+    collection = bpy.context.collection
+    all_object = collection.all_objects
+    for object in all_object:
+        object.select_set(True)
+    #new_file_path += bpy.context.active_object.name
+    new_file_path = path
+    new_file_path += collection.name
+    export_selects_objects(new_file_path)
+    send_to_PavonEditor(collection.name)
     return
 
-def export_current_object():
-    new_file_path = path
-    new_file_path += bpy.context.active_object.name
+def export_selects_objects(path):
+    
     bpy.ops.export_scene.gltf(export_format='GLB', \
-    filepath=new_file_path, \
+    filepath=path, \
     export_texcoords=True, \
     export_normals=False, export_materials=False, \
     export_selected=True, export_animations=False, \
@@ -26,6 +36,17 @@ def export_current_object():
     )
     return
 
+def send_to_PavonEditor(send_path):
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   
+    s.connect(('localhost', 7654))    
+
+    message = bytes(send_path, 'utf-8')
+
+    s.sendall(message)
+    return
+
 class PavonEngineAddon(bpy.types.Operator):
     """Pavon Engine Addons Test"""
     bl_idname = "object.pavon_engine_addon"
@@ -33,16 +54,8 @@ class PavonEngineAddon(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        print("Fuck yeah")
-        export_current_object()
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-       
-        s.connect(('localhost', 7654))
-        
-        message = b'Load the fucking model Pavon Engine'
-        message = bytes(bpy.context.active_object.name, 'utf-8')
-
-        s.sendall(message)
+#       export_and_send_to_PavonEditor()
+        export_current_collection()
 
         return {'FINISHED'}
 

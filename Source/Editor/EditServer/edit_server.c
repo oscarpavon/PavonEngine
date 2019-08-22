@@ -12,7 +12,7 @@ int edit_server_accept_socket;
 void edit_server_proccess_data(){
     char buffer[1024] = {0}; 
     int readed = read( edit_server_accept_socket , buffer, 1024);
-    if(readed == 0){
+    if(readed < 0){
         shutdown(edit_server_accept_socket,SHUT_RDWR);
         close(edit_server_accept_socket);
         return;
