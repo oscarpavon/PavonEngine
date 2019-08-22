@@ -54,7 +54,7 @@ void deselect_all();
 
 void change_to_editor_mode(EditorMode mode);
 
-void clean_editor();
+void editor_finish();
 
 void rotate_editor_element(Element* element, float angle, vec3 axis);
 

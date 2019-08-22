@@ -22,6 +22,8 @@
 
 #include "HLOD/HLOD_factory.h"
 
+#include "EditServer/edit_server.h"
+
 
 Array editor_models;
 Array editor_textures;
@@ -190,9 +192,9 @@ void add_editor_native_element(const char* native_element_name){
 }
 
 
-void clean_editor(){     
-    
+void editor_finish(){        
     clear_engine_memory();
+    edit_server_finish();
 }
 
 
@@ -378,8 +380,7 @@ void editor_init(){
     array_init(&LOD_models,sizeof(Model),10);
     array_init(&editor_elements,sizeof(Element),100);
     array_init(&editor_models, sizeof(Model),100);
-    array_init(&editor_textures, sizeof(Texture),100);
-    
+    array_init(&editor_textures, sizeof(Texture),100);    
     
 
     element_id_count = 0;    
@@ -395,6 +396,8 @@ void editor_init(){
     camera_velocity = 0.04;    
 
     texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);
+
+    edit_server_init();
 }
 
 void draw_count_of_draw_call(){

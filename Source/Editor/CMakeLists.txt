@@ -17,6 +17,7 @@ HLOD/HLOD_factory.c
 menus.c
 Windows/content_browser.c
 content_manager.c
+EditServer/edit_server.c
 )
 
 set (game_source

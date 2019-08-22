@@ -2,7 +2,8 @@ bl_info = {
     "name": "Pavon Engine Addon",
     "category": "Object",
 }
-
+import socket
+import sys
 import bpy
 
 
@@ -14,7 +15,10 @@ class PavonEngineAddon(bpy.types.Operator):
 
     def execute(self, context):
         print("Fuck yeah")
-        #we need send info to Editor server to import models
+        # create an INET, STREAMing socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # now connect to the web server on port 80 - the normal http port
+        s.connect(('localhost', 7654))
 
         return {'FINISHED'}
 
