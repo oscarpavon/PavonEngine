@@ -24,7 +24,7 @@ void edit_server_proccess_data(){
 
     EditorCommand new_command;
     memset(&new_command, 0, sizeof(EditorCommand));
-    new_command.command = editor_add_element_with_model_path;
+    new_command.command = content_manager_import;
     strcpy(new_command.command_text, path);
     array_add(&array_editor_command_queue,&new_command);
     

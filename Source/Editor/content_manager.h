@@ -3,7 +3,7 @@
 #include <dirent.h>
 #include "../Engine/numbers.h"
 typedef enum ContentType{
-    CONTENT_TYPE_STATIC_MESH,
+    CONTENT_TYPE_STATIC_MESH = 0,
     CONTENT_TYPE_SKINNED_MESH,
     CONTENT_TYPE_TEXTURE,
     CONTENT_TYPE_SOUND,
@@ -19,5 +19,7 @@ typedef struct Content{
 }Content;
 
 void content_manager_init();
+
+void content_manager_import(const char* path);
 
 #endif
