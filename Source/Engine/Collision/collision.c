@@ -1,6 +1,6 @@
-#include "../../engine.h"
+#include "../../Engine/engine.h"
 #include "collision.h"
-#include "../../vertex.h"
+#include "../../Engine/vertex.h"
 
 void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
     //project on axis

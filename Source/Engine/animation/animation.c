@@ -1,5 +1,5 @@
 #include "animation.h"
-#include "../../engine.h"
+#include "../../Engine/engine.h"
 
 #ifdef EDITOR
     #include "../../Editor/skeletal_editor.h"

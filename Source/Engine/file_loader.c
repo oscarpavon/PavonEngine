@@ -2,7 +2,7 @@
 #include <malloc.h>
 #include "file_loader.h"
 #include "utils.h"
-#include "Engine/log.h"
+#include "log.h"
 
 #include <stdlib.h>
 #include <stdio.h>

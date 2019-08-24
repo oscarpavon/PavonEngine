@@ -5,7 +5,7 @@
 #include "engine.h"
 
 #include "gui.h"
-#include "Engine/shader.h"
+#include "shader.h"
 
 #include "file_loader.h"
 
@@ -15,7 +15,7 @@
 
 #include <unistd.h>
 
-#include "Engine/LOD_system.h"
+#include "LOD_system.h"
 
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){

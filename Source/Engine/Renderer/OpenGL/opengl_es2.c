@@ -1,10 +1,10 @@
 #include "GLES2/gl2.h"
-#include "../../../model.h"
+#include "../../../Engine/model.h"
 #include <signal.h>
 #include "../../log.h"
 #include "../../components/components.h"
-#include "../../../camera.h"
-#include "../../../engine.h"
+#include "../../../Engine/camera.h"
+#include "../../../Engine/engine.h"
 
 void load_texture_to_GPU(Texture* texture){
     glGenTextures(1, &texture->id);

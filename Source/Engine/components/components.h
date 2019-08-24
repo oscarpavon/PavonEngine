@@ -2,11 +2,12 @@
 #define ENGINE_COMPONENTS_H
 
 typedef struct Element Element;
-#include "../../model.h"
+#include "../model.h"
 #include "../../third_party/cglm/cglm.h"
 #include "../array.h"
-#include "../../skeletal.h"
+#include "../skeletal.h"
 #include "../../Engine/types.h"
+#include "../skeletal.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
@@ -66,7 +67,7 @@ typedef struct StaticMeshComponent{
     vec3 bounding_box[2];
 }StaticMeshComponent;
 
-#include "../../skeletal.h"
+
 
 typedef struct SkinnedMeshComponent{    
     Model* mesh;

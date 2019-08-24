@@ -4,7 +4,7 @@
 #include "../text.h"
 
 
-#include "../../gui.h"
+#include "../../Engine/gui.h"
 
 #include "../ProjectManager/project_manager.h"
 #include "../editor_shader.h"

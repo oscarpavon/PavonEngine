@@ -5,9 +5,9 @@
 #ifndef PAVONTHEGAME_CAMERA_H
 #define PAVONTHEGAME_CAMERA_H
 
-#include "third_party/cglm/cglm.h"
+#include "../third_party/cglm/cglm.h"
 
-#include "Engine/components/components.h"
+#include "components/components.h"
 
 CameraComponent main_camera;
 CameraComponent saved_camera;

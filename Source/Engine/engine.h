@@ -5,36 +5,36 @@
 #ifndef PAVON_ENGINE_H
 #define PAVON_ENGINE_H
 
-#include "Engine/interruptions.h"
-#include "Engine/array.h"
-#include "Engine/log.h"
-#include "Engine/threads.h"
+#include "interruptions.h"
+#include "array.h"
+#include "log.h"
+#include "threads.h"
 
-#include "Engine/input.h"
+#include "input.h"
 
 #include "vertex.h"
 
 #include "model.h"
-#include "Engine/types.h"
-#include "third_party/cglm/cglm.h"
+#include "types.h"
+#include "../third_party/cglm/cglm.h"
 
 #include "file_loader.h"
-#include "Engine/files_parser.h"
-#include "Engine/memory.h"
+#include "files_parser.h"
+#include "memory.h"
 #include "gui.h"
 
 #include <time.h>
 
-#include "Engine/shader.h"
+#include "shader.h"
 
-#include "Engine/components/components.h"
-#include "Engine/animation/animation.h"
+#include "components/components.h"
+#include "animation/animation.h"
 
 #include "camera.h"
 
-#include "Engine/Renderer/OpenGL/opengl_es2.h"
+#include "Renderer/OpenGL/opengl_es2.h"
 
-#include "Engine/Collision/collision.h"
+#include "Collision/collision.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]

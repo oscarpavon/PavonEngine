@@ -1,10 +1,10 @@
 #include "level.h"
 
-#include "../model.h"
+#include "../Engine/model.h"
 
-#include "../engine.h"
+#include "../Engine/engine.h"
 
-#include "../file_loader.h"
+#include "../Engine/file_loader.h"
 
 int load_level_to_elements_array(const char* name, Array* load_elements){    
 

@@ -1,13 +1,13 @@
 #include "input.h"
 
-#include "../utils.h"
+#include "../Engine/utils.h"
 
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
-#include "../engine.h"
+#include "../Engine/engine.h"
 
 #include <cglm/cglm.h>
-#include "../camera.h"
+#include "../Engine/camera.h"
 
 #include <math.h>
 
@@ -15,11 +15,11 @@
 
 #include "text.h"
 
-#include "../game.h"
+#include "../Engine/game.h"
 
 #include "editor_mode.h"
 
-#include "../gui.h"
+#include "../Engine/gui.h"
 
 #include "commands.h"
 

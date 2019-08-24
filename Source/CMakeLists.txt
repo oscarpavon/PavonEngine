@@ -11,14 +11,14 @@ set(core
          
 set(engine_source
         ${core}
-        model.c
-        file_loader.c
-        camera.c
-        images.c       
-        gui.c
-        object_select.c
-        engine.c
-        skeletal.c
+        Engine/model.c
+        Engine/file_loader.c
+        Engine/camera.c
+        Engine/images.c       
+        Engine/gui.c
+        Engine/object_select.c
+        Engine/engine.c
+        Engine/skeletal.c
         Engine/shader.c        
         Engine/level.c
         third_party/jsmn.c

@@ -1,10 +1,10 @@
 #include "skeletal_editor.h"
 #include "../Engine/shader.h"
-#include "../engine.h"
+#include "../Engine/engine.h"
 #include "editor.h"
 
 #include "../Engine/components/components.h"
-#include "../vertex.h"
+#include "../Engine/vertex.h"
 
 struct LoadGeometry skeletal_bones_gizmo_geometry;
 GLuint skeletal_gizmo_vertices_buffer_id;

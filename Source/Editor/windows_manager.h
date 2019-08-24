@@ -7,7 +7,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "../camera.h"
+#include "../Engine/camera.h"
 
 typedef struct EditorWindow{
        GLFWwindow* window;

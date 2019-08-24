@@ -1,6 +1,6 @@
 #include "editor.h"
 
-#include "../gui.h"
+#include "../Engine/gui.h"
 
 #include "menus.h"
 

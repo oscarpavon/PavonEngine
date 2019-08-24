@@ -6,9 +6,9 @@
 #include "../Engine/shader.h"
 
 #include <stdlib.h>
-#include "../file_loader.h"
+#include "../Engine/file_loader.h"
 #include "editor.h"
-#include "../gui.h"
+#include "../Engine/gui.h"
 
 #include "menus.h"
 

@@ -1,5 +1,11 @@
 #include "components.h"
-#include "../../engine.h"
+#include "../../Engine/engine.h"
+
+#include "../../Engine/model.h"
+#include "../animation/animation.h"
+#ifdef EDITOR
+#include "../../Editor/editor.h"
+#endif
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type){
     ComponentDefinition new_element_component;
@@ -147,11 +153,7 @@ void update_component(ComponentDefinition* element_component){
         break;
     }
 }
-#include "../../model.h"
-#include "../animation/animation.h"
-#ifdef EDITOR
-#include "../../Editor/editor.h"
-#endif
+
 void init_element_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {

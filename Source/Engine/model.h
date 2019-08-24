@@ -5,13 +5,13 @@
 
 #include <GLES2/gl2.h>
 
-#include "third_party/cglm/cglm.h"
+#include "../third_party/cglm/cglm.h"
 
 #include "images.h"
 
 #include "skeletal.h"
 
-#include "Engine/array.h"
+#include "array.h"
 
 typedef struct Model{
     int id;

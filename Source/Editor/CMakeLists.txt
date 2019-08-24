@@ -22,7 +22,7 @@ editor_command_queue.c
 )
 
 set (game_source
-        ../game.c
+        ../Engine/game.c
 )
 
 include(FindFreetype)

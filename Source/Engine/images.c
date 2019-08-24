@@ -1,9 +1,9 @@
 #include "images.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "third_party/stb_image.h"
+#include "../third_party/stb_image.h"
 
 #include "file_loader.h"
-#include "Engine/log.h"
+#include "log.h"
 
 int image_load(const char* path, Image* image){
     File new_file;

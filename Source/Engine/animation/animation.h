@@ -6,8 +6,9 @@
 #define PATH_TYPE_TRANSLATION 1
 #define PATH_TYPE_ROTATION 2
 
-#include "../../skeletal.h"
+#include "../skeletal.h"
 #include "../components/components.h"
+#include "../array.h"
 typedef struct AnimationSampler{
     Array inputs;//int
     Array outputs;//vec3 or vec4

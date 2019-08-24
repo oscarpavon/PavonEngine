@@ -6,9 +6,9 @@
 #define ENGINE_GUI_H
 
 #include "utils.h"
-#include "Engine/array.h"
+#include "array.h"
 
-#include "Engine/types.h"
+#include "types.h"
 
 
 #define POSITION_RELATIVE_LEFT_BOTTON 0

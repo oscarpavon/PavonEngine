@@ -3,12 +3,12 @@
 //
 
 #include "gui.h"
-#include "third_party/cglm/cglm.h"
+#include "../third_party/cglm/cglm.h"
 #include "camera.h"
 
-#include "Engine/input.h"
+#include "input.h"
 
-#include "Engine/shader.h"
+#include "shader.h"
 
 #include <string.h>
 #include <GLES2/gl2.h>

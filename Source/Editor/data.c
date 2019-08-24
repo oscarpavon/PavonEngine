@@ -1,7 +1,7 @@
 #include "data.h"
 #include "editor.h"
-#include "../camera.h"
-#include "../gui.h"
+#include "../Engine/camera.h"
+#include "../Engine/gui.h"
 #include "ProjectManager/project_manager.h"
 
 #include "Serialization/json_writer.h"

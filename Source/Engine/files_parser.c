@@ -2,7 +2,7 @@
 
 #define JSMN_HEADER
 #include "../third_party/jsmn.h"
-#include "../engine.h"
+#include "../Engine/engine.h"
 #include "../Editor/data.h"
 
 typedef jsmntok_t Token;

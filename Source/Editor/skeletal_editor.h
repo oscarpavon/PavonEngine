@@ -1,7 +1,7 @@
 #ifndef SKELETAL_EDITOR_H
 #define SKELETAL_EDITOR_H
 
-#include "../skeletal.h"
+#include "../Engine/skeletal.h"
 
 void draw_skeletal_bones();
 void init_skeletal_editor();

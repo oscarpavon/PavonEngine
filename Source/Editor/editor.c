@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../engine.h"
+#include "../Engine/engine.h"
 
 #include "text.h"
 
-#include "../camera.h"
+#include "../Engine/camera.h"
 
-#include "../images.h"
+#include "../Engine/images.h"
 
 #include "skeletal_editor.h"
 

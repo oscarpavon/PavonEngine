@@ -1,7 +1,7 @@
 #include "editor_mode.h"
 
-#include "../game.h"
-#include "../camera.h"
+#include "../Engine/game.h"
+#include "../Engine/camera.h"
 
 
 

@@ -4,7 +4,7 @@
 #define CGLTF_WRITE_IMPLEMENTATION
 #include "../third_party/cgltf_write.h"
 #include "../Engine/log.h"
-#include "../engine.h"
+#include "../Engine/engine.h"
 #include "editor.h"
 #include "../third_party/cgltf.h"
 
@@ -13,7 +13,7 @@
 
 #include "HLOD/HLOD_factory.h"
 
-#include "../vertex.h"
+#include "../Engine/vertex.h"
 
 bool data_export_in_binary = false;
 u32 data_export_binary_bytes_size = 0;
