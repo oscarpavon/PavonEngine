@@ -381,7 +381,7 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
 }
 
 int model_load_from_content(void* gltf_data, u32 size){
-   cgltf_result result = model_load_from_memory(gltf_data,size,NULL);
+  cgltf_result result = model_load_from_memory(gltf_data,size,NULL);
 
   if (result != cgltf_result_success){    
     return -1;

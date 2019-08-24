@@ -47,61 +47,9 @@ void content_manager_create_engine_binary(const char* name){
     remove(name);
 
     content_manager_load_content(glb_path);
+    editor_init_new_added_element();
 }
 
-const u32 PVN_BINARY_FILE_MAGIC = 0x426E7670;
-void content_manager_load_content(const char* path){
-
-    File new_file;
-    load_file(path,&new_file);
-
-    u32 file_type;
-    memcpy(&file_type,new_file.data,4);
-
-    if(file_type != PVN_BINARY_FILE_MAGIC){
-        LOG("File not reconized\n");
-        close_file(&new_file);
-        return;
-    }
-    LOG("Binary loaded\n");
-
-    u32 total_binary_size;
-    memcpy(&total_binary_size,new_file.data+8,4);
-
-    u32 data_size;
-    memcpy(&data_size,new_file.data+12,4);
-
-    u32 content_type;
-    memcpy(&content_type,new_file.data+16,4);
-
-    model_load_content(new_file.data+20,data_size);
-
-    close_file(&new_file);
-
-}
-
-void content_manager_create_static_mesh(const char* path){
-    Content new_content;
-    memset(&new_content,0,sizeof(Content));
-    char new_path[strlen(pavon_the_game_project_folder)+40];
-    sprintf(new_path,"%s%s%s",pavon_the_game_project_folder,"Content/content",".pvnf");
-    //serializer_serialize_data(new_path,content_manager_serialize_static_mesh);
-    content_manager_create_engine_binary(path);
-}
-
-void content_manager_create_engine_content_type(const char* path, ContentType type){
-    switch (type)
-    {
-    case CONTENT_TYPE_STATIC_MESH:
-        {
-            content_manager_create_static_mesh(path);
-        }
-        break;
-    
-    default:
-        break;
-    }
-}
 
 void content_manager_import(const char* path){
     int name_lenght = strlen(path);
@@ -111,15 +59,11 @@ void content_manager_import(const char* path){
         {
             if (strcmp(&path[n + 1], "glb") == 0)
             {
-                content_manager_create_engine_content_type(path,CONTENT_TYPE_STATIC_MESH);
+                content_manager_create_engine_binary(path);
                 continue;
-            }
-
-        
+            }        
         }
-    }
-    
-
+    }    
 }
 
 void content_manager_init(){

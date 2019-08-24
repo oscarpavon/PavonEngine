@@ -35,6 +35,8 @@
 #include "Renderer/OpenGL/opengl_es2.h"
 
 #include "Collision/collision.h"
+#include "content_manager.h"
+
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
@@ -78,6 +80,8 @@ void new_empty_element();
 void new_empty_model();
 
 void select_last_element();
+
+void engine_add_element(u32 models_loaded);
 
 void add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);

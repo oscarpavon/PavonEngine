@@ -141,27 +141,10 @@ void load_simple_image(const char* path){
     array_add(current_textures_array,&new_texture);    
 }
 
-
-void add_element_with_model_path(const char* model_gltf_path){
-    if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
-        LOG("Error to load, null path (add_editor_element)\n");
-        return;
-    }
-
-    Array* prev_array = actual_model_array;
-    actual_model_array = &array_models_loaded;
-    int models_loaded = load_model(model_gltf_path);
-    if( models_loaded == -1){
-        return;
-    }
-    actual_model_array = prev_array;
-    
-    new_empty_element();
-    strcpy(selected_element->name, "New Element");
+void engine_add_element(u32 models_loaded){
+    new_empty_element();   
 
     add_transform_component_to_selected_element();
-
-    array_add(&texts,model_gltf_path);
 
     switch (current_loaded_component_type)
     {
@@ -204,6 +187,30 @@ void add_element_with_model_path(const char* model_gltf_path){
     }
 
     LOG("model loaded and shader created \n");
+}
+
+void engine_add_element_from_content(Content* content){
+    
+}
+
+void add_element_with_model_path(const char* model_gltf_path){
+    if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
+        LOG("Error to load, null path (add_editor_element)\n");
+        return;
+    }
+
+    Array* prev_array = actual_model_array;
+    actual_model_array = &array_models_loaded;
+
+    int models_loaded = load_model(model_gltf_path);
+    if( models_loaded == -1){
+        return;
+    }
+    actual_model_array = prev_array;
+    
+    array_add(&texts,model_gltf_path);
+    
+    engine_add_element(models_loaded);
 }
 
 

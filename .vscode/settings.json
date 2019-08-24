@@ -13,4 +13,5 @@
         "import sys; sys.path.append('/home/pavon/sources/blender_autocomplete/2.80')"
     ],
     "editor.fontSize": 12,
+    "C_Cpp.configurationWarnings": "Disabled",
 }

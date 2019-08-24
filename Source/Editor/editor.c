@@ -340,8 +340,10 @@ void editor_update_command_queue(){
 
 }
 
-void editor_add_element_with_model_path(const char* path){
-    add_element_with_model_path(path);
+void editor_init_new_added_element(){
+    
+    strcpy(selected_element->name, "New Element");
+
     update_translation(main_camera.position);
     vec3 new_position;
     glm_vec3_scale(main_camera.front,4,new_position);
@@ -359,6 +361,13 @@ void editor_add_element_with_model_path(const char* path){
         model->texture.id = editor_texture_checker.id;
 
     }
+}
+
+void editor_add_element_with_model_path(const char* path){
+
+    add_element_with_model_path(path);
+
+    editor_init_new_added_element();
 }
 
 void editor_init(){
@@ -421,6 +430,8 @@ void draw_tringles_count(){
     int triangles = 0;
     for(int i = 0; i<frame_draw_elements.count; i++){
         Model** model = array_get(&frame_draw_elements,i);
+        if(!model)
+            return;
         int vertices_count = model[0]->vertex_array.count;
         triangles += vertices_count/3;
     }

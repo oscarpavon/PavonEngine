@@ -25,6 +25,7 @@ set(engine_source
         Engine/files_parser.c        
         Engine/animation/animation.c
         Engine/Collision/collision.c
+        Engine/content_manager.c
         ${components}
 )
 
