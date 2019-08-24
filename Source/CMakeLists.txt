@@ -21,7 +21,7 @@ set(engine_source
         Engine/skeletal.c
         Engine/shader.c        
         Engine/level.c
-        third_party/jsmn.c
+        ThirdParty/jsmn.c
         Engine/files_parser.c        
         Engine/animation/animation.c
         Engine/Collision/collision.c

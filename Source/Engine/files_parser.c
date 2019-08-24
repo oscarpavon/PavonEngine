@@ -1,7 +1,7 @@
 #include "files_parser.h"
 
 #define JSMN_HEADER
-#include "../third_party/jsmn.h"
+#include "../ThirdParty/jsmn.h"
 #include "../Engine/engine.h"
 #include "../Editor/data.h"
 

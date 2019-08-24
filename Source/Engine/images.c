@@ -1,6 +1,6 @@
 #include "images.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../third_party/stb_image.h"
+#include "../ThirdParty/stb_image.h"
 
 #include "file_loader.h"
 #include "log.h"

@@ -2,11 +2,11 @@
 #include <stdbool.h>
 
 #define CGLTF_WRITE_IMPLEMENTATION
-#include "../third_party/cgltf_write.h"
+#include "../ThirdParty/cgltf_write.h"
 #include "../Engine/log.h"
 #include "../Engine/engine.h"
 #include "editor.h"
-#include "../third_party/cgltf.h"
+#include "../ThirdParty/cgltf.h"
 
 #include <ctype.h>
 

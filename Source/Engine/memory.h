@@ -1,7 +1,11 @@
 #ifndef ENGINE_MEMORY
 #define ENGINE_MEMORY
 
+#include <string.h>
+
+
 #define INIT_MEMORY 7500000
+
 
 typedef struct StackMemory{
     int used;

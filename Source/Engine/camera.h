@@ -5,7 +5,7 @@
 #ifndef PAVONTHEGAME_CAMERA_H
 #define PAVONTHEGAME_CAMERA_H
 
-#include "../third_party/cglm/cglm.h"
+#include "../ThirdParty/cglm/cglm.h"
 
 #include "components/components.h"
 

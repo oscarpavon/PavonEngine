@@ -12,7 +12,7 @@
 #endif
 
 #include "numbers.h"
-#include "../third_party/cglm/types.h"
+#include "../ThirdParty/cglm/types.h"
 
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;

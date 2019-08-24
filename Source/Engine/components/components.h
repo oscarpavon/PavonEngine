@@ -3,7 +3,7 @@
 
 typedef struct Element Element;
 #include "../model.h"
-#include "../../third_party/cglm/cglm.h"
+#include "../../ThirdParty/cglm/cglm.h"
 #include "../array.h"
 #include "../skeletal.h"
 #include "../../Engine/types.h"

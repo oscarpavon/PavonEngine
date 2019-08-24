@@ -1,9 +1,9 @@
 #include "model.h"
 
 #define CGLTF_IMPLEMENTATION
-#include "../third_party/cgltf.h"
+#include "../ThirdParty/cgltf.h"
 #include "stdio.h"
-#include "../third_party/cglm/vec3.h"
+#include "../ThirdParty/cglm/vec3.h"
 
 #include "file_loader.h"
 

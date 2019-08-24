@@ -16,7 +16,7 @@
 
 #include "model.h"
 #include "types.h"
-#include "../third_party/cglm/cglm.h"
+#include "../ThirdParty/cglm/cglm.h"
 
 #include "file_loader.h"
 #include "files_parser.h"
