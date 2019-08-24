@@ -376,6 +376,12 @@ void editor_init(){
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
+
+    array_init(&selected_elements_id,sizeof(unsigned short int),100);
+    array_init(&LOD_models,sizeof(Model),10);
+    array_init(&editor_elements,sizeof(Element),100);
+    array_init(&editor_models, sizeof(Model),100);
+    array_init(&editor_textures, sizeof(Texture),100);    
     
     content_manager_init();
     editor_command_queue_init();
@@ -389,14 +395,7 @@ void editor_init(){
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    init_text_renderer();    
-    
-    array_init(&selected_elements_id,sizeof(unsigned short int),100);
-    array_init(&LOD_models,sizeof(Model),10);
-    array_init(&editor_elements,sizeof(Element),100);
-    array_init(&editor_models, sizeof(Model),100);
-    array_init(&editor_textures, sizeof(Texture),100);    
-    
+    init_text_renderer();       
 
     element_id_count = 0;    
 

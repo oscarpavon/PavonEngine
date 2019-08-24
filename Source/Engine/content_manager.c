@@ -25,16 +25,25 @@ void content_manager_load_content(const char* path){
 
     u32 content_type;
     memcpy(&content_type,new_file.data+16,4);
-
-
-    Array* prev_array = actual_model_array;
-    actual_model_array = &array_models_loaded;
-
-    model_load_from_content(new_file.data+20,data_size);
-
-    actual_model_array = prev_array;
     
-    engine_add_element(2);
+
+    switch (content_type)
+    {
+    case CONTENT_TYPE_STATIC_MESH:{
+        Array* prev_array = actual_model_array;
+        actual_model_array = &array_models_loaded;
+        model_load_from_content(new_file.data+20,data_size);
+
+        actual_model_array = prev_array;
+        
+        engine_add_element(2);
+        break;
+    }
+    
+    default:
+        break;
+    }
+   
 
     close_file(&new_file);
 

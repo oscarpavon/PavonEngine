@@ -162,7 +162,9 @@ void editor_window_content_browser_draw(){
     }else{
 
         ContentView* mark_content = array_get(&array_content_views,0);
-        mark_content->selected = true;
+        if(mark_content)
+            mark_content->selected = true;
+        
         
         for (int i = 0; i < array_content_views.count; i++)
         {
@@ -440,37 +442,12 @@ void editor_window_content_get_models_path(){
             if (de->d_name[n] == '.')
             {
 
-                if (strcmp(&de->d_name[n + 1], "gltf") == 0)
-                {
-                    strcpy(&model_names[model_count][0], de->d_name);
+                if (strcmp(&de->d_name[n + 1], "pb") == 0)
+                {                      
+                    memcpy(&model_names[model_count][0], de->d_name,strlen(de->d_name)-3);
                     model_count++;
                     continue;
-                }
-                if (strcmp(&de->d_name[n + 1], "glb") == 0)
-                {
-                    strcpy(&model_names[model_count][0], de->d_name);
-                    model_count++;
-                    continue;
-                }
-                if (strcmp(&de->d_name[n + 1], "blend") == 0)
-                {
-                    strcpy(&model_names[model_count][0], de->d_name);
-                    model_count++;
-                    continue;
-                }
-                if (strcmp(&de->d_name[n + 1], "jpg") == 0)
-                {
-                   strcpy(&texture_names[texture_count][0], de->d_name);
-                    texture_count++;
-                    continue;
-                }
-                if (strcmp(&de->d_name[n + 1], "png") == 0)
-                {
-                    strcpy(&texture_names[texture_count][0], de->d_name);
-                    texture_count++;
-                    continue;
-                }
-            
+                }            
             }
         }
     }
