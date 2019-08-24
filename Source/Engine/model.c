@@ -336,38 +336,21 @@ void load_current_animation(){
   array_add(&model_animation,&new_animation);
 }
 
-int load_model(const char* path){
-  memset(&model_animation,0,sizeof(Array));
-  memset(&model_nodes,0,sizeof(Array));
-
-  File new_file;
-
-  if(load_file(path,&new_file) == -1)
-    return -1;
-
+cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path){
   cgltf_options options = {0};
   cgltf_data* data = NULL;
 
-  cgltf_result result = cgltf_parse(&options,new_file.data,new_file.size_in_bytes, &data);
-
-  if (result != cgltf_result_success){
-    LOG("Model no loaded: %s \n", new_file.path);
-    return -1;
-  }
+  cgltf_result result = cgltf_parse(&options,gltf_data,size, &data);
+  if(result != cgltf_result_success)
+    return result;
+  
   current_data = data;
 
-  result = cgltf_load_buffers(&options,data,new_file.path);
-  if (result != cgltf_result_success){
-    LOG("Buffer no loaded: %s \n", new_file.path);
-    if(result == cgltf_result_io_error){
-      LOG("IO ERROR\n");
-    }
-    return -1;
-  }
+  result = cgltf_load_buffers(&options,data,path);
+  if(result != cgltf_result_success)
+    return result; 
   
-
   current_loaded_component_type = STATIC_MESH_COMPONENT;
-
 
   if(data->skins_count >= 1){
     array_init(&model_nodes,sizeof(Node),data->nodes_count+1);
@@ -390,12 +373,46 @@ int load_model(const char* path){
       load_current_animation();
     }
   }
-
-  LOG("gltf loaded: %s. \n",path);
-
+ 
   cgltf_free(data);
   current_data = NULL;
+
+  return result;
+}
+
+int model_load_from_content(void* gltf_data, u32 size){
+   cgltf_result result = model_load_from_memory(gltf_data,size,NULL);
+
+  if (result != cgltf_result_success){    
+    return -1;
+  }
+
+  return 0;
+}
+
+int load_model(const char* path){
+  memset(&model_animation,0,sizeof(Array));
+  memset(&model_nodes,0,sizeof(Array));
+
+  File new_file;
+
+  if(load_file(path,&new_file) == -1)
+    return -1;
+
+  cgltf_result result = model_load_from_memory(new_file.data,new_file.size_in_bytes,path);
+
+  if (result != cgltf_result_success){
+    LOG("Model no loaded: %s \n", new_file.path);
+    if(result == cgltf_result_io_error){
+      LOG("Buffer no loaded: %s \n", new_file.path);
+      LOG("IO ERROR\n");
+    }    
+    return -1;
+  }
+    
   close_file(&new_file);
+
+  LOG("gltf loaded: %s. \n",path);
 
   int model_result = models_parsed;
   models_parsed = 0;

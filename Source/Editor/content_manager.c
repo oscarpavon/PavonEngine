@@ -18,7 +18,8 @@ void content_manager_create_engine_binary(const char* name){
     u32 file_size = ftell(content_brute_file);    
 
     char glb_path[strlen(name) + 4];
-    sprintf(glb_path,"%s%s",name,".pb");
+    sprintf(glb_path,"%s",name);
+    sprintf(&glb_path[strlen(glb_path)-4],"%s",".pb");
     FILE* engine_binary = fopen(glb_path,"wb");
 
     fprintf(engine_binary,"pvnB");
@@ -42,6 +43,41 @@ void content_manager_create_engine_binary(const char* name){
 
     fclose(engine_binary);
     fclose(content_brute_file);
+
+    remove(name);
+
+    content_manager_load_content(glb_path);
+}
+
+const u32 PVN_BINARY_FILE_MAGIC = 0x426E7670;
+void content_manager_load_content(const char* path){
+
+    File new_file;
+    load_file(path,&new_file);
+
+    u32 file_type;
+    memcpy(&file_type,new_file.data,4);
+
+    if(file_type != PVN_BINARY_FILE_MAGIC){
+        LOG("File not reconized\n");
+        close_file(&new_file);
+        return;
+    }
+    LOG("Binary loaded\n");
+
+    u32 total_binary_size;
+    memcpy(&total_binary_size,new_file.data+8,4);
+
+    u32 data_size;
+    memcpy(&data_size,new_file.data+12,4);
+
+    u32 content_type;
+    memcpy(&content_type,new_file.data+16,4);
+
+    model_load_content(new_file.data+20,data_size);
+
+    close_file(&new_file);
+
 }
 
 void content_manager_create_static_mesh(const char* path){
@@ -49,7 +85,7 @@ void content_manager_create_static_mesh(const char* path){
     memset(&new_content,0,sizeof(Content));
     char new_path[strlen(pavon_the_game_project_folder)+40];
     sprintf(new_path,"%s%s%s",pavon_the_game_project_folder,"Content/content",".pvnf");
-    serializer_serialize_data(new_path,content_manager_serialize_static_mesh);
+    //serializer_serialize_data(new_path,content_manager_serialize_static_mesh);
     content_manager_create_engine_binary(path);
 }
 

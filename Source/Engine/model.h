@@ -44,6 +44,8 @@ typedef struct DrawData{
 
 int load_model(const char* path);
 
+int model_load_from_content(void* gltf_data, u32 size);
+
 Array model_nodes;
 Array model_animation;
 mat4 inverse_bind_matrices[35];

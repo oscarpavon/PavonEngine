@@ -22,4 +22,6 @@ void content_manager_init();
 
 void content_manager_import(const char* path);
 
+void content_manager_load_content(const char* path);
+
 #endif
