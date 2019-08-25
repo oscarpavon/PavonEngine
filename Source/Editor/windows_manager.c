@@ -41,10 +41,6 @@ void window_create(EditorWindow *win, EditorWindow* share_window, const char* na
     win->initialized = true;
 }
 
-void update_envents(){
-    glfwPollEvents();  
-}
-
 void window_resize_callback(GLFWwindow* window, int width, int height){
     glViewport(0,0,width,height);
     camera_heigth_screen = height;

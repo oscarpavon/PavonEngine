@@ -29,7 +29,7 @@ int main(){
 
     while (!glfwWindowShouldClose(window_editor_main.window))
     {
-        update_envents();
+        window_update_envents();
 
         struct timespec time1, time2;
         int temp;
@@ -37,7 +37,7 @@ int main(){
         
         window_update_windows_input();    
         
-        draw_editor_viewport();   
+        editor_update();   
 
         glfwSwapBuffers(window_editor_main.window);       
                 

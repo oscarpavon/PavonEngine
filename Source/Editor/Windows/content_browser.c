@@ -130,9 +130,11 @@ void editor_window_content_browser_input_update(){
             
         }else
             editor_window_content_browser_hint = true;
+
+        return;
     }
 
-     if(key_released(&input.ENTER)){
+    if(key_released(&input.ENTER)){
             memset(command_text_buffer,0,sizeof(command_text_buffer));
             command_character_count = 0;
             editor_window_content_browser_hint = false;
@@ -145,6 +147,10 @@ void editor_window_content_browser_input_update(){
                 return;
             }
 
+    }
+    if(key_released(&input.E)){
+        
+        return;
     }
 }
 

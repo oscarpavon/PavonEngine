@@ -493,7 +493,7 @@ void collision_test(){
 
 }
 
-void draw_editor_viewport(){
+void editor_update(){
 
     editor_command_queue_udpate();
 

@@ -1,0 +1,5 @@
+#ifndef STATIC_MESH_EDITOR_H
+#define STATIC_MESH_EDITOR_H
+
+
+#endif
