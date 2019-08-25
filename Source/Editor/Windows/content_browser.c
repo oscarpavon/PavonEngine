@@ -134,7 +134,7 @@ void editor_window_content_browser_input_update(){
         return;
     }
 
-    if(key_released(&input.ENTER)){
+    if(key__released(&input.ENTER,GLFW_MOD_SHIFT)){
             memset(command_text_buffer,0,sizeof(command_text_buffer));
             command_character_count = 0;
             editor_window_content_browser_hint = false;
@@ -148,8 +148,16 @@ void editor_window_content_browser_input_update(){
             }
 
     }
+
+    if(key_released(&input.ENTER)){//select content 
+        memset(command_text_buffer,0,sizeof(command_text_buffer));
+        command_character_count = 0;
+        editor_window_content_browser_hint = false;
+        return;
+    }
+
     if(key_released(&input.E)){
-        
+        LOG("Edit Mesh: %s\n",editor_content_view_found->content_name);
         return;
     }
 }
@@ -362,7 +370,8 @@ void editor_window_content_browser_load_thumbnails(){
         if(!content_view)
             continue;
         
-
+        if(strcmp(content_view->thumbnail_image_path, "") == 0)
+            return;
         Texture new_texture;
         texture_load(content_view->thumbnail_image_path,&new_texture);       
 

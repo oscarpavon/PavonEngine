@@ -9,7 +9,7 @@ int image_load(const char* path, Image* image){
     File new_file;
 
     if( load_file(path,&new_file) == -1 ){
-        LOG("Image not loaded: %s",path);
+        LOG("Image not loaded: %s\n",path);
         return -1;
     }
 

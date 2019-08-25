@@ -330,8 +330,9 @@ void init_gizmos(){
 
     array_init(&debug_objects, sizeof(DebugLine),300);
 
-    load_model_to_array(&gizmos,"../NativeContent/Editor/transform.gltf","../NativeContent/Editor/transform_gizmo.jpg");
-    load_model_to_array(&gizmos,"../NativeContent/Editor/rotate.gltf", "../NativeContent/Editor/rotate_gizmo.png");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/translate.glb","../NativeContent/Editor/transform_gizmo.jpg");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/rotate.glb", "../NativeContent/Editor/rotate_gizmo.png");
+    load_model_to_array(&gizmos,"../NativeContent/Editor/scale.glb", "../NativeContent/Editor/transform_gizmo.jpg");
     load_model_to_array(&gizmos,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&gizmos,"../NativeContent/Editor/player_start.gltf", "../NativeContent/Editor/player_start_gizmo.jpg");
     
@@ -349,6 +350,10 @@ void init_gizmos(){
     init_grid_greometry();    
 }
 
+inline static void gizmos_update_transform(mat4 in , mat4 out){
+    glm_mat4_copy(in, out);
+    glm_scale(out,VEC3(1,1,1));
+}
 
 void draw_gizmos(){
     
@@ -434,7 +439,16 @@ void draw_gizmos(){
             if(selected_element != NULL){
                 TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
                 if(transform)
-                    glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
+                    gizmos_update_transform(transform->model_matrix, actual_gizmo->model_mat);
+            }
+            draw_simgle_model(actual_gizmo);
+        }
+        if(gizmos_draw_scale){
+            Model* actual_gizmo = array_get(&gizmos,2);
+            if(selected_element != NULL){
+                TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+                if(transform)
+                    gizmos_update_transform(transform->model_matrix, actual_gizmo->model_mat);
             }
             draw_simgle_model(actual_gizmo);
         }

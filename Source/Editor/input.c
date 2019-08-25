@@ -388,6 +388,7 @@ float move_ui_element_value_per_axis = 0.6;
 void grab_mode(){
     draw_translate_gizmo = true;
     draw_rotate_gizmo = false;
+    gizmos_draw_scale = false;
 
     if(key_released(&input.KEY_1)){
         grid_translate = true;
@@ -551,6 +552,8 @@ void scale_mode(){
     
     input_change_mode();
 
+    gizmos_draw_scale = true;
+
     if(editor_mode == EDITOR_DEFAULT_MODE){     
         
         vec3 move;
@@ -595,6 +598,7 @@ void default_mode(){
         
     draw_rotate_gizmo = false;
     draw_translate_gizmo = false;
+    gizmos_draw_scale = false;
 
     input_change_mode();
 
@@ -687,6 +691,7 @@ void rotate_input_mode(){
 
     draw_rotate_gizmo = true;
     draw_translate_gizmo = false;
+    gizmos_draw_scale = false;
 
     if(key_released(&input.R)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
