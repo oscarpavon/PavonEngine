@@ -3,6 +3,8 @@
 
 #include "../windows_manager.h"
 
+#include "../../Engine/content_manager.h"
+
 EditorWindow window_content_browser;
 
 void editor_window_content_init();
@@ -10,6 +12,8 @@ void editor_window_content_init();
 void editor_window_content_browser_draw();
 
 void editor_window_content_browser_input_update();
+
+void content_create_thumbnail(const char * brute_content_path,ContentType type);
 
 typedef struct ContentView{
     bool new_update;

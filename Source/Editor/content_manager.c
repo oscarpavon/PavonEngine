@@ -3,6 +3,7 @@
 #include "Serialization/json_writer.h"
 #include "ProjectManager/project_manager.h"
 #include <string.h>
+#include "Windows/content_browser.h"
 
 void content_manager_serialize_static_mesh_values(){
     new_text_token("name","Content Name");
@@ -74,6 +75,7 @@ void content_manager_import(const char* path){
             }     
             if (strcmp(&path[n + 1], "png") == 0)
             {   
+                content_create_thumbnail(path,CONTENT_TYPE_TEXTURE);
                 content_manager_create_engine_binary(path,CONTENT_TYPE_TEXTURE);
                 continue;
             }

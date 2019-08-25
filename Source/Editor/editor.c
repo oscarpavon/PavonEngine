@@ -383,7 +383,7 @@ void editor_init(){
     array_init(&editor_models, sizeof(Model),100);
     array_init(&editor_textures, sizeof(Texture),100);    
     
-    content_manager_init();
+    
     editor_command_queue_init();
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);

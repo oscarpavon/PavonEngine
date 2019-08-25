@@ -280,6 +280,49 @@ void content_view_create_model_view(int image_size){
 
 }
 
+const char* content_manager_current_content_path;
+ContentType content_manager_current_content_type;
+void content_create_draw_image_thumbnail(int size){
+    glfwMakeContextCurrent(window_content_browser.window);
+
+    glClearColor(1,0,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Texture texture;
+    texture_load(content_manager_current_content_path,&texture);
+
+    DrawData data;
+    data.shader = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
+    data.vertex = UI_plane_vertex_buffer_id;
+    data.texture = texture.id;
+    camera_heigth_screen = 128;
+    camera_width_screen  = 128;
+    draw_two_dimention_element(&data, (vec2){64,64}, (vec2){64,64}, (vec4){1,1,1,1});
+    camera_heigth_screen = 720;
+    camera_width_screen = 1280;
+}
+
+void content_create_thumbnail(const char * brute_content_path,ContentType type){
+    content_manager_current_content_path = brute_content_path;
+    content_manager_current_content_type = type;
+    switch (type)
+    {
+    case CONTENT_TYPE_TEXTURE:
+        {
+            render_to_texture(128,content_create_draw_image_thumbnail);
+            char directory[sizeof(pavon_the_game_project_folder) + 150];
+            memset(directory,0,sizeof(directory));
+            sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","texute",01,".png");
+            texture_current_export_name = directory;
+            //texture_export(128);
+            break;
+        }
+    
+    default:
+        break;
+    }
+
+}
 
 void content_browser_window_create_contents_thumbnails(){
 
@@ -288,9 +331,7 @@ void content_browser_window_create_contents_thumbnails(){
     array_init(&models_loaded_for_create_thumbnails,sizeof(Model),array_content_views.count+5);
     Array* prev_model_array = actual_model_array;
     actual_model_array = &models_loaded_for_create_thumbnails;
-    int model_offset = 0;
-
-   
+    int model_offset = 0;   
 
     memcpy(&saved_camera,&main_camera,sizeof(CameraComponent));
 

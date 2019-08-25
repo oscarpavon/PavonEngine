@@ -93,6 +93,7 @@ void window_update_windows_input(){
         if(!window_content_browser.initialized){
             window_create(&window_content_browser,&window_editor_main,"Engine");
             editor_window_content_init();
+            content_manager_init();
         }
         editor_window_content_browser_draw();
         glfwMakeContextCurrent(window_editor_main.window);
