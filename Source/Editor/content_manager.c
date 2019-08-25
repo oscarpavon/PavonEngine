@@ -57,6 +57,7 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
         content_manager_load_content(glb_path);
         editor_init_new_added_element();
     }
+
 }
 
 
@@ -71,9 +72,13 @@ void content_manager_import(const char* path){
                 content_manager_create_engine_binary(path,CONTENT_TYPE_STATIC_MESH);
                 continue;
             }     
-             if (strcmp(&path[n + 1], "png") == 0)
+            if (strcmp(&path[n + 1], "png") == 0)
             {   
                 content_manager_create_engine_binary(path,CONTENT_TYPE_TEXTURE);
+                continue;
+            }
+            if (strcmp(&path[n + 1], "pb") == 0)
+            { 
                 continue;
             }
             LOG("File not support: %s \n",path);

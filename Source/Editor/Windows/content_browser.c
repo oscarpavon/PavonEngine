@@ -12,6 +12,7 @@
 #include "../commands.h"
 
 #include "../content_manager.h"
+#include "../../Engine/content_manager.h"
  
 
 Model content_model;
@@ -136,12 +137,11 @@ void editor_window_content_browser_input_update(){
             command_character_count = 0;
             editor_window_content_browser_hint = false;
             if(editor_content_view_found){
-                char directory[sizeof(pavon_the_game_project_folder) + 30];
-                sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name);
-
-                editor_add_element_with_model_path(directory);
-                window_set_focus(&window_editor_main);
-               
+                char directory[sizeof(pavon_the_game_project_folder) + 34];
+                sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
+                content_manager_load_content(directory);
+                editor_init_new_added_element();
+                window_set_focus(&window_editor_main);               
                 return;
             }
 
