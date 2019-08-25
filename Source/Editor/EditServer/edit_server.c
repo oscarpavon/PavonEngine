@@ -77,7 +77,7 @@ void edit_server_create_socket(){
 
 void edit_server_init(){
     LOG("Edit Server start\n");
-    thread_new_detached(edit_server_create_socket,NULL);
+    thread_new_detached(edit_server_create_socket,NULL,"EditServer");
 }
 
 void edit_server_finish(){
