@@ -432,7 +432,7 @@ struct ContentViewPort{
 void editor_window_content_browser_new_content_view(const char* name, struct ContentViewPort* view_port){
     ContentView new_content_view;
     memset(&new_content_view,0,sizeof(ContentView));
-    strcpy(new_content_view.content_name,name);
+    memcpy(new_content_view.content_name, name,strlen(name)-3);    
 
     new_content_view.text_size = 12;
 
@@ -453,6 +453,9 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
     new_content_view.position[1] = view_port->last_y;
 
     new_content_view.pixel_size = 64 + 12;
+
+    
+
     array_add(&array_content_views,&new_content_view);
 }
 
@@ -483,10 +486,7 @@ void editor_window_content_get_models_path(){
 
     char directories_names[directory_count][30];
     memset(directories_names,0,sizeof(directories_names));
-
-    char texture_names[directory_count][30];
-    memset(texture_names,0,sizeof(texture_names));
-    
+   
     char model_names[directory_count][30];
     memset(model_names,0,sizeof(model_names));
     for (int i = 0; i < directory_count; i++)
@@ -500,7 +500,7 @@ void editor_window_content_get_models_path(){
 
                 if (strcmp(&de->d_name[n + 1], "pb") == 0)
                 {                      
-                    memcpy(&model_names[model_count][0], de->d_name,strlen(de->d_name)-3);
+                    strcpy(&model_names[model_count][0],de->d_name);
                     model_count++;
                     continue;
                 }            
@@ -510,8 +510,7 @@ void editor_window_content_get_models_path(){
 
     closedir(dr);
 
-    array_init(&array_finding_content,sizeof(ContentView*),(model_count+texture_count));
-    array_init(&array_content_views,sizeof(ContentView),(model_count+texture_count));
+    array_init(&array_finding_content,sizeof(ContentView*),(model_count));
     
     struct ContentViewPort new_view_port;
     memset(&new_view_port,0,sizeof(struct ContentViewPort));
@@ -520,13 +519,10 @@ void editor_window_content_get_models_path(){
     new_view_port.max_x = camera_width_screen / 128;
     for (int i = 0; i < model_count; i++)
     {
+
         editor_window_content_browser_new_content_view(model_names[i],&new_view_port);
-
     }
 
-    for(int i = 0; i<texture_count ; i++){
-        //editor_window_content_browser_new_content_view(texture_names[i],&new_view_port);
-    }
     
 }
 
@@ -546,7 +542,7 @@ void editor_window_content_init(){
 
     editor_window_content_get_models_path();    
    // content_browser_window_create_contents_thumbnails();
-    editor_window_content_browser_load_thumbnails();
+    //editor_window_content_browser_load_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

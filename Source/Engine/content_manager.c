@@ -2,6 +2,10 @@
 #include <string.h>
 #include "engine.h"
 
+void content_manager_load_content_to_file(const char* path, File* file){
+    
+}
+
 void content_manager_load_content(const char* path){
 
     File new_file;

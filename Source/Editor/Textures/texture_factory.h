@@ -3,7 +3,10 @@
 
 #include "../../Engine/model.h"
 
-const char* texture_current_export_name;
+typedef struct{
+    unsigned char* data;
+    u8 size;
+}TextureCreated;
 
 void init_UV_draw(Model* model);
 
@@ -20,5 +23,9 @@ void scale_UV(float size, Model* model, vec2 UV_offset);
 void translate_UV(vec3 tranlation, Model* model, vec2 UV_offset);
 
 void texture_export(int size);
+
+TextureCreated texture_create_to_memory(u8 format, u8 size);
+
+const char* texture_current_export_name;
 
 #endif // !TEXTURES_RENDER_H

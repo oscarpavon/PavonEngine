@@ -31,6 +31,31 @@ void texture_export(int size){
 }
 
 
+u8 texture_jpg_export_offset = 0;
+void texture_write_function(void *context, void *data, int size){
+    unsigned char* byte_data = (unsigned char*)context;
+    memcpy(&byte_data[texture_jpg_export_offset],data,size);
+    texture_jpg_export_offset += size;
+}
+
+TextureCreated texture_create_to_memory(u8 format, u8 size){
+    if(textures_pixels[0] == NULL){
+        LOG("Texture not exported\n");
+        return;
+    }
+    TextureCreated new_texture;
+    unsigned char* new_image = malloc(size * size * 3);
+    stbi_write_jpg_to_func(&texture_write_function,new_image,size,size,3,textures_pixels[0],70);
+    
+    free(textures_pixels[0]);
+/*     FILE* new_file_test = fopen("/home/pavon/PavonTheGame/thumbnail_created.jpg","w");
+    fwrite(new_image,texture_jpg_export_offset,1,new_file_test);
+    fclose(new_file_test); */
+    new_texture.data = new_image;
+    new_texture.size = texture_jpg_export_offset;
+    texture_jpg_export_offset = 0;
+    return new_texture;
+}
 
 
 void draw_texture(int size,int atlas_texture_size)

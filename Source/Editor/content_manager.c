@@ -4,6 +4,7 @@
 #include "ProjectManager/project_manager.h"
 #include <string.h>
 #include "Windows/content_browser.h"
+#include "Textures/texture_factory.h"
 
 void content_manager_serialize_static_mesh_values(){
     new_text_token("name","Content Name");
@@ -49,10 +50,18 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
     }
     fwrite(brute_file,sizeof(unsigned char),file_size,engine_binary);
 
+    content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
+    TextureCreated created_texture = texture_create_to_memory(1,128);
+    u32 thumnail_size = (u32)created_texture.size;
+    fwrite(&thumnail_size,sizeof(u32),1,engine_binary);
+    u32 thumnail_type = 35;
+    fwrite(&thumnail_type,sizeof(u32),1,engine_binary);
+    fwrite(created_texture.data,created_texture.size,1,engine_binary);
+
     fclose(engine_binary);
     fclose(content_brute_file);
 
-    remove(name);
+    //remove(name);
 
     if(type == CONTENT_TYPE_STATIC_MESH){
         content_manager_load_content(glb_path);
@@ -75,7 +84,7 @@ void content_manager_import(const char* path){
             }     
             if (strcmp(&path[n + 1], "png") == 0)
             {   
-                content_create_thumbnail(path,CONTENT_TYPE_TEXTURE);
+                
                 content_manager_create_engine_binary(path,CONTENT_TYPE_TEXTURE);
                 continue;
             }
