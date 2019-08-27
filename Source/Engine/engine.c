@@ -263,6 +263,7 @@ void engine_render_thread_init(){
         ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
         exectute->command(NULL);
     }
+    init_camera();  
     
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);   
@@ -318,8 +319,6 @@ void engine_init_data(){
 
     array_init(&array_animation_play_list,sizeof(Animation*),100);
     
-    init_camera();   
-
     touch_position_x = -1;
     touch_position_x = -1;
 

@@ -451,15 +451,26 @@ void frame_clean(){
 }
 
 void editor_draw(){
+    
     glClearColor(COLOR(editor_background_color));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     if(isDrawUV)
         draw_UV();
 
-    draw_count_of_draw_call();
+     if(controlling_camera_component){
+        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
+        update_main_camera_with_camera_component_values(camera);
+    }
+
+    for_each_element_components(&update_per_frame_component);
+   
+    test_elements_occlusion();
+    check_meshes_distance();   
+
+    //draw_count_of_draw_call();
     
-    draw_tringles_count();       
+    //draw_tringles_count();       
 
     if(update_vertex_bones_gizmos)
         update_joints_vertex();
@@ -468,7 +479,7 @@ void editor_draw(){
 
     frame_clean();
 
-    draw_gizmos();
+    //draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
          draw_gui();         
@@ -485,16 +496,6 @@ void editor_update(){
 
     editor_command_queue_udpate();    
     
-    if(controlling_camera_component){
-        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
-        update_main_camera_with_camera_component_values(camera);
-    }
-
-    for_each_element_components(&update_per_frame_component);
-   
-    test_elements_occlusion();
-    check_meshes_distance();   
-
     play_animation_list();
 
     //collision_test();    
@@ -504,6 +505,10 @@ void editor_update(){
 
 void editor_render_init(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    
+    init_vec3(-6,0,2, main_camera.position);
+    update_look_at();  
+    
     init_gizmos();
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
@@ -528,9 +533,6 @@ void editor_init(){
     
     editor_command_queue_init();   
     
-    init_vec3(-6,0,2, main_camera.position);
-    update_look_at();       
-
     element_id_count = 0;    
 
     editor_mode = EDITOR_DEFAULT_MODE;
