@@ -182,7 +182,8 @@ void add_editor_native_element(const char* native_element_name){
 
 void editor_finish(){
     editor_running = false;
-    engine_running = false;        
+    engine_running = false;   
+    glfwTerminate();//send to render thread     
     clear_engine_memory();
     edit_server_finish();
 }

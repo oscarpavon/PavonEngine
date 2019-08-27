@@ -26,10 +26,11 @@ int main(){
         
         window_update_windows_input();    
         
-        editor_update();        
+        editor_update();    
+        usleep(2*1000);    
         
     }
     editor_finish();
     
-    glfwTerminate();
+    
 }

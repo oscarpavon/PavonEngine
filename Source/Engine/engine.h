@@ -127,7 +127,7 @@ ComponentType current_loaded_component_type;
 
 int action_pointer_id_count;
 
-
+u8 FPS;
 //
 // Global array containers
 //

@@ -269,11 +269,27 @@ void engine_render_thread(){
     engine_render_thread_init();
     engine_user_render_thread_init();
     engine_initialized = true;
+    float render_frame_time = 0;
+    float disired_frame_time = 0.016f;
+    
+    u8 frames = 0;
+    float frame_second = 0;
     while (engine_running)
     {
-        time_start();
+        render_frame_time += time_delta;
+        
+        time_start();  
+
         engine_user_render_thread_draw();
-        time_end();        
+
+        time_end();
+        frame_second += time_elapsed_time;
+        if(frame_second >= 1000){
+            FPS = frames * (1000.f / frame_second);
+            frames = 0;
+            frame_second = 0;
+        }else
+            frames++;
     }    
 }
 

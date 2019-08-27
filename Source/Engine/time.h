@@ -4,6 +4,7 @@
 #include <time.h>
 
 float time_delta;
+double time_elapsed_time;
 
 void time_update_delta();
 
