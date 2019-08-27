@@ -7,6 +7,7 @@ set(core
         Engine/threads.c
         Engine/Renderer/OpenGL/opengl_es2.c
         Engine/LOD_system.c
+        Engine/time.c
          )
          
 set(engine_source

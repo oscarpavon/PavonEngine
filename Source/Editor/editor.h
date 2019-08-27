@@ -83,8 +83,6 @@ void editor_add_element_with_model_path(const char*);
 
 void editor_init_new_added_element();
 
-struct timespec diff(struct timespec start, struct timespec end);
-
 char* editor_mode_show_text;
 char* editor_sub_mode_text;
 

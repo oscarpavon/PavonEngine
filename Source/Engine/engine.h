@@ -23,7 +23,7 @@
 #include "memory.h"
 #include "gui.h"
 
-#include <time.h>
+#include "time.h"
 
 #include "shader.h"
 
@@ -185,18 +185,5 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 }
 
-
-static struct timespec diff(struct timespec start, struct timespec end)
-{
-    struct timespec temp;
-    if ((end.tv_nsec-start.tv_nsec)<0) {
-        temp.tv_sec = end.tv_sec-start.tv_sec-1;
-        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-    } else {
-        temp.tv_sec = end.tv_sec-start.tv_sec;
-        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
-    }
-    return temp;
-}
 
 #endif //PAVON_ENGINE_H

@@ -257,7 +257,7 @@ void editor_load_level(const char* name){
 
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
-    struct timespec result = diff(time1,time2);
+    struct timespec result = time_diffence(time1,time2);
     long millisecond = result.tv_nsec / 1000000;
     LOG("Level loading time: %ld ms\n",millisecond);
 } 
@@ -468,9 +468,9 @@ void editor_draw(){
     test_elements_occlusion();
     check_meshes_distance();   
 
-    //draw_count_of_draw_call();
+    draw_count_of_draw_call();
     
-    //draw_tringles_count();       
+    draw_tringles_count();       
 
     if(update_vertex_bones_gizmos)
         update_joints_vertex();
@@ -479,7 +479,7 @@ void editor_draw(){
 
     frame_clean();
 
-    //draw_gizmos();
+    draw_gizmos();
 
     if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
          draw_gui();         
@@ -505,7 +505,7 @@ void editor_update(){
 
 void editor_render_init(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-    
+
     init_vec3(-6,0,2, main_camera.position);
     update_look_at();  
     
@@ -516,6 +516,11 @@ void editor_render_init(){
     init_text_renderer();    
 
     texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
+
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
 }
 
 void editor_init(){

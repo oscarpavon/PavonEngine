@@ -264,16 +264,12 @@ void engine_render_thread_init(){
         exectute->command(NULL);
     }
     init_camera();  
-    
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);   
     
     init_gui();
 
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
 }
 
 void engine_render_thread(){
@@ -282,16 +278,9 @@ void engine_render_thread(){
     engine_initialized = true;
     while (engine_running)
     {
-        struct timespec time1, time2;
-        int temp;
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-        
+        time_start();
         engine_user_render_thread_draw();
-
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-
-        struct timespec result = diff(time1,time2);
-        frame_time = result.tv_nsec / 1000000;  
+        time_end();        
     }    
 }
 
@@ -403,7 +392,9 @@ void update_translation(vec3 translation){
     TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
     if(!transform)
         return;
-    glm_translate(transform->model_matrix, translation);
+    vec3 translation_per_frame;
+    glm_vec3_scale(translation,time_delta,translation_per_frame);
+    glm_translate(transform->model_matrix, translation_per_frame);
     glm_vec3_copy(transform->model_matrix[3], transform->position);
     for(int i = 0; i<selected_element->components.count; i++){
         ComponentDefinition* component = array_get(&selected_element->components,i);

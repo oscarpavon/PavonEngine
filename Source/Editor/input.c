@@ -319,6 +319,8 @@ void editor_input_camera_rotate_control(){
         camera_rotate_control(0, horizontalAngle);
     }
 }
+
+
 void editor_input_navigate(){
     input_change_mode();
 
@@ -331,19 +333,21 @@ void editor_input_navigate(){
 
 
     vec3 velocity_vector;
-    glm_vec3_copy((vec3){camera_velocity,camera_velocity,camera_velocity}, velocity_vector);
+    float velocity_per_frame = camera_velocity * time_delta;
+    glm_vec3_copy((vec3){velocity_per_frame,velocity_per_frame,velocity_per_frame}, velocity_vector);
+    bool update = false;
 
     if(input.E.pressed){
         vec3 move;
         glm_vec3_mul(velocity_vector,main_camera.up,move);
         glm_vec3_add(main_camera.position,move,main_camera.position);
-        update_look_at();
+        update = true;
     }
     if(input.Q.pressed){
         vec3 move;
         glm_vec3_mul(velocity_vector,main_camera.up,move);
         glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update_look_at();
+        update = true;
     }
 
     editor_input_camera_rotate_control();
@@ -352,13 +356,13 @@ void editor_input_navigate(){
         vec3 move;
         glm_vec3_mul(velocity_vector,main_camera.front,move);
         glm_vec3_add(main_camera.position,move,main_camera.position);
-        update_look_at();
+        update = true;
     }
     if(input.S.pressed){
         vec3 move;
         glm_vec3_mul(velocity_vector,main_camera.front,move);
         glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update_look_at();
+        update = true;
     }
     if(input.D.pressed){
         vec3 cross;
@@ -367,7 +371,7 @@ void editor_input_navigate(){
         vec3 move;
         glm_vec3_mul(velocity_vector, cross, move );
         glm_vec3_add(main_camera.position, move,main_camera.position);
-        update_look_at();
+        update = true;
     }
     if(input.A.pressed){
         vec3 cross;
@@ -376,9 +380,12 @@ void editor_input_navigate(){
         vec3 move;
         glm_vec3_mul(velocity_vector, cross, move );
         glm_vec3_sub(main_camera.position, move,main_camera.position);
-        update_look_at();
+        update = true;
     }
     
+
+    if(update)
+        update_look_at();
 }
 
 float move_object_value = 0.02;
