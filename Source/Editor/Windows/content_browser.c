@@ -251,10 +251,8 @@ void editor_window_content_browser_draw(){
                 }
             }                
             
-        }
-            
-        
-       
+        }           
+    
     }    
 
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
@@ -440,6 +438,7 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
     new_content_view.draw.vertex = UI_plane_vertex_buffer_id;
     new_content_view.size[0] = 58;
     new_content_view.size[1] = 58;
+
     if(view_port->object_x_count < view_port->max_x){            
         if(view_port->object_x_count  != 0)
             view_port->last_x += 128;
@@ -452,9 +451,7 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
     new_content_view.position[0] = view_port->last_x;
     new_content_view.position[1] = view_port->last_y;
 
-    new_content_view.pixel_size = 64 + 12;
-
-    
+    new_content_view.pixel_size = 64 + 12;    
 
     array_add(&array_content_views,&new_content_view);
 }
@@ -468,8 +465,7 @@ void editor_window_content_get_models_path(){
     sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
     DIR *dr = opendir(directory);
 
-    if (dr == NULL)
-    {
+    if (dr == NULL){
         LOG("Could not open current directory\n");
         return;
     }
@@ -482,10 +478,6 @@ void editor_window_content_get_models_path(){
 
     rewinddir(dr);
     int model_count = 0;
-    int texture_count = 0;
-
-    char directories_names[directory_count][30];
-    memset(directories_names,0,sizeof(directories_names));
    
     char model_names[directory_count][30];
     memset(model_names,0,sizeof(model_names));
@@ -511,6 +503,8 @@ void editor_window_content_get_models_path(){
     closedir(dr);
 
     array_init(&array_finding_content,sizeof(ContentView*),(model_count));
+    array_init(&array_content_views,sizeof(ContentView),(model_count));
+    
     
     struct ContentViewPort new_view_port;
     memset(&new_view_port,0,sizeof(struct ContentViewPort));
@@ -519,14 +513,23 @@ void editor_window_content_get_models_path(){
     new_view_port.max_x = camera_width_screen / 128;
     for (int i = 0; i < model_count; i++)
     {
-
         editor_window_content_browser_new_content_view(model_names[i],&new_view_port);
-    }
-
+    }    
     
 }
 
+void editor_window_content_browser_update(){
+    if(!window_content_browser.initialized){            
+            editor_window_content_init();
+            content_manager_init();
+    }
+    editor_window_content_browser_draw();
+    glfwMakeContextCurrent(window_editor_main.window);
+}
+
 void editor_window_content_init(){
+    window_create(&window_content_browser,&window_editor_main,"Engine");
+
     glfwMakeContextCurrent(window_content_browser.window);
 
     glfwSetKeyCallback(window_content_browser.window, key_callback);
@@ -539,14 +542,11 @@ void editor_window_content_init(){
     //glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-
     editor_window_content_get_models_path();    
-   // content_browser_window_create_contents_thumbnails();
+    //content_browser_window_create_contents_thumbnails();
     //editor_window_content_browser_load_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    ContentView* content_view = array_get(&array_content_views,0);
     
 }
 

@@ -453,6 +453,10 @@ void frame_clean(){
 
 void editor_draw(){
     
+    if(editor_window_content_open){
+        editor_window_content_browser_update();
+    }
+
     glClearColor(COLOR(editor_background_color));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     

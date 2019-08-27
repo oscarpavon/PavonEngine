@@ -15,6 +15,8 @@ void editor_window_content_browser_input_update();
 
 void content_create_thumbnail(const char * brute_content_path,ContentType type);
 
+void editor_window_content_browser_update();
+
 typedef struct ContentView{
     bool new_update;
     DrawData draw;    

@@ -3,7 +3,6 @@
 
 #include <string.h>
 
-
 #define INIT_MEMORY 7500000
 
 
@@ -41,6 +40,8 @@ int memory_marker;
 int previous_marker;
 
 int actual_free_memory;
+
+
 
 StackMemory vertex_memory;
 StackMemory indices;

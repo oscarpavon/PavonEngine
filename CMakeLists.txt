@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_C_STANDARD_REQUIRED ON)
-
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-incompatible-pointer-types")
 add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)

@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "log.h"
 
+#include <stdbool.h>
+
+bool memory_lock;
+
 void init_engine_memory(){
     engine_memory = malloc(INIT_MEMORY);
     memset(engine_memory,0,INIT_MEMORY);
@@ -52,15 +56,23 @@ void free_stack_to_market(StackMemory* stack){
 }
 
 void* allocate_memory(int size){
+    if(memory_lock==true){
+        LOG("Memory locket\n");
+    }
+    while(memory_lock){}
+
+    memory_lock = true;
     if(actual_free_memory > size){
         memory_used += size;
         actual_free_memory -= size;
         void* allocated_memory = &engine_memory[memory_marker];
         previous_marker = memory_marker;
         memory_marker += size;
+        memory_lock = false;
         return allocated_memory;
     }   
     LOG("ERROR engine memory\n");
+   
     return NULL;
 }
 
