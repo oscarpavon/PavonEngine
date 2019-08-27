@@ -30,18 +30,6 @@ Array editor_textures;
 
 Array LOD_models;
 
-struct timespec diff(struct timespec start, struct timespec end)
-{
-    struct timespec temp;
-    if ((end.tv_nsec-start.tv_nsec)<0) {
-        temp.tv_sec = end.tv_sec-start.tv_sec-1;
-        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-    } else {
-        temp.tv_sec = end.tv_sec-start.tv_sec;
-        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
-    }
-    return temp;
-}
 
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
@@ -192,7 +180,9 @@ void add_editor_native_element(const char* native_element_name){
 }
 
 
-void editor_finish(){        
+void editor_finish(){
+    editor_running = false;
+    engine_running = false;        
     clear_engine_memory();
     edit_server_finish();
 }
@@ -370,50 +360,6 @@ void editor_add_element_with_model_path(const char* path){
     editor_init_new_added_element();
 }
 
-void editor_init(){
-    editor_running = true;
-        
-    actual_model_array = &editor_models;
-    actual_elements_array = &editor_elements;
-    current_textures_array = &editor_textures;
-
-    array_init(&selected_elements_id,sizeof(unsigned short int),100);
-    array_init(&LOD_models,sizeof(Model),10);
-    array_init(&editor_elements,sizeof(Element),100);
-    array_init(&editor_models, sizeof(Model),100);
-    array_init(&editor_textures, sizeof(Texture),100);    
-    
-    
-    editor_command_queue_init();
-
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-    
-    init_vec3(-6,0,2, main_camera.position);
-    update_look_at();   
-
-    init_gizmos();
-
-    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
-
-    init_text_renderer();       
-
-    element_id_count = 0;    
-
-    editor_mode = EDITOR_DEFAULT_MODE;
-    editor_sub_mode = EDITOR_SUB_MODE_NULL;
-    
-    editor_mode_show_text = "Default Mode";
-    editor_sub_mode_text = "";
-
-    init_input();
-
-    camera_velocity = 0.04;    
-
-    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);
-
-    edit_server_init();
-}
-
 void draw_count_of_draw_call(){
     FT_Set_Pixel_Sizes(face, 0, 12);
     render_text("Draw:" , 0 + ((camera_width_screen/2)-500) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
@@ -493,36 +439,7 @@ void collision_test(){
 
 }
 
-void editor_update(){
-
-    editor_command_queue_udpate();
-
-    glClearColor(COLOR(editor_background_color));
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    if(isDrawUV)
-        draw_UV();        
-
-    if(controlling_camera_component){
-        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
-        update_main_camera_with_camera_component_values(camera);
-    }
-
-    for_each_element_components(&update_per_frame_component);
-   
-    test_elements_occlusion();
-    check_meshes_distance();
-
-    draw_count_of_draw_call();
-    
-    draw_tringles_count();
-
-    play_animation_list();
-    if(update_vertex_bones_gizmos)
-        update_joints_vertex();
-
-    draw_elements(&frame_draw_elements);
-
+void frame_clean(){
     //clean frame
     array_clean(&models_for_test_occlusion);
     array_clean(&array_static_meshes_pointers);
@@ -531,6 +448,25 @@ void editor_update(){
     array_clean(&array_skinned_mesh_for_distance_test);
     for_each_element_components(&clean_component_value);
     //end clean frame
+}
+
+void editor_draw(){
+    glClearColor(COLOR(editor_background_color));
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    if(isDrawUV)
+        draw_UV();
+
+    draw_count_of_draw_call();
+    
+    draw_tringles_count();       
+
+    if(update_vertex_bones_gizmos)
+        update_joints_vertex();
+
+    draw_elements(&frame_draw_elements);
+
+    frame_clean();
 
     draw_gizmos();
 
@@ -540,9 +476,76 @@ void editor_update(){
 
     text_renderer_loop();
 
-    //editor_message("editor message");       
+    //editor_message("editor message");    
 
-    //collision_test();
+    glfwSwapBuffers(window_editor_main.window);
+}
 
+void editor_update(){
+
+    editor_command_queue_udpate();    
+    
+    if(controlling_camera_component){
+        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
+        update_main_camera_with_camera_component_values(camera);
+    }
+
+    for_each_element_components(&update_per_frame_component);
+   
+    test_elements_occlusion();
+    check_meshes_distance();   
+
+    play_animation_list();
+
+    //collision_test();    
+
+    //editor_draw();
+}
+
+void editor_render_init(){
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    init_gizmos();
+
+    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
+
+    init_text_renderer();    
+
+    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
+}
+
+void editor_init(){
+    editor_running = true;
+        
+    actual_model_array = &editor_models;
+    actual_elements_array = &editor_elements;
+    current_textures_array = &editor_textures;
+
+    array_init(&selected_elements_id,sizeof(unsigned short int),100);
+    array_init(&LOD_models,sizeof(Model),10);
+    array_init(&editor_elements,sizeof(Element),100);
+    array_init(&editor_models, sizeof(Model),100);
+    array_init(&editor_textures, sizeof(Texture),100);    
+    
+    editor_command_queue_init();   
+    
+    init_vec3(-6,0,2, main_camera.position);
+    update_look_at();       
+
+    element_id_count = 0;    
+
+    editor_mode = EDITOR_DEFAULT_MODE;
+    editor_sub_mode = EDITOR_SUB_MODE_NULL;
+    
+    editor_mode_show_text = "Default Mode";
+    editor_sub_mode_text = "";
+
+    init_input();
+
+    camera_velocity = 0.04;  
+
+    edit_server_init();
+
+    engine_user_render_thread_init = &editor_render_init;
+    engine_user_render_thread_draw = &editor_draw;
     
 }

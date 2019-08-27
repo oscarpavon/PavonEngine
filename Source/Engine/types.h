@@ -41,6 +41,9 @@ typedef struct ActionPointer{
     Action action;
 }ActionPointer;
 
+typedef struct{
+    void (*command)(void*);
+}ExecuteCommand;
 
 
 #endif // !ENGINE_DATA_TYPES

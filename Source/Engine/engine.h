@@ -41,16 +41,12 @@
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
-static const char* const level_folder = "../assets/Game/levels/";
-static const char* const gui_folder = "../assets/gui/";
-
-int action_pointer_id_count;
-Array actions_pointers;
-void add_action_function(void(*f)(void));
-
 void engine_init();
+void engine_init_render();
 void engine_loop();
 void init_game_engine();
+
+void add_action_function(void(*f)(void));
 
 /* Draw array of engine elements, 
 if in editor the shader need color multiplication uniform otherwise 
@@ -103,10 +99,19 @@ void new_empty_model_in_array(Array* array);
 
 void check_meshes_distance();
 
+static const char* const level_folder = "../assets/Game/levels/";
+static const char* const gui_folder = "../assets/gui/";
+
 //
 // Global variables
 //
+
+void(*engine_user_render_thread_draw)(void);
+void(*engine_user_render_thread_init)(void);
+
 bool engine_running;
+
+bool engine_initialized;
 
 bool should_close;
 
@@ -120,6 +125,9 @@ unsigned int components_id_count;
 
 ComponentType current_loaded_component_type;
 
+int action_pointer_id_count;
+
+
 //
 // Global array containers
 //
@@ -129,6 +137,10 @@ Array engine_native_models;
 Array array_models_loaded;
 
 Array array_hirarchical_level_of_detail;
+
+Array array_render_thread_init_commmands;
+
+Array actions_pointers;;
 
 //
 // Global pointers
@@ -171,6 +183,20 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     mat4 projection_view;
     glm_mul(main_camera.projection , main_camera.view, projection_view);
     glm_mul(projection_view , model , mvp_out);
+}
+
+
+static struct timespec diff(struct timespec start, struct timespec end)
+{
+    struct timespec temp;
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        temp.tv_sec = end.tv_sec-start.tv_sec-1;
+        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+    } else {
+        temp.tv_sec = end.tv_sec-start.tv_sec;
+        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    return temp;
 }
 
 #endif //PAVON_ENGINE_H

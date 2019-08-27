@@ -5,12 +5,7 @@
 
 #include "editor.h"
 
-int main(){
-
-    init_engine_memory();
-
-    windows_manager_init();    
-
+void editor_render_thread_init(){
     window_create(&window_editor_main, NULL, "Engine"); 
 
     glfwSetKeyCallback(window_editor_main.window, key_callback);
@@ -22,31 +17,37 @@ int main(){
 
     compiles_standard_shaders();
     draw_loading_screen();
-    glfwSwapBuffers(window_editor_main.window);
-    
+    glfwSwapBuffers(window_editor_main.window);    
+}
+
+int main(){
+
+    init_engine_memory();
+
+    windows_manager_init();    
+
     engine_init();
+
+    ExecuteCommand command;
+    command.command = &editor_render_thread_init;
+    array_add(&array_render_thread_init_commmands,&command);
+
     editor_init();
 
+    engine_init_render();    
+
+    while(!engine_initialized){}//wait for initilization
+
+    
     while (!glfwWindowShouldClose(window_editor_main.window))
     {
         window_update_envents();
-
-        struct timespec time1, time2;
-        int temp;
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
         
         window_update_windows_input();    
         
-        editor_update();   
-
-        glfwSwapBuffers(window_editor_main.window);       
-                
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-
-        struct timespec result = diff(time1,time2);
-        frame_time = result.tv_nsec / 1000000;        
+        editor_update();        
+        
     }
-    editor_running = false;
     editor_finish();
     
     glfwTerminate();

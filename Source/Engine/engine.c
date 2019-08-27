@@ -251,17 +251,54 @@ void compiles_standard_shaders(){
     shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 }
 
+
+void engine_render_thread_init(){
+    if(array_render_thread_init_commmands.count == 0){
+        LOG("Critical, no render thread initialize commmand\n");
+        debug_break();
+    }
+
+    for (u8 i = 0; i < array_render_thread_init_commmands.count; i++)
+    {
+        ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
+        exectute->command(NULL);
+    }
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);   
+    
+    init_gui();
+
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
+}
+
 void engine_render_thread(){
+    engine_render_thread_init();
+    engine_user_render_thread_init();
+    engine_initialized = true;
     while (engine_running)
     {
+        struct timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
         
+        engine_user_render_thread_draw();
+
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+
+        struct timespec result = diff(time1,time2);
+        frame_time = result.tv_nsec / 1000000;  
     }    
 }
 
-void engine_init(){
-    engine_running = true;
-    thread_new_detached(engine_render_thread,NULL,"Render");
-    
+void engine_init_render(){
+    thread_new_detached(engine_render_thread,NULL,"Render");    
+}
+
+void engine_init_data(){
     array_init(&texts,sizeof(char[100]),50);
     array_init(&textures_paths,sizeof(char[20]),50);
     array_init(&array_models_loaded,sizeof(Model),100);
@@ -281,24 +318,21 @@ void engine_init(){
 
     array_init(&array_animation_play_list,sizeof(Animation*),100);
     
-    init_camera();
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);   
-    
-    init_gui();    
+    init_camera();   
 
     touch_position_x = -1;
     touch_position_x = -1;
 
     action_pointer_id_count = 0;    
 
-    actual_standard_fragment_shader = standart_fragment_shader;    
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
+    actual_standard_fragment_shader = standart_fragment_shader;  
+}
 
+void engine_init(){
+    engine_running = true;
+    array_init(&array_render_thread_init_commmands,sizeof(ExecuteCommand),5);
+   
+    engine_init_data();   
 }
 
 
