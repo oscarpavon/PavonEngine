@@ -204,7 +204,7 @@ void init_UV_draw(Model *model)
         array_add(&selected_model->vertex_array, position);
     }
 
-    init_model_gl_buffers(selected_model);
+    GPU_buffers_create_for_model(selected_model);
     selected_model->index_buffer_id = model->index_buffer_id;
     selected_model->index_array.count = model->index_array.count;
 

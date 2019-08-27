@@ -24,7 +24,7 @@ int main(){
     draw_loading_screen();
     glfwSwapBuffers(window_editor_main.window);
     
-    init_engine();
+    engine_init();
     editor_init();
 
     while (!glfwWindowShouldClose(window_editor_main.window))

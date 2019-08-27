@@ -136,7 +136,7 @@ void android_main(struct android_app* main_app){
     eglSwapBuffers(display,surface);
 
 
-    init_engine();
+    engine_init();
 
     init_game_engine();
 

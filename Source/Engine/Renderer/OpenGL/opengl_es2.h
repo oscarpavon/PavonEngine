@@ -9,6 +9,7 @@ void draw_two_dimention_element(DrawData* data, vec2 position , vec2 size, vec4 
 
 void load_texture_to_GPU(Texture*);
 
+void GPU_buffers_create_for_model(Model* model);
 
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);

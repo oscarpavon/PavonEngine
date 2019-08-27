@@ -176,7 +176,7 @@ void load_mesh(cgltf_mesh* mesh){
     actual_vertex_array = &selected_model->vertex_array;
     actual_index_array = &selected_model->index_array;
     load_primitive(&mesh->primitives[i]);
-    init_model_gl_buffers(selected_model);
+    GPU_buffers_create_for_model(selected_model);
     models_parsed++;
   }  
 

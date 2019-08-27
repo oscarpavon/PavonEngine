@@ -117,7 +117,7 @@ void editor_generate_and_add_cube_element(){
     
     geometry_sphere_create_vertices(64);
 
-    init_model_gl_buffers(selected_model); 
+    GPU_buffers_create_for_model(selected_model); 
     
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
 
@@ -497,33 +497,11 @@ void editor_update(){
 
     editor_command_queue_udpate();
 
-    if( window_editor_main.focus){
-       
-
-        if(is_editing_blender_file){
-            if(!blender_file_checked){
-            int result = system("blender -b ../assets/test_blender.blend --python-exit-code 2 --disable-abort-handler -P ../scripts/Blender/check_is_saved.py");
-            if(result != 0){
-                LOG("Edited \n");
-            }
-            if(is_blender_file_saved){
-                LOG("reimport mesh blender file\n");
-            }
-            blender_file_checked = true;
-            }
-            
-        }
-    }else{
-        blender_file_checked = false;
-       
-    }
-
     glClearColor(COLOR(editor_background_color));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     if(isDrawUV)
-        draw_UV();    
-    
+        draw_UV();        
 
     if(controlling_camera_component){
         CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);

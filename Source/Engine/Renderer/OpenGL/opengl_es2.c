@@ -6,6 +6,20 @@
 #include "../../../Engine/camera.h"
 #include "../../../Engine/engine.h"
 
+void GPU_buffers_create_for_model(Model* model){
+    Array* vertex_array = &model->vertex_array;
+    Array* index_array = &model->index_array;
+
+    glGenBuffers(1,&model->vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER,model->vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex) , vertex_array->data, GL_STATIC_DRAW);
+
+    glGenBuffers(1,&model->index_buffer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_array->count * sizeof(u8), index_array->data , GL_STATIC_DRAW);
+
+}
+
 void load_texture_to_GPU(Texture* texture){
     glGenTextures(1, &texture->id);
     glBindTexture(GL_TEXTURE_2D, texture->id);

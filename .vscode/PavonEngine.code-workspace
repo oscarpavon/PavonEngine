@@ -99,7 +99,8 @@
 			"gui.h": "c",
 			"texture_factory.h": "c",
 			"object_select.h": "c",
-			"files_parser.h": "c"
+			"files_parser.h": "c",
+			"gl2.h": "c"
 		},
 		"C_Cpp.default.intelliSenseMode": "gcc-x64"
 	}

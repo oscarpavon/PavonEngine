@@ -17,6 +17,10 @@
 
 #include "LOD_system.h"
 
+Array engine_models;
+Array engine_elements;
+Array engine_textures;
+
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
@@ -236,21 +240,6 @@ void draw_elements(Array *elements){
     array_clean(elements);
 }
 
-void init_model_gl_buffers(struct Model* new_model){    
-
-    Array* vertex_array = &new_model->vertex_array;
-    Array* index_array = &new_model->index_array;
-
-    glGenBuffers(1,&new_model->vertex_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER,new_model->vertex_buffer_id);
-    glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex) , vertex_array->data, GL_STATIC_DRAW);
-
-    glGenBuffers(1,&new_model->index_buffer_id);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_array->count * sizeof(u8), index_array->data , GL_STATIC_DRAW);
-
-}
-
 void set_element_position(Element* element, vec3 position){    
     glm_mat4_identity(element->transform->model_matrix);
     glm_translate(element->transform->model_matrix,position);
@@ -262,21 +251,25 @@ void compiles_standard_shaders(){
     shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 }
 
-void init_engine(){
+void engine_render_thread(){
+    while (engine_running)
+    {
+        
+    }    
+}
+
+void engine_init(){
+    engine_running = true;
+    thread_new_detached(engine_render_thread,NULL,"Render");
+    
     array_init(&texts,sizeof(char[100]),50);
     array_init(&textures_paths,sizeof(char[20]),50);
     array_init(&array_models_loaded,sizeof(Model),100);
 
-    init_camera();
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);   
-    
-    init_gui();    
+    array_init(&engine_native_models,sizeof(Model),100);   
 
     array_init(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
-    
-    action_pointer_id_count = 0;
+        
     array_init(&actions_pointers,sizeof(ActionPointer),20);
 
     array_init(&frame_draw_elements,sizeof(void*),100);
@@ -288,10 +281,17 @@ void init_engine(){
 
     array_init(&array_animation_play_list,sizeof(Animation*),100);
     
+    init_camera();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);   
+    
+    init_gui();    
+
     touch_position_x = -1;
     touch_position_x = -1;
 
-    array_init(&engine_native_models,sizeof(Model),100);
+    action_pointer_id_count = 0;    
 
     actual_standard_fragment_shader = standart_fragment_shader;    
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
@@ -301,9 +301,6 @@ void init_engine(){
 
 }
 
-Array models;
-Array elements;
-Array textures;
 
 void init_game_engine(){
     should_close = false;    
@@ -312,12 +309,12 @@ void init_game_engine(){
     
     element_id_count = 0;   
 
-    array_init(&models, sizeof(Model),100);
-    array_init(&elements,sizeof(Element),100);
-    array_init(&textures,sizeof(Texture),100);
-    actual_model_array = &models;
-    actual_elements_array = &elements;
-    current_textures_array = &textures;
+    array_init(&engine_models, sizeof(Model),100);
+    array_init(&engine_elements,sizeof(Element),100);
+    array_init(&engine_textures,sizeof(Texture),100);
+    actual_model_array = &engine_models;
+    actual_elements_array = &engine_elements;
+    current_textures_array = &engine_textures;
 
     actual_standard_fragment_shader = standart_fragment_shader;
 
@@ -362,7 +359,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     Texture new_texture;
     texture_load(color_texture_path,&new_texture);
 
-    init_model_gl_buffers(selected_model);
+    GPU_buffers_create_for_model(selected_model);
 
     selected_model->texture.id = new_texture.id;
 
