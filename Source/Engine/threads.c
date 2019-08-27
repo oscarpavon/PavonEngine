@@ -1,6 +1,6 @@
 #include "threads.h"
 
-#include "pthread.h"
+
 #include "log.h"
 
 void thread_new_function(void*(*function)(void*), void* argument){

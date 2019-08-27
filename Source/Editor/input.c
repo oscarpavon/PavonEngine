@@ -302,7 +302,7 @@ void editor_input_camera_rotate_control(){
         horizontalAngle *= 0.05;
         verticalAngle *= 0.05;
         
-        camera_rotate_control(0, horizontalAngle);
+        camera_rotate_control(0, horizontalAngle*time_delta);
     }
     if(input.K.pressed){
          horizontalAngle += camera_width_screen/2 - rotate_value ;
@@ -316,7 +316,7 @@ void editor_input_camera_rotate_control(){
         horizontalAngle *= 0.05;
         verticalAngle *= 0.05;
 
-        camera_rotate_control(0, horizontalAngle);
+        camera_rotate_control(0, horizontalAngle*time_delta);
     }
 }
 
@@ -388,7 +388,7 @@ void editor_input_navigate(){
         update_look_at();
 }
 
-float move_object_value = 0.02;
+float move_object_value = 0.0005;
 bool grid_translate = false;
 vec2 move_ui_element_value;//per pixel
 float move_ui_element_value_per_axis = 0.6;
@@ -403,19 +403,20 @@ void grab_mode(){
     if(!grid_translate){
         if(key_released(&input.I)){
             if(editor_mode == EDITOR_DEFAULT_MODE)
-                move_object_value += 0.04;
+                move_object_value += 0.00005;
 
             if(editor_mode == EDITOR_MODE_GUI_EDITOR)
                 move_ui_element_value_per_axis += 0.1;
         }
         if(key_released(&input.O)){
             if(editor_mode == EDITOR_DEFAULT_MODE)
-                move_object_value -= 0.04;
+                move_object_value -= 0.00005;
 
             if(editor_mode == EDITOR_MODE_GUI_EDITOR)
                 move_ui_element_value_per_axis -= 0.1;
         }
     }
+    
     input_change_mode();
         
 

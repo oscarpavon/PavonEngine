@@ -12,6 +12,7 @@
 
 #include "menus.h"
 
+#include "commands.h"
 
 GLuint text_fragment_shader;
 GLuint text_vertex_shader;
@@ -365,10 +366,10 @@ void draw_frame_time()
 
     gcvt(frame_time, 6, buf);
     render_text(buf, 0 + ((camera_width_screen / 2) - 150) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    render_text("ms", 0 + ((camera_width_screen / 2) - 140) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    render_text("ms", 0 + ((camera_width_screen / 2) - 130) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
-#include "commands.h"
+
 void text_renderer_loop()
 {
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)

@@ -86,4 +86,6 @@ GLuint static inline create_engine_shader(GLuint vertex, GLuint fragment){
 }
 
 GLuint load_shader_file(const char* path, GLenum shader_type);
+
+void shader_compile_standard_shaders();
 #endif 

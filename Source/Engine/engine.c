@@ -245,13 +245,6 @@ void set_element_position(Element* element, vec3 position){
     glm_translate(element->transform->model_matrix,position);
 }
 
-void compiles_standard_shaders(){
-    standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
-    shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
-}
-
-
 void engine_render_thread_init(){
     if(array_render_thread_init_commmands.count == 0){
         LOG("Critical, no render thread initialize commmand\n");

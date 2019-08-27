@@ -491,6 +491,21 @@ void editor_draw(){
 
     glfwSwapBuffers(window_editor_main.window);
 }
+void editor_main_window_init(){
+    window_create(&window_editor_main, NULL, "Engine"); 
+
+    glfwSetKeyCallback(window_editor_main.window, key_callback);
+	glfwSetCursorPosCallback(window_editor_main.window, mouse_callback);
+	glfwSetMouseButtonCallback(window_editor_main.window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main.window, window_resize_callback);
+    glfwSetCharCallback(window_editor_main.window, character_callback);
+    glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
+
+    shader_compile_standard_shaders();
+
+    draw_loading_screen();
+    glfwSwapBuffers(window_editor_main.window);    
+}
 
 void editor_update(){
 
@@ -507,7 +522,7 @@ void editor_render_init(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     init_vec3(-6,0,2, main_camera.position);
-    update_look_at();  
+    update_look_at();
     
     init_gizmos();
 
@@ -552,7 +567,14 @@ void editor_init(){
 
     edit_server_init();
 
+
+    //render thread initialization
+    ExecuteCommand command;
+    command.command = &editor_main_window_init;
+    array_add(&array_render_thread_init_commmands,&command);
+
     engine_user_render_thread_init = &editor_render_init;
     engine_user_render_thread_draw = &editor_draw;
     
 }
+
