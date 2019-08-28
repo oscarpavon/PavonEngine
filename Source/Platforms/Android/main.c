@@ -1,22 +1,19 @@
-
-
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
-#include "ThirdParty/cglm/cglm.h"
+#include "../../ThirdParty/cglm/cglm.h"
 
-#include "utils.h"
-
+#include "../../Engine/utils.h"
 
 #include "audio.h"
-#include "camera.h"
+#include "../../Engine/camera.h"
 
-#include "engine.h"
+#include "../../Engine/engine.h"
 #include "input.h"
-#include "file_loader.h"
-#include "gui.h"
-#include "Engine/level.h"
-#include "game.h"
+#include "../../Engine/file_loader.h"
+#include "../../Engine/gui.h"
+#include "../../Engine/level.h"
+#include "../../Engine/game.h"
 
 static EGLint const attribute_list[] = {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -45,7 +42,7 @@ EGLint w = 0;
 EGLint h = 0;
 
 
-void create_window(struct android_app * app){
+void android_init_window(struct android_app * app){
 
 
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -92,7 +89,7 @@ void handle_cmd(struct android_app *pApp, int32_t cmd) {
     switch (cmd) {
         case APP_CMD_INIT_WINDOW: {
 
-            create_window(pApp);
+            android_init_window(pApp);
 
 
             pApp->userData = pApp;
@@ -126,11 +123,11 @@ void android_main(struct android_app* main_app){
             }
         }
     }
-    init_engine_memory();
+    //init_engine_memory();
 
     assets_manager = app->activity->assetManager;
 
-    init_audio_manager();
+   /*  init_audio_manager();
 
     draw_loading_screen();
     eglSwapBuffers(display,surface);
@@ -157,7 +154,7 @@ void android_main(struct android_app* main_app){
     }
 
 
-    init_game();
+    init_game(); */
 
     while(!should_close){
 
@@ -169,8 +166,8 @@ void android_main(struct android_app* main_app){
             }
         }
 
-        update_game();
-        engine_loop();
+        /* update_game();
+        engine_loop(); */
 
         eglSwapBuffers(display,surface);
 

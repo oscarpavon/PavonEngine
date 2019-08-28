@@ -6,9 +6,9 @@
 
 #include "audio.h"
 
-#include "file_loader.h"
-#include "utils.h"
-#include "Engine/log.h"
+#include "../../Engine/file_loader.h"
+#include "../../Engine/utils.h"
+#include "../../Engine/log.h"
 
 SLObjectItf engine_object;
 SLEngineItf audio_engine;
