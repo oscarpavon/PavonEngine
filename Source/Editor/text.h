@@ -12,8 +12,8 @@
 #define DIRECTORY_TEXTURES 1
 
 
-void init_text_renderer();
-void render_text(const char *text, float x, float y, float sx, float sy , bool mark);
+void text_renderer_init();
+void text_render(const char *text, float x, float y, float sx, float sy , bool mark);
 
 void render_text_in_screen_space( int text_size , const char* text, int x , int y);
 
@@ -22,7 +22,7 @@ void draw_directory_file_type(unsigned short int type);
 
 void text_renderer_loop();
 
-void update_text_renderer_window_size();
+void text_renderer_update_pixel_size();
 
 
 typedef enum{

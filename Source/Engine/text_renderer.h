@@ -4,8 +4,8 @@
 #include <ft2build.h>
 #include <freetype/freetype.h>
 
-void update_text_renderer_window_size();
-void init_text_renderer();
+void text_renderer_update_pixel_size();
+void text_renderer_init();
 
 FT_Face face;
 

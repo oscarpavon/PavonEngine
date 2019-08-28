@@ -260,7 +260,7 @@ void editor_window_content_browser_draw(){
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     {
         set_text_size(12);
-        render_text(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
     }
 
 

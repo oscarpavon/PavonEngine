@@ -20,7 +20,7 @@ void render_text_in_screen_space( int text_size , const char* text, int x , int 
     float text_position_y = (((camera_heigth_screen/2)-text_size)+y) * pixel_size_y;
 
     FT_Set_Pixel_Sizes(face, 0, text_size);
-    render_text(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
+    text_render(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
 }
 
 unsigned short int directory_show_type = 50;
@@ -140,7 +140,7 @@ void list_directory_files(TextMenu *menu)
 
         if (menu->show){
             if(directories_names[i][0] != '\0')
-            render_text(&directories_names[i][0], 0 + (-(camera_width_screen / 2)) * pixel_size_x, 1 - (y_pos)*pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+            text_render(&directories_names[i][0], 0 + (-(camera_width_screen / 2)) * pixel_size_x, 1 - (y_pos)*pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
         }
     }
 }
@@ -164,7 +164,7 @@ void draw_element_text_list(TextMenu *menu, const char *text, int i)
         }
     }
 
-    render_text(text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 1 - (y_pos + 100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
+    text_render(text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 1 - (y_pos + 100) * pixel_size_y, pixel_size_x, pixel_size_y, can_mark);
 }
 
 void draw_directory_files()
@@ -195,41 +195,41 @@ void editor_text_init(){
 void draw_editor_mode()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text(editor_mode_show_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render(editor_mode_show_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
 void draw_editor_sub_mode()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text(editor_sub_mode_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 40) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render(editor_sub_mode_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 40) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
 
 void draw_engine_memory()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text("Memory:", 0 + ((camera_width_screen / 2) - 400) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render("Memory:", 0 + ((camera_width_screen / 2) - 400) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
     char buf[5];
     float total_memory_in_kb = INIT_MEMORY / 1024;
     gcvt(total_memory_in_kb, 6, buf);
-    render_text(buf, 0 + ((camera_width_screen / 2) - 340) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    render_text("/", 0 + ((camera_width_screen / 2) - 305) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render(buf, 0 + ((camera_width_screen / 2) - 340) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render("/", 0 + ((camera_width_screen / 2) - 305) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 
     float free_memory = actual_free_memory / 1024;
     gcvt(free_memory, 6, buf);
-    render_text(buf, 0 + ((camera_width_screen / 2) - 300) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    render_text("kb", 0 + ((camera_width_screen / 2) - 265) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render(buf, 0 + ((camera_width_screen / 2) - 300) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render("kb", 0 + ((camera_width_screen / 2) - 265) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
 void draw_frame_time()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text("Frame:", 0 + ((camera_width_screen / 2) - 200) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render("Frame:", 0 + ((camera_width_screen / 2) - 200) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
     char buf[5];
 
     gcvt(frame_time, 6, buf);
-    render_text(buf, 0 + ((camera_width_screen / 2) - 150) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    render_text("ms", 0 + ((camera_width_screen / 2) - 140) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render(buf, 0 + ((camera_width_screen / 2) - 150) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    text_render("ms", 0 + ((camera_width_screen / 2) - 140) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
 }
 
 #include "commands.h"
@@ -238,7 +238,7 @@ void text_renderer_loop()
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     {
         set_text_size(12);
-        render_text(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
     }
 
     draw_engine_memory();

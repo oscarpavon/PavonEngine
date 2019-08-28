@@ -2,28 +2,34 @@
 #include "engine.h"
 #include "text_renderer.h"
 
-GLuint text_fragment_shader;
-GLuint text_vertex_shader;
+FT_GlyphSlot glyph;
 
-GLuint text_texture_id;
-GLuint text_vertex_buffer_id;
-
-GLuint text_shader_id;
-
-FT_GlyphSlot g;
-
-GLuint uniform_text_color_location;
+DrawData text_draw_data;
 
 
-void render_text(const char *text, float x, float y, float pixel_size_x, float pixel_size_y, bool mark)
+void text_texture_create_buffer()
+{
+
+    glGenTextures(1, &text_draw_data.texture);
+    glBindTexture(GL_TEXTURE_2D, text_draw_data.texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+}
+
+void text_render(const char *text, float x, float y, float pixel_size_x, float pixel_size_y, bool mark)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
 
-    glUseProgram(text_shader_id);
+    glUseProgram(text_draw_data.shader);
 
-    GLint uniform_color = get_uniform_location(text_shader_id, "color");
+    GLint uniform_color = get_uniform_location(text_draw_data.shader, "color");
 
     const char *p;
 
@@ -32,25 +38,25 @@ void render_text(const char *text, float x, float y, float pixel_size_x, float p
         if (FT_Load_Char(face, *p, FT_LOAD_RENDER))
             continue;
 
-        glBindTexture(GL_TEXTURE_2D, text_texture_id);
+        glBindTexture(GL_TEXTURE_2D, text_draw_data.texture);
 
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
             GL_LUMINANCE,
-            g->bitmap.width,
-            g->bitmap.rows,
+            glyph->bitmap.width,
+            glyph->bitmap.rows,
             0,
             GL_LUMINANCE,
             GL_UNSIGNED_BYTE,
-            g->bitmap.buffer);
+            glyph->bitmap.buffer);
 
         check_error("text texture");
 
-        float x2 = x + g->bitmap_left * pixel_size_x;
-        float y2 = -y - g->bitmap_top * pixel_size_y;
-        float w = g->bitmap.width * pixel_size_x;
-        float h = g->bitmap.rows * pixel_size_y;
+        float x2 = x + glyph->bitmap_left * pixel_size_x;
+        float y2 = -y - glyph->bitmap_top * pixel_size_y;
+        float w = glyph->bitmap.width * pixel_size_x;
+        float h = glyph->bitmap.rows * pixel_size_y;
 
         GLfloat box[4][4] = {
             {x2, -y2, 0, 0},
@@ -66,33 +72,33 @@ void render_text(const char *text, float x, float y, float pixel_size_x, float p
         check_error("send text color");
 
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, text_vertex_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, text_draw_data.vertex);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
         glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-        x += (g->advance.x / 64) * pixel_size_x;
-        y += (g->advance.y / 64) * pixel_size_y;
+        x += (glyph->advance.x / 64) * pixel_size_x;
+        y += (glyph->advance.y / 64) * pixel_size_y;
 
         check_error("texture error");
     }
     glEnable(GL_CULL_FACE);
 }
 
-void init_text_shader()
+void text_shaders_init()
 {
+    GLuint text_fragment_shader;
+    GLuint text_vertex_shader;
+
     text_fragment_shader = compile_shader(fragment_shader_colorized, GL_FRAGMENT_SHADER);
     text_vertex_shader = compile_shader(text_vertex_shader_source, GL_VERTEX_SHADER);
 
-    text_shader_id = create_engine_shader(text_vertex_shader, text_fragment_shader);
-
-    
-
+    text_draw_data.shader = create_engine_shader(text_vertex_shader, text_fragment_shader);       
 }
 
 
-void init_text_renderer()
+void text_renderer_init()
 {
     FT_Library ft;
 
@@ -112,44 +118,19 @@ void init_text_renderer()
         return;
     }
 
-    //close_file(&font);
-   /*  if (FT_New_Face(ft, "../NativeContent/DejaVuSerif.ttf", 0, &face))
-    {
-        LOG("Could not open font\n");
-        return;
-    } */
+    glyph = face->glyph;
 
-    g = face->glyph;
-
-    FT_Set_Pixel_Sizes(face, 0, 20);
-
-    init_text_shader();
-    create_text_texture_buffer();
-    glGenBuffers(1, &text_vertex_buffer_id);
+    text_shaders_init();
+    text_texture_create_buffer();
+    glGenBuffers(1, &text_draw_data.vertex);
 
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
-
     
 }
 
-void update_text_renderer_window_size()
+void text_renderer_update_pixel_size()
 {
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
-}
-
-
-void create_text_texture_buffer()
-{
-
-    glGenTextures(1, &text_texture_id);
-    glBindTexture(GL_TEXTURE_2D, text_texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
