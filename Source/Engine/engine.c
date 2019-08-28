@@ -17,6 +17,7 @@
 
 #include "LOD_system.h"
 
+
 Array engine_models;
 Array engine_elements;
 Array engine_textures;
@@ -294,11 +295,13 @@ void engine_init(){
     action_pointer_id_count = 0;    
 
     actual_standard_fragment_shader = standart_fragment_shader;    
+    #ifdef EDITOR
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
-
+    #endif
+    text_renderer_init(); 
 }
 
 

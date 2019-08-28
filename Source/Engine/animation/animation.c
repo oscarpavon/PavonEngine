@@ -115,7 +115,9 @@ void play_animation_list(){
         Animation* animation = ppAnimation[0];
         if(animation->time <= animation->end){
             play_animation(animation);
+            #ifdef EDITOR
             update_vertex_bones_gizmos = true;
+            #endif
         }            
         else{
             if(animation->loop)

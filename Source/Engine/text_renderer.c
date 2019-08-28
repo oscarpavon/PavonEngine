@@ -6,7 +6,6 @@ FT_GlyphSlot glyph;
 
 DrawData text_draw_data;
 
-
 void text_texture_create_buffer()
 {
 
@@ -109,8 +108,11 @@ void text_renderer_init()
     }
 
     File font;
+    #ifndef ANDROID
     load_file("../NativeContent/DejaVuSerif.ttf",&font);
-
+    #else
+    load_file("DejaVuSerif.ttf",&font);
+    #endif
     int error = FT_New_Memory_Face(ft,font.data,font.size_in_bytes,0,&face);
 
     if(error !=  0 ){
@@ -133,4 +135,12 @@ void text_renderer_update_pixel_size()
 {
     pixel_size_x = 2.0 / camera_width_screen;
     pixel_size_y = 2.0 / camera_heigth_screen;
+}
+
+void text_render_in_screen_space( int text_size , const char* text, int x , int y){
+    float text_position_x = (-(camera_width_screen/2)+x) * pixel_size_x;    
+    float text_position_y = (((camera_heigth_screen/2)-text_size)+y) * pixel_size_y;
+
+    FT_Set_Pixel_Sizes(face, 0, text_size);
+    text_render(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
 }

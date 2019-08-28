@@ -123,7 +123,7 @@ void android_main(struct android_app* main_app){
             }
         }
     }
-    //init_engine_memory();
+    init_engine_memory();
 
     assets_manager = app->activity->assetManager;
 
@@ -156,6 +156,8 @@ void android_main(struct android_app* main_app){
 
     init_game(); */
 
+    engine_init();
+    
     while(!should_close){
 
         int events;
@@ -168,7 +170,9 @@ void android_main(struct android_app* main_app){
 
         /* update_game();
         engine_loop(); */
-
+        glClearColor(1,0,0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        text_render_in_screen_space(12, "Android Test", 50, 50);
         eglSwapBuffers(display,surface);
 
 

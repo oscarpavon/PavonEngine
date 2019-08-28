@@ -13,17 +13,11 @@
 
 
 void text_renderer_init();
-void text_render(const char *text, float x, float y, float sx, float sy , bool mark);
-
-void render_text_in_screen_space( int text_size , const char* text, int x , int y);
 
 void draw_directory_files();
 void draw_directory_file_type(unsigned short int type);
 
 void text_renderer_loop();
-
-void text_renderer_update_pixel_size();
-
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,

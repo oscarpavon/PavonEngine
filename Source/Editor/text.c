@@ -13,16 +13,6 @@
 #include "menus.h"
 
 
-
-
-void render_text_in_screen_space( int text_size , const char* text, int x , int y){
-    float text_position_x = (-(camera_width_screen/2)+x) * pixel_size_x;    
-    float text_position_y = (((camera_heigth_screen/2)-text_size)+y) * pixel_size_y;
-
-    FT_Set_Pixel_Sizes(face, 0, text_size);
-    text_render(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
-}
-
 unsigned short int directory_show_type = 50;
 
 #include <dirent.h>
