@@ -1,9 +1,7 @@
 #ifndef EDITOR_TEXT_H
 #define EDITOR_TEXT_H
 
-
-#include <ft2build.h>
-#include <freetype/freetype.h>
+#include "../Engine/text_renderer.h"
 
 #include <stdbool.h>
 #include "../Engine/array.h"
@@ -26,11 +24,6 @@ void text_renderer_loop();
 
 void update_text_renderer_window_size();
 
-FT_Face face;
-
-static inline void set_text_size(float size){
-    FT_Set_Pixel_Sizes(face, 0, size);  
-}
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,

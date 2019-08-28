@@ -26,8 +26,12 @@ set(engine_source
         Engine/animation/animation.c
         Engine/Collision/collision.c
         Engine/content_manager.c
+        Engine/text_renderer.c
         ${components}
 )
+
+include(FindFreetype)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 add_library(engine
         STATIC

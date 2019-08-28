@@ -395,7 +395,8 @@ void editor_init(){
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    init_text_renderer();       
+    init_text_renderer(); 
+    editor_text_init();      
 
     element_id_count = 0;    
 

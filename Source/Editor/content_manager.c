@@ -63,7 +63,7 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
 
     //remove(name);
 
-    if(type == CONTENT_TYPE_STATIC_MESH){
+    if(type == CONTENT_TYPE_STATIC_MESH){//FIXME: create function where import and add to viewport
         content_manager_load_content(glb_path);
         editor_init_new_added_element();
     }
