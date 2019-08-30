@@ -20,7 +20,7 @@
                 }
             ],            
             "miDebuggerPath": "/usr/bin/gdb",
-            "preLaunchTask": "make"
+            //"preLaunchTask": "make"
         }
     ]
 }

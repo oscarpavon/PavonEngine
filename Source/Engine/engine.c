@@ -21,7 +21,6 @@ Array engine_models;
 Array engine_elements;
 Array engine_textures;
 
-
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
     GLuint id_copy;

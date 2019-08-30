@@ -1,0 +1,23 @@
+{
+  "configurations": {
+    "Pavon Engine Editor": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "type":    "cppdbg",
+        "request": "launch",
+        "program": "${workspaceRoot}/Binaries/Editor",
+        "args": [
+        ],
+        "cwd": "${workspaceRoot}/Binaries",
+        "environment": [
+        ],
+        "externalConsole": true,
+        "stopAtEntry": true,
+        "MIMode": "gdb",
+        "logging": {
+          "engineLogging": false
+        }
+      }
+    }
+  }
+}
