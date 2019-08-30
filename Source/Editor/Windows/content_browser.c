@@ -519,12 +519,21 @@ void editor_window_content_get_models_path(){
 }
 
 void editor_window_content_browser_update(){
-    if(!window_content_browser.initialized){            
-            editor_window_content_init();
-            content_manager_init();
+
+	if(!window_content_browser.initialized){            
+		editor_window_content_init();
+        content_manager_init();
     }
+
     editor_window_content_browser_draw();
     glfwMakeContextCurrent(window_editor_main.window);
+
+
+	if(glfwWindowShouldClose(window_content_browser.window)){
+		editor_window_content_open = false;
+		LOG("Content window close\n");
+		glfwDestroyWindow(window_content_browser.window);
+	}
 }
 
 void editor_window_content_init(){
