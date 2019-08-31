@@ -108,6 +108,7 @@ static const char* const gui_folder = "../assets/gui/";
 
 void(*engine_user_render_thread_draw)(void);
 void(*engine_user_render_thread_init)(void);
+void(*engine_user_render_thread_finish)(void);
 
 bool engine_running;
 

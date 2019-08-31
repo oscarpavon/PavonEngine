@@ -183,9 +183,9 @@ void add_editor_native_element(const char* native_element_name){
 void editor_finish(){
     editor_running = false;
     engine_running = false;   
-    glfwTerminate();//send to render thread     
     clear_engine_memory();
     edit_server_finish();
+	
 }
 
 
@@ -543,6 +543,10 @@ void editor_render_init(){
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
 }
 
+void editor_render_finish(){
+	glfwTerminate();
+}
+
 void editor_init(){
     editor_running = true;
         
@@ -580,6 +584,6 @@ void editor_init(){
 
     engine_user_render_thread_init = &editor_render_init;
     engine_user_render_thread_draw = &editor_draw;
-    
+   	engine_user_render_thread_finish = &editor_render_finish; 
 }
 

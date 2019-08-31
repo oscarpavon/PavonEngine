@@ -289,7 +289,8 @@ void engine_render_thread(){
             frame_second = 0;
         }else
             frames++;
-    }    
+    }
+	engine_user_render_thread_finish();    
 }
 
 void engine_init_render(){

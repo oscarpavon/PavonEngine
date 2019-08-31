@@ -517,6 +517,12 @@ void editor_window_content_get_models_path(){
     }    
     
 }
+void editor_window_content_browser_close_window(){
+	window_content_browser.focus = false;
+	window_content_browser.initialized = false;
+	editor_window_content_open = false;
+	array_clean(&array_content_views);	
+}
 
 void editor_window_content_browser_update(){
 
@@ -530,11 +536,12 @@ void editor_window_content_browser_update(){
 
 
 	if(glfwWindowShouldClose(window_content_browser.window)){
-		editor_window_content_open = false;
 		LOG("Content window close\n");
 		glfwDestroyWindow(window_content_browser.window);
+		editor_window_content_browser_close_window();
 	}
 }
+
 
 void editor_window_content_init(){
     window_create(&window_content_browser,&window_editor_main,"Engine");
