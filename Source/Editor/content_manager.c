@@ -64,8 +64,8 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
     //remove(name);
 
     if(type == CONTENT_TYPE_STATIC_MESH){
-        content_manager_load_content(glb_path);
-        editor_init_new_added_element();
+    //    content_manager_load_content(glb_path);
+     //   editor_init_new_added_element();
     }
 
 }

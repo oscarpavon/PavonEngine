@@ -45,6 +45,9 @@ TextureCreated texture_create_to_memory(u8 format, u8 size){
     }
     TextureCreated new_texture;
     unsigned char* new_image = malloc(size * size * 3);
+	if(!new_image){
+	debug_break();
+}
     stbi_write_jpg_to_func(&texture_write_function,new_image,size,size,3,textures_pixels[0],70);
     
     free(textures_pixels[0]);

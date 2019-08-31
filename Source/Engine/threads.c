@@ -21,3 +21,8 @@ void thread_new_detached(void*(*function)(void*), void* argument, const char* na
         LOG("ERROR detaching thread\n");
     }
 }
+
+void thread_new_job(){
+
+
+}

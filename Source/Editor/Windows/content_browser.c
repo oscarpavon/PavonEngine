@@ -306,7 +306,16 @@ void content_create_draw_image_thumbnail(int size){
     camera_heigth_screen = 720;
     camera_width_screen = 1280;
 }
-
+bool content_thumbnail_created = false;
+void content_manager_render_threar_render_to_texture(){
+render_to_texture(128,content_create_draw_image_thumbnail);
+char directory[sizeof(pavon_the_game_project_folder) + 150];
+memset(directory,0,sizeof(directory));
+sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","texute",01,".png");
+texture_current_export_name = directory;
+//texture_export(128);
+content_thumbnail_created = true;
+}
 void content_create_thumbnail(const char * brute_content_path,ContentType type){
     content_manager_current_content_path = brute_content_path;
     content_manager_current_content_type = type;
@@ -314,12 +323,12 @@ void content_create_thumbnail(const char * brute_content_path,ContentType type){
     {
     case CONTENT_TYPE_TEXTURE:
         {
-            render_to_texture(128,content_create_draw_image_thumbnail);
-            char directory[sizeof(pavon_the_game_project_folder) + 150];
-            memset(directory,0,sizeof(directory));
-            sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","texute",01,".png");
-            texture_current_export_name = directory;
-            //texture_export(128);
+			ExecuteCommand new_command;
+			new_command.executed = false;
+			new_command.command = &content_manager_render_threar_render_to_texture;
+//			array_add(&array_render_thread_commands,&new_command);
+			//while(!content_thumbnail_created)
+content_manager_render_threar_render_to_texture();
             break;
         }
     
