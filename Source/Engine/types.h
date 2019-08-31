@@ -4,12 +4,12 @@
 #ifdef EDITOR
     #include "../Editor/types.h"
 #endif 
-#ifdef ANDROID
-    #include <common.h>
+#ifdef ANDROID    
     struct android_app* app;
-#else
-    #include <stdbool.h>
 #endif
+
+#include <stdbool.h>
+
 
 #include "numbers.h"
 #include "../ThirdParty/cglm/types.h"

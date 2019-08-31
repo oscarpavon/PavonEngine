@@ -8,5 +8,7 @@ add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
-add_subdirectory(Source)
+include(FindFreetype)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+add_subdirectory(Source/Engine)
 add_subdirectory(Source/Editor)

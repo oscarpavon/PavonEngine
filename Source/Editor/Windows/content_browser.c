@@ -25,7 +25,7 @@ ContentView* editor_content_view_found = NULL;
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
 
     draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
-    render_text_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
+    text_render_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
 
 }
 
@@ -217,7 +217,7 @@ void editor_window_content_browser_draw(){
 
 
                 draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
-                render_text_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
+                text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
 
 
             }
@@ -265,7 +265,7 @@ void editor_window_content_browser_draw(){
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     {
         set_text_size(12);
-        render_text(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
     }
 
 

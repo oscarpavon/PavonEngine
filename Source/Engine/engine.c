@@ -17,6 +17,7 @@
 
 #include "LOD_system.h"
 
+
 Array engine_models;
 Array engine_elements;
 Array engine_textures;
@@ -219,7 +220,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
 void update_viewport_size(){
     #ifdef EDITOR
-    update_text_renderer_window_size();
+    text_renderer_update_pixel_size();
     update_camera_aspect_ratio();
     #endif // EDITOR    
 }
@@ -342,6 +343,8 @@ void engine_init(){
 	array_init(&array_render_thread_commands,sizeof(ExecuteCommand),100);
    
     engine_init_data();   
+
+    text_renderer_init();
 }
 
 

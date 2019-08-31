@@ -1,9 +1,7 @@
 #ifndef EDITOR_TEXT_H
 #define EDITOR_TEXT_H
 
-
-#include <ft2build.h>
-#include <freetype/freetype.h>
+#include "../Engine/text_renderer.h"
 
 #include <stdbool.h>
 #include "../Engine/array.h"
@@ -14,23 +12,12 @@
 #define DIRECTORY_TEXTURES 1
 
 
-void init_text_renderer();
-void render_text(const char *text, float x, float y, float sx, float sy , bool mark);
-
-void render_text_in_screen_space( int text_size , const char* text, int x , int y);
+void text_renderer_init();
 
 void draw_directory_files();
 void draw_directory_file_type(unsigned short int type);
 
 void text_renderer_loop();
-
-void update_text_renderer_window_size();
-
-FT_Face face;
-
-static inline void set_text_size(float size){
-    FT_Set_Pixel_Sizes(face, 0, size);  
-}
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,

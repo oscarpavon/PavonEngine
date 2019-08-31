@@ -45,7 +45,7 @@ void deselect_all(){
 
 void editor_message(const char* message){
     set_text_size(12);
-    render_text(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
+    text_render(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
 }
 
 void editor_add_HLOD_element(HLODCluster* cluster){
@@ -363,12 +363,12 @@ void editor_add_element_with_model_path(const char* path){
 
 void draw_count_of_draw_call(){
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text("Draw:" , 0 + ((camera_width_screen/2)-500) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    text_render("Draw:" , 0 + ((camera_width_screen/2)-500) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
     char buf[5]; 
     float count = frame_draw_elements.count;
     gcvt(count, 6, buf);
     if(count != 0)
-    render_text(buf , 0 + ((camera_width_screen/2)-440) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    text_render(buf , 0 + ((camera_width_screen/2)-440) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 
 }
 
@@ -383,12 +383,12 @@ void draw_tringles_count(){
     }
 
     FT_Set_Pixel_Sizes(face, 0, 12);
-    render_text("Tris:" , 0 + ((camera_width_screen/2)-600) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    text_render("Tris:" , 0 + ((camera_width_screen/2)-600) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
     char buf[7]; 
     float count = triangles;
     gcvt(count, 7, buf);
     if(count != 0)
-    render_text(buf , 0 + ((camera_width_screen/2)-560) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    text_render(buf , 0 + ((camera_width_screen/2)-560) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 
 }
 
@@ -533,7 +533,7 @@ void editor_render_init(){
 
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    init_text_renderer();    
+    text_renderer_init();    
 
     texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
 

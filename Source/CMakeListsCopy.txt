@@ -123,3 +123,23 @@ if(ANDROID)
                 OpenSLES
                 ) 
 endif(ANDROID)
+
+
+
+set(CMAKE_CURRENT_BINARY_DIR ${PROJECT_SOURCE_DIR})
+
+ExternalProject_Add(FREETYPE
+                    SOURCE_DIR /home/pavon/sources/freetype2/
+                    DOWNLOAD_COMMAND ""
+                    UPDATE_COMMAND ""                
+                    INSTALL_COMMAND ""
+                    PREFIX=${CMAKE_CURRENT_BINARY_DIR}/freetype
+                    CMAKE_ARGS
+                    "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+                    "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
+                    "-DBUILD_SHARED_LIBS=ON"
+        )
+
+#ExternalProject_Get_Property(FREETYPE PROJECT_SOURCE_DIR)
+
+message("-----> Tool chain file ${CMAKE_TOOLCHAIN_FILE}")
