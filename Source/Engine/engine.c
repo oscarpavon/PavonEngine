@@ -278,7 +278,18 @@ void engine_render_thread(){
         render_frame_time += time_delta;
         
         time_start();  
-
+		int executed_commmand_count = 0;	
+		for(u8 i = 0; i<array_render_thread_commands.count; i++){
+			ExecuteCommand* command = array_get(&array_render_thread_commands,i);
+			if(command->executed == false){
+			command->command(NULL);
+			command->executed = true;
+			executed_commmand_count++;
+			}
+		}
+		if(executed_commmand_count==0){
+			array_clean(&array_render_thread_commands);
+		}
         engine_user_render_thread_draw();
 
         time_end();
@@ -328,6 +339,7 @@ void engine_init_data(){
 void engine_init(){
     engine_running = true;
     array_init(&array_render_thread_init_commmands,sizeof(ExecuteCommand),5);
+	array_init(&array_render_thread_commands,sizeof(ExecuteCommand),100);
    
     engine_init_data();   
 }

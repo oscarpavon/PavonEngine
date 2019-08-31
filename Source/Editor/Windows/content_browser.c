@@ -122,7 +122,14 @@ void selection_create_hint(struct Hint* out){
     
 
 }
-
+void editor_window_content_add_content_render_thread(){
+	
+                char directory[sizeof(pavon_the_game_project_folder) + 34];
+                sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
+                content_manager_load_content(directory);
+                editor_init_new_added_element();
+                window_set_focus(&window_editor_main);               
+}
 void editor_window_content_browser_input_update(){
      if(key_released(&input.F)){
         if(editor_window_content_browser_hint){
@@ -139,11 +146,11 @@ void editor_window_content_browser_input_update(){
             command_character_count = 0;
             editor_window_content_browser_hint = false;
             if(editor_content_view_found){
-                char directory[sizeof(pavon_the_game_project_folder) + 34];
-                sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
-                content_manager_load_content(directory);
-                editor_init_new_added_element();
-                window_set_focus(&window_editor_main);               
+				//need to send command to render thread
+				ExecuteCommand new_command;
+				new_command.executed = false;
+				new_command.command = editor_window_content_add_content_render_thread;
+				array_add(&array_render_thread_commands,&new_command);
                 return;
             }
 

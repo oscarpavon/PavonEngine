@@ -140,6 +140,8 @@ Array array_models_loaded;
 Array array_hirarchical_level_of_detail;
 
 Array array_render_thread_init_commmands;
+Array array_render_thread_commands;
+
 
 Array actions_pointers;;
 
