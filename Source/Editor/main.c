@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include "windows_manager.h"
-#include "../Engine/engine.h"
-#include "input.h"
-
 #include "editor.h"
 
 int main(){

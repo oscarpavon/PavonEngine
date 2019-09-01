@@ -100,6 +100,7 @@ void new_empty_model_in_array(Array* array);
 
 void check_meshes_distance();
 
+void engine_add_texture_from_memory_to_selected_element(void* data, u8 size);
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 

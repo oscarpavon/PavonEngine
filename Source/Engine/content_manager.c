@@ -44,7 +44,13 @@ void content_manager_load_content(const char* path){
         
         break;
     }
-    
+   	case CONTENT_TYPE_TEXTURE:{
+		engine_add_texture_from_memory_to_selected_element(new_file.data+20,data_size);	
+		LOG("Texture need load function\n");	
+		break;
+
+
+	} 
     default:
         break;
     }

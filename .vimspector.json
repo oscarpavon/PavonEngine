@@ -11,8 +11,8 @@
         "cwd": "${workspaceRoot}/Binaries",
         "environment": [
         ],
-        "externalConsole": true,
-        "stopAtEntry": true,
+        "externalConsole": false,
+        "stopAtEntry": false,
         "MIMode": "gdb",
         "logging": {
           "engineLogging": false

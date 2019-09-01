@@ -3,6 +3,7 @@
 
 #include <GLES2/gl2.h>
 
+#include "numbers.h"
 typedef struct Image{
   unsigned short int width;
   unsigned short int heigth;
@@ -20,4 +21,5 @@ void free_image(Image*);
 
 int texture_load(const char* path, Texture*);
 
+int texture_load_from_memory(Texture* texture,u8 size,void* data);
 #endif

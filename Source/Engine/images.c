@@ -5,24 +5,39 @@
 #include "file_loader.h"
 #include "log.h"
 
-int image_load(const char* path, Image* image){
-    File new_file;
-
-    if( load_file(path,&new_file) == -1 ){
-        LOG("Image not loaded: %s\n",path);
-        return -1;
-    }
-
+int image_load_from_memory(Image* image,void* data, u8 size){	
     int width, height, comp, req_comp;
     req_comp = 3;
 
-    unsigned char* decoded = stbi_load_from_memory(new_file.data, (int)new_file.size_in_bytes, &width, &height, &comp, req_comp);
-    free(new_file.data);
-
+    unsigned char* decoded = stbi_load_from_memory(data, size, &width, &height, &comp, req_comp);
+	if(decoded == NULL){
+	LOG("Image not decoded\n");
+		return -1;
+	}
     image->heigth = (unsigned short)height;
     image->width = (unsigned short)width;
     image->pixels_data = decoded;
     return 0;
+}
+
+int image_load(const char* path, Image* image){
+    File new_file;
+    if( load_file(path,&new_file) == -1 ){
+        LOG("Image not loaded: %s\n",path);
+        return -1;
+    }
+	image_load_from_memory(image,new_file.data,new_file.size_in_bytes);
+	close_file(&new_file);
+    return 0;
+}
+int texture_load_from_memory(Texture* texture,u8 size,void* data){
+	memset(texture,0,sizeof(Texture));
+	if(image_load_from_memory(&texture->image,data,size)== -1){
+		return -1;
+	}
+	
+    load_texture_to_GPU(texture); 
+	return 0;
 }
 
 int texture_load(const char* path, Texture* new_texture){

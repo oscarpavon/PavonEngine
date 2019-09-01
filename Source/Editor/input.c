@@ -388,10 +388,11 @@ void editor_input_navigate(){
         update_look_at();
 }
 
-float move_object_value = 0.0005;
+float move_object_value = 0.5;
 bool grid_translate = false;
 vec2 move_ui_element_value;//per pixel
 float move_ui_element_value_per_axis = 0.6;
+
 void grab_mode(){
     draw_translate_gizmo = true;
     draw_rotate_gizmo = false;

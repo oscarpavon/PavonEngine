@@ -92,6 +92,42 @@ void new_empty_model(){
 
 }
 
+
+void engine_select_element_add_texture(Texture* texture){
+
+    array_add(current_textures_array,&texture);
+    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
+
+    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+     
+    if(mesh){
+        if(mesh->meshes.count >= 1){
+            int id = textures_paths.count-1;
+            array_add(&mesh->textures,&id);
+            for(int i = 1; i<mesh->meshes.count; i++){
+                u8* model_id = array_get(&mesh->meshes,i);
+                Model* model = array_get(actual_model_array,*model_id);
+                model->texture.id = texture_loaded->id;
+                u8 id = textures_paths.count-1;
+                array_add(&mesh->textures,&id);
+            }
+        }
+        return;
+    }    
+    
+    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    int id = textures_paths.count-1;
+    Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
+    skin_component->mesh->texture.id = last_texturer->id;
+}
+void engine_add_texture_from_memory_to_selected_element(void* data, u8 size){
+	Texture new_texture;
+	texture_load_from_memory(&new_texture,size,data);
+	
+    array_add(&textures_paths,"from_memory");
+	engine_select_element_add_texture(&new_texture);
+}
+
 void add_texture_to_selected_element_with_image_path(const char* image_path){
 
     if(selected_element == NULL){
@@ -106,36 +142,10 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     Texture new_texture;
     memset(&new_texture,0,sizeof(Texture));
     texture_load(image_path,&new_texture);
-    
-    
-    array_add(current_textures_array,&new_texture);
 
     array_add(&textures_paths,image_path);
-    
-    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
-
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-     
-    if(mesh){
-        if(mesh->meshes.count >= 1){
-            int id = textures_paths.count-1;
-            array_add(&mesh->textures,&id);
-            for(int i = 1; i<mesh->meshes.count; i++){
-                unsigned int* model_id = array_get(&mesh->meshes,i);
-                Model* model = array_get(actual_model_array,*model_id);
-                model->texture.id = texture_loaded->id;
-                int id = textures_paths.count-1;
-                array_add(&mesh->textures,&id);
-            }
-        }
-        LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
-        return;
-    }    
-    
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-    int id = textures_paths.count-1;
-    Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
-    skin_component->mesh->texture.id = last_texturer->id;
+    engine_select_element_add_texture(&new_texture);
+	LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
 }
 
 void load_simple_image(const char* path){
