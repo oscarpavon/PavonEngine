@@ -7,5 +7,5 @@
 
 void content_manager_import(const char* path);
 void content_manager_init();
-
+static u32 content_GUID_count = 0;
 #endif

@@ -15,20 +15,28 @@ void content_manager_serialize_static_mesh(){
 }
 
 void content_manager_create_engine_binary(const char* name, ContentType type){
+	content_GUID_count += 1;	
+		
 	File brute_file;
 	load_file(name,&brute_file);
 
     char glb_path[strlen(name) + 4];
     sprintf(glb_path,"%s",name);
     sprintf(&glb_path[strlen(glb_path)-4],"%s",".pb");
-    FILE* engine_binary = fopen(glb_path,"wb");
+   
+   	FILE* engine_binary = fopen(glb_path,"wb");
 
+	//Header
     fprintf(engine_binary,"pvnB");
     u32 version = 1;
     fwrite(&version,sizeof(u32),1,engine_binary);
 
-    u32 binary_total_size = brute_file.size_in_bytes + 20;
+    u32 binary_total_size = brute_file.size_in_bytes + 24;
     fwrite(&binary_total_size,sizeof(u32),1,engine_binary);
+
+	//GUID
+	u32 GUID = content_GUID_count;
+	fwrite(&GUID,sizeof(u32),1,engine_binary);
 
 
     fwrite(&brute_file.size_in_bytes,sizeof(u32),1,engine_binary);// + engine file JSON
@@ -39,15 +47,15 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
 
     fwrite(brute_file.data,1,brute_file.size_in_bytes,engine_binary);
   
-if(type == CONTENT_TYPE_TEXTURE){	
-		Image new_image;
-  if(image_load_from_memory(&new_image,brute_file.data,brute_file.size_in_bytes) == -1){
-
-	LOG("ERRO: No image loaded\n");
-  }else{
-  LOG("Image to engine binary readed\n");
-  }
-}
+	if(type == CONTENT_TYPE_TEXTURE){
+			Image new_image;
+	  if(image_load_from_memory(&new_image,brute_file.data,brute_file.size_in_bytes) == -1){
+	
+		LOG("ERRO: No image loaded\n");
+	  }else{
+	  LOG("Image to engine binary readed\n");
+	  }
+	}
   
     /* 
 	content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
@@ -114,7 +122,8 @@ void content_manager_import(const char* path){
 }
 
 void content_manager_init(){
-     struct dirent *de; // Pointer for directory entry
+    
+	struct dirent *de; // Pointer for directory entry
 
     char directory[sizeof(pavon_the_game_project_folder) + 60];
     memset(directory,0,sizeof(directory));
