@@ -6,7 +6,7 @@ void content_manager_load_content_to_file(const char* path, File* file){
     
 }
 
-void content_manager_load_content(const char* path){
+int content_manager_load_content(const char* path){
 
     File new_file;
     load_file(path,&new_file);
@@ -58,7 +58,7 @@ void content_manager_load_content(const char* path){
    
 
     close_file(&new_file);
-
+	return content_type;
 }
 
 void content_manager_create_static_mesh(const char* path){

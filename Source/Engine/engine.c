@@ -3,9 +3,7 @@
 //
 
 #include "engine.h"
-
-#include "gui.h"
-#include "shader.h"
+#include "gui.h" #include "shader.h"
 
 #include "file_loader.h"
 
@@ -94,16 +92,16 @@ void new_empty_model(){
 
 void engine_select_element_add_texture(Texture* texture){
 
-    array_add(current_textures_array,&texture);
+    array_add(current_textures_array,texture);
     Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
 
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
      
     if(mesh){
         if(mesh->meshes.count >= 1){
-            int id = textures_paths.count-1;
+            u8 id = textures_paths.count-1;
             array_add(&mesh->textures,&id);
-            for(int i = 1; i<mesh->meshes.count; i++){
+            for(u8 i = 1; i<mesh->meshes.count; i++){
                 u8* model_id = array_get(&mesh->meshes,i);
                 Model* model = array_get(actual_model_array,*model_id);
                 model->texture.id = texture_loaded->id;
@@ -115,7 +113,7 @@ void engine_select_element_add_texture(Texture* texture){
     }    
     
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-    int id = textures_paths.count-1;
+    u8 id = textures_paths.count-1;
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 }
@@ -295,6 +293,7 @@ void engine_render_thread(){
 			   if(engine_client_render_thread_initialized){
 					engine_client_initialize_render_thread(); 
 					engine_render_thread_init();
+					update_look_at();
 					engine_user_render_thread_initialized_in_loop = true;
 			   } 
 	}
@@ -314,7 +313,7 @@ void engine_render_thread(){
 		if(executed_commmand_count==0){
 			array_clean(&array_render_thread_commands);
 		}
-		if(engine_client_render_thread_initialized)
+		if(engine_client_render_thread_initialized && engine_user_render_thread_initialized_in_loop)
 	        engine_user_render_thread_draw();
 	
         time_end();

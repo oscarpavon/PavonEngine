@@ -123,12 +123,25 @@ void selection_create_hint(struct Hint* out){
 
 }
 void editor_window_content_add_content_render_thread(){
-	
+		window_set_focus(&window_editor_main);               	
 		char directory[sizeof(pavon_the_game_project_folder) + 34];
 		sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
-		content_manager_load_content(directory);
+	ContentType type = content_manager_load_content(directory);
+    switch (type)
+    {
+    case CONTENT_TYPE_STATIC_MESH:{
+        
 		editor_init_new_added_element();
-		window_set_focus(&window_editor_main);               
+        break;
+    }
+   	case CONTENT_TYPE_TEXTURE:{
+		break;
+
+
+	} 
+    default:
+        break;
+    }
 }
 void editor_window_content_browser_input_update(){
      if(key_released(&input.F)){

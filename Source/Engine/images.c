@@ -41,6 +41,8 @@ int texture_load_from_memory(Texture* texture,u32 size,void* data){
 	if(image_load_from_memory(&texture->image,data,size)== -1){
 		return -1;
 	}
+	load_texture_to_GPU(texture_current_to_load);
+		
 	return 0;
 }
 
