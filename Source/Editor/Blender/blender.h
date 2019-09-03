@@ -6,7 +6,7 @@ bool is_editing_blender_file;
 bool is_blender_file_saved;
 bool blender_file_checked;
 
-#include "../windows_manager.h"
+#include "../Windows/windows_manager.h"
 #include "../../Engine/log.h"
 
 static void blender_loop_checker(){

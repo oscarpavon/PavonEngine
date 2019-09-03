@@ -1,7 +1,7 @@
 #ifndef EDITOR_WINDOW_CONTENT_H
 #define EDITOR_WINDOW_CONTENT_H
 
-#include "../windows_manager.h"
+#include "windows_manager.h"
 
 #include "../../Engine/content_manager.h"
 

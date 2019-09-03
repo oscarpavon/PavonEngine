@@ -1,10 +1,10 @@
 #include "windows_manager.h"
 #include <stdio.h>
-#include "text.h"
-#include "editor.h"
-#include "../Engine/game.h"
+#include "../text.h"
+#include "../editor.h"
+#include "../../Engine/game.h"
 
-#include "Windows/content_browser.h"
+#include "content_browser.h"
 
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720

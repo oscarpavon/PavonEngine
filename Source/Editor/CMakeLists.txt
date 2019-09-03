@@ -1,7 +1,13 @@
+set (Windows
+		Windows/tabs.c
+		Windows/content_browser.c
+		Windows/windows_manager.c
+		Windows/static_mesh_editor.c
+		)
+
 
 set(editor_sources 
 main.c
-windows_manager.c
 input.c
 editor.c
 text.c
@@ -15,11 +21,10 @@ commands.c
 Textures/texture_factory.c
 HLOD/HLOD_factory.c
 menus.c
-Windows/content_browser.c
 content_manager.c
 EditServer/edit_server.c
 editor_command_queue.c
-Windows/tabs.c
+${Windows}
 )
 
 set (game_source

@@ -3,7 +3,7 @@
 #include "../../Engine/engine.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../ThirdParty/stb_image_write.h"
-#include "../windows_manager.h"
+#include "../Windows/windows_manager.h"
 #include "../HLOD/HLOD_factory.h"
 #include "../../Engine/vertex.h"
 Model *uv_model;
