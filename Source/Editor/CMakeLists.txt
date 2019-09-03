@@ -19,6 +19,7 @@ Windows/content_browser.c
 content_manager.c
 EditServer/edit_server.c
 editor_command_queue.c
+Windows/tabs.c
 )
 
 set (game_source
