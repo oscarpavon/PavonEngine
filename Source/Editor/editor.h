@@ -108,4 +108,6 @@ Texture editor_texture_checker;
 bool editor_running;
 
 static vec4 editor_background_color = {0.1,0.2,0.4,1};
+
+Array editor_windows;
 #endif

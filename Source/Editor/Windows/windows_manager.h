@@ -4,22 +4,27 @@
 #define GLFW_INCLUDE_ES2
 #define GLFW_INCLUDE_GLEXT
 
-
 #include <GLFW/glfw3.h>
 
 #include "../../Engine/camera.h"
 
 typedef struct EditorWindow{
-       GLFWwindow* window;
-       char name[20];
-       bool focus;
-       bool initialized; 
+	Array tabs;
+    char name[20];
+    bool focus;
+    bool initialized; 
+    GLFWwindow* window;
+	void(*draw)(void);
+	void(*init)(void);
+	void(*finish)(void);
+
 }EditorWindow;
 
 void window_resize_callback(GLFWwindow* window, int width, int height);
 void window_focus_callback(GLFWwindow*,int);
 void window_create(EditorWindow *win,EditorWindow* share_window,const char* name);
 
+void window_initialize_windows();
 inline static void window_update_envents(){
        glfwPollEvents();
 }
@@ -36,7 +41,6 @@ float actual_window_height;
 bool editor_window_content_open;
 
 EditorWindow window_editor_main;
-
 
 EditorWindow* current_window;
 

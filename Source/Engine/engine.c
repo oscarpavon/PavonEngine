@@ -250,6 +250,7 @@ void set_element_position(Element* element, vec3 position){
     glm_mat4_identity(element->transform->model_matrix);
     glm_translate(element->transform->model_matrix,position);
 }
+
 void engine_client_initialize_render_thread(){
     if(array_render_thread_init_commmands.count == 0){
         LOG("Critical, no render thread initialize commmand\n");
@@ -289,16 +290,15 @@ void engine_render_thread(){
     while (engine_running)
     {
 		if(!engine_user_render_thread_initialized_in_loop){
+	  	 	if(engine_client_render_thread_initialized){
+	  	  		engine_client_initialize_render_thread(); 
+	  	  		engine_render_thread_init();
+	  	  		update_look_at();
+	  	  		engine_user_render_thread_initialized_in_loop = true;
+	  	 	} 
+		}
 
-			   if(engine_client_render_thread_initialized){
-					engine_client_initialize_render_thread(); 
-					engine_render_thread_init();
-					update_look_at();
-					engine_user_render_thread_initialized_in_loop = true;
-			   } 
-	}
-
-	render_frame_time += time_delta;
+		render_frame_time += time_delta;
         
         time_start();  
 		int executed_commmand_count = 0;	

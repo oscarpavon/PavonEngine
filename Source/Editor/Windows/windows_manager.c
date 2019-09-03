@@ -91,3 +91,14 @@ void window_update_windows_input(){
 
   
 }
+
+void window_initialize_windows(){
+	for(u8 i = 0; i<editor_windows.count ; i++ ){
+		EditorWindow* window = array_get(&editor_windows,i);
+		if(window->initialized)
+			   continue;
+		window->init();	
+
+	}
+
+}

@@ -2,8 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-
+#include <string.h> 
 #include "../Engine/engine.h"
 
 #include "text.h"
@@ -451,6 +450,55 @@ void frame_clean(){
     //end clean frame
 }
 
+void editor_main_window_init(){
+    window_create(&window_editor_main, NULL, "Engine"); 
+
+    glfwSetKeyCallback(window_editor_main.window, key_callback);
+	glfwSetCursorPosCallback(window_editor_main.window, mouse_callback);
+	glfwSetMouseButtonCallback(window_editor_main.window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main.window, window_resize_callback);
+    glfwSetCharCallback(window_editor_main.window, character_callback);
+    glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
+
+    shader_compile_standard_shaders();
+
+    draw_loading_screen();
+    glfwSwapBuffers(window_editor_main.window);    
+}
+
+void editor_update(){
+
+    editor_command_queue_udpate();    
+    
+    play_animation_list();
+
+    //collision_test();    
+
+}
+
+void editor_render_init(){
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    init_vec3(-6,0,2, main_camera.position);
+    update_look_at();
+    
+    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
+
+
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
+    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
+    gizmos_init();
+    editor_running = true;
+}
+
+void editor_render_finish(){
+	glfwTerminate();
+}
+
+
 void editor_draw(){
     
     if(editor_window_content_open){
@@ -496,57 +544,9 @@ void editor_draw(){
 
     glfwSwapBuffers(window_editor_main.window);
 }
-void editor_main_window_init(){
-    window_create(&window_editor_main, NULL, "Engine"); 
-
-    glfwSetKeyCallback(window_editor_main.window, key_callback);
-	glfwSetCursorPosCallback(window_editor_main.window, mouse_callback);
-	glfwSetMouseButtonCallback(window_editor_main.window, mouse_button_callback);
-    glfwSetFramebufferSizeCallback(window_editor_main.window, window_resize_callback);
-    glfwSetCharCallback(window_editor_main.window, character_callback);
-    glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
-
-    shader_compile_standard_shaders();
-
-    draw_loading_screen();
-    glfwSwapBuffers(window_editor_main.window);    
-}
-
-void editor_update(){
-
-    editor_command_queue_udpate();    
-    
-    play_animation_list();
-
-    //collision_test();    
-
-    //editor_draw();
-}
-
-void editor_render_init(){
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    init_vec3(-6,0,2, main_camera.position);
-    update_look_at();
-    
-    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
-
-
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
-    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
-    gizmos_init();
-    editor_running = true;
-}
-
-void editor_render_finish(){
-	glfwTerminate();
-}
-
 void editor_init(){
-        
+	array_init(&editor_windows,sizeof(EditorWindow),40);
+	
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
@@ -573,17 +573,23 @@ void editor_init(){
 
     edit_server_init();
 
+	EditorWindow main_window;
+	memset(&main_window,0,sizeof(EditorWindow));
+	main_window.init = editor_main_window_init;
+	main_window.draw = editor_draw;
+	main_window.finish = editor_render_finish;
+
+	array_add(&editor_windows,&main_window);
 
     //render thread initialization
     ExecuteCommand command;
-    command.command = &editor_main_window_init;
+    command.command = window_initialize_windows;
     array_add(&array_render_thread_init_commmands,&command);
 
-    engine_user_render_thread_init = &editor_render_init;
-    engine_user_render_thread_draw = &editor_draw;
-   	engine_user_render_thread_finish = &editor_render_finish; 
+    engine_user_render_thread_init = editor_render_init;
+    engine_user_render_thread_draw = editor_draw;
+   	engine_user_render_thread_finish = editor_render_finish; 
 	engine_client_render_thread_initialized = true;
 
 	LOG("[OK]Editor initialized\n");
 }
-
