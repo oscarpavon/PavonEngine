@@ -8,9 +8,8 @@ int main(){
 
     engine_init();
 
-    editor_init();
-
     engine_init_render();    
+    editor_init();
 
     while(!engine_initialized){}//wait for initilization
 

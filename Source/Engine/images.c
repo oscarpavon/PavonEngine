@@ -2,16 +2,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../ThirdParty/stb_image.h"
 
-#include "file_loader.h"
-#include "log.h"
+#include "engine.h"
 
-int image_load_from_memory(Image* image,void* data, u8 size){	
+Texture* texture_current_to_load;
+int image_load_from_memory(Image* image,void* data, u32 size){	
     int width, height, comp, req_comp;
     req_comp = 3;
 
     unsigned char* decoded = stbi_load_from_memory(data, size, &width, &height, &comp, req_comp);
 	if(decoded == NULL){
-	LOG("Image not decoded\n");
+	LOG("[X]=========ERROR: Image not decoded\n");
 		return -1;
 	}
     image->heigth = (unsigned short)height;
@@ -30,23 +30,29 @@ int image_load(const char* path, Image* image){
 	close_file(&new_file);
     return 0;
 }
-int texture_load_from_memory(Texture* texture,u8 size,void* data){
+
+void texture_load_current_to_render_thread(){
+
+	load_texture_to_GPU(texture_current_to_load);
+}
+int texture_load_from_memory(Texture* texture,u32 size,void* data){
 	memset(texture,0,sizeof(Texture));
+	texture_current_to_load = texture;
 	if(image_load_from_memory(&texture->image,data,size)== -1){
 		return -1;
 	}
-	
-    load_texture_to_GPU(texture); 
 	return 0;
 }
 
 int texture_load(const char* path, Texture* new_texture){
     memset(new_texture,0,sizeof(Texture));
+	texture_current_to_load = new_texture;
     if(image_load(path,&new_texture->image) == -1){
         new_texture->id = 0;
         return -1;
     }
-    load_texture_to_GPU(new_texture); 
+	
+	load_texture_to_GPU(texture_current_to_load);
 }
 
 int load_image_with_format(const char* path, GLint format, Image* out_image){

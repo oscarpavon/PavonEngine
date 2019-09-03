@@ -529,18 +529,16 @@ void editor_render_init(){
     init_vec3(-6,0,2, main_camera.position);
     update_look_at();
     
-    init_gizmos();
-
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    text_renderer_init();    
-
-    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
 
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
+    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
+    gizmos_init();
+    editor_running = true;
 }
 
 void editor_render_finish(){
@@ -548,7 +546,6 @@ void editor_render_finish(){
 }
 
 void editor_init(){
-    editor_running = true;
         
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
@@ -585,5 +582,8 @@ void editor_init(){
     engine_user_render_thread_init = &editor_render_init;
     engine_user_render_thread_draw = &editor_draw;
    	engine_user_render_thread_finish = &editor_render_finish; 
+	engine_client_render_thread_initialized = true;
+
+	LOG("[OK]Editor initialized\n");
 }
 

@@ -140,6 +140,11 @@ void parse_command(const char* command){
             break;
         }
     }
+	case 't':{
+					 
+	    add_texture_to_selected_element_with_image_path(&command[3]);
+		break;
+			 }
     case 'r':{
         reload_editor();
         LOG("reload\n");

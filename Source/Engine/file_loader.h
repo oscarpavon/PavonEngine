@@ -8,7 +8,7 @@
 AAssetManager* assets_manager;
 #endif
 
-
+#include "numbers.h"
 
 struct ResourceDescriptor{
     int32_t descriptor;
@@ -18,7 +18,7 @@ struct ResourceDescriptor{
 
 typedef struct file{
     const char* path;
-    size_t size_in_bytes;
+    u32 size_in_bytes;
     struct ResourceDescriptor resource_descriptor;
     void* data;
 }File;

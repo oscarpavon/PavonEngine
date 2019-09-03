@@ -10,7 +10,7 @@
 
 #include <stdbool.h>
 
-
+#include "array.h"
 #include "numbers.h"
 #include "../ThirdParty/cglm/types.h"
 

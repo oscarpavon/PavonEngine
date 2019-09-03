@@ -21,5 +21,8 @@ void free_image(Image*);
 
 int texture_load(const char* path, Texture*);
 
-int texture_load_from_memory(Texture* texture,u8 size,void* data);
+int texture_load_from_memory(Texture* texture,u32 size,void* data);
+
+int image_load_from_memory(Image* image,void* data, u32 size);
+
 #endif

@@ -26,6 +26,7 @@ void content_manager_load_content(const char* path){
 
     u32 data_size;
     memcpy(&data_size,new_file.data+12,4);
+	LOG("Binary data size %i\n",data_size);
 
     u32 content_type;
     memcpy(&content_type,new_file.data+16,4);
@@ -46,7 +47,7 @@ void content_manager_load_content(const char* path){
     }
    	case CONTENT_TYPE_TEXTURE:{
 		engine_add_texture_from_memory_to_selected_element(new_file.data+20,data_size);	
-		LOG("Texture need load function\n");	
+		LOG("Texture loaded\n");	
 		break;
 
 

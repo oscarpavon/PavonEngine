@@ -323,7 +323,7 @@ void gizmos_boanding_sphere_draw(Sphere* sphere, vec4 color){
     actual_model_array = prev_model_array;
 }
 
-void init_gizmos(){
+void gizmos_init(){
     array_init(&gizmos,sizeof(Model),10);   
     
     array_init(&bounding_boxes,sizeof(Model),10);

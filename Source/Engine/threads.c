@@ -21,8 +21,11 @@ void thread_new_detached(void*(*function)(void*), void* argument, const char* na
         LOG("ERROR detaching thread\n");
     }
 }
+void thread_init_engine_thread(const char* name, EngineThread* thead, void*(*function)(void*)){
+	
 
-void thread_new_job(){
-
+}
+void thread_new_job(EngineThread* thread){
+	
 
 }

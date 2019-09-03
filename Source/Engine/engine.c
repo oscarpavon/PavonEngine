@@ -21,7 +21,6 @@
 Array engine_models;
 Array engine_elements;
 Array engine_textures;
-
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
     GLuint id_copy;
@@ -120,10 +119,9 @@ void engine_select_element_add_texture(Texture* texture){
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 }
-void engine_add_texture_from_memory_to_selected_element(void* data, u8 size){
+void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
 	Texture new_texture;
-	texture_load_from_memory(&new_texture,size,data);
-	
+	texture_load_from_memory(&new_texture,size,data);	
     array_add(&textures_paths,"from_memory");
 	engine_select_element_add_texture(&new_texture);
 }
@@ -254,8 +252,7 @@ void set_element_position(Element* element, vec3 position){
     glm_mat4_identity(element->transform->model_matrix);
     glm_translate(element->transform->model_matrix,position);
 }
-
-void engine_render_thread_init(){
+void engine_client_initialize_render_thread(){
     if(array_render_thread_init_commmands.count == 0){
         LOG("Critical, no render thread initialize commmand\n");
         debug_break();
@@ -266,27 +263,43 @@ void engine_render_thread_init(){
         ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
         exectute->command(NULL);
     }
-    init_camera();  
+	array_clean(&array_render_thread_init_commmands);
+
+    engine_user_render_thread_init();
+    engine_initialized = true;
+}
+
+void engine_render_thread_init(){
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);   
     
+    init_camera();  
     init_gui();
-
+	text_renderer_init();
 }
 
+bool engine_user_render_thread_initialized_in_loop = false;
+
 void engine_render_thread(){
-    engine_render_thread_init();
-    engine_user_render_thread_init();
-    engine_initialized = true;
-    float render_frame_time = 0;
+   
+	float render_frame_time = 0;
     float disired_frame_time = 0.016f;
     
     u8 frames = 0;
     float frame_second = 0;
     while (engine_running)
     {
-        render_frame_time += time_delta;
+		if(!engine_user_render_thread_initialized_in_loop){
+
+			   if(engine_client_render_thread_initialized){
+					engine_client_initialize_render_thread(); 
+					engine_render_thread_init();
+					engine_user_render_thread_initialized_in_loop = true;
+			   } 
+	}
+
+	render_frame_time += time_delta;
         
         time_start();  
 		int executed_commmand_count = 0;	
@@ -301,8 +314,9 @@ void engine_render_thread(){
 		if(executed_commmand_count==0){
 			array_clean(&array_render_thread_commands);
 		}
-        engine_user_render_thread_draw();
-
+		if(engine_client_render_thread_initialized)
+	        engine_user_render_thread_draw();
+	
         time_end();
         frame_second += time_elapsed_time;
         if(frame_second >= 1000){
@@ -348,13 +362,11 @@ void engine_init_data(){
 }
 
 void engine_init(){
-    engine_running = true;
     array_init(&array_render_thread_init_commmands,sizeof(ExecuteCommand),5);
 	array_init(&array_render_thread_commands,sizeof(ExecuteCommand),100);
    
     engine_init_data();   
-
-    text_renderer_init();
+    engine_running = true;
 }
 
 
@@ -372,9 +384,7 @@ void init_game_engine(){
     actual_elements_array = &engine_elements;
     current_textures_array = &engine_textures;
 
-    actual_standard_fragment_shader = standart_fragment_shader;
-
-    
+    actual_standard_fragment_shader = standart_fragment_shader;    
 }
 
 void engine_loop(){
@@ -388,8 +398,6 @@ void engine_loop(){
     array_clean(&models_for_test_occlusion);
     
     draw_gui();   
-
-
 }
 
 void add_action_function(void(*f)(void)){

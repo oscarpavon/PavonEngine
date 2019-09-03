@@ -15,16 +15,8 @@ void content_manager_serialize_static_mesh(){
 }
 
 void content_manager_create_engine_binary(const char* name, ContentType type){
-    FILE* content_brute_file;
-    if(type == CONTENT_TYPE_STATIC_MESH){
-
-        content_brute_file= fopen(name,"rb");
-    }else{
-        content_brute_file= fopen(name,"r");
-    }
-
-    fseek(content_brute_file, 0L, SEEK_END);
-    u32 file_size = ftell(content_brute_file);    
+	File brute_file;
+	load_file(name,&brute_file);
 
     char glb_path[strlen(name) + 4];
     sprintf(glb_path,"%s",name);
@@ -35,38 +27,61 @@ void content_manager_create_engine_binary(const char* name, ContentType type){
     u32 version = 1;
     fwrite(&version,sizeof(u32),1,engine_binary);
 
-    int size = file_size + 12;
-    fwrite(&size,sizeof(u32),1,engine_binary);
+    u32 binary_total_size = brute_file.size_in_bytes + 20;
+    fwrite(&binary_total_size,sizeof(u32),1,engine_binary);
 
 
-    fwrite(&file_size,sizeof(u32),1,engine_binary);// + engine file JSON
-    ContentType new_content_type = type;
+    fwrite(&brute_file.size_in_bytes,sizeof(u32),1,engine_binary);// + engine file JSON
+		    
+
+	ContentType new_content_type = type;
     fwrite(&type,sizeof(u32),1,engine_binary);
-    unsigned char brute_file[file_size];
-    rewind(content_brute_file);
-    for (u32 i = 0; i < file_size; i++)
-    {
-        brute_file[i]  =  fgetc(content_brute_file);
-    }
-    fwrite(brute_file,sizeof(unsigned char),file_size,engine_binary);
 
-    content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
+    fwrite(brute_file.data,1,brute_file.size_in_bytes,engine_binary);
+  
+if(type == CONTENT_TYPE_TEXTURE){	
+		Image new_image;
+  if(image_load_from_memory(&new_image,brute_file.data,brute_file.size_in_bytes) == -1){
+
+	LOG("ERRO: No image loaded\n");
+  }else{
+  LOG("Image to engine binary readed\n");
+  }
+}
+  
+    /* 
+	content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
     TextureCreated created_texture = texture_create_to_memory(1,128);
     u32 thumnail_size = (u32)created_texture.size;
     fwrite(&thumnail_size,sizeof(u32),1,engine_binary);
     u32 thumnail_type = 35;
     fwrite(&thumnail_type,sizeof(u32),1,engine_binary);
     fwrite(created_texture.data,created_texture.size,1,engine_binary);
-
+*/
     fclose(engine_binary);
-    fclose(content_brute_file);
-
+	close_file(&brute_file);
     //remove(name);
 
     if(type == CONTENT_TYPE_STATIC_MESH){//FIXME: create function where import and add to viewport
         //content_manager_load_content(glb_path);
         //editor_init_new_added_element();
     }
+
+if(type == CONTENT_TYPE_TEXTURE){
+	File saved_binary	;
+	char new_path[strlen(name)];
+	sprintf(new_path,"%s",name);
+	sprintf(new_path+(strlen(name)-3),"%s","pb");
+	load_file(new_path,&saved_binary);
+		
+		Image new_image;
+  if(image_load_from_memory(&new_image,saved_binary.data+20,saved_binary.size_in_bytes) == -1){
+
+	LOG("ERROR: Image from binary loaded\n");
+  }else{
+  LOG("Image readed from binary created\n");
+  }
+}	
 
 }
 
