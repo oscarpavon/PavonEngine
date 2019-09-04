@@ -231,13 +231,8 @@ void update_viewport_size(){
     #endif // EDITOR    
 }
 
-void set_selected_element_transform(vec3 position, versor rotation){
-   
-}
 
-
-
-void draw_elements(Array *elements){
+void engine_draw_elements(Array *elements){
     for(size_t i = 0; i < elements->count ; i++) { 
         Model** model = array_get(elements,i);
         Model* draw_model = model[0];        
@@ -273,7 +268,7 @@ void engine_render_thread_init(){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);   
     
-    init_camera();  
+    camera_init(&main_camera);  
     init_gui();
 	text_renderer_init();
 }
@@ -293,7 +288,7 @@ void engine_render_thread(){
 	  	 	if(engine_client_render_thread_initialized){
 	  	  		engine_client_initialize_render_thread(); 
 	  	  		engine_render_thread_init();
-	  	  		update_look_at();
+	  	  		camera_update(&main_camera);
 	  	  		engine_user_render_thread_initialized_in_loop = true;
 	  	 	} 
 		}
@@ -370,37 +365,6 @@ void engine_init(){
 
 }
 
-
-void init_game_engine(){
-    should_close = false;    
-
-    init_camera();        
-    
-    element_id_count = 0;   
-
-    array_init(&engine_models, sizeof(Model),100);
-    array_init(&engine_elements,sizeof(Element),100);
-    array_init(&engine_textures,sizeof(Texture),100);
-    actual_model_array = &engine_models;
-    actual_elements_array = &engine_elements;
-    current_textures_array = &engine_textures;
-
-    actual_standard_fragment_shader = standart_fragment_shader;    
-}
-
-void engine_loop(){
-    glClearColor(1,0.5,0,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    for_each_element_components(&update_per_frame_component);
-    test_elements_occlusion();
-
-    draw_elements(&frame_draw_elements);
-    array_clean(&models_for_test_occlusion);
-    
-    draw_gui();   
-}
-
 void add_action_function(void(*f)(void)){
     ActionPointer new_action;
     new_action.id = action_pointer_id_count;
@@ -415,7 +379,6 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     actual_model_array = array;
         
     load_model(path_model);
-
 
     selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 

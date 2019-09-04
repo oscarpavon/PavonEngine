@@ -86,7 +86,7 @@ void update_main_camera_with_camera_component_values(CameraComponent* camera_com
     glm_vec3_normalize(direction);
     glm_vec3_copy(direction,main_camera.front);
 
-    update_look_at(); 
+    camera_update(camera_component); 
 }  
 
 void init_transfrom_component(TransformComponent* component){

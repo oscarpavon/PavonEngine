@@ -170,7 +170,9 @@ void draw_axis_lines(){
         if(line->initialized == true){
             mat4 model;
             glm_mat4_identity(model);            
-            update_draw_vertices(line->shader, line->vertex_buffer_id,model);
+    		mat4 mvp;      
+    		update_mvp(model, mvp);  
+            update_draw_vertices(line->shader, line->vertex_buffer_id,mvp);
             glLineWidth(1);            
             GLint uniform_color = glGetUniformLocation(line->shader,"color");
             
@@ -271,7 +273,9 @@ void init_grid_greometry(){
 void draw_grid(){
     mat4 model;
     glm_mat4_identity(model);            
-    update_draw_vertices(new_grid.shader, new_grid.vertex_buffer_id,model);
+	mat4 mvp;      
+	update_mvp(model, mvp);  
+    update_draw_vertices(new_grid.shader, new_grid.vertex_buffer_id,mvp);
     glLineWidth(1);            
     GLint uniform_color = glGetUniformLocation(new_grid.shader,"color");
     vec4 color = {0,0,0,1};
@@ -356,7 +360,6 @@ inline static void gizmos_update_transform(mat4 in , mat4 out){
 }
 
 void draw_gizmos(){
-    
     
     draw_axis_lines();
 

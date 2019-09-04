@@ -16,9 +16,9 @@ float camera_heigth_screen;
 float camera_width_screen;
 versor camera_rotation;
 
-void init_camera();
-void update_look_at();
+void camera_init(CameraComponent* camera);
 
+void camera_update(CameraComponent* camera);
 bool move_camera_input;
 
 float camera_rotate_angle;

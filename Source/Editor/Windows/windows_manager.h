@@ -22,6 +22,7 @@ typedef struct EditorWindow{
 	void(*input)(void);
 	EditorTab* tab_current;
 	u8 tab_current_id;
+	CameraComponent camera;
 }EditorWindow;
 
 void window_resize_callback(GLFWwindow* window, int width, int height);

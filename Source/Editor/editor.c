@@ -401,7 +401,7 @@ void editor_focus_selected_element(){
     vec3 direction;
     glm_vec3_sub(selected_element->transform->position, main_camera.position,direction);
     glm_normalize_to(direction,main_camera.front);
-    update_look_at();
+    camera_update(&current_window->camera);
 }
 
 
@@ -480,7 +480,7 @@ void editor_render_init(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     init_vec3(-6,0,2, main_camera.position);
-    update_look_at();
+    camera_update(&current_window->camera);
     
     editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
@@ -523,7 +523,7 @@ void editor_draw(){
     if(update_vertex_bones_gizmos)
         update_joints_vertex();
 
-    draw_elements(&frame_draw_elements);
+    engine_draw_elements(&frame_draw_elements);
 
     frame_clean();
 

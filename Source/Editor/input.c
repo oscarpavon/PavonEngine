@@ -50,7 +50,7 @@ void camera_rotate_control(float yaw, float pitch){
 
     glm_vec3_copy(front, main_camera.front);
 
-    update_look_at();
+    camera_update(&current_window->camera);
 }
 bool left_click = false;
 float actual_mouse_position_x;
@@ -386,9 +386,8 @@ void editor_input_navigate(){
         update = true;
     }
     
-
     if(update)
-        update_look_at();
+        camera_update(&main_camera);
 }
 
 float move_object_value = 0.5;
@@ -687,7 +686,7 @@ void default_mode(){
         if(controlling_camera_component){
             controlling_camera_component = false;
             memcpy(&main_camera,&saved_camera, sizeof(CameraComponent));
-            update_look_at();
+            camera_update(&main_camera);
             return;
         }
         CameraComponent* camera_component = get_component_from_selected_element(CAMERA_COMPONENT);

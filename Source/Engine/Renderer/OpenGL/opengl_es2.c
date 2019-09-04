@@ -40,8 +40,7 @@ void load_texture_to_GPU(Texture* texture){
     check_error("Texture to GPU");
 }
 
-void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
-
+void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     glUseProgram(shader);   
 
@@ -59,7 +58,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
         GLint view_uniform = get_uniform_location(shader,"view");
         GLint joints_matrices_uniform = get_uniform_location(shader,"joint_matrix");
 
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &model_matrix[0][0]);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
         glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
         glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
         check_send_matrix_error("view");
@@ -75,9 +74,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 model_matrix){
 		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
         
     }else{
-        mat4 mvp;      
-        update_mvp(model_matrix, mvp);  
-        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &mvp[0][0]);
+        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &matrix[0][0]);
         check_send_matrix_error("MVP");
     }    
 
@@ -132,9 +129,12 @@ void draw_model_like(Model* model, GLenum mode){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
-void draw_simgle_model(struct Model * new_model){
-    glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
-    update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
+void draw_simgle_model(Model * new_model){
+    mat4 mvp;      
+    update_mvp(new_model->model_mat, mvp);  
+    
+	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+    update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,mvp);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
