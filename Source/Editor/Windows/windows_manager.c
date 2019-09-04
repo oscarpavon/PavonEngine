@@ -88,16 +88,19 @@ void window_manager_draw_windows(){
 		LOG("Window close\n");
 		continue;
 	}
-		window->draw();
-		if(window->tabs.count > 0)
+		if(window->tab_current && window->tab_current->draw)		
+			window->tab_current->draw();
+		if(window->tabs.count > 0){
 			tabs_draw_tabs_bar(window_editor_main);	
+		}
+		else
+			window->draw();
 		
 		for(u8 j = 0; j < window->tabs.count ; j++){
 			EditorTab* tab = array_get(&window->tabs,j);	
+
 		}
 
-		if(window->tab_current && window->tab_current->draw)		
-			window->tab_current->draw();
 		
     	glfwSwapBuffers(window->window);
 	}

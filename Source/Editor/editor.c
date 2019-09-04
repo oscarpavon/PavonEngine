@@ -502,8 +502,7 @@ void editor_render_finish(){
 void editor_draw(){
 
     glClearColor(COLOR(editor_background_color));
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
     if(isDrawUV)
         draw_UV();
 

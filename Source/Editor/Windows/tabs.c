@@ -8,7 +8,7 @@ void tabs_new(EditorWindow* window, const char* name){
 	memset(&new_tab,0,sizeof(EditorTab));
 	strcpy(new_tab.name,name);
 	array_add(&window->tabs,&new_tab);	
-	
+	window->tab_current = array_pop(&window->tabs);	
 }
 
 void tabs_next_in_window(EditorWindow* window){

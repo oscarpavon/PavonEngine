@@ -23,7 +23,9 @@
 #include "Windows/windows_manager.h"
 
 #include "editor_command_queue.h"
+#include "stats.h"
 
+typedef struct HLODCluster HLODCluster;
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
     EDITOR_DEFAULT_MODE,
@@ -72,7 +74,6 @@ void add_editor_native_element(const char* native_element_name);
 
 void play_game_standalone();
 
-typedef struct HLODCluster HLODCluster;
 void editor_add_HLOD_element(HLODCluster*);
 
 void editor_generate_and_add_cube_element();
@@ -82,7 +83,8 @@ void editor_focus_selected_element();
 void editor_add_element_with_model_path(const char*);
 
 void editor_init_new_added_element();
-
+//++++++++++++++++++++++
+//Global variables
 char* editor_mode_show_text;
 char* editor_sub_mode_text;
 

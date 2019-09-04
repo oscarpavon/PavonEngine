@@ -1,7 +1,8 @@
 #ifndef OPENGL_ES_2_RENDERER_H
 #define OPENGL_ES_2_RENDERER_H
 
-
+#define RENDER_COLOR_BUFFER GL_COLOR_BUFFER_BIT
+#define RENDER_DEPTH_BUFFER GL_DEPTH_BUFFER_BIT
 
 void draw_vertices_like(GLenum mode, Model* model, vec4 color);
 void draw_model_with_color(Model* model, GLenum mode, vec4 color);
@@ -46,4 +47,7 @@ static inline void send_color_to_shader(u32 shader_id, vec4 color){
     glUniform4fv(uniform_color, 1, color);
 }
 
+inline static void render_clear_buffer(int buffer_bits){	
+    glClear(buffer_bits);
+}
 #endif // !OPENGL_ES_2_RENDERER_H

@@ -143,6 +143,7 @@ void editor_window_content_add_content_render_thread(){
         break;
     }
 }
+
 void editor_window_content_browser_input_update(){
      if(key_released(&input.F)){
         if(editor_window_content_browser_hint){
@@ -177,8 +178,10 @@ void editor_window_content_browser_input_update(){
     }
 
     if(key_released(&input.E)){
-			if(!editor_content_view_found) return;
+		if(!editor_content_view_found) return;
         LOG("Edit Mesh: %s\n",editor_content_view_found->content_name);
+		tabs_new(current_window,editor_content_view_found->content_name);
+		current_window->tab_current->draw = editor_window_static_mesh_draw;	
         return;
     }
 }

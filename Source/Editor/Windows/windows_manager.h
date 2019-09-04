@@ -8,6 +8,7 @@
 
 #include "../../Engine/camera.h"
 #include "tabs.h"
+#include "static_mesh_editor.h"
 
 typedef struct EditorWindow{
 	Array tabs;
