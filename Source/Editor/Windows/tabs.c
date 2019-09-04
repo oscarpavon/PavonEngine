@@ -22,3 +22,10 @@ void tabs_previous_in_window(EditorWindow* window){
 	window->tab_current = array_get(&window->tabs,window->tab_current_id);	
 
 }
+
+void tabs_draw_tabs_bar(EditorWindow* window){
+	text_render_in_screen_space(12,"Tab01",0,0);
+	text_render_in_screen_space(12,"Tab2",40,0);
+			
+
+}

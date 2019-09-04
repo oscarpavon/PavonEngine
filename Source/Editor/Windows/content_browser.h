@@ -5,19 +5,7 @@
 
 #include "../../Engine/content_manager.h"
 
-EditorWindow window_content_browser;
 
-void editor_window_content_init();
-
-void editor_window_content_browser_draw();
-
-void editor_window_content_browser_input_update();
-
-void content_create_thumbnail(const char * brute_content_path,ContentType type);
-
-void editor_window_content_browser_update();
-
-void editor_window_content_browser_close_window();
 typedef struct ContentView{
     bool new_update;
     DrawData draw;    
@@ -31,7 +19,18 @@ typedef struct ContentView{
     u8 thumbnail_image_size;
 }ContentView;
 
+void editor_window_content_init();
 
+void editor_window_content_browser_draw(); 
+void editor_window_content_browser_input_update();
+
+void content_create_thumbnail(const char * brute_content_path,ContentType type);
+
+void editor_window_content_browser_update();
+
+void editor_window_content_browser_close_window();
+
+EditorWindow* window_content_browser;
 
 bool editor_window_content_browser_hint;
 

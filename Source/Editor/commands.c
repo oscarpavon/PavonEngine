@@ -253,7 +253,7 @@ void parse_characters(unsigned char character){
         command_character_count++;
     }
 
-    if(editor_window_content_browser_hint && window_content_browser.focus){
+    if(editor_window_content_browser_hint && window_content_browser->focus){
         command_text_buffer[command_character_count] = character;
         command_character_count++;
     }

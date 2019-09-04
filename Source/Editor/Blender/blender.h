@@ -10,7 +10,7 @@ bool blender_file_checked;
 #include "../../Engine/log.h"
 
 static void blender_loop_checker(){
-    if( window_editor_main.focus){
+    if( window_editor_main->focus){
        
 
         if(is_editing_blender_file){

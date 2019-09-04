@@ -5,10 +5,15 @@
 #include "../../Engine/game.h"
 
 #include "content_browser.h"
+#include "tabs.h"
 
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 
+void window_manager_init_window(EditorWindow* window){
+	window->init();
+	window->initialized = true;
+}
 void windows_manager_init(){
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
@@ -70,46 +75,56 @@ void window_set_focus(EditorWindow* window){
     LOG("Focus windows change\n");
 }
 
+void window_manager_draw_windows(){
+	//Draw tab bar 	& draw current tabb 
+	for(u8 i = 0; i<editor_windows.count ; i++ ){
+		EditorWindow* window = array_get(&editor_windows,i);
+		glfwMakeContextCurrent(window->window);
+		if(!window->initialized)
+			   continue;
+		window->draw();
+		if(window->tabs.count > 0)
+			tabs_draw_tabs_bar(window_editor_main);	
+		
+		for(u8 j = 0; j < window->tabs.count ; j++){
+			EditorTab* tab = array_get(&window->tabs,j);	
+		}
+
+		if(window->tab_current && window->tab_current->draw)		
+			window->tab_current->draw();
+		
+    	glfwSwapBuffers(window->window);
+	}
+}
 
 void window_update_windows_input(){
 	
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
-            if(editor_window_content_open){
-                window_set_focus(&window_content_browser);
-            }
-            editor_window_content_open = true;
-            
+           // if(editor_window_content_open){
+           //     window_set_focus(&window_content_browser);
+           // }
+           // editor_window_content_open = true;
+			window_manager_init_window(window_content_browser);			
         }
-
 		if(key__released(&input.N,GLFW_MOD_SHIFT)){
 			tabs_new(current_window,"New Tab");
 			LOG("New tab added to Window: %s\n",current_window->name);	
-
 		}
     }
-
-    if(window_editor_main.focus)
-        editor_window_level_editor_input_update();
-
-    if(window_content_browser.focus)
-        editor_window_content_browser_input_update();
-	
-
-
-//Draw tab bar 	& draw current tabb 
+	//Draw tab bar 	& draw current tabb 
 	for(u8 i = 0; i<editor_windows.count ; i++ ){
 		EditorWindow* window = array_get(&editor_windows,i);
 		if(!window->initialized)
 			   continue;
 		for(u8 j = 0; j < window->tabs.count ; j++){
 			EditorTab* tab = array_get(&window->tabs,j);
-
 		}
-		if(window->tab_current->draw)		
-			window->tab_current->draw();
+		if(window->focus){
+			if(window->input)
+				window->input();
+		}
 	}
-
 }
 
 void window_initialize_windows(){
@@ -118,7 +133,17 @@ void window_initialize_windows(){
 		if(window->initialized)
 			   continue;
 		window->init();	
-
 	}
+}
+
+
+void window_manager_create_editor_windows_data(){
+
+	EditorWindow content_browser_window;
+	memset(&content_browser_window,0,sizeof(EditorWindow));
+	content_browser_window.init = editor_window_content_init;
+	content_browser_window.draw = editor_window_content_browser_draw;
+	array_add(&editor_windows,&content_browser_window);
+	window_content_browser = array_pop(&editor_windows);	
 
 }

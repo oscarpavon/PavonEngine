@@ -13,7 +13,7 @@ int main(){
     while(!engine_initialized){}//wait for initilization
 
     
-    while (!glfwWindowShouldClose(window_editor_main.window))
+    while (!glfwWindowShouldClose(window_editor_main->window))
     {
         window_update_envents();
         

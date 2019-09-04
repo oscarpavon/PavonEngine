@@ -24,4 +24,7 @@ void *array_get(Array*,int index);
 
 void array_clean(Array* array);
 
+inline static void* array_pop(Array* array){
+	return array_get(array,array->count-1);
+}
 #endif // !ARRAY_H

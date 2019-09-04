@@ -451,19 +451,19 @@ void frame_clean(){
 }
 
 void editor_main_window_init(){
-    window_create(&window_editor_main, NULL, "Engine"); 
+    window_create(window_editor_main, NULL, "Engine"); 
 
-    glfwSetKeyCallback(window_editor_main.window, key_callback);
-	glfwSetCursorPosCallback(window_editor_main.window, mouse_callback);
-	glfwSetMouseButtonCallback(window_editor_main.window, mouse_button_callback);
-    glfwSetFramebufferSizeCallback(window_editor_main.window, window_resize_callback);
-    glfwSetCharCallback(window_editor_main.window, character_callback);
-    glfwSetWindowFocusCallback(window_editor_main.window,window_focus_callback);
+    glfwSetKeyCallback(window_editor_main->window, key_callback);
+	glfwSetCursorPosCallback(window_editor_main->window, mouse_callback);
+	glfwSetMouseButtonCallback(window_editor_main->window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
+    glfwSetCharCallback(window_editor_main->window, character_callback);
+    glfwSetWindowFocusCallback(window_editor_main->window,window_focus_callback);
 
     shader_compile_standard_shaders();
 
     draw_loading_screen();
-    glfwSwapBuffers(window_editor_main.window);    
+    glfwSwapBuffers(window_editor_main->window);    
 }
 
 void editor_update(){
@@ -500,10 +500,6 @@ void editor_render_finish(){
 
 
 void editor_draw(){
-    
-    if(editor_window_content_open){
-        editor_window_content_browser_update();
-    }
 
     glClearColor(COLOR(editor_background_color));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -539,11 +535,16 @@ void editor_draw(){
     }       
 
     text_renderer_loop();
-
+		
     //editor_message("editor message");    
-
-    glfwSwapBuffers(window_editor_main.window);
 }
+
+void editor_main_render_thread(){
+
+	window_manager_draw_windows();
+
+}
+
 void editor_init(){
 	array_init(&editor_windows,sizeof(EditorWindow),40);
 	
@@ -558,9 +559,7 @@ void editor_init(){
     array_init(&editor_textures, sizeof(Texture),100);    
     
     editor_command_queue_init();   
-    
     element_id_count = 0;    
-
     editor_mode = EDITOR_DEFAULT_MODE;
     editor_sub_mode = EDITOR_SUB_MODE_NULL;
     
@@ -578,18 +577,23 @@ void editor_init(){
 	main_window.init = editor_main_window_init;
 	main_window.draw = editor_draw;
 	main_window.finish = editor_render_finish;
-
+	main_window.input = editor_window_level_editor_input_update;
 	array_add(&editor_windows,&main_window);
+	window_editor_main = array_pop(&editor_windows);	
 
-    //render thread initialization
+
+	//render thread initialization
     ExecuteCommand command;
-    command.command = window_initialize_windows;
+    command.command = window_manager_init_window;
+	command.parameter = window_editor_main;
     array_add(&array_render_thread_init_commmands,&command);
 
     engine_user_render_thread_init = editor_render_init;
-    engine_user_render_thread_draw = editor_draw;
+    engine_user_render_thread_draw = editor_main_render_thread;
    	engine_user_render_thread_finish = editor_render_finish; 
 	engine_client_render_thread_initialized = true;
+	while(!window_editor_main->initialized){};
 
+	window_manager_create_editor_windows_data();	
 	LOG("[OK]Editor initialized\n");
 }

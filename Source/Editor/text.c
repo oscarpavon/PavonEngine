@@ -253,7 +253,7 @@ void text_renderer_loop()
         draw_editor_sub_mode();
     }
 
-    if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT && window_editor_main.focus)
+    if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT && window_editor_main->focus)
     {
         //can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
         can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);

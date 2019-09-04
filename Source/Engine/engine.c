@@ -260,7 +260,7 @@ void engine_client_initialize_render_thread(){
     for (u8 i = 0; i < array_render_thread_init_commmands.count; i++)
     {
         ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
-        exectute->command(NULL);
+        exectute->command(exectute->parameter);
     }
 	array_clean(&array_render_thread_init_commmands);
 
@@ -305,7 +305,7 @@ void engine_render_thread(){
 		for(u8 i = 0; i<array_render_thread_commands.count; i++){
 			ExecuteCommand* command = array_get(&array_render_thread_commands,i);
 			if(command->executed == false){
-			command->command(NULL);
+			command->command(command->parameter);
 			command->executed = true;
 			executed_commmand_count++;
 			}

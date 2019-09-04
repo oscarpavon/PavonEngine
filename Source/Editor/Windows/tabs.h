@@ -9,4 +9,5 @@ typedef struct{
 }EditorTab;
 
 void tabs_new(EditorWindow* window, const char* name);
+void tabs_draw_tabs_bar(EditorWindow* window);
 #endif

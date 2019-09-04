@@ -123,7 +123,7 @@ void selection_create_hint(struct Hint* out){
 
 }
 void editor_window_content_add_content_render_thread(){
-		window_set_focus(&window_editor_main);               	
+		window_set_focus(window_editor_main);               	
 		char directory[sizeof(pavon_the_game_project_folder) + 34];
 		sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
 	ContentType type = content_manager_load_content(directory);
@@ -184,7 +184,7 @@ void editor_window_content_browser_input_update(){
 
 
 void editor_window_content_browser_draw(){
-    glfwMakeContextCurrent(window_content_browser.window);
+    glfwMakeContextCurrent(window_content_browser->window);
 
     glClearColor(0.1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -282,14 +282,14 @@ void editor_window_content_browser_draw(){
     }
 
 
-    glfwSwapBuffers(window_content_browser.window);
+    glfwSwapBuffers(window_content_browser->window);
 }
 
 
 ContentView first;
 
 void content_view_create_model_view(int image_size){
-    glfwMakeContextCurrent(window_content_browser.window);
+    glfwMakeContextCurrent(window_content_browser->window);
 
     glClearColor(1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -301,7 +301,7 @@ void content_view_create_model_view(int image_size){
 const char* content_manager_current_content_path;
 ContentType content_manager_current_content_type;
 void content_create_draw_image_thumbnail(int size){
-    glfwMakeContextCurrent(window_content_browser.window);
+    glfwMakeContextCurrent(window_content_browser->window);
 
     glClearColor(1,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -547,42 +547,34 @@ void editor_window_content_get_models_path(){
     
 }
 void editor_window_content_browser_close_window(){
-	window_content_browser.focus = false;
-	window_content_browser.initialized = false;
+	window_content_browser->focus = false;
+	window_content_browser->initialized = false;
 	editor_window_content_open = false;
 	array_clean(&array_content_views);	
 }
 
 void editor_window_content_browser_update(){
 
-	if(!window_content_browser.initialized){            
-		editor_window_content_init();
-        content_manager_init();
-    }
-
-    editor_window_content_browser_draw();
-    glfwMakeContextCurrent(window_editor_main.window);
-
-
-	if(glfwWindowShouldClose(window_content_browser.window)){
+if(window_content_browser->initialized) return;
+	if(glfwWindowShouldClose(window_content_browser->window)){
 		LOG("Content window close\n");
-		glfwDestroyWindow(window_content_browser.window);
+		glfwDestroyWindow(window_content_browser->window);
 		editor_window_content_browser_close_window();
 	}
 }
 
 
 void editor_window_content_init(){
-    window_create(&window_content_browser,&window_editor_main,"Engine");
+    window_create(window_content_browser,window_editor_main,"Engine");
 
-    glfwMakeContextCurrent(window_content_browser.window);
+    glfwMakeContextCurrent(window_content_browser->window);
 
-    glfwSetKeyCallback(window_content_browser.window, key_callback);
-	glfwSetCursorPosCallback(window_content_browser.window, mouse_callback);
-	glfwSetMouseButtonCallback(window_content_browser.window, mouse_button_callback);
-   // glfwSetFramebufferSizeCallback(window_content_browser.window, window_resize_callback);
-    glfwSetCharCallback(window_content_browser.window, character_callback);
-    glfwSetWindowFocusCallback(window_content_browser.window,window_focus_callback);
+    glfwSetKeyCallback(window_content_browser->window, key_callback);
+	glfwSetCursorPosCallback(window_content_browser->window, mouse_callback);
+	glfwSetMouseButtonCallback(window_content_browser->window, mouse_button_callback);
+   // glfwSetFramebufferSizeCallback(window_content_browser->window, window_resize_callback);
+    glfwSetCharCallback(window_content_browser->window, character_callback);
+    glfwSetWindowFocusCallback(window_content_browser->window,window_focus_callback);
 
     //glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -592,6 +584,7 @@ void editor_window_content_init(){
     //editor_window_content_browser_load_thumbnails();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
+	    
+    content_manager_init();
 }
 
