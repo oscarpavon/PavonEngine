@@ -72,7 +72,7 @@ void window_set_focus(EditorWindow* window){
 
 
 void window_update_windows_input(){
-
+	
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
             if(editor_window_content_open){
@@ -81,6 +81,12 @@ void window_update_windows_input(){
             editor_window_content_open = true;
             
         }
+
+		if(key__released(&input.N,GLFW_MOD_SHIFT)){
+			tabs_new(current_window,"New Tab");
+			LOG("New tab added to Window: %s\n",current_window->name);	
+
+		}
     }
 
     if(window_editor_main.focus)
@@ -88,8 +94,22 @@ void window_update_windows_input(){
 
     if(window_content_browser.focus)
         editor_window_content_browser_input_update();
+	
 
-  
+
+//Draw tab bar 	& draw current tabb 
+	for(u8 i = 0; i<editor_windows.count ; i++ ){
+		EditorWindow* window = array_get(&editor_windows,i);
+		if(!window->initialized)
+			   continue;
+		for(u8 j = 0; j < window->tabs.count ; j++){
+			EditorTab* tab = array_get(&window->tabs,j);
+
+		}
+		if(window->tab_current->draw)		
+			window->tab_current->draw();
+	}
+
 }
 
 void window_initialize_windows(){

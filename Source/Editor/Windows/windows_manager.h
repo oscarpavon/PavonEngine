@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../../Engine/camera.h"
+#include "tabs.h"
 
 typedef struct EditorWindow{
 	Array tabs;
@@ -17,7 +18,8 @@ typedef struct EditorWindow{
 	void(*draw)(void);
 	void(*init)(void);
 	void(*finish)(void);
-
+	EditorTab* tab_current;
+	u8 tab_current_id;
 }EditorWindow;
 
 void window_resize_callback(GLFWwindow* window, int width, int height);
@@ -25,6 +27,7 @@ void window_focus_callback(GLFWwindow*,int);
 void window_create(EditorWindow *win,EditorWindow* share_window,const char* name);
 
 void window_initialize_windows();
+
 inline static void window_update_envents(){
        glfwPollEvents();
 }

@@ -1,6 +1,6 @@
 #ifndef EDITOR_TABS_H
 #define EDITOR_TABS_H
-
+typedef struct EditorWindow EditorWindow;
 typedef struct{
 	void(*draw)(void);
 	void(*init)(void);
@@ -8,4 +8,5 @@ typedef struct{
 	char name[20];
 }EditorTab;
 
+void tabs_new(EditorWindow* window, const char* name);
 #endif

@@ -104,6 +104,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_D:
         actual_key = &input.D;
         break;
+    case GLFW_KEY_N:
+        actual_key = &input.N;
+        break;
     case GLFW_KEY_W:
         actual_key = &input.W;
         break;
