@@ -177,6 +177,7 @@ void editor_window_content_browser_input_update(){
     }
 
     if(key_released(&input.E)){
+			if(!editor_content_view_found) return;
         LOG("Edit Mesh: %s\n",editor_content_view_found->content_name);
         return;
     }
@@ -184,7 +185,6 @@ void editor_window_content_browser_input_update(){
 
 
 void editor_window_content_browser_draw(){
-    glfwMakeContextCurrent(window_content_browser->window);
 
     glClearColor(0.1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -282,7 +282,6 @@ void editor_window_content_browser_draw(){
     }
 
 
-    glfwSwapBuffers(window_content_browser->window);
 }
 
 

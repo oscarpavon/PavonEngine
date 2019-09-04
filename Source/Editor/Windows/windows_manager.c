@@ -9,16 +9,15 @@
 
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
-
 void window_manager_init_window(EditorWindow* window){
 	window->init();
 	window->initialized = true;
 }
 void windows_manager_init(){
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-    //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwInit();
 }
@@ -82,6 +81,13 @@ void window_manager_draw_windows(){
 		glfwMakeContextCurrent(window->window);
 		if(!window->initialized)
 			   continue;
+		
+	if(glfwWindowShouldClose(window->window)){
+		glfwDestroyWindow(window_content_browser->window);
+		window->finish();	
+		LOG("Window close\n");
+		continue;
+	}
 		window->draw();
 		if(window->tabs.count > 0)
 			tabs_draw_tabs_bar(window_editor_main);	
@@ -101,12 +107,12 @@ void window_update_windows_input(){
 	
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
-           // if(editor_window_content_open){
-           //     window_set_focus(&window_content_browser);
-           // }
-           // editor_window_content_open = true;
-			window_manager_init_window(window_content_browser);			
-        }
+		   if(!window_content_browser->initialized)
+				window_manager_init_window(window_content_browser);			
+        	else
+				window_set_focus(window_content_browser);
+		
+		}
 		if(key__released(&input.N,GLFW_MOD_SHIFT)){
 			tabs_new(current_window,"New Tab");
 			LOG("New tab added to Window: %s\n",current_window->name);	
@@ -143,6 +149,8 @@ void window_manager_create_editor_windows_data(){
 	memset(&content_browser_window,0,sizeof(EditorWindow));
 	content_browser_window.init = editor_window_content_init;
 	content_browser_window.draw = editor_window_content_browser_draw;
+	content_browser_window.input = editor_window_content_browser_input_update;
+	content_browser_window.finish = editor_window_content_browser_close_window;
 	array_add(&editor_windows,&content_browser_window);
 	window_content_browser = array_pop(&editor_windows);	
 
