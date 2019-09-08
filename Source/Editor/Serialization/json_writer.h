@@ -1,6 +1,9 @@
 #ifndef JSON_WRITER_H
 #define JSON_WRITER_H
 #include <stdlib.h>
+#include <stdio.h>
+#include "../../ThirdParty/cglm/cglm.h"
+#include "../data.h"
 
 static int token_count = 0;
 static int hirarchical_count = 0;
