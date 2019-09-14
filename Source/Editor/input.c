@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "../Engine/engine.h"
 
-#include <cglm/cglm.h>
+#include "../ThirdParty/cglm/cglm.h"
 #include "../Engine/camera.h"
 
 #include <math.h>

@@ -26,6 +26,7 @@ void editor_window_content_browser_draw_content_view(ContentView* content_view){
 
     draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
     text_render_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
+	text_render_in_screen_space(12,"Type",content_view->position[0]-58,-content_view->position[1]-(64-120));
 
 }
 
@@ -323,13 +324,13 @@ void content_create_draw_image_thumbnail(int size){
 }
 bool content_thumbnail_created = false;
 void content_manager_render_threar_render_to_texture(){
-render_to_texture(128,content_create_draw_image_thumbnail);
-char directory[sizeof(pavon_the_game_project_folder) + 150];
-memset(directory,0,sizeof(directory));
-sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","texute",01,".png");
-texture_current_export_name = directory;
-//texture_export(128);
-content_thumbnail_created = true;
+		render_to_texture(128,content_create_draw_image_thumbnail);
+		char directory[sizeof(pavon_the_game_project_folder) + 150];
+		memset(directory,0,sizeof(directory));
+		sprintf(directory,"%s%s%s%i%s",pavon_the_game_project_folder,".thumbnails/","texute",01,".png");
+		texture_current_export_name = directory;
+		//texture_export(128);
+		content_thumbnail_created = true;
 }
 void content_create_thumbnail(const char * brute_content_path,ContentType type){
     content_manager_current_content_path = brute_content_path;

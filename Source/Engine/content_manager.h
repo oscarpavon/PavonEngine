@@ -24,4 +24,5 @@ static const u32 PVN_BINARY_FILE_MAGIC = 0x426E7670;
 
 int content_manager_load_content(const char* path);
 
+int content_manager_get_content_type_from_binary(const char* path);
 #endif
