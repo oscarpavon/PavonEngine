@@ -24,8 +24,9 @@ void tabs_previous_in_window(EditorWindow* window){
 }
 
 void tabs_draw_tabs_bar(EditorWindow* window){
-	text_render_in_screen_space(12,"Tab01",0,0);
-	text_render_in_screen_space(12,"Tab2",40,0);
+for(int i = 0 ; i < window->tabs.count ; i++){
+	EditorTab* tab = array_get(&window->tabs,i);	
+	text_render_in_screen_space(12,tab->name,i*40,0);
 			
-
+}
 }

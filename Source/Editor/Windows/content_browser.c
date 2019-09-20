@@ -566,7 +566,6 @@ if(window_content_browser->initialized) return;
 	}
 }
 
-
 void editor_window_content_init(){
     window_create(window_content_browser,window_editor_main,"Engine");
 
