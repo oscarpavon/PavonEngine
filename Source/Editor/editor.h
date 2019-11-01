@@ -39,8 +39,7 @@ typedef enum EditorMode{
     EDITOR_SUB_MODE_NULL,
     EDITOR_SUB_MODE_GRAB,
     EDITOR_SUB_MODE_SCALE,
-    EDITOR_SUB_MODE_ROTATE
-}EditorMode;
+    EDITOR_SUB_MODE_ROTATE }EditorMode;
 
 void editor_init();
 
@@ -112,4 +111,7 @@ bool editor_running;
 static vec4 editor_background_color = {0.1,0.2,0.4,1};
 
 Array editor_windows;
+
+
+bool editor_file_explorer_show;
 #endif

@@ -52,6 +52,7 @@ void camera_rotate_control(float yaw, float pitch){
 
     camera_update(&current_window->camera);
 }
+
 bool left_click = false;
 float actual_mouse_position_x;
 float actual_mouse_position_y;
@@ -95,23 +96,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_ENTER:
         actual_key = &input.ENTER;
         break;
-    case GLFW_KEY_Z:
-        actual_key = &input.Z;
-        break;
     case GLFW_KEY_A:
         actual_key = &input.A;
         break;
     case GLFW_KEY_D:
         actual_key = &input.D;
-        break;
-    case GLFW_KEY_N:
-        actual_key = &input.N;
-        break;
-    case GLFW_KEY_W:
-        actual_key = &input.W;
-        break;
-    case GLFW_KEY_S:
-        actual_key = &input.S;
         break;
     case GLFW_KEY_G:
         actual_key = &input.G;
@@ -122,41 +111,56 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_K:
         actual_key = &input.K;
         break;
-    case GLFW_KEY_X:
-        actual_key = &input.X;
-        break;
-    case GLFW_KEY_Q:
-        actual_key = &input.Q;
+    case GLFW_KEY_L:
+        actual_key = &input.L;
         break;
     case GLFW_KEY_E:
         actual_key = &input.E;
         break;
-    case GLFW_KEY_T:
-        actual_key = &input.T;
-        break;
-    case GLFW_KEY_L:
-        actual_key = &input.L;
-        break;
-    case GLFW_KEY_R:
-        actual_key = &input.R;
-        break;
     case GLFW_KEY_1:
         actual_key = &input.KEY_1;
         break;    
+    case GLFW_KEY_I://letter "o"
+        actual_key = &input.I;
+        break;
     case GLFW_KEY_ESCAPE:
         actual_key = &input.ESC;
-        break;
-    case GLFW_KEY_V:
-        actual_key = &input.V;
-        break;
-    case GLFW_KEY_P:
-        actual_key = &input.P;
         break;
     case GLFW_KEY_O://letter "o"
         actual_key = &input.O;
         break;
-    case GLFW_KEY_I://letter "o"
-        actual_key = &input.I;
+    case GLFW_KEY_P:
+        actual_key = &input.P;
+        break;
+    case GLFW_KEY_Q:
+        actual_key = &input.Q;
+        break;
+    case GLFW_KEY_N:
+        actual_key = &input.N;
+        break;
+    case GLFW_KEY_M:
+        actual_key = &input.M;
+        break;
+    case GLFW_KEY_R:
+        actual_key = &input.R;
+        break;
+    case GLFW_KEY_S:
+        actual_key = &input.S;
+        break;
+    case GLFW_KEY_T:
+        actual_key = &input.T;
+        break;
+    case GLFW_KEY_V:
+        actual_key = &input.V;
+        break;
+    case GLFW_KEY_W:
+        actual_key = &input.W;
+        break;
+    case GLFW_KEY_X:
+        actual_key = &input.X;
+        break;
+    case GLFW_KEY_Z:
+        actual_key = &input.Z;
         break;
     case GLFW_KEY_0://number zero
         actual_key = &input.KEY_0;
@@ -694,6 +698,9 @@ void default_mode(){
             change_view_to_camera_component(camera_component);
         }
     }
+	if(key_released(&input.M)){
+		editor_file_explorer_show = true;
+	}
 }
 
 void rotate_input_mode(){
@@ -790,7 +797,8 @@ void input_gui_editor(){
 }
 
 void editor_window_level_editor_input_update(){
-    if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
+   //Editor Normal Mode 
+	if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         switch (editor_mode)
         {    
         case EDITOR_DEFAULT_MODE:
@@ -813,7 +821,7 @@ void editor_window_level_editor_input_update(){
         } 
 
     }
-    
+   //Editor Sub Mode 
     switch (editor_sub_mode)
     {
     case EDITOR_SUB_MODE_TEXT_INPUT:

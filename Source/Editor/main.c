@@ -17,7 +17,7 @@ int main(){
     {
         window_update_envents();
         
-        window_update_windows_input();    
+        window_manager_update_windows_input();    
         
         editor_update();    
         usleep(2*1000);    
