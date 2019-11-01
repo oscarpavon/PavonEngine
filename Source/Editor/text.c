@@ -1,7 +1,6 @@
 #include "text.h"
 
 #include <stdio.h>
-#include "../utils.h"
 #include <GLES2/gl2.h>
 #include "../Engine/shader.h"
 

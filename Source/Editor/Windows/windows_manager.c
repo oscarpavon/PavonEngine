@@ -91,6 +91,9 @@ void window_manager_draw_windows(){
 		if(window->tab_current && window->tab_current->draw)		
 			window->tab_current->draw();
 		if(window->tabs.count > 0){
+			if(window->tabs.count == 1){
+				tabs_new(current_window,"Main Window");
+			}
 			tabs_draw_tabs_bar(window_editor_main);	
 		}
 		else
@@ -110,13 +113,14 @@ void window_update_windows_input(){
 	
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
-		   if(!window_content_browser->initialized)
-				window_manager_init_window(window_content_browser);			
-        	else
-				window_set_focus(window_content_browser);
-		
+		   if(!window_content_browser->initialized){
+			//	window_manager_init_window(window_content_browser);			
+		   }
+		   else{
+			//	window_set_focus(window_content_browser);
+			}	
 		}
-		if(key__released(&input.N,GLFW_MOD_SHIFT)){
+		if(key__released(&input.N,GLFW_MOD_CONTROL)){
 			tabs_new(current_window,"New Tab");
 			LOG("New tab added to Window: %s\n",current_window->name);	
 		}

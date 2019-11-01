@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "../Engine/engine.h"
 
-#include <cglm/cglm.h>
+#include "../ThirdParty/cglm/cglm.h"
 #include "../Engine/camera.h"
 
 #include <math.h>
@@ -277,7 +277,10 @@ void init_input(){
     
 }
 void input_change_mode(){
-   
+  if(selected_element != NULL){ 
+    if(key_released(&input.S)){
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
+    }
     if(key_released(&input.G)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
     }
@@ -285,10 +288,10 @@ void input_change_mode(){
     if(key_released(&input.R)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
     }
-    if(key_released(&input.V)){
+  }
+  if(key_released(&input.V)){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
-    }
-
+  }
 }
 
 float rotate_value = 100;
@@ -612,11 +615,7 @@ void default_mode(){
     gizmos_draw_scale = false;
 
     input_change_mode();
-
         
-    if(key_released(&input.S)){
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
-    }
     //edit in blender
     if(key_released(&input.TAB)){
         if(selected_element){

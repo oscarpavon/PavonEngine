@@ -5,7 +5,40 @@
 void content_manager_load_content_to_file(const char* path, File* file){
     
 }
+int content_manager_get_content_type_from_binary(const char* path){
+	
+    File new_file;
+    load_file(path,&new_file);
 
+    u32 file_type;
+    memcpy(&file_type,new_file.data,4);
+
+    if(file_type != PVN_BINARY_FILE_MAGIC){
+        LOG("File not reconized\n");
+        close_file(&new_file);
+        return -1;
+    }
+    LOG("Pavon Binary loaded\n");
+	u32 binary_version;
+	memcpy(&binary_version,new_file.data+4,4);//TODO: manage binary_versions 
+
+    u32 total_binary_size;
+    memcpy(&total_binary_size,new_file.data+8,4);
+
+	u32 content_GUID;
+	memcpy(&content_GUID,new_file.data+12,4);
+	LOG("Content GUID: %i\n",content_GUID);	
+    
+	u32 data_size;
+    memcpy(&data_size,new_file.data+16,4);
+	LOG("Binary data size %i\n",data_size);
+
+	
+    u32 content_type;
+    memcpy(&content_type,new_file.data+20,4);
+	close_file(&new_file);
+	return  content_type;
+}
 int content_manager_load_content(const char* path){
 
     File new_file;
