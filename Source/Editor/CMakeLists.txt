@@ -24,6 +24,7 @@ menus.c
 content_manager.c
 EditServer/edit_server.c
 editor_command_queue.c
+file_explorer.c
 ${Windows}
 )
 

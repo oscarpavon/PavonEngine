@@ -23,7 +23,7 @@
 
 #include "EditServer/edit_server.h"
 
-
+#include "file_explorer.h"
 Array editor_models;
 Array editor_textures;
 
@@ -536,6 +536,8 @@ void editor_draw(){
     text_renderer_loop();
 		
     //editor_message("editor message");    
+	if(editor_file_explorer_show)
+		file_explorer_update();
 }
 
 void editor_main_render_thread(){

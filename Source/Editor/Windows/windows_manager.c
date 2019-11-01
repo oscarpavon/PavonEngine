@@ -109,7 +109,7 @@ void window_manager_draw_windows(){
 	}
 }
 
-void window_update_windows_input(){
+void window_manager_update_windows_input(){
 	
     if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
         if(key__released(&input.A,GLFW_MOD_SHIFT)){
