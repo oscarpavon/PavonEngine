@@ -33,12 +33,13 @@ void file_manager_list_directory(const char* path){
 
     closedir(directory_pointer);
 }
+
 void file_explorer_input(){
 		if(key_released(&input.H)){
 		//back	
 		}	
-
 }
+
 void file_explorer_update(){
 	file_explorer_input();
 	file_manager_list_directory("./");

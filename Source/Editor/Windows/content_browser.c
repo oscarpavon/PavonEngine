@@ -190,8 +190,8 @@ void editor_window_content_browser_input_update(){
 
 void editor_window_content_browser_draw(){
 
-    glClearColor(0.1,0.2,0.4,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(0.1,0.2,0.4,1);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
 
     if(editor_search_objects){

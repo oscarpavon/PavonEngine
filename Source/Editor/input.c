@@ -701,6 +701,9 @@ void default_mode(){
 	if(key_released(&input.M)){
 		editor_file_explorer_show = true;
 	}
+	if(key_released(&input.A)){
+		editor_content_browser_show = true;
+	}
 }
 
 void rotate_input_mode(){

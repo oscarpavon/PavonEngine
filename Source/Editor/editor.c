@@ -507,7 +507,22 @@ void editor_draw(){
 	if(editor_file_explorer_show){
 		file_explorer_update();
 		return;
-	} 
+	}
+   if(editor_content_browser_show){
+	if(!editor_content_browser_initiliazed){
+		editor_content_browser_initiliazed = true; 
+		editor_window_content_get_models_path();    
+		content_manager_init();
+	}
+		
+	if(key_released(&input.A)){
+		editor_content_browser_show = false;
+		return;
+	}
+		editor_window_content_browser_input_update();
+		editor_window_content_browser_draw();		
+   	   return;	
+   }	   
 
 	if(isDrawUV)
         draw_UV();

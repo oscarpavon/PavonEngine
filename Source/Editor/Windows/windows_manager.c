@@ -124,6 +124,9 @@ void window_manager_update_windows_input(){
 			tabs_new(current_window,"New Tab");
 			LOG("New tab added to Window: %s\n",current_window->name);	
 		}
+		if(key_released(&input.P)){
+		editor_content_browser_show = false;	
+		}
     }
 	//Draw tab bar 	& draw current tabb 
 	for(u8 i = 0; i<editor_windows.count ; i++ ){
