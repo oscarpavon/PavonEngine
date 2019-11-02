@@ -23,6 +23,8 @@
 
 #include "commands.h"
 
+float rotate_value = 100;
+
 float horizontalAngle = 0;
 float verticalAngle = 0;
 
@@ -33,6 +35,19 @@ bool first_mouse_movement = true;
 
 bool first_camera_rotate = true;
 vec3 init_front;
+
+bool left_click = false;
+float actual_mouse_position_x;
+float actual_mouse_position_y;
+
+//grab mode
+float move_object_value = 0.5;
+bool grid_translate = false;
+vec2 move_ui_element_value;//per pixel
+float move_ui_element_value_per_axis = 0.6;
+
+bool player_in_start_position = false;
+
 void camera_rotate_control(float yaw, float pitch){
     vec3 front;
 
@@ -52,10 +67,6 @@ void camera_rotate_control(float yaw, float pitch){
 
     camera_update(&current_window->camera);
 }
-
-bool left_click = false;
-float actual_mouse_position_x;
-float actual_mouse_position_y;
 
 void mouse_movement_control(float xpos, float ypos){   
 
@@ -278,8 +289,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void init_input(){
     memset(&input,0,sizeof(Input));
-    
 }
+
 void input_change_mode(){
   if(selected_element != NULL){ 
     if(key_released(&input.S)){
@@ -298,7 +309,6 @@ void input_change_mode(){
   }
 }
 
-float rotate_value = 100;
 void editor_input_camera_rotate_control(){
     if(input.J.pressed){
         horizontalAngle += camera_width_screen/2 - rotate_value ;
@@ -314,6 +324,7 @@ void editor_input_camera_rotate_control(){
         
         camera_rotate_control(0, horizontalAngle*time_delta);
     }
+
     if(input.K.pressed){
          horizontalAngle += camera_width_screen/2 - rotate_value ;
         rotate_value += 30;
@@ -360,7 +371,6 @@ void editor_input_navigate(){
         update = true;
     }
 
-    editor_input_camera_rotate_control();
 
     if(input.W.pressed){
         vec3 move;
@@ -393,14 +403,12 @@ void editor_input_navigate(){
         update = true;
     }
     
+    editor_input_camera_rotate_control();
+
     if(update)
         camera_update(&main_camera);
 }
 
-float move_object_value = 0.5;
-bool grid_translate = false;
-vec2 move_ui_element_value;//per pixel
-float move_ui_element_value_per_axis = 0.6;
 
 void grab_mode(){
     draw_translate_gizmo = true;
@@ -603,9 +611,6 @@ void scale_mode(){
             
             if(update)
                 update_scale(move);
-         
-            
-            
             
         }
 }
@@ -743,7 +748,6 @@ void rotate_input_mode(){
     }
 }
 
-bool player_in_start_position = false;
 
 void input_mode_play(){
   
