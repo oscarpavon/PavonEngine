@@ -149,14 +149,15 @@ void editor_window_content_browser_input_update(){
      if(key_released(&input.F)){
         if(editor_window_content_browser_hint){
             editor_window_content_browser_hint = false;
-            
-        }else
+        }else{
             editor_window_content_browser_hint = true;
-
+			LOG("Hint\n");
+		}
         return;
     }
 
     if(key__released(&input.ENTER,GLFW_MOD_SHIFT)){
+			LOG("Import\n");	
             memset(command_text_buffer,0,sizeof(command_text_buffer));
             command_character_count = 0;
             editor_window_content_browser_hint = false;
@@ -167,7 +168,9 @@ void editor_window_content_browser_input_update(){
 				new_command.command = editor_window_content_add_content_render_thread;
 				array_add(&array_render_thread_commands,&new_command);
                 return;
-            }
+            }else{
+				LOG("No content selected\n");	
+			}
 
     }
 
@@ -189,7 +192,7 @@ void editor_window_content_browser_input_update(){
 
 
 void editor_window_content_browser_draw(){
-
+//if in new window clean screen first
     //glClearColor(0.1,0.2,0.4,1);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
@@ -222,8 +225,6 @@ void editor_window_content_browser_draw(){
                 ContentView* content_view = array_get(&array_content_views,i);
                 if(!content_view)
                     continue;
-
-
                 
                 vec2 hint_position;
                 vec2 hint_size;
@@ -236,10 +237,9 @@ void editor_window_content_browser_draw(){
                 draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
                 text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
 
-
             }
-
             
+			text_render_in_screen_space(12,"test ofcouse",0,-500);		
             if(strlen(command_text_buffer) >= 1){
                 int count_found = 0;
                 bool fount = false;

@@ -24,6 +24,7 @@
 #include "EditServer/edit_server.h"
 
 #include "file_explorer.h"
+#include "Windows/content_browser.h"
 Array editor_models;
 Array editor_textures;
 
@@ -517,10 +518,15 @@ void editor_draw(){
 		
 	if(key_released(&input.A)){
 		editor_content_browser_show = false;
+		EditorWindow* level_editor_window = array_get(&editor_windows,0);
+		level_editor_window->input = &editor_window_level_editor_input_update;
 		return;
 	}
-		editor_window_content_browser_input_update();
-		editor_window_content_browser_draw();		
+		EditorWindow* level_editor_window = array_get(&editor_windows,0);
+		level_editor_window->input = &editor_window_content_browser_input_update;
+//		editor_window_content_browser_input_update();
+		editor_window_content_browser_draw();
+		text_render_in_screen_space(12,"test ofcouse",0,0);		
    	   return;	
    }	   
 
