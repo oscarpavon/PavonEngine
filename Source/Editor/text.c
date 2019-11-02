@@ -274,4 +274,5 @@ void text_renderer_loop()
         can_open_text_menu_with_key(&menu_show_gui_elements, &input.L, NULL);
 
     draw_menus();
+	
 }

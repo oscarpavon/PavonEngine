@@ -503,7 +503,13 @@ void editor_draw(){
 
     glClearColor(COLOR(editor_background_color));
     render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
-    if(isDrawUV)
+
+	if(editor_file_explorer_show){
+		file_explorer_update();
+		return;
+	} 
+
+	if(isDrawUV)
         draw_UV();
 
      if(controlling_camera_component){
@@ -536,8 +542,6 @@ void editor_draw(){
     text_renderer_loop();
 		
     //editor_message("editor message");    
-	if(editor_file_explorer_show)
-		file_explorer_update();
 }
 
 void editor_main_render_thread(){
