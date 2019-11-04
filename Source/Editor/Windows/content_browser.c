@@ -174,6 +174,7 @@ void editor_window_content_browser_input_update(){
     }
 
     if(key_released(&input.ENTER)){//select content 
+		change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
         memset(command_text_buffer,0,sizeof(command_text_buffer));
         command_character_count = 0;
         editor_window_content_browser_hint = false;
@@ -217,7 +218,9 @@ void editor_window_content_browser_draw(){
 
         
         if(editor_window_content_browser_hint){//hint activated
-            struct Hint hints[array_content_views.count];
+				change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+            
+				struct Hint hints[array_content_views.count];
             selection_create_hint(hints);
 
             for (int i = 0; i < array_content_views.count; i++)
@@ -240,10 +243,10 @@ void editor_window_content_browser_draw(){
 
             }
 
-			editor_content_view_found = array_get(&array_content_views,0);
+		//	editor_content_view_found = array_get(&array_content_views,0);
            //Input compare 
-            if(strlen(command_text_buffer) >= 1){
-				LOG("Input compare\n");
+			if(strlen(command_text_buffer) >= 1){
+			//	LOG("Input compare\n");
                 int count_found = 0;
                 bool found = false;
                 for (u8 i = 0; i < array_content_views.count; i++)

@@ -1,6 +1,15 @@
 #include "commands.h"
 #include "editor.h"
 
+#include "Windows/content_browser.h"
+int log_command_offset = 0;
+
+bool activate_text_input_mode = false;
+
+
+char first_char_command;
+char* command_array_pointer;
+char* argument_array_pointer;
 
 void system_command(const char* command, const char* argument){
     char final_command[strlen(command) + strlen(argument)];
@@ -44,12 +53,6 @@ static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
 }
 
 
-bool activate_text_input_mode = false;
-
-
-char first_char_command;
-char* command_array_pointer;
-char* argument_array_pointer;
 
 void parse_command_with_len(const char* command, int len){
     
@@ -228,7 +231,6 @@ void parse_command(const char* command){
 
 }
 
-#include "Windows/content_browser.h"
 void parse_characters(unsigned char character){
     if(character == ':'){
         LOG("Command mode\n");
@@ -259,7 +261,6 @@ void parse_characters(unsigned char character){
     }
 }
 
-int log_command_offset = 0;
 void text_input_mode(){
     if(key_released(&input.ENTER)){
         parse_command(command_text_buffer);
