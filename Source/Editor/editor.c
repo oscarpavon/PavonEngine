@@ -505,10 +505,6 @@ void editor_draw(){
     glClearColor(COLOR(editor_background_color));
     render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
 
-	if(editor_file_explorer_show){
-		file_explorer_update();
-		return;
-	}
    if(editor_content_browser_show){
 	if(!editor_content_browser_initiliazed){
 		editor_content_browser_initiliazed = true; 
@@ -528,12 +524,21 @@ void editor_draw(){
 		editor_window_content_browser_draw();
 		text_render_in_screen_space(12,"test ofcouse",0,0);		
    	   return;	
-   }	   
+   }	
+
+	if(editor_file_explorer_show){
+		file_explorer_update();
+		if(key_released(&input.ESC)){
+			editor_file_explorer_show = false;
+			LOG("File explorer exit\n");	
+		}	
+		return;
+	}
 
 	if(isDrawUV)
         draw_UV();
 
-     if(controlling_camera_component){
+    if(controlling_camera_component){
         CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
         update_main_camera_with_camera_component_values(camera);
     }

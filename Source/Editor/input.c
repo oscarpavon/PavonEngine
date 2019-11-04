@@ -88,11 +88,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_A:
         actual_key = &input.A;
         break;
+    case GLFW_KEY_B:
+        actual_key = &input.B;
+        break;
+    case GLFW_KEY_C:
+        actual_key = &input.C;
+        break;
     case GLFW_KEY_D:
         actual_key = &input.D;
         break;
+    case GLFW_KEY_E:
+        actual_key = &input.E;
+        break;
+    case GLFW_KEY_F:
+        actual_key = &input.F;
+        break;
     case GLFW_KEY_G:
         actual_key = &input.G;
+        break;
+    case GLFW_KEY_H:
+        actual_key = &input.H;
+        break;
+    case GLFW_KEY_I:
+        actual_key = &input.I;
         break;
     case GLFW_KEY_J:
         actual_key = &input.J;
@@ -103,17 +121,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_L:
         actual_key = &input.L;
         break;
-    case GLFW_KEY_E:
-        actual_key = &input.E;
+    case GLFW_KEY_M:
+        actual_key = &input.M;
         break;
-    case GLFW_KEY_1:
-        actual_key = &input.KEY_1;
-        break;    
-    case GLFW_KEY_I://letter "o"
-        actual_key = &input.I;
-        break;
-    case GLFW_KEY_ESCAPE:
-        actual_key = &input.ESC;
+    case GLFW_KEY_N:
+        actual_key = &input.N;
         break;
     case GLFW_KEY_O://letter "o"
         actual_key = &input.O;
@@ -123,12 +135,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_Q:
         actual_key = &input.Q;
-        break;
-    case GLFW_KEY_N:
-        actual_key = &input.N;
-        break;
-    case GLFW_KEY_M:
-        actual_key = &input.M;
         break;
     case GLFW_KEY_R:
         actual_key = &input.R;
@@ -142,6 +148,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_V:
         actual_key = &input.V;
         break;
+    case GLFW_KEY_Y:
+        actual_key = &input.Y;
+        break;
     case GLFW_KEY_W:
         actual_key = &input.W;
         break;
@@ -154,6 +163,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_0://number zero
         actual_key = &input.KEY_0;
         break;
+    case GLFW_KEY_1:
+        actual_key = &input.KEY_1;
+        break;    
     case GLFW_KEY_2:
         actual_key = &input.KEY_2;
         break;
@@ -178,12 +190,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_9:
         actual_key = &input.KEY_9;
         break;
-    case GLFW_KEY_C:
-        actual_key = &input.C;
-        break;
-    case GLFW_KEY_B:
-        actual_key = &input.B;
-        break;
     case GLFW_KEY_DOWN:
         actual_key = &input.KEY_DOWN;
         break;
@@ -193,8 +199,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     case GLFW_KEY_TAB:
         actual_key = &input.TAB;
         break;
-    case GLFW_KEY_F:
-        actual_key = &input.F;
+    case GLFW_KEY_ESCAPE:
+        actual_key = &input.ESC;
         break;
     
     default:

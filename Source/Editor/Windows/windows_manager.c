@@ -59,7 +59,7 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
         editor_window->focus = true;
     }
     if(is_focus == GLFW_FALSE){
-       editor_window->focus = false;
+       //editor_window->focus = false;
     }
 }
 
@@ -125,7 +125,10 @@ void window_manager_update_windows_input(){
 			LOG("New tab added to Window: %s\n",current_window->name);	
 		}
 		if(key_released(&input.P)){
-		editor_content_browser_show = false;	
+			editor_content_browser_show = false;	
+		}
+		if(key_released(&input.T)){
+			LOG("INpur T\n");	
 		}
     }
 	//Draw tab bar 	& draw current tabb 
@@ -136,6 +139,7 @@ void window_manager_update_windows_input(){
 		for(u8 j = 0; j < window->tabs.count ; j++){
 			EditorTab* tab = array_get(&window->tabs,j);
 		}
+//The mouse need to stay in the window for window->input call	
 		if(window->focus){
 			if(window->input)
 				window->input();
