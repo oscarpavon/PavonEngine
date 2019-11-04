@@ -24,7 +24,7 @@ ContentView* editor_content_view_found = NULL;
 
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
 
-    draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
+    //draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
     text_render_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
 	text_render_in_screen_space(12,"Type",content_view->position[0]-58,-content_view->position[1]-(64-120));
 
@@ -119,10 +119,9 @@ void selection_create_hint(struct Hint* out){
             }
         }
     }
-    
-    
 
 }
+
 void editor_window_content_add_content_render_thread(){
 		window_set_focus(window_editor_main);               	
 		char directory[sizeof(pavon_the_game_project_folder) + 34];
@@ -178,6 +177,7 @@ void editor_window_content_browser_input_update(){
         memset(command_text_buffer,0,sizeof(command_text_buffer));
         command_character_count = 0;
         editor_window_content_browser_hint = false;
+		LOG("Content selected\n");	
         return;
     }
 
@@ -192,9 +192,9 @@ void editor_window_content_browser_input_update(){
 
 
 void editor_window_content_browser_draw(){
-//if in new window clean screen first
-    //glClearColor(0.1,0.2,0.4,1);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//if in new window clean screen first
+   // glClearColor(0.1,0.2,0.4,1);
+    //glClear(GL_DEPTH_BUFFER_BIT);
    
 
     if(editor_search_objects){
@@ -206,7 +206,7 @@ void editor_window_content_browser_draw(){
         if(mark_content)
             mark_content->selected = true;
         
-        
+		//Draw in screen contents 
         for (int i = 0; i < array_content_views.count; i++)
         {
             ContentView* content_view = array_get(&array_content_views,i);
@@ -216,7 +216,7 @@ void editor_window_content_browser_draw(){
         }
 
         
-        if(editor_window_content_browser_hint){
+        if(editor_window_content_browser_hint){//hint activated
             struct Hint hints[array_content_views.count];
             selection_create_hint(hints);
 
@@ -234,18 +234,21 @@ void editor_window_content_browser_draw(){
                 hint_size[1] = 20;
 
 
-                draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
+               // draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
                 text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
+               // text_render_in_screen_space(12,"hint",hint_position[0],-hint_position[1]);
 
             }
-            
-			text_render_in_screen_space(12,"test ofcouse",0,-500);		
+
+			editor_content_view_found = array_get(&array_content_views,0);
+           //Input compare 
             if(strlen(command_text_buffer) >= 1){
+				LOG("Input compare\n");
                 int count_found = 0;
-                bool fount = false;
+                bool found = false;
                 for (u8 i = 0; i < array_content_views.count; i++)
                 {
-                    if(fount)
+                    if(found)
                         break;
 
                     struct Hint hint = hints[i];
@@ -257,17 +260,17 @@ void editor_window_content_browser_draw(){
                         {
                             
                             if(command_text_buffer[k] != hint.keys[k]){
-                                fount = false;
+                                found = false;
                                 break;
                             }
-                            fount = true;
+                            found = true;
                         }
-                        if(fount){
-                        editor_content_view_found = array_get(&array_content_views,i);
-                        if(!editor_content_view_found)
-                            continue;
+                        if(found){
+							editor_content_view_found = array_get(&array_content_views,i);
+							if(!editor_content_view_found)
+								 continue;
 
-                            //LOG("%s\n",content_view->content_name);
+                            LOG("%s\n",editor_content_view_found->content_name);
                             
                         }
                     }
@@ -322,6 +325,7 @@ void content_create_draw_image_thumbnail(int size){
     camera_heigth_screen = 720;
     camera_width_screen = 1280;
 }
+
 bool content_thumbnail_created = false;
 void content_manager_render_threar_render_to_texture(){
 		render_to_texture(128,content_create_draw_image_thumbnail);
@@ -332,6 +336,7 @@ void content_manager_render_threar_render_to_texture(){
 		//texture_export(128);
 		content_thumbnail_created = true;
 }
+
 void content_create_thumbnail(const char * brute_content_path,ContentType type){
     content_manager_current_content_path = brute_content_path;
     content_manager_current_content_type = type;
@@ -344,7 +349,7 @@ void content_create_thumbnail(const char * brute_content_path,ContentType type){
 			new_command.command = &content_manager_render_threar_render_to_texture;
 //			array_add(&array_render_thread_commands,&new_command);
 			//while(!content_thumbnail_created)
-content_manager_render_threar_render_to_texture();
+			content_manager_render_threar_render_to_texture();
             break;
         }
     

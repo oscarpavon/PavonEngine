@@ -18,7 +18,6 @@
 #include "../Engine/game.h"
 
 #include "editor_mode.h"
-
 #include "../Engine/gui.h"
 
 #include "commands.h"
@@ -272,9 +271,12 @@ void init_input(){
 
 void input_change_mode(){
   if(selected_element != NULL){ 
-    if(key_released(&input.S)){
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
-    }
+	if(editor_mode != EDITOR_NAVIGATE_MODE){
+		if(key_released(&input.S)){
+			 change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
+		}
+	}
+
     if(key_released(&input.G)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
     }
