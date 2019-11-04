@@ -4,6 +4,9 @@
 
 #include "camera.h"
 #include "utils.h"
+bool first_camera_rotate = true;
+
+vec3 init_front;
 
 void camera_init(CameraComponent* camera){
     camera_rotate_angle = 0;
@@ -29,4 +32,23 @@ void camera_update(CameraComponent* camera){
     glm_vec3_add(camera->position, camera->front, look_pos);
 
     glm_lookat(camera->position, look_pos, camera->up , camera->view);
+}
+
+void camera_rotate_control(float yaw, float pitch){
+    vec3 front;
+
+    front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
+    front[1] = sin(glm_rad(pitch));
+    front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
+
+    if(first_camera_rotate == true){
+        glm_vec3_copy(main_camera.front,init_front);
+        glm_vec3_mul(init_front,(vec3){0,5,0},init_front);
+        first_camera_rotate = false;
+    }
+ 
+    glm_normalize(front);
+
+    glm_vec3_copy(front, main_camera.front);
+
 }

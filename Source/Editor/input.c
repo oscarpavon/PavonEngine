@@ -33,8 +33,6 @@ float last_mouse_x = 400;
 float last_mouse_y = 300;
 bool first_mouse_movement = true;
 
-bool first_camera_rotate = true;
-vec3 init_front;
 
 bool left_click = false;
 float actual_mouse_position_x;
@@ -48,25 +46,6 @@ float move_ui_element_value_per_axis = 0.6;
 
 bool player_in_start_position = false;
 
-void camera_rotate_control(float yaw, float pitch){
-    vec3 front;
-
-    front[0] = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
-    front[1] = sin(glm_rad(pitch));
-    front[2] = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
-
-    if(first_camera_rotate == true){
-        glm_vec3_copy(main_camera.front,init_front);
-        glm_vec3_mul(init_front,(vec3){0,5,0},init_front);
-        first_camera_rotate = false;
-    }
- 
-    glm_normalize(front);
-
-    glm_vec3_copy(front, main_camera.front);
-
-    camera_update(&current_window->camera);
-}
 
 void mouse_movement_control(float xpos, float ypos){   
 
@@ -309,36 +288,38 @@ void input_change_mode(){
   }
 }
 
-void editor_input_camera_rotate_control(){
-    if(input.J.pressed){
-        horizontalAngle += camera_width_screen/2 - rotate_value ;
-        rotate_value -= 30;
+bool editor_input_camera_rotate_control(){
+   bool rotate_keys_pressed = false;
+	if(input.J.pressed){
+		rotate_keys_pressed = true;
+        rotate_value -= 10;
         if(rotate_value < -10000){
             rotate_value = -100;
         }
 
-        verticalAngle  += 600/2 - 100 ;
-
-        horizontalAngle *= 0.05;
-        verticalAngle *= 0.05;
-        
-        camera_rotate_control(0, horizontalAngle*time_delta);
     }
 
     if(input.K.pressed){
-         horizontalAngle += camera_width_screen/2 - rotate_value ;
-        rotate_value += 30;
+		rotate_keys_pressed = true;
+        rotate_value += 10;
         if(rotate_value > 10000){
             rotate_value = 100;
         }
 
-        verticalAngle  += 600/2 - 100 ;
+    }
+	if(rotate_keys_pressed){
+		
+        horizontalAngle += camera_width_screen/2 - rotate_value ;
+        
+		verticalAngle  += 600/2 - 100 ;
 
         horizontalAngle *= 0.05;
         verticalAngle *= 0.05;
 
-        camera_rotate_control(0, horizontalAngle*time_delta);
-    }
+        camera_rotate_control(0, horizontalAngle);
+		return true;
+	}
+	return false;
 }
 
 
@@ -403,9 +384,11 @@ void editor_input_navigate(){
         update = true;
     }
     
-    editor_input_camera_rotate_control();
-
-    if(update)
+    if(editor_input_camera_rotate_control()){	
+		//camera_update(&current_window->camera);
+        camera_update(&main_camera);
+	} 
+	if(update)
         camera_update(&main_camera);
 }
 
