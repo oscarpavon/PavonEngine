@@ -64,10 +64,7 @@ void text_render(const char *text, float x, float y, float pixel_size_x, float p
             {x2 + w, -y2 - h, 1, 1},
         };
 
-        if (mark)
-            glUniform4fv(uniform_color, 1, red);
-        else
-            glUniform4fv(uniform_color, 1, black);
+        glUniform4fv(uniform_color, 1, (vec4){1,1,1,1});
         check_error("send text color");
 
         glEnableVertexAttribArray(0);
@@ -144,3 +141,9 @@ void text_render_in_screen_space( int text_size , const char* text, int x , int 
     FT_Set_Pixel_Sizes(face, 0, text_size);
     text_render(text, text_position_x , text_position_y , pixel_size_x, pixel_size_y, false);  
 }
+
+void text_render_with_data(TextRenderData* data){
+	
+
+}
+

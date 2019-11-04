@@ -234,6 +234,23 @@ void draw_FPS(){
 
 }
 
+void draw_count_of_draw_call(){
+	text_render_in_screen_space(12,"Draw:",0,0);
+    char buf[5]; 
+    float count = editor_stats_draw_calls; 
+    gcvt(count, 6, buf);
+    if(count != 0)
+	text_render_in_screen_space(12,buf,100,0);
+}
+void draw_stats_triangles(){
+    FT_Set_Pixel_Sizes(face, 0, 12);
+    text_render("Tris:" , 0 + ((camera_width_screen/2)-600) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+    char buf[7]; 
+    float count = editor_stats_triangles;
+    gcvt(count, 7, buf);
+    if(count != 0)
+    text_render(buf , 0 + ((camera_width_screen/2)-560) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
+}
 void text_renderer_loop()
 {
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
@@ -246,6 +263,8 @@ void text_renderer_loop()
     draw_editor_mode();
     draw_frame_time();
     draw_FPS();
+	draw_count_of_draw_call();
+	draw_stats_triangles();
 
     if (editor_sub_mode != EDITOR_SUB_MODE_NULL)
     {

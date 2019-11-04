@@ -18,6 +18,7 @@ void file_manager_list_directory(const char* path){
     if (directory_pointer == NULL)
     {
         LOG("Could not open current directory\n");
+		return;
     }
 	file_manager_current_directory_count = 0;
 	
