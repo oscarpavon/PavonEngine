@@ -37,23 +37,34 @@ void file_manager_list_directory(const char* path){
 		if(directory_data->d_name[0] == '.')
 			continue;
 		draw_count++;	
+		
 		TextRenderData text_data;
 		text_data.size = 12;
 		text_data.position[0] = 0;		
 		text_data.position[1] = draw_count*-14;
 		memcpy(text_data.color,(vec4){1,1,1,1},sizeof(vec4));
-		if(directory_data->d_type == DT_DIR){
-			memcpy(text_data.color,(vec4){0,1,0.2f,1},sizeof(vec4));
+
+		switch(directory_data->d_type){
+			case DT_DIR:{
+							memcpy(text_data.color,(vec4){0,1,0.2f,1},sizeof(vec4));
+							break;
+						}
+			case DT_LNK:{
+							memcpy(text_data.color,(vec4){1,0,1,1},sizeof(vec4));
+							break;
+						}
+
 		}
-		text_render_in_screen_space_with_data(directory_data->d_name,&text_data);
 		if(file_manager_current_directory_id == draw_count){	
-			text_render_in_screen_space(12,"<--",300,draw_count*-14);
 			memcpy(file_manager_temp_path,directory_data->d_name,sizeof(directory_data->d_name));
+			memcpy(text_data.color,(vec4){1,1,0.2f,1},sizeof(vec4));
 		}	
+		text_render_in_screen_space_with_data(directory_data->d_name,&text_data);
 	}
 
     closedir(directory_pointer);
 }
+
 void file_explorer_enter(){
 		strcpy(file_manager_back_directory,file_manager_current_path);
 		char new_directory[300];
