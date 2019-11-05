@@ -9,6 +9,7 @@
 typedef struct {
 	u8 size;
 	vec4 color;
+	vec2 position;
 }TextRenderData;
 
 FT_Face face;
@@ -21,9 +22,12 @@ static inline void set_text_size(float size){
 void text_renderer_update_pixel_size();
 void text_renderer_init();
 
+void text_render_with_data(const char *text, float x, float y, float pixel_size_x, float pixel_size_y, vec4 color);
+
+void text_render_in_screen_space_with_data( const char* text, TextRenderData* data);
+
 void text_render(const char *text, float x, float y, float sx, float sy , bool mark);
 
 void text_render_in_screen_space( int text_size , const char* text, int x , int y);
 
-void text_render_with_data();
 #endif

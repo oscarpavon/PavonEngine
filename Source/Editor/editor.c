@@ -25,6 +25,7 @@
 
 #include "file_explorer.h"
 #include "Windows/content_browser.h"
+
 Array editor_models;
 Array editor_textures;
 
@@ -594,7 +595,6 @@ void editor_init(){
 	main_window.input = editor_window_level_editor_input_update;
 	array_add(&editor_windows,&main_window);
 	window_editor_main = array_pop(&editor_windows);	
-
 
 	//render thread initialization
     ExecuteCommand command;
