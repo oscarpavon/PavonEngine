@@ -278,7 +278,8 @@ void text_renderer_loop()
         can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
 
         can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E, GLFW_MOD_SHIFT);
-        text_menu_update(&menu_add_texture);
+        
+		text_menu_update(&menu_add_texture);
 
         text_menu_update(&add_element_menu);
 

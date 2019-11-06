@@ -475,8 +475,11 @@ void editor_render_init(){
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
     texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
+	
+	editor_text_init();
     gizmos_init();
-    editor_running = true;
+   
+   	editor_running = true;
 }
 
 void editor_render_finish(){

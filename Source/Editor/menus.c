@@ -339,6 +339,7 @@ void menu_action_draw_editor_elements(TextMenu* menu){
     }
        
 }
+
 void menu_action_select_gui_element(TextMenu* menu){
     selected_button = array_get(actual_buttons_array,menu->actual_element_select);    
 }
@@ -376,6 +377,7 @@ void menus_init(){
     array_init(&menus,sizeof(TextMenu),10);
     new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
     new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
+//    new_text_menu("List Elements",&input.L, -1 ,  &menu_action_draw_editor_elements, NULL);
     
     TextMenu animation_menu;
     animation_menu.open_key = &input.B;

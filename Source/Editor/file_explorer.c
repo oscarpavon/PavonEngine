@@ -13,6 +13,33 @@ char file_manager_temp_path[200];
 char file_manager_back_directory[200];
 bool file_explorer_can_open_directory;
 
+bool file_have_extension(const char* file_name, const char* extension){
+
+        int name_lenght = strlen(file_name);
+        for (int n = name_lenght; n > 0; n--)
+        {
+            if (file_name[n] == '.')
+            {
+
+                if (strcmp(&file_name[n + 1], extension) == 0)
+                {
+					return true;
+                }else
+					break;
+			}
+		}
+
+	return false;
+}
+
+void file_explorer_set_file_extension_color(const char* name, vec4 color){
+	if(file_have_extension(name,"pb"))
+		memcpy(color,(vec4){0.2,1,0.5,1},sizeof(vec4));
+	else if(file_have_extension(name,"png"))
+		memcpy(color,(vec4){1,0.5,1,1},sizeof(vec4));
+	else if(file_have_extension(name,"jpg"))
+		memcpy(color,(vec4){0.2,1,1,1},sizeof(vec4));
+}
 
 void file_manager_list_directory(const char* path){
 	
@@ -33,6 +60,8 @@ void file_manager_list_directory(const char* path){
 
     rewinddir(directory_pointer);
 	int draw_count = 0;	
+	int directory_count = 0;
+	int files_count = 0;
     for (int i = 0; i < file_manager_current_directory_count ; i++)
     {
         directory_data = readdir(directory_pointer);
@@ -48,16 +77,18 @@ void file_manager_list_directory(const char* path){
 
 		switch(directory_data->d_type){
 			case DT_DIR:{
+							memcpy(text_data.color,(vec4){1,0,1,1},sizeof(vec4));
+							break;
+							directory_count++;
+						}
+			case DT_LNK:{
 							memcpy(text_data.color,(vec4){0,1,0.2f,1},sizeof(vec4));
 							break;
 						}
-			case DT_LNK:{
-							memcpy(text_data.color,(vec4){1,0,1,1},sizeof(vec4));
-							break;
-						}
-
 		}
-		
+
+		file_explorer_set_file_extension_color(directory_data->d_name,text_data.color);
+
 		if(file_manager_current_directory_id == draw_count){	
 			memcpy(file_manager_temp_path,directory_data->d_name,sizeof(directory_data->d_name));
 			memcpy(text_data.color,(vec4){1,1,0.2f,1},sizeof(vec4));
@@ -73,24 +104,6 @@ void file_manager_list_directory(const char* path){
     closedir(directory_pointer);
 }
 
-bool file_have_extension(const char* file_name, const char* extension){
-
-        int name_lenght = strlen(file_name);
-        for (int n = 0; n < name_lenght; n++)
-        {
-            if (file_name[n] == '.')
-            {
-
-                if (strcmp(&file_name[n + 1], extension) == 0)
-                {
-					return true;
-                }else
-					break;
-			}
-		}
-
-	return false;
-}
 
 void file_explorer_get_absolute_path(){
 
@@ -104,7 +117,28 @@ void file_explorer_get_absolute_path(){
 		memset(file_manager_current_path,0,sizeof(file_manager_current_path));
 		strcpy(file_manager_current_path,new_directory);
 }
-
+void file_explorer_back_directory(){
+        int name_lenght = strlen(file_manager_current_path);
+		if(name_lenght == 1)
+			return;
+		int letter_count_to_slash = 0;
+		int slash_count = 0;
+        for (int n = name_lenght; n > 0; n--)
+        {
+            if (file_manager_current_path[n] != '/')
+            {
+				letter_count_to_slash++;
+			}else
+			{
+				slash_count++;
+				if(slash_count >=2){
+					break;
+				}
+			}	
+		}
+		file_manager_current_path[name_lenght-letter_count_to_slash] = '\0';		
+		LOG("Back directory: %s \n",file_manager_current_path);
+}
 void file_explorer_enter(){
 		file_explorer_get_absolute_path();
 		file_manager_current_directory_id = 0;
@@ -153,13 +187,14 @@ void file_explorer_input(){
 	}
 
 	if(key_released(&input.L)){
-		file_explorer_enter();
+		if(file_explorer_can_open_directory)
+			file_explorer_enter();
 	}
 
 	if(key_released(&input.H)){
-		strcpy(file_manager_current_path,file_manager_back_directory);
+		//strcpy(file_manager_current_path,file_manager_back_directory);
+		file_explorer_back_directory();		
 		file_manager_current_directory_id = 0;
-		LOG("Back\n");
 	}	
 }
 
