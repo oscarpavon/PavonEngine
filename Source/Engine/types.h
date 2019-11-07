@@ -1,6 +1,12 @@
 #ifndef ENGINE_DATA_TYPES
 #define ENGINE_DATA_TYPES
 
+#include <stdbool.h>
+
+#include "array.h"
+#include "numbers.h"
+#include "../ThirdParty/cglm/types.h"
+
 #ifdef EDITOR
     #include "../Editor/types.h"
 #endif 
@@ -8,11 +14,6 @@
     struct android_app* app;
 #endif
 
-#include <stdbool.h>
-
-#include "array.h"
-#include "numbers.h"
-#include "../ThirdParty/cglm/types.h"
 
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;

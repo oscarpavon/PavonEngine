@@ -26,6 +26,7 @@ EditServer/edit_server.c
 editor_command_queue.c
 file_explorer.c
 ${Windows}
+ProjectManager/project_manager.c
 )
 
 set (game_source

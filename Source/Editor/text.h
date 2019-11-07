@@ -33,6 +33,7 @@ typedef struct TextMenu{
     bool show;
     bool element_selected;
     bool execute;
+	bool always_open;
     unsigned int actual_element_select;
     TextMenuFunction execute_function;
     TextMenuFunction draw_text_funtion;

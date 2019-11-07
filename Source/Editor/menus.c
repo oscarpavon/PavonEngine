@@ -6,6 +6,8 @@
 
 void text_menu_update(TextMenu *menu)
 {
+	
+
     if (menu->execute)
     {
         if (menu->draw_text_funtion != NULL)
@@ -63,7 +65,7 @@ void text_menu_update(TextMenu *menu)
     }
 }
 
-void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
+void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
         if(input.SHIFT.pressed)
             return;
@@ -81,7 +83,7 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
     }    
 }
 
-void new_text_menu_simple(const char* name, TextMenu* new_menu){
+void menu_new_from_data(const char* name, TextMenu* new_menu){
     TextMenu menu;
     memset(&menu,0,sizeof(TextMenu));
     menu.execute_function = new_menu->execute_function;
@@ -95,7 +97,7 @@ void new_text_menu_simple(const char* name, TextMenu* new_menu){
     array_add(&menus,&menu);
 }
 
-void new_text_menu(const char* name, Key* open_key, int mods_key, 
+void menu_new(const char* name, Key* open_key, int mods_key, 
                     TextMenuFunction draw_function, 
                     TextMenuFunction execute_function){
     TextMenu menu;
@@ -208,10 +210,10 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 }
 
 
-void draw_menus(){
+void menu_draw_menus(){
     TextMenu* menus_list = array_get(&menus,0);
     for(int i = 0; i < menus.count ; i++){
-        can_open_text_menu_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
+        menu_can_open_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
         text_menu_update(&menus_list[i]);
     }
 }
@@ -374,17 +376,18 @@ void menus_init(){
 
     menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
     menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
-    
+
+	//New way to create texts menus	
     array_init(&menus,sizeof(TextMenu),10);
     
-	new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
-    new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
-//    new_text_menu("List Elements",&input.L, -1 ,  &menu_action_draw_editor_elements, NULL);
+	menu_new("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
+    menu_new("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
+	menu_new("List Elements",&input.L, -1 ,  &menu_action_draw_editor_elements, menu_action_select_element);
     
     TextMenu animation_menu;
     animation_menu.open_key = &input.B;
     animation_menu.mods_key = -1;
     animation_menu.draw_text_funtion = &draw_animations_names;
     animation_menu.execute_function = &menu_action_play_animation;
-    new_text_menu_simple("Animations", &animation_menu);
+    menu_new_from_data("Animations", &animation_menu);
 }

@@ -268,27 +268,27 @@ void text_renderer_loop()
 
     if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT && window_editor_main->focus)
     {
-        can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
-        can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
-        can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
+        //can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
+        //can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
+       // can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
 
-        can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E, GLFW_MOD_SHIFT);
-        
-		text_menu_update(&menu_add_texture);
+        //can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E, GLFW_MOD_SHIFT);
+		//text_menu_update(&menu_add_texture);
 
-        text_menu_update(&add_element_menu);
+        //text_menu_update(&add_element_menu);
 
-        text_menu_update(&menu_editor_element_list);
+        //text_menu_update(&menu_editor_element_list);
 
-        text_menu_update(&menu_add_native_editor_element);
+        //text_menu_update(&menu_add_native_editor_element);
 
-        text_menu_update(&menu_show_gui_elements);
+        //text_menu_update(&menu_show_gui_elements);
+		//
+		menu_draw_menus();
     }
 
     if (editor_mode == EDITOR_MODE_GUI_EDITOR)
-        can_open_text_menu_with_key(&menu_show_gui_elements, &input.L, NULL);
+        menu_can_open_with_key(&menu_show_gui_elements, &input.L, NULL);
 
-    draw_menus();
 	
 }
 void editor_text_init(){

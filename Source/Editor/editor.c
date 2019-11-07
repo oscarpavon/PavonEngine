@@ -26,6 +26,8 @@
 #include "file_explorer.h"
 #include "Windows/content_browser.h"
 
+#include "ProjectManager/project_manager.h"
+
 Array editor_models;
 Array editor_textures;
 
@@ -492,13 +494,25 @@ void editor_draw(){
     glClearColor(COLOR(editor_background_color));
     render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
 
-   if(editor_content_browser_show){
-	if(!editor_content_browser_initiliazed){
-		editor_content_browser_initiliazed = true; 
+	if(project_manager_can_show){
+		project_manager_update();	
+		return;
+	}
+	if(editor_content_browser_show){
+		if(!editor_content_browser_initiliazed){
+			editor_content_browser_initiliazed = true; 
 		editor_window_content_get_models_path();    
 		content_manager_init();
 	}
 		
+	if(editor_file_explorer_show){
+		file_explorer_update();
+		if(key_released(&input.ESC)){
+			editor_file_explorer_show = false;
+			LOG("File explorer exit\n");	
+		}	
+		return;
+	}
 	if(key_released(&input.A)){
 		editor_content_browser_show = false;
 		EditorWindow* level_editor_window = array_get(&editor_windows,0);
@@ -509,18 +523,9 @@ void editor_draw(){
 		level_editor_window->input = &editor_window_content_browser_input_update;
 //		editor_window_content_browser_input_update();
 		editor_window_content_browser_draw();
-		text_render_in_screen_space(12,"test ofcouse",0,0);		
    	   return;	
    }	
 
-	if(editor_file_explorer_show){
-		file_explorer_update();
-		if(key_released(&input.ESC)){
-			editor_file_explorer_show = false;
-			LOG("File explorer exit\n");	
-		}	
-		return;
-	}
 
 	if(isDrawUV)
         draw_UV();
@@ -612,5 +617,7 @@ void editor_init(){
 	while(!window_editor_main->initialized){};
 
 	window_manager_create_editor_windows_data();	
+
+	project_manager_init();
 	LOG("[OK]Editor initialized\n");
 }
