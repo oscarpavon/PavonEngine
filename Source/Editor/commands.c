@@ -2,8 +2,8 @@
 #include "editor.h"
 
 #include "Windows/content_browser.h"
+#include "ProjectManager/project_manager.h"
 int log_command_offset = 0;
-
 bool activate_text_input_mode = false;
 
 
@@ -98,6 +98,12 @@ void parse_command(const char* command){
     command_while_not_space(&command[1]);
 
     
+    if(strcmp(&command[1],"new_project") == 0){
+		project_manager_new("New Project");			
+		return;
+			
+	}
+
     if(strcmp(&command[1],"hlod") == 0){
         generate_HLODS(false);
     }

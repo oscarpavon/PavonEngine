@@ -493,6 +493,8 @@ void editor_draw(){
 
     glClearColor(COLOR(editor_background_color));
     render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
+	
+	text_draw_commands();
 
 	if(project_manager_can_show){
 		project_manager_update();	
@@ -503,6 +505,7 @@ void editor_draw(){
 			editor_content_browser_initiliazed = true; 
 		editor_window_content_get_models_path();    
 		content_manager_init();
+		return;
 	}
 		
 	if(editor_file_explorer_show){

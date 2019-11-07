@@ -1,0 +1,27 @@
+:t 'path'
+	- Add texture to selected element
+:r
+	- Reload editor
+:u
+	-Show UVs
+
+:e
+	-Export selected element to GLTF format
+
+:q
+	- Quit form Editor
+
+:s (Set)
+	:sn
+		- Set name to element in Editor or GUI Editor
+	:s p 
+		- Set player
+
+	:sz
+		- Set original transform to selected element
+
+:d 'count' 'offset'	
+	- Duplicate selected element with parameter count and offset ex= :d 5 20
+
+:a 'path'
+	- Add new model with full path

@@ -90,6 +90,7 @@ void menu_new_from_data(const char* name, TextMenu* new_menu){
     menu.draw_text_funtion = new_menu->draw_text_funtion;
     menu.execute = false;
     menu.show = false;
+	menu.menu_in_editor = true;
     menu.open_key = new_menu->open_key;
     menu.mods_key = new_menu->mods_key;
     menu.element_count = 0;
@@ -105,6 +106,7 @@ void menu_new(const char* name, Key* open_key, int mods_key,
     menu.execute_function = execute_function;
     menu.draw_text_funtion = draw_function;
     menu.execute = false;
+	menu.menu_in_editor = true;
     menu.show = false;
     menu.open_key = open_key;
     menu.mods_key = mods_key;
@@ -213,6 +215,8 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 void menu_draw_menus(){
     TextMenu* menus_list = array_get(&menus,0);
     for(int i = 0; i < menus.count ; i++){
+		if(&menus_list[i].menu_in_editor == false)
+			continue;
         menu_can_open_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
         text_menu_update(&menus_list[i]);
     }

@@ -246,13 +246,18 @@ void draw_stats_triangles(){
     if(count != 0)
     text_render(buf , 0 + ((camera_width_screen/2)-560) * pixel_size_x , 0 + ((camera_heigth_screen/2)-20) * pixel_size_y  , pixel_size_x, pixel_size_y, false);  
 }
-void text_renderer_loop()
-{
+
+void text_draw_commands(){
     if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     {
-        set_text_size(12);
-        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+ //       set_text_size(12);
+//        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+		text_render_in_screen_space(12,command_text_buffer,0,-camera_heigth_screen+20);
     }
+}
+
+void text_renderer_loop()
+{
 
     draw_engine_memory();
     draw_editor_mode();

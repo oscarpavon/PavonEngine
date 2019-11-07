@@ -224,3 +224,8 @@ void file_explorer_update(){
 		memcpy(text_data.color,(vec4){1,1,1,1},sizeof(vec4));
 		text_render_in_screen_space_with_data(file_manager_current_path,&text_data);
 }
+
+void file_explorer_update_commands(){
+
+
+}

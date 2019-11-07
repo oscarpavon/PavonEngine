@@ -19,6 +19,8 @@ void draw_directory_file_type(unsigned short int type);
 
 void text_renderer_loop();
 
+void text_draw_commands();
+
 typedef enum{
     MENU_TYPE_ADD_MODEL,
     MENU_TYPE_ADD_TEXTURE    
@@ -34,6 +36,7 @@ typedef struct TextMenu{
     bool element_selected;
     bool execute;
 	bool always_open;
+	bool menu_in_editor;
     unsigned int actual_element_select;
     TextMenuFunction execute_function;
     TextMenuFunction draw_text_funtion;

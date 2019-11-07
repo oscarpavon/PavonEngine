@@ -13,4 +13,9 @@ TextMenu menu_add_native_editor_element;
 
 TextMenu menu_show_gui_elements;
 
+void menu_new(const char* name, Key* open_key, int mods_key, 
+                    TextMenuFunction draw_function, 
+                    TextMenuFunction execute_function);
+
+void menu_new_from_data(const char* name, TextMenu* new_menu);
 #endif
