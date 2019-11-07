@@ -175,11 +175,6 @@ void draw_directory_file_type(unsigned short int type)
 }
 
 
-void editor_text_init(){
-    mark_id = 0;
-
-    menus_init();
-}
 
 
 void draw_editor_mode()
@@ -295,4 +290,9 @@ void text_renderer_loop()
 
     draw_menus();
 	
+}
+void editor_text_init(){
+    mark_id = 0;
+
+    menus_init();
 }

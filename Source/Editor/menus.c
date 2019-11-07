@@ -10,12 +10,42 @@ void text_menu_update(TextMenu *menu)
     {
         if (menu->draw_text_funtion != NULL)
             menu->draw_text_funtion(menu);
+		else
+            LOG("Menu draw function not assigned\n");
 
 /*         if (menu->type == MENU_TYPE_ADD_MODEL)
             draw_directory_file_type(DIRECTORY_MODELS);
         else if (menu->type == MENU_TYPE_ADD_TEXTURE)
             draw_directory_file_type(DIRECTORY_TEXTURES); */
 
+    if(menu->show){
+        if(key_released(&input.ESC)){
+            menu->execute = false;
+            menu->show = false;
+        }
+        if(key_released(&input.J)){
+            if(menu->element_count > menu->actual_element_select)
+                menu->actual_element_select++;
+            else
+            {
+                menu->actual_element_select = 0;
+            }
+            
+        }
+        if(key_released(&input.K)){
+            if(menu->actual_element_select >= 1 && menu->element_count > 0)
+                menu->actual_element_select--;
+            else
+            {
+                menu->actual_element_select = menu->element_count;
+            }
+        }
+        if(key_released(&input.ENTER)){
+            menu->element_selected = true;
+            menu->show = false;
+        }
+
+    }
         if (menu->element_selected)
         {
             menu->execute = false;
@@ -49,35 +79,6 @@ void can_open_text_menu_with_key(TextMenu* menu, Key* open_key, int mods){
             }            
         }
     }    
-
-    if(menu->show){
-        if(key_released(&input.ESC)){
-            menu->execute = false;
-            menu->show = false;
-        }
-        if(key_released(&input.J)){
-            if(menu->element_count > menu->actual_element_select)
-                menu->actual_element_select++;
-            else
-            {
-                menu->actual_element_select = 0;
-            }
-            
-        }
-        if(key_released(&input.K)){
-            if(menu->actual_element_select >= 1 && menu->element_count > 0)
-                menu->actual_element_select--;
-            else
-            {
-                menu->actual_element_select = menu->element_count;
-            }
-        }
-        if(key_released(&input.ENTER)){
-            menu->element_selected = true;
-            menu->show = false;
-        }
-
-    }
 }
 
 void new_text_menu_simple(const char* name, TextMenu* new_menu){
@@ -375,7 +376,8 @@ void menus_init(){
     menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
     
     array_init(&menus,sizeof(TextMenu),10);
-    new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
+    
+	new_text_menu("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
     new_text_menu("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
 //    new_text_menu("List Elements",&input.L, -1 ,  &menu_action_draw_editor_elements, NULL);
     

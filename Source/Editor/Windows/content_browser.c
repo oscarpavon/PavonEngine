@@ -588,7 +588,7 @@ void editor_window_content_init(){
     glfwSetWindowFocusCallback(window_content_browser->window,window_focus_callback);
 
     //glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
 
     editor_window_content_get_models_path();    
     //content_browser_window_create_contents_thumbnails();

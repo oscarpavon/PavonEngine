@@ -124,8 +124,11 @@ void text_render(const char *text, float x, float y, float pixel_size_x, float p
             {x2, -y2 - h, 0, 1},
             {x2 + w, -y2 - h, 1, 1},
         };
+		if(mark)
+			glUniform4fv(uniform_color, 1, (vec4){1,0,1,1});
+		else
+			glUniform4fv(uniform_color, 1, (vec4){1,1,1,1});
 
-        glUniform4fv(uniform_color, 1, (vec4){1,1,1,1});
         check_error("send text color");
 
         glEnableVertexAttribArray(0);
