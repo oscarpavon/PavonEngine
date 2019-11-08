@@ -52,11 +52,32 @@ static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
     return 0;
 }
 
+void command_parse_parameter(const char* command, const char*  parameter){
+    if(strcmp(command,"new_project") == 0){
+//		LOG("Parameter: %s\n",parameter);			
+		project_manager_new(parameter);			
+	}
+}
 
+void command_parse(const char* command){
+	int parameters = 0; 	
+    int command_len = strlen(command);
+    for(int i = 0; i<command_len; i++){
+        if(command[i] == ' '){
+			parameters++;	
+            char new_command_text[i];
+            memcpy(new_command_text,command,i);
+			new_command_text[i] = '\0';
+			command_parse_parameter(new_command_text,&command[i+1]);
+        }
+    }
+
+}
 
 void parse_command_with_len(const char* command, int len){
     
 }
+
 
 void parse_commmand_with_one_parameter(const char* command, float parameter){
     if(strcmp(command,"cluster") == 0){
@@ -86,7 +107,10 @@ void command_while_not_space(const char* command){
 void parse_command(const char* command){
     first_char_command = command[1];
 
-    if(strcmp(&command[1],"gui") == 0){
+    command_while_not_space(&command[1]);
+	command_parse(&command[1]);
+    
+	if(strcmp(&command[1],"gui") == 0){
         change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
         return;
     }
@@ -95,24 +119,18 @@ void parse_command(const char* command){
         editor_generate_and_add_cube_element();
         return;
     }
-    command_while_not_space(&command[1]);
-
-    
-    if(strcmp(&command[1],"new_project") == 0){
-		project_manager_new("New Project");			
-		return;
 			
-	}
 
     if(strcmp(&command[1],"hlod") == 0){
         generate_HLODS(false);
+		return;
     }
     if(strcmp(&command[1],"hlode") == 0){
         generate_HLODS(true);
         gizmos_can_draw_spheres = false;
         return;
     }
-
+	
     switch (first_char_command)
     {
     case 'w':

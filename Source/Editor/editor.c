@@ -496,6 +496,14 @@ void editor_draw(){
 	
 	text_draw_commands();
 
+	if(editor_file_explorer_show){
+		file_explorer_update();
+		if(key_released(&input.ESC)){
+			editor_file_explorer_show = false;
+			LOG("File explorer exit\n");	
+		}	
+		return;
+	}
 	if(project_manager_can_show){
 		project_manager_update();	
 		return;
@@ -508,14 +516,6 @@ void editor_draw(){
 		return;
 	}
 		
-	if(editor_file_explorer_show){
-		file_explorer_update();
-		if(key_released(&input.ESC)){
-			editor_file_explorer_show = false;
-			LOG("File explorer exit\n");	
-		}	
-		return;
-	}
 	if(key_released(&input.A)){
 		editor_content_browser_show = false;
 		EditorWindow* level_editor_window = array_get(&editor_windows,0);

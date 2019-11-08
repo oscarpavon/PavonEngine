@@ -4,10 +4,27 @@
 #include "../menu.h"
 #include "../file_explorer.h"
 TextMenuType project_manager_menu;
-void project_manager_new(const char* name){
-	LOG("New project command function called\n");
 
-	mkdir("~/PavonProjects/NewProject1",0700);
+void project_manager_open(){
+	
+}
+
+void project_manager_new(const char* name){
+	LOG("New project command function called, project name: %s \n",name);
+	char new_path[300];
+	memset(new_path,0,sizeof(new_path));
+	strcat(new_path,projects_folder);
+	strcat(new_path,"/");
+	strcat(new_path,name);
+	LOG("New full path %s\n",new_path);
+
+	memcpy(project_manager_current_path,new_path,strlen(new_path));
+	project_manager_current_path[strlen(new_path)] = '\0';	
+	LOG("New project project path: %s \n",project_manager_current_path);
+	mkdir(new_path,0700);
+
+	strcat(new_path,content_folder);
+	mkdir(new_path,0700);
 }
 
 void project_manager_save(EditorProject* project){

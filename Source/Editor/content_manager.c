@@ -125,7 +125,7 @@ void content_manager_init() {
   DIR *dr = opendir(directory);
 
   if (dr == NULL) {
-    LOG("Could not open current directory\n");
+    LOG("Could not open pavon project directory\n");
     return;
   }
 

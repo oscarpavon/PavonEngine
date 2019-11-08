@@ -501,13 +501,17 @@ void editor_window_content_get_models_path(){
     
     struct dirent *de; // Pointer for directory entry
 
-    char directory[sizeof(pavon_the_game_project_folder) + 30];
+    char directory[sizeof(project_manager_current_path) + 30];
+	LOG("The project path: %s\n",project_manager_current_path);
     memset(directory,0,sizeof(directory));
-    sprintf(directory,"%s%s",pavon_the_game_project_folder,"/Content/");
-    DIR *dr = opendir(directory);
+	strcat(directory,project_manager_current_path);
+	strcat(directory,"/Content/");
+    
+	DIR *dr = opendir(directory);
 
     if (dr == NULL){
         LOG("Could not open current directory\n");
+		LOG("Can't open: %s\n",directory);
         return;
     }
 
@@ -516,7 +520,11 @@ void editor_window_content_get_models_path(){
     {
         directory_count++;
     }
-
+	if(directory_count == 0){
+		text_render_in_screen_space(12,"No content in this project",0,0);
+		closedir(dr);
+		return;
+	}
     rewinddir(dr);
     int model_count = 0;
    

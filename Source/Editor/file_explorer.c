@@ -155,7 +155,7 @@ void file_explorer_back_directory(){
 
 void file_explorer_enter(){
 		file_explorer_get_absolute_path();
-	file_explorer_previous_directory_count = file_manager_current_directory_id;	
+		file_explorer_previous_directory_count = file_manager_current_directory_id;	
 		file_manager_current_directory_id = 1;
 		LOG("%s\n",file_manager_current_path);	
 }
@@ -177,9 +177,13 @@ void file_explorer_input(){
 			{
 				LOG("pavon file extension detected\n");
 				file_explorer_get_absolute_path();
-				LOG("Open file: %s \n",file_manager_current_path);
+				char path_with_file_name[strlen(file_manager_current_path) + strlen(file_manager_temp_path)];
+				memset(path_with_file_name,0,sizeof(path_with_file_name));
+				strcat(path_with_file_name,file_manager_current_path);
+				strcat(path_with_file_name,file_manager_temp_path);
+				LOG("Open file: %s \n",path_with_file_name);
 
-	ContentType type = content_manager_load_content(file_manager_current_path);
+	ContentType type = content_manager_load_content(path_with_file_name);
     switch (type)
     {
     case CONTENT_TYPE_STATIC_MESH:{
