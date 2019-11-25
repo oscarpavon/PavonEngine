@@ -16,19 +16,28 @@ void content_manager_serialize_static_mesh() {
 
 void content_manager_create_engine_binary(const char *name, ContentType type) {
 	LOG("Creating new engine binary\n"); 
-
-		
 	
 	content_GUID_count += 1;
 
   File brute_file;
   load_file(name, &brute_file);
 
-  char glb_path[strlen(name) + 4];
-  sprintf(glb_path, "%s", name);
-  sprintf(&glb_path[strlen(glb_path) - 4], "%s", ".pb");
+		char extracted_file_name[50];
+		memset(extracted_file_name,0,sizeof(extracted_file_name));
+		path_extract_file_name(name, extracted_file_name);
+		LOG("Extracted File name: %s\n",extracted_file_name);	
+		char new_full_path_with_file_name[500];
+		memset(new_full_path_with_file_name,0,500);
+		strcat(new_full_path_with_file_name,project_manager_current_path);
+		strcat(new_full_path_with_file_name,"/Content/");
+		strcat(new_full_path_with_file_name,extracted_file_name);
+		LOG("New file name in project content folder: \n %s\n",new_full_path_with_file_name);	
 
-  FILE *engine_binary = fopen(glb_path, "wb");
+  char new_pavon_binary_path[strlen(name) + 4];
+  sprintf(new_pavon_binary_path, "%s", new_full_path_with_file_name);
+  sprintf(&new_pavon_binary_path[strlen(new_pavon_binary_path) - 4], "%s", ".pb");
+
+  FILE *engine_binary = fopen(new_pavon_binary_path, "wb");
 
   // Header
   fprintf(engine_binary, "pvnB");

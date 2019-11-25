@@ -41,10 +41,12 @@ void path_extract_file_name(const char* file_name, const char* buf){
             if (file_name[n] == '/')
             {
 				strcpy(buf,&file_name[n + 1]); 
+				break;
 			}
 		}
 
 }
+
 
 void file_explorer_set_file_extension_color(const char* name, vec4 color){
 	if(file_have_extension(name,"pb"))
