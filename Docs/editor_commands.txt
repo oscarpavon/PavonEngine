@@ -25,3 +25,10 @@
 
 :a 'path'
 	- Add new model with full path
+
+
+:project_new 'project name'
+	- Create a new Pavon Editor project. This mean, create a directory with content folder
+
+:project_open 'full path project directory'
+	- Open project directory

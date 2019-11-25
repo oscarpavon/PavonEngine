@@ -161,8 +161,9 @@ void save_level_data(const char* level_name){
         level_name = opened_file_name;
     }
         
-    char new_file_name_with_path[strlen(pavon_the_game_project_folder) + 30];
-    sprintf(new_file_name_with_path,"%s%s%s.lvl",pavon_the_game_project_folder,"Content/levels/",level_name);
+    char new_file_name_with_path[strlen(project_manager_current_path) + 30];
+	memset(new_file_name_with_path,0,sizeof(new_file_name_with_path));
+    sprintf(new_file_name_with_path,"%s%s%s.lvl",project_manager_current_path,"/Content/",level_name);
   
     FILE* new_file = fopen(new_file_name_with_path,"w");
     if(!new_file){

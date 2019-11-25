@@ -7,6 +7,7 @@ static const char content_folder[] = "/Content/";
 static const char projects_folder[] = "/home/pavon/PavonProjects";
 
 char project_manager_current_path[500];
+char project_manager_current_project_name[100];
 
 typedef struct {
 	char name[30];

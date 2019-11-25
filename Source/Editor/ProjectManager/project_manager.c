@@ -3,10 +3,15 @@
 #include "../text.h"
 #include "../menu.h"
 #include "../file_explorer.h"
+#include "../content_manager.h"
+
 TextMenuType project_manager_menu;
 
-void project_manager_open(){
-	
+void project_manager_open(const char* full_path){
+	LOG("Open project with path: %s\n", full_path);
+
+	memset(project_manager_current_project_name,0,sizeof(project_manager_current_project_name));
+	strcpy(project_manager_current_project_name,"Opened project");
 }
 
 void project_manager_new(const char* name){
@@ -25,6 +30,10 @@ void project_manager_new(const char* name){
 
 	strcat(new_path,content_folder);
 	mkdir(new_path,0700);
+
+	memset(project_manager_current_project_name,0,sizeof(project_manager_current_project_name));
+	strcpy(project_manager_current_project_name,name);
+
 }
 
 void project_manager_save(EditorProject* project){
@@ -50,10 +59,12 @@ void project_manager_window_input(){
 	if(key_released(&input.ENTER))
 		project_manager_can_show = false;
 }
+
 void project_manager_update(){
 	project_manager_window_draw();
 	project_manager_window_input();
 }
+
 void project_manager_init(){
 	project_manager_can_show = true;
 	

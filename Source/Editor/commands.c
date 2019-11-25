@@ -53,9 +53,12 @@ static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
 }
 
 void command_parse_parameter(const char* command, const char*  parameter){
-    if(strcmp(command,"new_project") == 0){
+    if(strcmp(command,"project_new") == 0){
 //		LOG("Parameter: %s\n",parameter);			
 		project_manager_new(parameter);			
+	}
+	if(strcmp(command,"project_open") == 0){
+		project_manager_open(parameter);
 	}
 }
 

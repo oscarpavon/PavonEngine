@@ -33,6 +33,19 @@ bool file_have_extension(const char* file_name, const char* extension){
 	return false;
 }
 
+void path_extract_file_name(const char* file_name, const char* buf){
+
+        int name_lenght = strlen(file_name);
+        for (int n = name_lenght; n > 0; n--)
+        {
+            if (file_name[n] == '/')
+            {
+				strcpy(buf,&file_name[n + 1]); 
+			}
+		}
+
+}
+
 void file_explorer_set_file_extension_color(const char* name, vec4 color){
 	if(file_have_extension(name,"pb"))
 		memcpy(color,(vec4){0.2,1,0.5,1},sizeof(vec4));
@@ -173,33 +186,44 @@ void file_explorer_input(){
 		if(file_explorer_can_open_directory)
 			file_explorer_enter();
 		else{
+			file_explorer_get_absolute_path();
+			char path_with_file_name[strlen(file_manager_current_path) + strlen(file_manager_temp_path)];
+			memset(path_with_file_name,0,sizeof(path_with_file_name));
+			strcat(path_with_file_name,file_manager_current_path);
+			strcat(path_with_file_name,file_manager_temp_path);
 			if(file_have_extension(file_manager_temp_path,"pb"))	
 			{
 				LOG("pavon file extension detected\n");
-				file_explorer_get_absolute_path();
-				char path_with_file_name[strlen(file_manager_current_path) + strlen(file_manager_temp_path)];
-				memset(path_with_file_name,0,sizeof(path_with_file_name));
-				strcat(path_with_file_name,file_manager_current_path);
-				strcat(path_with_file_name,file_manager_temp_path);
 				LOG("Open file: %s \n",path_with_file_name);
 
-	ContentType type = content_manager_load_content(path_with_file_name);
-    switch (type)
-    {
-    case CONTENT_TYPE_STATIC_MESH:{
+				ContentType type = content_manager_load_content(path_with_file_name);
+				switch (type)
+				{
+			    case CONTENT_TYPE_STATIC_MESH:{
         
-		editor_init_new_added_element();
-        break;
-    }
-   	case CONTENT_TYPE_TEXTURE:{
-		break;
+					editor_init_new_added_element();
+			        break;
+				}
+			   	case CONTENT_TYPE_TEXTURE:{
+					break;
 
 
-	} 
-    default:
-        break;
-    }
+				} 
+			    default:
+			        break;
+			    }
+				return;
+			}
 
+			if(file_have_extension(file_manager_temp_path,"gltf"))	
+			{
+				return;	
+			}
+
+			if(file_have_extension(file_manager_temp_path,"glb"))	
+			{
+				content_manager_import(path_with_file_name);
+				return;			
 			}
 		}
 

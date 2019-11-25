@@ -15,7 +15,11 @@ void content_manager_serialize_static_mesh() {
 }
 
 void content_manager_create_engine_binary(const char *name, ContentType type) {
-  content_GUID_count += 1;
+	LOG("Creating new engine binary\n"); 
+
+		
+	
+	content_GUID_count += 1;
 
   File brute_file;
   load_file(name, &brute_file);
@@ -57,8 +61,8 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
     }
   }
 
-  /*
-      content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
+  /*///Thumbnail creation
+  content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
   TextureCreated created_texture = texture_create_to_memory(1,128);
   u32 thumnail_size = (u32)created_texture.size;
   fwrite(&thumnail_size,sizeof(u32),1,engine_binary);
@@ -92,6 +96,7 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
       LOG("Image readed from binary created\n");
     }
   }
+
 }
 
 void content_manager_import(const char *path) {
