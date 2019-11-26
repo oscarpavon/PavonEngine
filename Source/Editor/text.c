@@ -175,21 +175,6 @@ void draw_directory_file_type(unsigned short int type)
 }
 
 
-
-
-void draw_editor_mode()
-{
-    FT_Set_Pixel_Sizes(face, 0, 12);
-    text_render(editor_mode_show_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-}
-
-void draw_editor_sub_mode()
-{
-    FT_Set_Pixel_Sizes(face, 0, 12);
-    text_render(editor_sub_mode_text, 0 + ((camera_width_screen / 2) - 100) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 40) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-}
-
-
 void draw_engine_memory()
 {
     FT_Set_Pixel_Sizes(face, 0, 12);
@@ -254,13 +239,15 @@ void text_renderer_loop()
 {
 
     draw_engine_memory();
-    draw_editor_mode();
     draw_frame_time();
     draw_FPS();
 	draw_count_of_draw_call();
 	draw_stats_triangles();
 	
+
+	text_render_in_screen_space(12,editor_mode_show_text,camera_width_screen - 100, 0);
 	text_render_in_screen_space(12,"Project:",200,0);
+
 	if(strlen(project_manager_current_project_name) == 0){
 		text_render_in_screen_space(12,"NO PROJECT",260,0);
 	}
@@ -270,7 +257,7 @@ void text_renderer_loop()
 
     if (editor_sub_mode != EDITOR_SUB_MODE_NULL)
     {
-        draw_editor_sub_mode();
+		text_render_in_screen_space(12,editor_sub_mode_text,camera_width_screen - 100, 30);
     }
 
     if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT && window_editor_main->focus)

@@ -21,6 +21,7 @@ typedef struct file{
     u32 size_in_bytes;
     struct ResourceDescriptor resource_descriptor;
     void* data;
+	bool opened;
 }File;
 
 

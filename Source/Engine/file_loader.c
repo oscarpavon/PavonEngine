@@ -14,7 +14,8 @@ void close_file(File* file){
 #ifndef ANDROID
         //free((void*)file->path);
 #endif
-    free(file->data);
+   if(file->opened == true) 
+		free(file->data);
 }
 
 
@@ -54,7 +55,7 @@ int load_file(const char* path, File* output){
     output->data = file_buffer;
     output->size_in_bytes = file_size;
     fclose(file);
-    
 #endif
 
+	output->opened = true; 
 }

@@ -16,12 +16,8 @@ void content_manager_serialize_static_mesh() {
 
 void content_manager_create_engine_binary(const char *name, ContentType type) {
   LOG("Creating new engine binary\n");
-
-  content_GUID_count += 1;
-
   File brute_file;
-  load_file(name, &brute_file);
-
+  content_GUID_count += 1;
 
 //Export to content directory or project root directory
   char extracted_file_name[50];
@@ -31,7 +27,10 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   char new_full_path_with_file_name[500];
   memset(new_full_path_with_file_name, 0, 500);
   strcat(new_full_path_with_file_name, project_manager_current_path);
+  
   if (type != CONTENT_TYPE_PROJECT) {
+	load_file(name, &brute_file);
+
     strcat(new_full_path_with_file_name, "/Content/");
     strcat(new_full_path_with_file_name, extracted_file_name);
   } else {
@@ -64,15 +63,15 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   ContentType new_content_type = type;
   fwrite(&type, sizeof(u32), 1, engine_binary);
 
-	if(brute_file.data) 
+  if (type != CONTENT_TYPE_PROJECT) {
 		fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
-
+  }
   if (type == CONTENT_TYPE_TEXTURE) {
     Image new_image;
     if (image_load_from_memory(&new_image, brute_file.data,
                                brute_file.size_in_bytes) == -1) {
 
-      LOG("ERRO: No image loaded\n");
+      LOG("ERROR: No image loaded\n");
     } else {
       LOG("Image to engine binary readed\n");
     }

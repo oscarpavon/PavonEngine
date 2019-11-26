@@ -89,9 +89,12 @@ int content_manager_load_content(const char* path){
 		engine_add_texture_from_memory_to_selected_element(new_file.data+24,data_size);	
 		LOG("Texture loaded\n");	
 		break;
-
-
-	} 
+							  }
+	case CONTENT_TYPE_PROJECT:{
+										
+								  
+								  break;							
+							  }
     default:
         break;
     }

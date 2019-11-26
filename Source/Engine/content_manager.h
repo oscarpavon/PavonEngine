@@ -11,7 +11,8 @@ typedef enum ContentType{
     CONTENT_TYPE_SHADER,
     CONTENT_TYPE_MATERIAL,
 	CONTENT_TYPE_MAP,
-	CONTENT_TYPE_PROJECT
+	CONTENT_TYPE_PROJECT,
+	CONTENT_TYPE_NULL
 }ContentType;
 
 typedef struct Content{
