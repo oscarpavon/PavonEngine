@@ -33,7 +33,8 @@ void project_manager_new(const char* name){
 
 	memset(project_manager_current_project_name,0,sizeof(project_manager_current_project_name));
 	strcpy(project_manager_current_project_name,name);
-
+	
+	content_manager_create_engine_binary(project_manager_current_path,CONTENT_TYPE_PROJECT);
 }
 
 void project_manager_save(EditorProject* project){

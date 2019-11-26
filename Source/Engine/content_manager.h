@@ -9,7 +9,9 @@ typedef enum ContentType{
     CONTENT_TYPE_TEXTURE,
     CONTENT_TYPE_SOUND,
     CONTENT_TYPE_SHADER,
-    CONTENT_TYPE_MATERIAL
+    CONTENT_TYPE_MATERIAL,
+	CONTENT_TYPE_MAP,
+	CONTENT_TYPE_PROJECT
 }ContentType;
 
 typedef struct Content{

@@ -15,23 +15,30 @@ void content_manager_serialize_static_mesh() {
 }
 
 void content_manager_create_engine_binary(const char *name, ContentType type) {
-	LOG("Creating new engine binary\n"); 
-	
-	content_GUID_count += 1;
+  LOG("Creating new engine binary\n");
+
+  content_GUID_count += 1;
 
   File brute_file;
   load_file(name, &brute_file);
 
-		char extracted_file_name[50];
-		memset(extracted_file_name,0,sizeof(extracted_file_name));
-		path_extract_file_name(name, extracted_file_name);
-		LOG("Extracted File name: %s\n",extracted_file_name);	
-		char new_full_path_with_file_name[500];
-		memset(new_full_path_with_file_name,0,500);
-		strcat(new_full_path_with_file_name,project_manager_current_path);
-		strcat(new_full_path_with_file_name,"/Content/");
-		strcat(new_full_path_with_file_name,extracted_file_name);
-		LOG("New file name in project content folder: \n %s\n",new_full_path_with_file_name);	
+
+//Export to content directory or project root directory
+  char extracted_file_name[50];
+  memset(extracted_file_name, 0, sizeof(extracted_file_name));
+  path_extract_file_name(name, extracted_file_name);
+  LOG("Extracted File name: %s\n", extracted_file_name);
+  char new_full_path_with_file_name[500];
+  memset(new_full_path_with_file_name, 0, 500);
+  strcat(new_full_path_with_file_name, project_manager_current_path);
+  if (type != CONTENT_TYPE_PROJECT) {
+    strcat(new_full_path_with_file_name, "/Content/");
+    strcat(new_full_path_with_file_name, extracted_file_name);
+  } else {
+    strcat(new_full_path_with_file_name, "/project    ");//need four space for file extension lines down 
+  }
+  LOG("New file name in project content folder: \n %s\n",
+      new_full_path_with_file_name);
 
   char new_pavon_binary_path[strlen(name) + 4];
   sprintf(new_pavon_binary_path, "%s", new_full_path_with_file_name);
@@ -57,7 +64,8 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   ContentType new_content_type = type;
   fwrite(&type, sizeof(u32), 1, engine_binary);
 
-  fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
+	if(brute_file.data) 
+		fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
 
   if (type == CONTENT_TYPE_TEXTURE) {
     Image new_image;
@@ -83,13 +91,9 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   close_file(&brute_file);
   // remove(name);
 
-  if (type == CONTENT_TYPE_STATIC_MESH) { // FIXME: create function where import
-                                          // and add to viewport
-    // content_manager_load_content(glb_path);
-    // editor_init_new_added_element();
-  }
+  switch (type) {
+  case CONTENT_TYPE_TEXTURE: {
 
-  if (type == CONTENT_TYPE_TEXTURE) {
     File saved_binary;
     char new_path[strlen(name)];
     sprintf(new_path, "%s", name);
@@ -105,7 +109,13 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
       LOG("Image readed from binary created\n");
     }
   }
-
+  case CONTENT_TYPE_STATIC_MESH: {
+    // FIXME: create function where import
+    // and add to viewport
+    // content_manager_load_content(glb_path);
+    // editor_init_new_added_element();
+  }
+  }
 }
 
 void content_manager_import(const char *path) {
