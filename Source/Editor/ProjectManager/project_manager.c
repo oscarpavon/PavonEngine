@@ -18,10 +18,12 @@ void project_manager_open(const char* full_path){
 	strcat(project_file_path,full_path);
 	strcat(project_file_path,"/project.pb");
     ContentType type = content_manager_load_content(project_file_path);		
-	if(type == CONTENT_TYPE_NULL)
+	if(type == CONTENT_TYPE_NULL){
 		LOG("Project directory not valid\n");	
-		
-	
+		return;
+	}
+	memset(project_manager_current_path,0,sizeof(project_manager_current_path));
+	strcat(project_manager_current_path,full_path);	
 
 }
 
