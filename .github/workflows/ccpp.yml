@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: linux
+    name: Deploy
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
