@@ -56,8 +56,7 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
 
   // GUID
   u32 GUID = content_GUID_count;
-  fwrite(&GUID, sizeof(u32), 1, engine_binary);
-
+  fwrite(&GUID, sizeof(u32), 1, engine_binary); 
   fwrite(&brute_file.size_in_bytes, sizeof(u32), 1,
          engine_binary); // + engine file JSON
 
@@ -90,32 +89,6 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   fclose(engine_binary);
   close_file(&brute_file);
   // remove(name);
-
-  switch (type) {
-  case CONTENT_TYPE_TEXTURE: {
-
-    File saved_binary;
-    char new_path[strlen(name)];
-    sprintf(new_path, "%s", name);
-    sprintf(new_path + (strlen(name) - 3), "%s", "pb");
-    load_file(new_path, &saved_binary);
-
-    Image new_image;
-    if (image_load_from_memory(&new_image, saved_binary.data + 20,
-                               saved_binary.size_in_bytes) == -1) {
-
-      LOG("ERROR: Image from binary loaded\n");
-    } else {
-      LOG("Image readed from binary created\n");
-    }
-  }
-  case CONTENT_TYPE_STATIC_MESH: {
-    // FIXME: create function where import
-    // and add to viewport
-    // content_manager_load_content(glb_path);
-    // editor_init_new_added_element();
-  }
-  }
 }
 
 void content_manager_import(const char *path) {

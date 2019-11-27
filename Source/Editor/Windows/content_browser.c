@@ -124,8 +124,8 @@ void selection_create_hint(struct Hint* out){
 
 void editor_window_content_add_content_render_thread(){
 	window_set_focus(window_editor_main);               	
-	char directory[sizeof(pavon_the_game_project_folder) + 34];
-	sprintf(directory,"%s%s%s%s",pavon_the_game_project_folder,"Content/",editor_content_view_found->content_name,".pb");               
+	char directory[sizeof(project_manager_current_path) + 34];
+	sprintf(directory,"%s%s%s%s",project_manager_current_path,"/Content/",editor_content_view_found->content_name,".pb");               
 
 	ContentType type = content_manager_load_content(directory);
     switch (type)

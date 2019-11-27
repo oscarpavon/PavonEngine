@@ -227,6 +227,11 @@ void file_explorer_input(){
 				content_manager_import(path_with_file_name);
 				return;			
 			}
+			if(file_have_extension(file_manager_temp_path,"png"))	
+			{
+				content_manager_import(path_with_file_name);
+				return;			
+			}
 		}
 
 	}
