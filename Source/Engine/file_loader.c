@@ -24,6 +24,7 @@ int load_file(const char* path, File* output){
     AAsset* file =  AAssetManager_open(assets_manager,path,AASSET_MODE_BUFFER);
     if(!file){
         LOG("Error in loading file: %s",path);
+		return -1;
     }
     output->resource_descriptor.descriptor = AAsset_openFileDescriptor(file,&output->resource_descriptor.start,&output->resource_descriptor.length);
     size_t size = AAsset_getLength(file);
@@ -36,7 +37,6 @@ int load_file(const char* path, File* output){
     output->path = path;
     
     AAsset_close(file);
-    return 0;
 #else
     
     output->path = path;
@@ -57,5 +57,6 @@ int load_file(const char* path, File* output){
     fclose(file);
 #endif
 
-	output->opened = true; 
+	output->opened = true;
+	return 0;
 }

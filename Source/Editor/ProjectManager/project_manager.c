@@ -7,24 +7,27 @@
 
 TextMenuType project_manager_menu;
 
-void project_manager_open(const char* full_path){
+int project_manager_open(const char* full_path){
 	LOG("Open project with path: %s\n", full_path);
 
-	memset(project_manager_current_project_name,0,sizeof(project_manager_current_project_name));
-	strcpy(project_manager_current_project_name,"Opened project");
 	
 	char project_file_path[500];
 	memset(project_file_path,0,sizeof(project_file_path));
 	strcat(project_file_path,full_path);
 	strcat(project_file_path,"/project.pb");
+
     ContentType type = content_manager_load_content(project_file_path);		
 	if(type == CONTENT_TYPE_NULL){
 		LOG("Project directory not valid\n");	
-		return;
+		return -1;
 	}
 	memset(project_manager_current_path,0,sizeof(project_manager_current_path));
 	strcat(project_manager_current_path,full_path);	
 
+	memset(project_manager_current_project_name,0,sizeof(project_manager_current_project_name));//TODO: save and load project name
+	strcpy(project_manager_current_project_name,"Opened project");
+
+	return 0;
 }
 
 void project_manager_new(const char* name){

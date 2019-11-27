@@ -19,7 +19,7 @@ bool project_manager_can_show;
 void project_manager_window_draw();
 void project_manager_update();
 void project_manager_init();
-void project_manager_open();
+int project_manager_open();
 
 void project_manager_new(const char* name);
 #endif

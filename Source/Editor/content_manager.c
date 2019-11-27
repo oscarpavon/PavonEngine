@@ -36,6 +36,7 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   } else {
     strcat(new_full_path_with_file_name, "/project    ");//need four space for file extension lines down 
   }
+
   LOG("New file name in project content folder: \n %s\n",
       new_full_path_with_file_name);
 

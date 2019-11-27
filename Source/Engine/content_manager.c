@@ -42,7 +42,8 @@ int content_manager_get_content_type_from_binary(const char* path){
 int content_manager_load_content(const char* path){
 
     File new_file;
-    load_file(path,&new_file);
+    if(load_file(path,&new_file) == -1)
+		return -1;
 
     u32 file_type;
     memcpy(&file_type,new_file.data,4);
