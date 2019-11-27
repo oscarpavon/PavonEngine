@@ -4,11 +4,19 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: linux
+    name: Deploy
+    runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v1
-    - name: make
-      run: make
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: CreateDirectory
+        run: mkdir build
+      - name: Configure
+        working-directory: build
+        run: cmake ..
+      - name: Compile
+        working-directory: build
+        run: make -j16
+  
 
