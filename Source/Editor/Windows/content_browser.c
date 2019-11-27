@@ -24,9 +24,8 @@ ContentView* editor_content_view_found = NULL;
 
 void editor_window_content_browser_draw_content_view(ContentView* content_view){
 
-    //draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
-    text_render_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
-	text_render_in_screen_space(12,"Type",content_view->position[0]-58,-content_view->position[1]-(64-120));
+  //draw_two_dimention_element(&content_view->draw, content_view->position, content_view->size, (vec4){1,0,1,1});
+	text_render_in_screen_space(content_view->text_size,content_view->content_name,content_view->position[0]-64,-content_view->position[1]-64);
 
 }
 
@@ -125,7 +124,7 @@ void selection_create_hint(struct Hint* out){
 void editor_window_content_add_content_render_thread(){
 	window_set_focus(window_editor_main);               	
 	char directory[sizeof(project_manager_current_path) + 34];
-	sprintf(directory,"%s%s%s%s",project_manager_current_path,"/Content/",editor_content_view_found->content_name,".pb");               
+	sprintf(directory,"%s%s%s%s",project_manager_current_path,content_folder,editor_content_view_found->content_name,".pb");               
 
 	ContentType type = content_manager_load_content(directory);
     switch (type)
@@ -192,6 +191,26 @@ void editor_window_content_browser_input_update(){
     }
 }
 
+void editor_content_draw_type_in_text(ContentView *content_view) {
+
+  text_render_in_screen_space(12, "Type", content_view->position[0] - 58,
+                              -content_view->position[1] - (64 - 120));
+  switch (content_view->type) {
+  case CONTENT_TYPE_TEXTURE: {
+
+    text_render_in_screen_space(12, "Texture", content_view->position[0] - 58,
+                                -content_view->position[1] - (64 - 120));
+    break;
+  }
+  case CONTENT_TYPE_STATIC_MESH: {
+
+    text_render_in_screen_space(12, "Static Mesh",
+                                content_view->position[0] - 58,
+                                -content_view->position[1] - (64 - 100));
+    break;
+  }
+  }
+}
 
 void editor_window_content_browser_draw(){
 	//if in new window clean screen first
@@ -214,6 +233,7 @@ void editor_window_content_browser_draw(){
             ContentView* content_view = array_get(&array_content_views,i);
             if(!content_view)
                 continue;
+						editor_content_draw_type_in_text(content_view);				
             editor_window_content_browser_draw_content_view(content_view);
         }
 
@@ -221,7 +241,7 @@ void editor_window_content_browser_draw(){
         if(editor_window_content_browser_hint){//hint activated
 				change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
             
-				struct Hint hints[array_content_views.count];
+			struct Hint hints[array_content_views.count];
             selection_create_hint(hints);
 
             for (int i = 0; i < array_content_views.count; i++)
@@ -241,7 +261,6 @@ void editor_window_content_browser_draw(){
                // draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
                 text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
                // text_render_in_screen_space(12,"hint",hint_position[0],-hint_position[1]);
-
             }
 
 		//	editor_content_view_found = array_get(&array_content_views,0);
@@ -550,7 +569,8 @@ void editor_window_content_get_models_path(){
     }
 
     closedir(dr);
-
+		array_clean(&array_finding_content);
+		array_clean(&array_content_views);
     array_init(&array_finding_content,sizeof(ContentView*),(model_count));
     array_init(&array_content_views,sizeof(ContentView),(model_count));
     

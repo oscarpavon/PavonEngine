@@ -488,81 +488,84 @@ void editor_render_finish(){
 	glfwTerminate();
 }
 
+void editor_draw() {
 
-void editor_draw(){
+  glClearColor(COLOR(editor_background_color));
+  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
 
-    glClearColor(COLOR(editor_background_color));
-    render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER); 
-	
-	text_draw_commands();
+  text_draw_commands();
 
-	if(editor_file_explorer_show){
-		file_explorer_update();
-		if(key_released(&input.ESC)){
-			editor_file_explorer_show = false;
-			LOG("File explorer exit\n");	
-		}	
-		return;
-	}
-	if(project_manager_can_show){
-		project_manager_update();	
-		return;
-	}
-	if(editor_content_browser_show){
-		if(!editor_content_browser_initiliazed){
-			editor_content_browser_initiliazed = true; 
-		editor_window_content_get_models_path();    
-		content_manager_init();
-		return;
-	}
-		
-	if(key_released(&input.A)){
-		editor_content_browser_show = false;
-		EditorWindow* level_editor_window = array_get(&editor_windows,0);
-		level_editor_window->input = &editor_window_level_editor_input_update;
-		return;
-	}
-		EditorWindow* level_editor_window = array_get(&editor_windows,0);
-		level_editor_window->input = &editor_window_content_browser_input_update;
-//		editor_window_content_browser_input_update();
-		editor_window_content_browser_draw();
-   	   return;	
-   }	
-
-
-	if(isDrawUV)
-        draw_UV();
-
-    if(controlling_camera_component){
-        CameraComponent* camera = get_component_from_selected_element(CAMERA_COMPONENT);
-        update_main_camera_with_camera_component_values(camera);
+  if (editor_file_explorer_show) {
+    file_explorer_update();
+    if (key_released(&input.ESC)) {
+      editor_file_explorer_show = false;
+      LOG("File explorer exit\n");
     }
+    return;
+  }
+  if (project_manager_can_show) {
+    project_manager_update();
+    return;
+  }
+  if (editor_content_browser_show) {
+    if (!editor_content_browser_initiliazed) {
+      editor_content_browser_initiliazed = true;
+      content_manager_init();
+      return;
+    }
+		if(!editor_content_browser_updated){
+			editor_window_content_get_models_path();
+			editor_content_browser_updated = true;
+		}
+    if (key_released(&input.A)) {
+      editor_content_browser_show = false;
+			editor_content_browser_updated = false;
+      EditorWindow *level_editor_window = array_get(&editor_windows, 0);
+      level_editor_window->input = &editor_window_level_editor_input_update;
+      return;
+    }
+    EditorWindow *level_editor_window = array_get(&editor_windows, 0);
+    level_editor_window->input = &editor_window_content_browser_input_update;
+    //		editor_window_content_browser_input_update();
+    editor_window_content_browser_draw();
+    return;
+  }
 
-    for_each_element_components(&update_per_frame_component);
-   
-    test_elements_occlusion();
-    check_meshes_distance();   
+  if (isDrawUV)
+    draw_UV();
 
-    editor_stats_draw_calls = frame_draw_elements.count;
-	
-	editor_stats_calculates_triangles();
+  if (controlling_camera_component) {
+    CameraComponent *camera =
+        get_component_from_selected_element(CAMERA_COMPONENT);
+    update_main_camera_with_camera_component_values(camera);
+  }
 
-    if(update_vertex_bones_gizmos)
-        update_joints_vertex();
+  for_each_element_components(&update_per_frame_component);
 
-    engine_draw_elements(&frame_draw_elements);
+  test_elements_occlusion();
+  check_meshes_distance();
 
-    frame_clean();
+  editor_stats_draw_calls = frame_draw_elements.count;
 
-    draw_gizmos();
+  editor_stats_calculates_triangles();
 
-    if(editor_mode == EDITOR_MODE_GUI_EDITOR || editor_mode == EDITOR_PLAY_MODE  ){
-         draw_gui();         
-    }       
+  if (update_vertex_bones_gizmos)
+    update_joints_vertex();
 
-    text_renderer_loop();
-		
-    //editor_message("editor message");    
+  engine_draw_elements(&frame_draw_elements);
+
+  frame_clean();
+
+  draw_gizmos();
+
+  if (editor_mode == EDITOR_MODE_GUI_EDITOR ||
+      editor_mode == EDITOR_PLAY_MODE) {
+    draw_gui();
+  }
+
+  text_renderer_loop();
+
+  // editor_message("editor message");
 }
 
 void editor_main_render_thread(){

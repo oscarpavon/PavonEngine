@@ -116,4 +116,5 @@ Array editor_windows;
 bool editor_file_explorer_show;
 bool editor_content_browser_show;
 bool editor_content_browser_initiliazed;
+bool editor_content_browser_updated;
 #endif

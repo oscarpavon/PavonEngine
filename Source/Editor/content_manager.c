@@ -31,7 +31,7 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   if (type != CONTENT_TYPE_PROJECT) {
 	load_file(name, &brute_file);
 
-    strcat(new_full_path_with_file_name, "/Content/");
+    strcat(new_full_path_with_file_name, content_folder);
     strcat(new_full_path_with_file_name, extracted_file_name);
   } else {
     strcat(new_full_path_with_file_name, "/project    ");//need four space for file extension lines down 
@@ -65,12 +65,14 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
 
   if (type != CONTENT_TYPE_PROJECT) {
 		fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
+  }else{
+
   }
+
   if (type == CONTENT_TYPE_TEXTURE) {
     Image new_image;
     if (image_load_from_memory(&new_image, brute_file.data,
                                brute_file.size_in_bytes) == -1) {
-
       LOG("ERROR: No image loaded\n");
     } else {
       LOG("Image to engine binary readed\n");
@@ -116,9 +118,10 @@ void content_manager_init() {
 
   struct dirent *de; // Pointer for directory entry
 
-  char directory[sizeof(pavon_the_game_project_folder) + 60];
+  char directory[sizeof(project_manager_current_path) + 60];
   memset(directory, 0, sizeof(directory));
-  sprintf(directory, "%s%s", pavon_the_game_project_folder, "Content/");
+  sprintf(directory, "%s%s", project_manager_current_path,content_folder); 
+
   DIR *dr = opendir(directory);
 
   if (dr == NULL) {
@@ -135,7 +138,7 @@ void content_manager_init() {
 
   for (int i = 0; i < directory_count; i++) {
     de = readdir(dr);
-    sprintf(directory, "%s%s%s", pavon_the_game_project_folder, "Content/",
+    sprintf(directory, "%s%s%s", project_manager_current_path,content_folder, 
             de->d_name);
 
     content_manager_import(directory);

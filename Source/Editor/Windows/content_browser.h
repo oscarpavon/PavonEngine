@@ -7,16 +7,17 @@
 
 
 typedef struct ContentView{
-    bool new_update;
+	ContentType type;
     DrawData draw;    
     vec2 position;
     vec2 size;
-    char thumbnail_image_path[100];
-    char content_name[100];   
     bool selected;
+    bool new_update;
     u8 pixel_size;//thumbnail + text size in pixel
     u8 text_size;
     u8 thumbnail_image_size;
+    char thumbnail_image_path[100];
+    char content_name[100];   
 }ContentView;
 
 void editor_window_content_init();
