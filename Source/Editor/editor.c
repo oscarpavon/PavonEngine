@@ -511,15 +511,14 @@ void editor_draw() {
     if (!editor_content_browser_initiliazed) {
       editor_content_browser_initiliazed = true;
       content_manager_init();
-      return;
     }
-		if(!editor_content_browser_updated){
-			editor_window_content_get_models_path();
-			editor_content_browser_updated = true;
-		}
+    if (!editor_content_browser_updated) {
+      editor_window_content_get_models_path();
+      editor_content_browser_updated = true;
+    }
     if (key_released(&input.A)) {
       editor_content_browser_show = false;
-			editor_content_browser_updated = false;
+      editor_content_browser_updated = false;
       EditorWindow *level_editor_window = array_get(&editor_windows, 0);
       level_editor_window->input = &editor_window_level_editor_input_update;
       return;

@@ -14,6 +14,17 @@ void content_manager_serialize_static_mesh() {
   new_element(content_manager_serialize_static_mesh_values);
 }
 
+void content_manager_create_thumbnails(const char* name, FILE* file, ContentType type){
+
+    content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
+    TextureCreated created_texture = texture_create_to_memory(1,128);
+    u32 thumnail_size = (u32)created_texture.size;
+    fwrite(&thumnail_size,sizeof(u32),1,file);
+    u32 thumnail_type = 35;
+    fwrite(&thumnail_type,sizeof(u32),1,file);
+    fwrite(created_texture.data,created_texture.size,1,file);
+}
+
 void content_manager_create_engine_binary(const char *name, ContentType type) {
   LOG("Creating new engine binary\n");
   File brute_file;
@@ -64,12 +75,12 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   fwrite(&type, sizeof(u32), 1, engine_binary);
 
   if (type != CONTENT_TYPE_PROJECT) {
-		fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
-  }else{
-
+    fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
   }
+  switch (type) {
 
-  if (type == CONTENT_TYPE_TEXTURE) {
+  case CONTENT_TYPE_TEXTURE: {
+
     Image new_image;
     if (image_load_from_memory(&new_image, brute_file.data,
                                brute_file.size_in_bytes) == -1) {
@@ -77,21 +88,18 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
     } else {
       LOG("Image to engine binary readed\n");
     }
+		break;
+		}
+	case CONTENT_TYPE_LEVEL: {
+
+			
+													 }
   }
 
-  /*///Thumbnail creation
-  content_create_thumbnail(name,CONTENT_TYPE_TEXTURE);
-  TextureCreated created_texture = texture_create_to_memory(1,128);
-  u32 thumnail_size = (u32)created_texture.size;
-  fwrite(&thumnail_size,sizeof(u32),1,engine_binary);
-  u32 thumnail_type = 35;
-  fwrite(&thumnail_type,sizeof(u32),1,engine_binary);
-  fwrite(created_texture.data,created_texture.size,1,engine_binary);
-*/
-  fclose(engine_binary);
-  close_file(&brute_file);
-  // remove(name);
-}
+	//content_manager_create_thumbnails(name,engine_binary,type);
+	 fclose(engine_binary);
+   close_file(&brute_file);
+  }
 
 void content_manager_import(const char *path) {
   int name_lenght = strlen(path);
@@ -99,15 +107,15 @@ void content_manager_import(const char *path) {
     if (path[n] == '.') {
       if (strcmp(&path[n + 1], "glb") == 0) {
         content_manager_create_engine_binary(path, CONTENT_TYPE_STATIC_MESH);
-        continue;
+        break;
       }
       if (strcmp(&path[n + 1], "png") == 0) {
 
         content_manager_create_engine_binary(path, CONTENT_TYPE_TEXTURE);
-        continue;
+        break;
       }
       if (strcmp(&path[n + 1], "pb") == 0) {
-        continue;
+        break;
       }
       LOG("File not support: %s \n", path);
     }

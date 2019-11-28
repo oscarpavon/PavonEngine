@@ -173,13 +173,13 @@ void editor_window_content_browser_input_update(){
 
     }
 
-    if(key_released(&input.ENTER)){//select content 
-		change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
-        memset(command_text_buffer,0,sizeof(command_text_buffer));
-        command_character_count = 0;
-        editor_window_content_browser_hint = false;
-		LOG("Content selected\n");	
-        return;
+    if (key_released(&input.ENTER)) { // select content
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+      memset(command_text_buffer, 0, sizeof(command_text_buffer));
+      command_character_count = 0;
+      editor_window_content_browser_hint = false;
+      LOG("Content selected\n");
+      return;
     }
 
     if(key_released(&input.E)){
@@ -193,8 +193,6 @@ void editor_window_content_browser_input_update(){
 
 void editor_content_draw_type_in_text(ContentView *content_view) {
 
-  text_render_in_screen_space(12, "Type", content_view->position[0] - 58,
-                              -content_view->position[1] - (64 - 120));
   switch (content_view->type) {
   case CONTENT_TYPE_TEXTURE: {
 
@@ -209,6 +207,13 @@ void editor_content_draw_type_in_text(ContentView *content_view) {
                                 -content_view->position[1] - (64 - 100));
     break;
   }
+	case CONTENT_TYPE_LEVEL: {
+
+    text_render_in_screen_space(12, "Level",
+                                content_view->position[0] - 58,
+                                -content_view->position[1] - (64 - 100));
+													 }
+													 break;
   }
 }
 
@@ -260,13 +265,10 @@ void editor_window_content_browser_draw(){
 
                // draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
                 text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
-               // text_render_in_screen_space(12,"hint",hint_position[0],-hint_position[1]);
             }
 
-		//	editor_content_view_found = array_get(&array_content_views,0);
-           //Input compare 
+      //Input compare 
 			if(strlen(command_text_buffer) >= 1){
-			//	LOG("Input compare\n");
                 int count_found = 0;
                 bool found = false;
                 for (u8 i = 0; i < array_content_views.count; i++)
@@ -517,75 +519,70 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
 }
 
 void editor_window_content_get_models_path(){
-    
-    struct dirent *de; // Pointer for directory entry
 
-    char directory[sizeof(project_manager_current_path) + 30];
-	LOG("The project path: %s\n",project_manager_current_path);
-    memset(directory,0,sizeof(directory));
-	strcat(directory,project_manager_current_path);
-	strcat(directory,"/Content/");
-    
-	DIR *dr = opendir(directory);
+  struct dirent *de; // Pointer for directory entry
 
-    if (dr == NULL){
-        LOG("Could not open current directory\n");
-		LOG("Can't open: %s\n",directory);
-        return;
-    }
+  char directory[sizeof(project_manager_current_path) + 30];
+  LOG("The project path: %s\n", project_manager_current_path);
+  memset(directory, 0, sizeof(directory));
+  strcat(directory, project_manager_current_path);
+  strcat(directory, content_folder);
 
-    int directory_count = 0;
-    while ((de = readdir(dr)) != NULL)
-    {
-        directory_count++;
-    }
-	if(directory_count == 0){
-		text_render_in_screen_space(12,"No content in this project",0,0);
-		closedir(dr);
-		return;
-	}
-    rewinddir(dr);
-    int model_count = 0;
-   
-    char model_names[directory_count][30];
-    memset(model_names,0,sizeof(model_names));
-    for (int i = 0; i < directory_count; i++)
-    {
-        de = readdir(dr);
-        int name_lenght = strlen(de->d_name);
-        for (int n = 0; n < name_lenght; n++)
-        {
-            if (de->d_name[n] == '.')
-            {
+  DIR *dr = opendir(directory);
 
-                if (strcmp(&de->d_name[n + 1], "pb") == 0)
-                {                      
-                    strcpy(&model_names[model_count][0],de->d_name);
-                    model_count++;
-                    continue;
-                }            
-            }
-        }
-    }
+  if (dr == NULL) {
+    LOG("Could not open current directory\n");
+    LOG("Can't open: %s\n", directory);
+    return;
+  }
 
+  int directory_count = 0;
+  while ((de = readdir(dr)) != NULL) {
+    directory_count++;
+  }
+  if (directory_count == 0) {
+    text_render_in_screen_space(12, "No content in this project", 299, -300);
     closedir(dr);
-		array_clean(&array_finding_content);
-		array_clean(&array_content_views);
-    array_init(&array_finding_content,sizeof(ContentView*),(model_count));
-    array_init(&array_content_views,sizeof(ContentView),(model_count));
-    
-    
-    struct ContentViewPort new_view_port;
-    memset(&new_view_port,0,sizeof(struct ContentViewPort));
-    new_view_port.last_x = 64;
-    new_view_port.last_y = 64;
-    new_view_port.max_x = camera_width_screen / 128;
-    for (int i = 0; i < model_count; i++)
-    {
-        editor_window_content_browser_new_content_view(model_names[i],&new_view_port);
-    }    
-    
+    return;
+  }
+  rewinddir(dr);
+  int model_count = 0;
+
+  char model_names[directory_count][30];
+  memset(model_names, 0, sizeof(model_names));
+  for (int i = 0; i < directory_count; i++) {
+    de = readdir(dr);
+    int name_lenght = strlen(de->d_name);
+    for (int n = 0; n < name_lenght; n++) {
+      if (de->d_name[n] == '.') {
+
+        if (strcmp(&de->d_name[n + 1], "pb") == 0) {
+          strcpy(&model_names[model_count][0], de->d_name);
+          model_count++;
+          continue;
+        }
+      }
+    }
+  }
+
+  closedir(dr);
+
+  array_clean(&array_finding_content);
+  array_clean(&array_content_views);
+  array_init(&array_finding_content, sizeof(ContentView *), (model_count));
+  array_init(&array_content_views, sizeof(ContentView), (model_count));
+
+  struct ContentViewPort new_view_port;
+  memset(&new_view_port, 0, sizeof(struct ContentViewPort));
+  new_view_port.last_x = 64;
+  new_view_port.last_y = 64;
+  new_view_port.max_x = camera_width_screen / 128;
+  for (int i = 0; i < model_count; i++) {
+    editor_window_content_browser_new_content_view(model_names[i],
+                                                   &new_view_port);
+  }
 }
+
 void editor_window_content_browser_close_window(){
 	window_content_browser->focus = false;
 	window_content_browser->initialized = false;
@@ -601,29 +598,33 @@ if(window_content_browser->initialized) return;
 		glfwDestroyWindow(window_content_browser->window);
 		editor_window_content_browser_close_window();
 	}
+
 }
 
 void editor_window_content_init(){
-    window_create(window_content_browser,window_editor_main,"Engine");
+  window_create(window_content_browser, window_editor_main, "Engine");
 
-    glfwMakeContextCurrent(window_content_browser->window);
+  glfwMakeContextCurrent(window_content_browser->window);
 
-    glfwSetKeyCallback(window_content_browser->window, key_callback);
-	glfwSetCursorPosCallback(window_content_browser->window, mouse_callback);
-	glfwSetMouseButtonCallback(window_content_browser->window, mouse_button_callback);
-   // glfwSetFramebufferSizeCallback(window_content_browser->window, window_resize_callback);
-    glfwSetCharCallback(window_content_browser->window, character_callback);
-    glfwSetWindowFocusCallback(window_content_browser->window,window_focus_callback);
+  glfwSetKeyCallback(window_content_browser->window, key_callback);
+  glfwSetCursorPosCallback(window_content_browser->window, mouse_callback);
+  glfwSetMouseButtonCallback(window_content_browser->window,
+                             mouse_button_callback);
+  // glfwSetFramebufferSizeCallback(window_content_browser->window,
+  // window_resize_callback);
+  glfwSetCharCallback(window_content_browser->window, character_callback);
+  glfwSetWindowFocusCallback(window_content_browser->window,
+                             window_focus_callback);
 
-    //glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_CULL_FACE);
+  // glEnable(GL_DEPTH_TEST);
+  // glEnable(GL_CULL_FACE);
 
-    editor_window_content_get_models_path();    
-    //content_browser_window_create_contents_thumbnails();
-    //editor_window_content_browser_load_thumbnails();
+  editor_window_content_get_models_path();
+  // content_browser_window_create_contents_thumbnails();
+  // editor_window_content_browser_load_thumbnails();
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	    
-    content_manager_init();
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  content_manager_init();
 }
 
