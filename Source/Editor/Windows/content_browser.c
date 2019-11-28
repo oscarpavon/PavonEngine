@@ -217,105 +217,93 @@ void editor_content_draw_type_in_text(ContentView *content_view) {
   }
 }
 
-void editor_window_content_browser_draw(){
-	//if in new window clean screen first
-   // glClearColor(0.1,0.2,0.4,1);
-    //glClear(GL_DEPTH_BUFFER_BIT);
-   
+void editor_window_content_browser_draw() {
+  // if in new window clean screen first
+  // glClearColor(0.1,0.2,0.4,1);
+  // glClear(GL_DEPTH_BUFFER_BIT);
 
-    if(editor_search_objects){
-        editor_window_content_browser_search_mode();
-        
-    }else{
+  if (editor_search_objects) {
+    editor_window_content_browser_search_mode();
 
-        ContentView* mark_content = array_get(&array_content_views,0);
-        if(mark_content)
-            mark_content->selected = true;
-        
-		//Draw in screen contents 
-        for (int i = 0; i < array_content_views.count; i++)
-        {
-            ContentView* content_view = array_get(&array_content_views,i);
-            if(!content_view)
-                continue;
-						editor_content_draw_type_in_text(content_view);				
-            editor_window_content_browser_draw_content_view(content_view);
-        }
+  } else {
 
-        
-        if(editor_window_content_browser_hint){//hint activated
-				change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-            
-			struct Hint hints[array_content_views.count];
-            selection_create_hint(hints);
+    ContentView *mark_content = array_get(&array_content_views, 0);
+    if (mark_content)
+      mark_content->selected = true;
 
-            for (int i = 0; i < array_content_views.count; i++)
-            {
-                ContentView* content_view = array_get(&array_content_views,i);
-                if(!content_view)
-                    continue;
-                
-                vec2 hint_position;
-                vec2 hint_size;
-                hint_position[0] = content_view->position[0]+35;
-                hint_position[1] = content_view->position[1];
-                hint_size[0] = 20;
-                hint_size[1] = 20;
-
-
-               // draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
-                text_render_in_screen_space(12,hints[i].keys,hint_position[0],-hint_position[1]);
-            }
-
-      //Input compare 
-			if(strlen(command_text_buffer) >= 1){
-                int count_found = 0;
-                bool found = false;
-                for (u8 i = 0; i < array_content_views.count; i++)
-                {
-                    if(found)
-                        break;
-
-                    struct Hint hint = hints[i];
-
-                    for (u8 j = 0; j < strlen(command_text_buffer); j++)
-                    {  
-                        
-                        for (u8 k = 0; k < strlen(hint.keys); k++)
-                        {
-                            
-                            if(command_text_buffer[k] != hint.keys[k]){
-                                found = false;
-                                break;
-                            }
-                            found = true;
-                        }
-                        if(found){
-							editor_content_view_found = array_get(&array_content_views,i);
-							if(!editor_content_view_found)
-								 continue;
-
-                            LOG("%s\n",editor_content_view_found->content_name);
-                            
-                        }
-                    }
-                    
-                }
-            }                
-            
-        }           
-    
-    }    
-
-    if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
-    {
-        set_text_size(12);
-        text_render(command_text_buffer, 0 + (-(camera_width_screen / 2)) * pixel_size_x, 0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+    // Draw in screen contents
+    for (int i = 0; i < array_content_views.count; i++) {
+      ContentView *content_view = array_get(&array_content_views, i);
+      if (!content_view)
+        continue;
+      editor_content_draw_type_in_text(content_view);
+      editor_window_content_browser_draw_content_view(content_view);
     }
 
+    if (editor_window_content_browser_hint) { // hint activated
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
 
+      struct Hint hints[array_content_views.count];
+      selection_create_hint(hints);
+
+      for (int i = 0; i < array_content_views.count; i++) {
+        ContentView *content_view = array_get(&array_content_views, i);
+        if (!content_view)
+          continue;
+
+        vec2 hint_position;
+        vec2 hint_size;
+        hint_position[0] = content_view->position[0] + 35;
+        hint_position[1] = content_view->position[1];
+        hint_size[0] = 20;
+        hint_size[1] = 20;
+
+        // draw_two_dimention_element(&content_view->draw,hint_position,hint_size,(vec4){0,1,0,1});
+        text_render_in_screen_space(12, hints[i].keys, hint_position[0],
+                                    -hint_position[1]);
+      }
+
+      // Input compare
+      if (strlen(command_text_buffer) >= 1) {
+        int count_found = 0;
+        bool found = false;
+        for (u8 i = 0; i < array_content_views.count; i++) {
+          if (found)
+            break;
+
+          struct Hint hint = hints[i];
+
+          for (u8 j = 0; j < strlen(command_text_buffer); j++) {
+
+            for (u8 k = 0; k < strlen(hint.keys); k++) {
+
+              if (command_text_buffer[k] != hint.keys[k]) {
+                found = false;
+                break;
+              }
+              found = true;
+            }
+            if (found) {
+              editor_content_view_found = array_get(&array_content_views, i);
+              if (!editor_content_view_found)
+                continue;
+
+              LOG("%s\n", editor_content_view_found->content_name);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT) {
+    set_text_size(12);
+    text_render(command_text_buffer,
+                0 + (-(camera_width_screen / 2)) * pixel_size_x,
+                0 + (-(camera_heigth_screen / 2) + 24) * pixel_size_y,
+                pixel_size_x, pixel_size_y, false);
+  }
 }
-
 
 ContentView first;
 
@@ -489,7 +477,7 @@ struct ContentViewPort{
 };
 
 
-void editor_window_content_browser_new_content_view(const char* name, struct ContentViewPort* view_port){
+void editor_window_content_browser_new_content_view(const char* name,ContentType type  ,struct ContentViewPort* view_port){
     ContentView new_content_view;
     memset(&new_content_view,0,sizeof(ContentView));
     memcpy(new_content_view.content_name, name,strlen(name)-3);    
@@ -514,6 +502,7 @@ void editor_window_content_browser_new_content_view(const char* name, struct Con
     new_content_view.position[1] = view_port->last_y;
 
     new_content_view.pixel_size = 64 + 12;    
+		new_content_view.type = type;
 
     array_add(&array_content_views,&new_content_view);
 }
@@ -555,11 +544,10 @@ void editor_window_content_get_models_path(){
     int name_lenght = strlen(de->d_name);
     for (int n = 0; n < name_lenght; n++) {
       if (de->d_name[n] == '.') {
-
         if (strcmp(&de->d_name[n + 1], "pb") == 0) {
           strcpy(&model_names[model_count][0], de->d_name);
+					
           model_count++;
-          continue;
         }
       }
     }
@@ -578,7 +566,12 @@ void editor_window_content_get_models_path(){
   new_view_port.last_y = 64;
   new_view_port.max_x = camera_width_screen / 128;
   for (int i = 0; i < model_count; i++) {
-    editor_window_content_browser_new_content_view(model_names[i],
+		char full_file_path[sizeof(directory) + 100];
+		memset(full_file_path,0,sizeof(full_file_path));
+		strcat(full_file_path,directory);
+		strcat(full_file_path,model_names[i]);
+		ContentType type =	content_manager_get_content_type_from_binary(full_file_path);
+    editor_window_content_browser_new_content_view(model_names[i],type,
                                                    &new_view_port);
   }
 }
