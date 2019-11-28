@@ -25,6 +25,8 @@ content_manager.c
 EditServer/edit_server.c
 editor_command_queue.c
 file_explorer.c
+level.c
+path.c
 ${Windows}
 ProjectManager/project_manager.c
 )

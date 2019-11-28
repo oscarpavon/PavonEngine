@@ -30,5 +30,10 @@
 :project_new 'project name'
 	- Create a new Pavon Editor project. This mean, create a directory with content folder
 
-:project_open 'full path project directory'
+:project_open 'project name'
 	- Open project directory
+
+:gui
+	- Enter in GUI editor
+
+

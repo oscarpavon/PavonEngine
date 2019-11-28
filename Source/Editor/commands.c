@@ -60,21 +60,27 @@ void command_parse_parameter(const char* command, const char*  parameter){
 	if(strcmp(command,"project_open") == 0){
 		project_manager_open(parameter);
 	}
+
+	if(strcmp(command,"level_new") == 0){
+		editor_level_new(parameter);
+	}
+	if(strcmp(command,"level_save") == 0){
+		editor_level_save(parameter);
+	}
 }
 
-void command_parse(const char* command){
-	int parameters = 0; 	
-    int command_len = strlen(command);
-    for(int i = 0; i<command_len; i++){
-        if(command[i] == ' '){
-			parameters++;	
-            char new_command_text[i];
-            memcpy(new_command_text,command,i);
-			new_command_text[i] = '\0';
-			command_parse_parameter(new_command_text,&command[i+1]);
-        }
+void command_parse(const char *command) {
+  int parameters = 0;
+  int command_len = strlen(command);
+  for (int i = 0; i < command_len; i++) {
+    if (command[i] == ' ') {
+      parameters++;
+      char new_command_text[i];
+      memcpy(new_command_text, command, i);
+      new_command_text[i] = '\0';
+      command_parse_parameter(new_command_text, &command[i + 1]);
     }
-
+  }
 }
 
 void parse_command_with_len(const char* command, int len){

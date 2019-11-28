@@ -5,6 +5,7 @@
 #include "../Editor/input.h"
 #include <dirent.h>
 #include "content_manager.h"
+#include "path.h"
 
 int file_manager_current_directory_count = 0;
 int file_manager_current_directory_id = 0;
@@ -31,20 +32,6 @@ bool file_have_extension(const char* file_name, const char* extension){
 		}
 
 	return false;
-}
-
-void path_extract_file_name(const char* file_name, const char* buf){
-
-        int name_lenght = strlen(file_name);
-        for (int n = name_lenght; n > 0; n--)
-        {
-            if (file_name[n] == '/')
-            {
-				strcpy(buf,&file_name[n + 1]); 
-				break;
-			}
-		}
-
 }
 
 

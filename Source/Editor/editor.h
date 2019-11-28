@@ -25,6 +25,8 @@
 #include "editor_command_queue.h"
 #include "stats.h"
 
+#include "level.h"
+
 typedef struct HLODCluster HLODCluster;
 typedef enum EditorMode{
     EDITOR_GRAB_MODE,
