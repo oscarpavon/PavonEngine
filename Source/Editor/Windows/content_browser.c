@@ -571,6 +571,8 @@ void editor_window_content_get_models_path(){
 		strcat(full_file_path,directory);
 		strcat(full_file_path,model_names[i]);
 		ContentType type =	content_manager_get_content_type_from_binary(full_file_path);
+		if(type == CONTENT_TYPE_NULL)
+				continue;
     editor_window_content_browser_new_content_view(model_names[i],type,
                                                    &new_view_port);
   }

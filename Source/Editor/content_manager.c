@@ -35,18 +35,29 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   memset(extracted_file_name, 0, sizeof(extracted_file_name));
   path_extract_file_name(name, extracted_file_name);
   LOG("Extracted File name: %s\n", extracted_file_name);
+
   char new_full_path_with_file_name[500];
   memset(new_full_path_with_file_name, 0, 500);
   strcat(new_full_path_with_file_name, project_manager_current_path);
   
-  if (type != CONTENT_TYPE_PROJECT) {
-	load_file(name, &brute_file);
+  if (type != CONTENT_TYPE_PROJECT && type != CONTENT_TYPE_LEVEL) {
+		
+		load_file(name, &brute_file);
 
     strcat(new_full_path_with_file_name, content_folder);
     strcat(new_full_path_with_file_name, extracted_file_name);
-  } else {
+  } 
+	
+  if (type == CONTENT_TYPE_PROJECT) {
     strcat(new_full_path_with_file_name, "/project    ");//need four space for file extension lines down 
   }
+		
+  if (type == CONTENT_TYPE_LEVEL) {
+
+    strcat(new_full_path_with_file_name, content_folder);
+    strcat(new_full_path_with_file_name, extracted_file_name);
+
+	}
 
   LOG("New file name in project content folder: \n %s\n",
       new_full_path_with_file_name);
@@ -56,8 +67,11 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   sprintf(&new_pavon_binary_path[strlen(new_pavon_binary_path) - 4], "%s", ".pb");
 
   FILE *engine_binary = fopen(new_pavon_binary_path, "wb");
-
-  // Header
+	if(engine_binary == NULL){
+			LOG("Can't create pavon binary\n");
+			return; 
+	}
+	//*********** Header
   fprintf(engine_binary, "pvnB");
   u32 version = 1;
   fwrite(&version, sizeof(u32), 1, engine_binary);
@@ -70,17 +84,15 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   fwrite(&GUID, sizeof(u32), 1, engine_binary); 
   fwrite(&brute_file.size_in_bytes, sizeof(u32), 1,
          engine_binary); // + engine file JSON
-
+	//***********  end head
   ContentType new_content_type = type;
   fwrite(&type, sizeof(u32), 1, engine_binary);
 
-  if (type != CONTENT_TYPE_PROJECT) {
-    fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
-  }
   switch (type) {
 
   case CONTENT_TYPE_TEXTURE: {
 
+    fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
     Image new_image;
     if (image_load_from_memory(&new_image, brute_file.data,
                                brute_file.size_in_bytes) == -1) {
@@ -92,8 +104,12 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
 		}
 	case CONTENT_TYPE_LEVEL: {
 
-			
+		break;	
 													 }
+	case CONTENT_TYPE_STATIC_MESH:{
+    fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
+		break;
+																}										
   }
 
 	//content_manager_create_thumbnails(name,engine_binary,type);

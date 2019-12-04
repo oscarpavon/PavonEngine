@@ -39,6 +39,7 @@ int content_manager_get_content_type_from_binary(const char *path) {
   close_file(&new_file);
   return content_type;
 }
+
 int content_manager_load_content(const char* path){
 
     File new_file;
