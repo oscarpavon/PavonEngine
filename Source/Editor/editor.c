@@ -482,6 +482,8 @@ void editor_render_init(){
     gizmos_init();
    
    	editor_running = true;
+
+		vulkan_renderer_init();
 }
 
 void editor_render_finish(){

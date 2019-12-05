@@ -8,6 +8,15 @@ add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
+if(VULKAN)
+	message("Vulkan Version")
+	add_compile_definitions(PUBLIC VULKAN)
+endif()
+if(OPENGL)
+	message("OpenGL Version")
+	add_compile_definitions(PUBLIC OPENGL)
+endif()
+
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 add_subdirectory(Source/Engine)
