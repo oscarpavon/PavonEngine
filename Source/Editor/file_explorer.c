@@ -42,6 +42,8 @@ void file_explorer_set_file_extension_color(const char* name, vec4 color){
 		memcpy(color,(vec4){1,0.5,1,1},sizeof(vec4));
 	else if(file_have_extension(name,"jpg"))
 		memcpy(color,(vec4){0.2,1,1,1},sizeof(vec4));
+	else if(file_have_extension(name,"wav"))
+		memcpy(color,(vec4){0.2,0,1,1},sizeof(vec4));
 }
 
 bool file_explorer_valid_directory(const char* path){
@@ -217,6 +219,12 @@ void file_explorer_input(){
 			if(file_have_extension(file_manager_temp_path,"png"))	
 			{
 				content_manager_import(path_with_file_name);
+				return;			
+			}
+
+			if(file_have_extension(file_manager_temp_path,"wav"))	
+			{
+					audio_play("test");		
 				return;			
 			}
 		}

@@ -3,7 +3,9 @@
 //
 
 #include "engine.h"
-#include "gui.h" #include "shader.h"
+#include <unistd.h>
+
+#include "gui.h" 
 
 #include "file_loader.h"
 
@@ -11,14 +13,13 @@
 
 #include "model.h"
 
-#include <unistd.h>
-
 #include "LOD_system.h"
 
+#include "audio.h"
 
-Array engine_models;
 Array engine_elements;
 Array engine_textures;
+
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
     GLuint id_copy;
@@ -327,43 +328,7 @@ void engine_init_render(){
     thread_new_detached(engine_render_thread,NULL,"Render");    
 }
 
-void engine_init_data(){
-    array_init(&texts,sizeof(char[100]),50);
-    array_init(&textures_paths,sizeof(char[20]),50);
-    array_init(&array_models_loaded,sizeof(Model),100);
 
-    array_init(&engine_native_models,sizeof(Model),100);   
-
-    array_init(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
-        
-    array_init(&actions_pointers,sizeof(ActionPointer),20);
-
-    array_init(&frame_draw_elements,sizeof(void*),100);
-    array_init(&models_for_test_occlusion,sizeof(void*),300);
-    array_init(&array_static_meshes_pointers,sizeof(void*),300);
-    array_init(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);
-    array_init(&array_skinned_mesh_for_distance_test,sizeof(void*),100);
-    array_init(&array_skinned_mesh_pointers,sizeof(void*),100);
-
-    array_init(&array_animation_play_list,sizeof(Animation*),100);
-    
-    touch_position_x = -1;
-    touch_position_x = -1;
-
-    action_pointer_id_count = 0;    
-
-    actual_standard_fragment_shader = standart_fragment_shader;  
-}
-
-void engine_init(){
-    array_init(&array_render_thread_init_commmands,sizeof(ExecuteCommand),5);
-	array_init(&array_render_thread_commands,sizeof(ExecuteCommand),100);
-   
-    engine_init_data();   
-    engine_running = true;
-    engine_init_render();    
-
-}
 
 void add_action_function(void(*f)(void)){
     ActionPointer new_action;
@@ -492,4 +457,42 @@ void test_elements_occlusion(){
 
 void duplicate_model_data(Model* destination , Model* source){
     memcpy(destination,source,sizeof(Model));
+}
+
+void engine_init_data(){
+    array_init(&texts,sizeof(char[100]),50);
+    array_init(&textures_paths,sizeof(char[20]),50);
+    array_init(&array_models_loaded,sizeof(Model),100);
+
+    array_init(&engine_native_models,sizeof(Model),100);   
+
+    array_init(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
+        
+    array_init(&actions_pointers,sizeof(ActionPointer),20);
+
+    array_init(&frame_draw_elements,sizeof(void*),100);
+    array_init(&models_for_test_occlusion,sizeof(void*),300);
+    array_init(&array_static_meshes_pointers,sizeof(void*),300);
+    array_init(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);
+    array_init(&array_skinned_mesh_for_distance_test,sizeof(void*),100);
+    array_init(&array_skinned_mesh_pointers,sizeof(void*),100);
+
+    array_init(&array_animation_play_list,sizeof(Animation*),100);
+    
+    touch_position_x = -1;
+    touch_position_x = -1;
+
+    action_pointer_id_count = 0;    
+
+    actual_standard_fragment_shader = standart_fragment_shader;  
+}
+
+void engine_init(){
+  array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
+  array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
+
+  engine_init_data();
+  engine_running = true;
+  engine_init_render();
+	audio_init();
 }

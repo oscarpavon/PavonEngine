@@ -6,6 +6,12 @@ include_directories(/home/pavon/sources/freetype2/include)
 
 endif()
 
+if(LINUX)
+	set(audio 
+		${CMAKE_CURRENT_LIST_DIR}/../Platform/Linux/audio_alsa.c
+		)
+endif()
+
 set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/components.c
         )
@@ -34,6 +40,7 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
         ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
         ${components}
+				${audio}
 )
 
 

@@ -52,4 +52,5 @@ m
 pthread
 freetype
 dl
+asound
 )
