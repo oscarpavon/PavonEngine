@@ -4,8 +4,11 @@
 #include "../menu.h"
 #include "../file_explorer.h"
 #include "../content_manager.h"
+#include "../menu.h"
 
 TextMenuType project_manager_menu;
+
+TextMenu project_select_menu;
 
 int project_manager_open(const char* name){
 	LOG("Open project with path: %s\n", name);
@@ -70,10 +73,25 @@ void project_manager_draw_projects_list(){
 }
 
 void project_manager_window_draw(){
-	text_render_in_screen_space(40,"Pavon Editor",0,0);
-
+	text_render_in_screen_space(40,"Pavon Engine - Editor",0,0);
+	text_menu_update(&project_select_menu);	
 }
 
+const char* projects_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
+void project_manager_menu_select_project_draw(TextMenu* menu){
+	
+    float text_size = 12;
+    set_text_size(text_size);
+    menu->text_size  = text_size;
+    menu->element_count = 5;
+    for(int i = 0; i < 4 ; i++){
+
+        char* name = projects_names[i];
+        
+        draw_element_text_list(menu,name,i);
+    }
+
+} 
 void project_manager_window_input(){
 
 	if(key_released(&input.ENTER))
@@ -88,5 +106,14 @@ void project_manager_update(){
 void project_manager_init(){
 	project_manager_can_show = true;
 	
+    memset(&project_select_menu,0,sizeof(TextMenu));
+    project_select_menu.execute_function = NULL;
+    project_select_menu.draw_text_funtion = project_manager_menu_select_project_draw;
+    project_select_menu.execute = true;
+    project_select_menu.show = true;
+		project_select_menu.menu_in_editor = true;
+    project_select_menu.open_key = NULL;
+    project_select_menu.mods_key = NULL;
+    project_select_menu.element_count = 0;
 }
 
