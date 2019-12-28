@@ -5,6 +5,17 @@
 
 #include "../../Engine/content_manager.h"
 
+struct Hint{
+    char keys[4];
+    u8 key_count;
+};
+
+struct ContentViewPort{
+    int max_x;
+    int last_x;
+    int last_y;
+    int object_x_count;
+};
 
 typedef struct ContentView{
 	ContentType type;

@@ -118,6 +118,7 @@ void engine_select_element_add_texture(Texture* texture){
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 }
+
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
 	Texture new_texture;
 	texture_load_from_memory(&new_texture,size,data);	
@@ -258,20 +259,19 @@ void engine_client_initialize_render_thread(){
         ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
         exectute->command(exectute->parameter);
     }
-	array_clean(&array_render_thread_init_commmands);
+		array_clean(&array_render_thread_init_commmands);
 
     engine_user_render_thread_init();
     engine_initialized = true;
 }
 
 void engine_render_thread_init(){
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);   
-    
-    camera_init(&main_camera);  
-    init_gui();
-	text_renderer_init();
+  camera_init(&main_camera);
+  init_gui();
+  text_renderer_init();
 }
 
 bool engine_user_render_thread_initialized_in_loop = false;

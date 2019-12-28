@@ -18,4 +18,5 @@ void menu_new(const char* name, Key* open_key, int mods_key,
                     TextMenuFunction execute_function);
 
 void menu_new_from_data(const char* name, TextMenu* new_menu);
+void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods);
 #endif

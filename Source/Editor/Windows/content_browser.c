@@ -65,10 +65,6 @@ void editor_window_content_browser_search_mode(){
     }
 }
 
-struct Hint{
-    char keys[4];
-    u8 key_count;
-};
 
 void selection_create_hint(struct Hint* out){
     int hint_count = array_content_views.count;
@@ -145,50 +141,50 @@ void editor_window_content_add_content_render_thread(){
 }
 
 void editor_window_content_browser_input_update(){
-     if(key_released(&input.F)){
-        if(editor_window_content_browser_hint){
-            editor_window_content_browser_hint = false;
-        }else{
-            editor_window_content_browser_hint = true;
-			LOG("Hint\n");
-		}
-        return;
-    }
-
-    if(key__released(&input.ENTER,GLFW_MOD_SHIFT)){
-			LOG("Import\n");	
-            memset(command_text_buffer,0,sizeof(command_text_buffer));
-            command_character_count = 0;
-            editor_window_content_browser_hint = false;
-            if(editor_content_view_found){
-				//need to send command to render thread
-				ExecuteCommand new_command;
-				new_command.executed = false;
-				new_command.command = editor_window_content_add_content_render_thread;
-				array_add(&array_render_thread_commands,&new_command);
-                return;
-            }else{
-				LOG("No content selected\n");	
-			}
-
-    }
-
-    if (key_released(&input.ENTER)) { // select content
-      change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
-      memset(command_text_buffer, 0, sizeof(command_text_buffer));
-      command_character_count = 0;
+  if (key_released(&input.F)) {
+    if (editor_window_content_browser_hint) {
       editor_window_content_browser_hint = false;
-      LOG("Content selected\n");
-      return;
+    } else {
+      editor_window_content_browser_hint = true;
+      LOG("Hint\n");
     }
+    return;
+  }
 
-    if(key_released(&input.E)){
-		if(!editor_content_view_found) return;
-        LOG("Edit Mesh: %s\n",editor_content_view_found->content_name);
-		tabs_new(current_window,editor_content_view_found->content_name);
-		current_window->tab_current->draw = editor_window_static_mesh_draw;	
-        return;
+  if (key__released(&input.ENTER, GLFW_MOD_SHIFT)) {
+    LOG("Import\n");
+    memset(command_text_buffer, 0, sizeof(command_text_buffer));
+    command_character_count = 0;
+    editor_window_content_browser_hint = false;
+    if (editor_content_view_found) {
+      // need to send command to render thread
+      ExecuteCommand new_command;
+      new_command.executed = false;
+      new_command.command = editor_window_content_add_content_render_thread;
+      array_add(&array_render_thread_commands, &new_command);
+      return;
+    } else {
+      LOG("No content selected\n");
     }
+  }
+
+  if (key_released(&input.ENTER)) { // select content
+    change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+    memset(command_text_buffer, 0, sizeof(command_text_buffer));
+    command_character_count = 0;
+    editor_window_content_browser_hint = false;
+    LOG("Content selected\n");
+    return;
+  }
+
+  if (key_released(&input.E)) {
+    if (!editor_content_view_found)
+      return;
+    LOG("Edit Mesh: %s\n", editor_content_view_found->content_name);
+    tabs_new(current_window, editor_content_view_found->content_name);
+    current_window->tab_current->draw = editor_window_static_mesh_draw;
+    return;
+  }
 }
 
 void editor_content_draw_type_in_text(ContentView *content_view) {
@@ -468,14 +464,6 @@ void editor_window_content_browser_load_thumbnails(){
 
     }
 }
-
-struct ContentViewPort{
-    int max_x;
-    int last_x;
-    int last_y;
-    int object_x_count;
-};
-
 
 void editor_window_content_browser_new_content_view(const char* name,ContentType type  ,struct ContentViewPort* view_port){
     ContentView new_content_view;

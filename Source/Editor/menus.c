@@ -6,63 +6,55 @@
 
 void text_menu_update(TextMenu *menu)
 {
-	
 
-    if (menu->execute)
-    {
-        if (menu->draw_text_funtion != NULL)
-            menu->draw_text_funtion(menu);
-		else
-            LOG("Menu draw function not assigned\n");
+  if (menu->execute) {
+    if (menu->draw_text_funtion != NULL)
+      menu->draw_text_funtion(menu);
+    else
+      LOG("Menu draw function not assigned\n");
 
-/*         if (menu->type == MENU_TYPE_ADD_MODEL)
-            draw_directory_file_type(DIRECTORY_MODELS);
-        else if (menu->type == MENU_TYPE_ADD_TEXTURE)
-            draw_directory_file_type(DIRECTORY_TEXTURES); */
+    /*         if (menu->type == MENU_TYPE_ADD_MODEL)
+                draw_directory_file_type(DIRECTORY_MODELS);
+            else if (menu->type == MENU_TYPE_ADD_TEXTURE)
+                draw_directory_file_type(DIRECTORY_TEXTURES); */
 
-    if(menu->show){
-        if(key_released(&input.ESC)){
-            menu->execute = false;
-            menu->show = false;
+    if (menu->show) {
+      if (key_released(&input.ESC)) {
+        menu->execute = false;
+        menu->show = false;
+      }
+      if (key_released(&input.J)) {
+        if (menu->element_count > menu->actual_element_select)
+          menu->actual_element_select++;
+        else {
+          menu->actual_element_select = 0;
         }
-        if(key_released(&input.J)){
-            if(menu->element_count > menu->actual_element_select)
-                menu->actual_element_select++;
-            else
-            {
-                menu->actual_element_select = 0;
-            }
-            
+      }
+      if (key_released(&input.K)) {
+        if (menu->actual_element_select >= 1 && menu->element_count > 0)
+          menu->actual_element_select--;
+        else {
+          menu->actual_element_select = menu->element_count;
         }
-        if(key_released(&input.K)){
-            if(menu->actual_element_select >= 1 && menu->element_count > 0)
-                menu->actual_element_select--;
-            else
-            {
-                menu->actual_element_select = menu->element_count;
-            }
-        }
-        if(key_released(&input.ENTER)){
-            menu->element_selected = true;
-            menu->show = false;
-        }
-
+      }
+      if (key_released(&input.ENTER)) {
+        menu->element_selected = true;
+        menu->show = false;
+      }
     }
-        if (menu->element_selected)
-        {
-            menu->execute = false;
-            menu->show = false;
-            menu->element_selected = false;
+    if (menu->element_selected) {
+      menu->execute = false;
+      menu->show = false;
+      menu->element_selected = false;
 
-            if (menu->execute_function == NULL)
-            {
-                LOG("Menu execute function not assigned\n");
-                return;
-            }
+      if (menu->execute_function == NULL) {
+        LOG("Menu execute function not assigned\n");
+        return;
+      }
 
-            menu->execute_function(menu);
-        }
+      menu->execute_function(menu);
     }
+  }
 }
 
 void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods){
@@ -90,7 +82,7 @@ void menu_new_from_data(const char* name, TextMenu* new_menu){
     menu.draw_text_funtion = new_menu->draw_text_funtion;
     menu.execute = false;
     menu.show = false;
-	menu.menu_in_editor = true;
+		menu.menu_in_editor = true;
     menu.open_key = new_menu->open_key;
     menu.mods_key = new_menu->mods_key;
     menu.element_count = 0;
@@ -106,7 +98,7 @@ void menu_new(const char* name, Key* open_key, int mods_key,
     menu.execute_function = execute_function;
     menu.draw_text_funtion = draw_function;
     menu.execute = false;
-	menu.menu_in_editor = true;
+		menu.menu_in_editor = true;
     menu.show = false;
     menu.open_key = open_key;
     menu.mods_key = mods_key;
@@ -303,6 +295,7 @@ void menu_action_add_editor_native_element(TextMenu* menu){
     add_editor_native_element(menu->text_for_action);
     LOG("Add editor native element: %s\n",menu->text_for_action);
 }
+
 #define EDITOR_NATIVE_ELEMETN_COUNT 9
 const char* elements_names[] = { 
     "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor",
@@ -361,37 +354,45 @@ void menu_action_draw_gui_elements(TextMenu* menu){
 }
 
 void menus_init(){
-    memset(&add_element_menu,0,sizeof(TextMenu));
-    memset(&menu_add_texture,0,sizeof(TextMenu));
-    memset(&menu_editor_element_list,0,sizeof(TextMenu));
+  memset(&add_element_menu, 0, sizeof(TextMenu));
+  memset(&menu_add_texture, 0, sizeof(TextMenu));
+  memset(&menu_editor_element_list, 0, sizeof(TextMenu));
 
-    /*Text Menu functions */
-    add_element_menu.execute_function = &menu_action_add_element;
-    add_element_menu.type = MENU_TYPE_ADD_MODEL;
+  /*Text Menu functions */
+  add_element_menu.execute_function = &menu_action_add_element;
+  add_element_menu.type = MENU_TYPE_ADD_MODEL;
 
-    menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
-    menu_add_texture.execute_function = &menu_action_add_texture_to_element;
+  menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
+  menu_add_texture.execute_function = &menu_action_add_texture_to_element;
 
-    menu_editor_element_list.execute_function = &menu_action_select_element;
-    menu_editor_element_list.draw_text_funtion = &menu_action_draw_editor_elements;
+  menu_editor_element_list.execute_function = &menu_action_select_element;
+  menu_editor_element_list.draw_text_funtion =
+      &menu_action_draw_editor_elements;
 
-    menu_add_native_editor_element.execute_function = &menu_action_add_editor_native_element;
-    menu_add_native_editor_element.draw_text_funtion = &menu_action_draw_native_editor_elments;
+  menu_add_native_editor_element.execute_function =
+      &menu_action_add_editor_native_element;
+  menu_add_native_editor_element.draw_text_funtion =
+      &menu_action_draw_native_editor_elments;
 
-    menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
-    menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
+  menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
+  menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
 
-	//New way to create texts menus	
-    array_init(&menus,sizeof(TextMenu),10);
-    
-	menu_new("Element Component List",&input.C, -1,  &draw_components_from_selected_element, &menu_action_select_component_from_selected_element);
-    menu_new("Add Component",&input.C, GLFW_MOD_SHIFT,  &draw_available_components, &menu_action_add_component_to_select_element);
-	menu_new("List Elements",&input.L, -1 ,  &menu_action_draw_editor_elements, menu_action_select_element);
-    
-    TextMenu animation_menu;
-    animation_menu.open_key = &input.B;
-    animation_menu.mods_key = -1;
-    animation_menu.draw_text_funtion = &draw_animations_names;
-    animation_menu.execute_function = &menu_action_play_animation;
-    menu_new_from_data("Animations", &animation_menu);
+  // New way to create texts menus
+  array_init(&menus, sizeof(TextMenu), 10);
+
+  menu_new("Element Component List", &input.C, -1,
+           &draw_components_from_selected_element,
+           &menu_action_select_component_from_selected_element);
+  menu_new("Add Component", &input.C, GLFW_MOD_SHIFT,
+           &draw_available_components,
+           &menu_action_add_component_to_select_element);
+  menu_new("List Elements", &input.L, -1, &menu_action_draw_editor_elements,
+           menu_action_select_element);
+
+  TextMenu animation_menu;
+  animation_menu.open_key = &input.B;
+  animation_menu.mods_key = -1;
+  animation_menu.draw_text_funtion = &draw_animations_names;
+  animation_menu.execute_function = &menu_action_play_animation;
+  menu_new_from_data("Animations", &animation_menu);
 }

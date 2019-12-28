@@ -6,17 +6,16 @@
 
 #include <stdlib.h>
 #include "../Engine/file_loader.h"
-#include "editor.h"
-#include "../Engine/gui.h"
+#include "editor.h" #include "../Engine/gui.h"
 
 #include "menus.h"
 
 #include "commands.h"
 
-unsigned short int directory_show_type = 50;
-
 #include <dirent.h>
 #include "ProjectManager/project_manager.h"
+
+unsigned short int directory_show_type = 50;
 
 void list_directory_files(TextMenu *menu)
 {
@@ -177,54 +176,53 @@ void draw_directory_file_type(unsigned short int type)
 
 void draw_engine_memory()
 {
-    FT_Set_Pixel_Sizes(face, 0, 12);
-    text_render("Memory:", 0 + ((camera_width_screen / 2) - 400) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    char buf[5];
-    float total_memory_in_kb = INIT_MEMORY / 1024;
-    gcvt(total_memory_in_kb, 6, buf);
-    text_render(buf, 0 + ((camera_width_screen / 2) - 340) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    text_render("/", 0 + ((camera_width_screen / 2) - 305) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-
-    float free_memory = actual_free_memory / 1024;
-    gcvt(free_memory, 6, buf);
-    text_render(buf, 0 + ((camera_width_screen / 2) - 300) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
-    text_render("kb", 0 + ((camera_width_screen / 2) - 265) * pixel_size_x, 0 + ((camera_heigth_screen / 2) - 20) * pixel_size_y, pixel_size_x, pixel_size_y, false);
+  text_render_in_screen_space(12, "Memory:", 950, 0);
+  char buf[5];
+  float total_memory_in_kb = INIT_MEMORY / 1024;
+  gcvt(total_memory_in_kb, 6, buf);
+  text_render_in_screen_space(12, buf, 1020, 0);
+  
+	float free_memory = actual_free_memory / 1024;
+  gcvt(free_memory, 6, buf);
+	
+  text_render_in_screen_space(12, "/", 1095, 0);
+  text_render_in_screen_space(12, buf, 1110, 0);
 }
 
 void draw_frame_time()
 {
 	text_render_in_screen_space(12,"Frame",700,0);
-    char buf[16];
-    memset(buf,0,sizeof(buf));
+  char buf[16];
+  memset(buf,0,sizeof(buf));
 
-    gcvt(frame_time, 6, buf);
+  gcvt(frame_time, 6, buf);
 	text_render_in_screen_space(12,buf,750,0);
-	text_render_in_screen_space(12,"ms",780,0);
+	text_render_in_screen_space(12,"ms",795,0);
 }
 
 void draw_FPS(){
 	text_render_in_screen_space(12,"FPS",600,0);
-    char buf[16];
-    memset(buf,0,sizeof(buf));
-    gcvt(FPS, 6, buf);
+  char buf[16];
+  memset(buf,0,sizeof(buf));
+  gcvt(FPS, 6, buf);
 	text_render_in_screen_space(12,buf,650,0);
 }
 
 void draw_count_of_draw_call(){
 	text_render_in_screen_space(12,"Draw:",0,0);
-    char buf[5]; 
-    float count = editor_stats_draw_calls; 
-    gcvt(count, 6, buf);
-    if(count != 0)
-		text_render_in_screen_space(12,buf,100,0);
+  char buf[5]; 
+  float count = editor_stats_draw_calls; 
+  gcvt(count, 6, buf);
+  if(count != 0)
+	text_render_in_screen_space(12,buf,100,0);
 }
 void draw_stats_triangles(){
 	text_render_in_screen_space(12,"Tris",500,0); 
 	char buf[7]; 
-    float count = editor_stats_triangles;
-    gcvt(count, 7, buf);
-    if(count != 0)
-		text_render_in_screen_space(12,buf,540,0); 
+  float count = editor_stats_triangles;
+  gcvt(count, 7, buf);
+  if(count != 0)
+	text_render_in_screen_space(12,buf,540,0); 
 
 }
 
@@ -235,56 +233,54 @@ void text_draw_commands(){
     }
 }
 
-void text_renderer_loop()
-{
+void text_renderer_loop() { draw_engine_memory();
+  draw_frame_time();
+  draw_FPS();
+  draw_count_of_draw_call();
+  draw_stats_triangles();
 
-    draw_engine_memory();
-    draw_frame_time();
-    draw_FPS();
-	draw_count_of_draw_call();
-	draw_stats_triangles();
-	
+  text_render_in_screen_space(12, editor_mode_show_text,
+                              camera_width_screen - 100, 0);
+  text_render_in_screen_space(12, "Project:", 200, 0);
 
-	text_render_in_screen_space(12,editor_mode_show_text,camera_width_screen - 100, 0);
-	text_render_in_screen_space(12,"Project:",200,0);
+  if (strlen(project_manager_current_project_name) == 0) {
+    text_render_in_screen_space(12, "NO PROJECT", 260, 0);
+  } else {
+    text_render_in_screen_space(12, project_manager_current_project_name, 260,
+                                0);
+  }
 
-	if(strlen(project_manager_current_project_name) == 0){
-		text_render_in_screen_space(12,"NO PROJECT",260,0);
-	}
-	else{
-		text_render_in_screen_space(12,project_manager_current_project_name,260,0);
-	}
+  if (editor_sub_mode != EDITOR_SUB_MODE_NULL) {
+    text_render_in_screen_space(12, editor_sub_mode_text,
+                                camera_width_screen - 100, 30);
+  }
 
-    if (editor_sub_mode != EDITOR_SUB_MODE_NULL)
-    {
-		text_render_in_screen_space(12,editor_sub_mode_text,camera_width_screen - 100, 30);
-    }
+  if (editor_mode == EDITOR_DEFAULT_MODE &&
+      editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT &&
+      window_editor_main->focus) {
+    // can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
+    //can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
+    // can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
 
-    if (editor_mode == EDITOR_DEFAULT_MODE && editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT && window_editor_main->focus)
-    {
-        //can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
-        //can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
-       // can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
+    menu_can_open_with_key(&menu_add_native_editor_element, &input.E,
+                           GLFW_MOD_SHIFT);
 
-        //can_open_text_menu_with_key(&menu_add_native_editor_element, &input.E, GLFW_MOD_SHIFT);
-		//text_menu_update(&menu_add_texture);
+    text_menu_update(&menu_add_texture);
 
-        //text_menu_update(&add_element_menu);
+    // text_menu_update(&add_element_menu);
 
-        //text_menu_update(&menu_editor_element_list);
+    // text_menu_update(&menu_editor_element_list);
 
-        //text_menu_update(&menu_add_native_editor_element);
+    text_menu_update(&menu_add_native_editor_element);
 
-        //text_menu_update(&menu_show_gui_elements);
-		//
-		menu_draw_menus();
-    }
+    // text_menu_update(&menu_show_gui_elements);
+    menu_draw_menus();
+  }
 
-    if (editor_mode == EDITOR_MODE_GUI_EDITOR)
-        menu_can_open_with_key(&menu_show_gui_elements, &input.L, NULL);
-
-	
+  if (editor_mode == EDITOR_MODE_GUI_EDITOR)
+    menu_can_open_with_key(&menu_show_gui_elements, &input.L, NULL);
 }
+
 void editor_text_init(){
     mark_id = 0;
 

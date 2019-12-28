@@ -3,9 +3,10 @@
 
 #include "Windows/content_browser.h"
 #include "ProjectManager/project_manager.h"
+#include "../Engine/utils.h"
+
 int log_command_offset = 0;
 bool activate_text_input_mode = false;
-
 
 char first_char_command;
 char* command_array_pointer;
@@ -24,49 +25,21 @@ void system_command(const char* command, const char* argument){
 }
 
 
-
-static size_t code_to_utf8(unsigned char *const buffer, const unsigned int code)
-{
-    if (code <= 0x7F) {
-        buffer[0] = code;
-        return 1;
-    }
-    if (code <= 0x7FF) {
-        buffer[0] = 0xC0 | (code >> 6);            /* 110xxxxx */
-        buffer[1] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
-        return 2;
-    }
-    if (code <= 0xFFFF) {
-        buffer[0] = 0xE0 | (code >> 12);           /* 1110xxxx */
-        buffer[1] = 0x80 | ((code >> 6) & 0x3F);   /* 10xxxxxx */
-        buffer[2] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
-        return 3;
-    }
-    if (code <= 0x10FFFF) {
-        buffer[0] = 0xF0 | (code >> 18);           /* 11110xxx */
-        buffer[1] = 0x80 | ((code >> 12) & 0x3F);  /* 10xxxxxx */
-        buffer[2] = 0x80 | ((code >> 6) & 0x3F);   /* 10xxxxxx */
-        buffer[3] = 0x80 | (code & 0x3F);          /* 10xxxxxx */
-        return 4;
-    }
-    return 0;
-}
-
 void command_parse_parameter(const char* command, const char*  parameter){
-    if(strcmp(command,"project_new") == 0){
-//		LOG("Parameter: %s\n",parameter);			
-		project_manager_new(parameter);			
-	}
-	if(strcmp(command,"project_open") == 0){
-		project_manager_open(parameter);
-	}
+  if (strcmp(command, "project_new") == 0) {
+    //		LOG("Parameter: %s\n",parameter);
+    project_manager_new(parameter);
+  }
+  if (strcmp(command, "project_open") == 0) {
+    project_manager_open(parameter);
+  }
 
-	if(strcmp(command,"level_new") == 0){
-		editor_level_new(parameter);
-	}
-	if(strcmp(command,"level_save") == 0){
-		editor_level_save(parameter);
-	}
+  if (strcmp(command, "level_new") == 0) {
+    editor_level_new(parameter);
+  }
+  if (strcmp(command, "level_save") == 0) {
+    editor_level_save(parameter);
+  }
 }
 
 void command_parse(const char *command) {
