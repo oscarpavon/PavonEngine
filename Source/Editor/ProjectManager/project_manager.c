@@ -77,7 +77,8 @@ void project_manager_window_draw(){
 	text_menu_update(&project_select_menu);	
 }
 
-const char* projects_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
+const char* projects_names[] = {"Project 1","Project 2"};
+	
 void project_manager_menu_select_project_draw(TextMenu* menu){
 	
     float text_size = 12;
@@ -92,6 +93,7 @@ void project_manager_menu_select_project_draw(TextMenu* menu){
     }
 
 } 
+
 void project_manager_window_input(){
 
 	if(key_released(&input.ENTER))
@@ -103,17 +105,17 @@ void project_manager_update(){
 	project_manager_window_input();
 }
 
-void project_manager_init(){
-	project_manager_can_show = true;
-	
-    memset(&project_select_menu,0,sizeof(TextMenu));
-    project_select_menu.execute_function = NULL;
-    project_select_menu.draw_text_funtion = project_manager_menu_select_project_draw;
-    project_select_menu.execute = true;
-    project_select_menu.show = true;
-		project_select_menu.menu_in_editor = true;
-    project_select_menu.open_key = NULL;
-    project_select_menu.mods_key = NULL;
-    project_select_menu.element_count = 0;
-}
+void project_manager_init() {
+  project_manager_can_show = true;
 
+  memset(&project_select_menu, 0, sizeof(TextMenu));
+  project_select_menu.execute_function = NULL;
+  project_select_menu.draw_text_funtion =
+      &project_manager_menu_select_project_draw;
+  project_select_menu.execute = true;
+  project_select_menu.show = true;
+  project_select_menu.menu_in_editor = true;
+  project_select_menu.open_key = NULL;
+  project_select_menu.mods_key = NULL;
+  project_select_menu.element_count = 0;
+}
