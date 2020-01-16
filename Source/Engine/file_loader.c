@@ -54,6 +54,7 @@ int load_file(const char* path, File* output){
     fread(file_buffer,1, file_size, file);
     output->data = file_buffer;
     output->size_in_bytes = file_size;
+		output->resource_descriptor.descriptor = fileno(file);
     fclose(file);
 #endif
 

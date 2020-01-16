@@ -67,20 +67,17 @@ void project_manager_export(){
 
 }
 
-void project_manager_draw_projects_list(){
-
-
-}
 
 void project_manager_window_draw(){
 	text_render_in_screen_space(40,"Pavon Engine - Editor",0,0);
 	text_menu_update(&project_select_menu);	
 }
 
-const char* projects_names[] = {"Project 1","Project 2"};
 	
 void project_manager_menu_select_project_draw(TextMenu* menu){
-	
+		char projects_names[30][30];
+		memset(projects_names,0,sizeof(projects_names));
+		directory_get_only_directories(projects_folder,projects_names);	
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size  = text_size;

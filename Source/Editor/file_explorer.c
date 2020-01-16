@@ -3,9 +3,9 @@
 #include "../Engine/log.h"
 #include "../Engine/text_renderer.h"
 #include "../Editor/input.h"
-#include <dirent.h>
 #include "content_manager.h"
 #include "path.h"
+#include "directories.h"
 
 int file_manager_current_directory_count = 0;
 int file_manager_current_directory_id = 0;
@@ -218,7 +218,7 @@ void file_explorer_input(){
 
 			if(file_have_extension(file_manager_temp_path,"wav"))	
 			{
-					audio_play("test");		
+					audio_play(path_with_file_name);		
 				return;			
 			}
 		}
