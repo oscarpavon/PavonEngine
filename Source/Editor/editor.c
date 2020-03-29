@@ -574,7 +574,7 @@ void editor_main_render_thread(){
 }
 
 void editor_init(){
-	array_init(&editor_windows,sizeof(EditorWindow),40);
+		array_init(&editor_windows,sizeof(EditorWindow),40);
 	
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
@@ -600,29 +600,29 @@ void editor_init(){
 
     edit_server_init();
 
-	EditorWindow main_window;
-	memset(&main_window,0,sizeof(EditorWindow));
-	main_window.init = editor_main_window_init;
-	main_window.draw = editor_draw;
-	main_window.finish = editor_render_finish;
-	main_window.input = editor_window_level_editor_input_update;
-	array_add(&editor_windows,&main_window);
-	window_editor_main = array_pop(&editor_windows);	
+		EditorWindow main_window;
+		memset(&main_window,0,sizeof(EditorWindow));
+		main_window.init = editor_main_window_init;
+		main_window.draw = editor_draw;
+		main_window.finish = editor_render_finish;
+		main_window.input = editor_window_level_editor_input_update;
+		array_add(&editor_windows,&main_window);
+		window_editor_main = array_pop(&editor_windows);	
 
-	//render thread initialization
+		//render thread initialization
     ExecuteCommand command;
     command.command = window_manager_init_window;
-	command.parameter = window_editor_main;
+		command.parameter = window_editor_main;
     array_add(&array_render_thread_init_commmands,&command);
 
     engine_user_render_thread_init = editor_render_init;
     engine_user_render_thread_draw = editor_main_render_thread;
    	engine_user_render_thread_finish = editor_render_finish; 
-	engine_client_render_thread_initialized = true;
-	while(!window_editor_main->initialized){};
+		engine_client_render_thread_initialized = true;
+		while(!window_editor_main->initialized){};
 
-	window_manager_create_editor_windows_data();	
+		window_manager_create_editor_windows_data();	
 
-	project_manager_init();
-	LOG("[OK]Editor initialized\n");
+		project_manager_init();
+		LOG("[OK]Editor initialized\n");
 }

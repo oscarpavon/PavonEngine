@@ -23,7 +23,7 @@ void directory_get_only_directories(const char* path, char * array){
     if (directory_data->d_name[0] == '.')
       continue;
 		if(directory_data->d_type == DT_DIR){
-			strcpy(&array[directory_id][0],directory_data->d_name);
+			strcpy(&array[directory_id],directory_data->d_name);
 			directory_id++;
 		}
 	}
