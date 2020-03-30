@@ -23,9 +23,12 @@
 #include "Windows/windows_manager.h"
 
 #include "editor_command_queue.h"
+
 #include "stats.h"
 
 #include "level.h"
+
+#include "commands.h"
 
 typedef struct HLODCluster HLODCluster;
 typedef enum EditorMode{
@@ -44,6 +47,8 @@ typedef enum EditorMode{
     EDITOR_SUB_MODE_ROTATE }EditorMode;
 
 void editor_init();
+
+void editor_main_loop();
 
 void editor_update();
 

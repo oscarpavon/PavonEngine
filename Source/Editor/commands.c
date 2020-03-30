@@ -320,5 +320,10 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
 }
 
 int command_parse_from_command_line(int argc, char* argv[]){
-
+	if(argc <= 1){
+		return 0;	
+	}	
+	if(strcmp(argv[1] , "-c") == 0){
+		LOG("Runnig in Console Mode\n");
+	}
 }	
