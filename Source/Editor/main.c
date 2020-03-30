@@ -1,6 +1,8 @@
 #include "editor.h"
 
-int main(){
+int main(int argc , char* argv[]){
+		
+		command_parse_from_command_line(argc, argv);
 
     init_engine_memory();
 

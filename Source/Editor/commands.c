@@ -319,3 +319,6 @@ void character_callback(GLFWwindow* window, unsigned int codepoint){
     parse_characters(character[0]);
 }
 
+int command_parse_from_command_line(int argc, char* argv[]){
+
+}	
