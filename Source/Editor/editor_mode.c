@@ -4,7 +4,6 @@
 #include "../Engine/camera.h"
 
 
-
 void change_to_editor_sub_mode(EditorMode mode){
     memset(&input,0,sizeof(Input));
     switch (editor_mode)

@@ -4,6 +4,7 @@
 #include "Windows/content_browser.h"
 #include "ProjectManager/project_manager.h"
 #include "../Engine/utils.h"
+#include "../Editor/editor_mode.h"
 
 int log_command_offset = 0;
 bool activate_text_input_mode = false;
@@ -325,5 +326,7 @@ int command_parse_from_command_line(int argc, char* argv[]){
 	}	
 	if(strcmp(argv[1] , "-c") == 0){
 		LOG("Runnig in Console Mode\n");
+		return EDITOR_CONSOLE_MODE_NORMAL;
+
 	}
 }	

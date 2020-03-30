@@ -493,6 +493,8 @@ void engine_init(){
 
   engine_init_data();
   engine_running = true;
-  engine_init_render();
+	
+	engine_init_render();
 	audio_init();
 }
+
