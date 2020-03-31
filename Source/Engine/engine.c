@@ -323,7 +323,7 @@ void engine_render_thread(){
     }
 	engine_user_render_thread_finish();    
 }
-
+/*Init the render thread*/
 void engine_init_render(){
     thread_new_detached(engine_render_thread,NULL,"Render");    
 }
@@ -495,6 +495,7 @@ void engine_init(){
   engine_running = true;
 	
 	engine_init_render();
+
 	audio_init();
 }
 

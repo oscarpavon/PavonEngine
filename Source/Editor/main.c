@@ -6,15 +6,20 @@ int main(int argc , char* argv[]){
 		
     init_engine_memory();
 
-    windows_manager_init();    
+    if (command_line_result != EDITOR_CONSOLE_MODE_NORMAL) {
 
-		engine_init();
+      windows_manager_init();
 
-		editor_init();
+      engine_init();
 
-		editor_main_loop();
+      editor_init();
 
-    editor_finish();
-    
-    
+      editor_main_loop();
+
+      editor_finish();
+    } else {
+      audio_init();
+
+      audio_play("/home/pavon/music.wav");
+    }
 }

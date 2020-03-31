@@ -329,4 +329,5 @@ int command_parse_from_command_line(int argc, char* argv[]){
 		return EDITOR_CONSOLE_MODE_NORMAL;
 
 	}
+	return 1;
 }	

@@ -17,16 +17,23 @@ struct ResourceDescriptor{
 };
 
 typedef struct file{
-    const char* path;
-    u32 size_in_bytes;
-    struct ResourceDescriptor resource_descriptor;
-    void* data;
-	bool opened;
+  const char *path;
+  u32 size_in_bytes;
+	u32 bytes_readed; 
+ 	struct ResourceDescriptor resource_descriptor;
+  bool opened;
+  void *data;
 }File;
 
 
 
 int load_file(const char* path, File* output);
 void close_file(File* file);
+
+
+/*Read a specific count of bytes and copy that in the 
+ * specified buffer */
+int file_read(File* file, char* buffer, int buffer_size);
+
 #endif // !FILE_LOADER_H
 

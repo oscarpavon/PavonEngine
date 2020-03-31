@@ -27,7 +27,7 @@ EditorMode mode_to_change;
 enum EditorMode editor_mode;
 enum EditorMode editor_sub_mode;
 
-#define EDITOR_CONSOLE_MODE_NORMAL 0
+#define EDITOR_CONSOLE_MODE_NORMAL 1
 
 
 #endif
