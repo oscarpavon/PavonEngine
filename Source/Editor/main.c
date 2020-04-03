@@ -6,7 +6,10 @@ int main(int argc , char* argv[]){
 		
     init_engine_memory();
 
-    if (command_line_result != EDITOR_CONSOLE_MODE_NORMAL) {
+    switch (command_line_result) {
+    case EDITOR_CONSOLE_MODE_NORMAL: {
+    }
+    default: {
 
       windows_manager_init();
 
@@ -17,9 +20,6 @@ int main(int argc , char* argv[]){
       editor_main_loop();
 
       editor_finish();
-    } else {
-      audio_init();
-
-      audio_play("/home/pavon/music.wav");
+    }
     }
 }

@@ -15,7 +15,6 @@
 
 #include "LOD_system.h"
 
-#include "audio.h"
 
 Array engine_elements;
 Array engine_textures;
@@ -495,7 +494,8 @@ void engine_init(){
   engine_running = true;
 	
 	engine_init_render();
+	
+	audio_engine_init();
 
-	audio_init();
 }
 
