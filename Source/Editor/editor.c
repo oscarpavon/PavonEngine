@@ -592,6 +592,7 @@ void editor_main_loop(){
 }
 
 void editor_init(){
+
 		array_init(&editor_windows,sizeof(EditorWindow),40);
 	
     actual_model_array = &editor_models;
@@ -638,6 +639,7 @@ void editor_init(){
    	engine_user_render_thread_finish = editor_render_finish; 
 
 		engine_client_render_thread_initialized = true;
+		
 		//wait for window initialization in the render thread	
 		while(!window_editor_main->initialized){};
 

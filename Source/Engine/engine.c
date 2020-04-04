@@ -322,6 +322,7 @@ void engine_render_thread(){
     }
 	engine_user_render_thread_finish();    
 }
+
 /*Init the render thread*/
 void engine_init_render(){
     thread_new_detached(engine_render_thread,NULL,"Render");    
@@ -487,6 +488,12 @@ void engine_init_data(){
 }
 
 void engine_init(){
+	
+	// VERY IMPORTANT
+  init_engine_memory();
+	// Window manager need not start cause Render need graphics context
+	windows_manager_init();
+
   array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
   array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
 
