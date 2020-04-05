@@ -1,4 +1,4 @@
-set (Windows
+set(Windows 
 		Windows/tabs.c
 		Windows/content_browser.c
 		Windows/windows_manager.c
@@ -56,6 +56,7 @@ freetype
 dl
 asound
 )
+
 if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
 target_link_libraries(Editor
 engine        
@@ -67,7 +68,7 @@ pthread
 )
 endif()
 
-if(LINUX)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 target_link_libraries(Editor
 engine
 ${linux_libraries}
