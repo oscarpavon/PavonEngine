@@ -35,7 +35,8 @@ void window_create(EditorWindow *win, EditorWindow* share_window, const char* na
 
 		GLFWwindow* new_window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
 		if(!new_window){ 
-			LOG("Window can't be created");
+			LOG("Window can't be created\nPavon Engine was closed\n");
+			exit(-1);
 			return;
 		}
 		win->window = new_window;

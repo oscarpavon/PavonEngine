@@ -1,10 +1,9 @@
 #include "project_manager.h"
 #include "../editor.h"
 #include "../text.h"
-#include "../menu.h"
+#include "../menus.h"
 #include "../file_explorer.h"
 #include "../content_manager.h"
-#include "../menu.h"
 
 TextMenuType project_manager_menu;
 

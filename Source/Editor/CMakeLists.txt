@@ -38,13 +38,15 @@ set (game_source
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
+find_package(OpenGL REQUIRED)
+find_package(glfw3 REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../Binaries)
 
 add_executable(Editor ${editor_sources} ${game_source})
 
-target_link_libraries(Editor
-engine        
+set(linux_libraries 
+	dl
 glfw
 EGL
 GLESv2
@@ -54,3 +56,21 @@ freetype
 dl
 asound
 )
+if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
+target_link_libraries(Editor
+engine        
+m
+${FREETYPE_LIBRARIES}
+${OPENGL_LIBRARIES}
+glfw
+pthread
+)
+endif()
+
+if(LINUX)
+target_link_libraries(Editor
+engine
+${linux_libraries}
+)
+endif()
+

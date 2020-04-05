@@ -1,5 +1,4 @@
 
-#include <malloc.h>
 #include "file_loader.h"
 #include "utils.h"
 #include "log.h"
