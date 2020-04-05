@@ -218,7 +218,7 @@ void file_explorer_input(){
 
 			if(file_have_extension(file_manager_temp_path,"wav"))	
 			{
-					audio_play(path_with_file_name);		
+				//	audio_play(path_with_file_name);		
 				return;			
 			}
 		}

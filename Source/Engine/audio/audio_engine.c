@@ -6,7 +6,7 @@
 void audio_engine_main_thread(void* argument){
 
 
-	audio_init();
+	//audio_init();
 	while(1){
 
 	}	
