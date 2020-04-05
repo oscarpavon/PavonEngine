@@ -1,0 +1,9 @@
+Pavon Engine is a free Game Engine featured with VIM controls
+
+- When you start with the GUI Mode the first screen you can see is the "Project Manager"
+
+
+- In the Game Editor Level you can type commands like "project_open" to open a currently created project. All project are allocated in ~/PavonProject directory
+
+
+

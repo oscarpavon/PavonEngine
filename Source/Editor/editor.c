@@ -507,6 +507,7 @@ void editor_draw() {
     project_manager_update();
     return;
   }
+
   if (editor_content_browser_show) {
     if (!editor_content_browser_initiliazed) {
       editor_content_browser_initiliazed = true;
@@ -646,5 +647,7 @@ void editor_init(){
 		window_manager_create_editor_windows_data();	
 
 		project_manager_init();
+
+
 		LOG("[OK]Editor initialized\n");
 }
