@@ -9,16 +9,23 @@
 
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
+void window_manager_error_callback(int error, const char* description)
+{
+	    fprintf(stderr, "Error: %s\n", description);
+}
+
 void window_manager_init_window(EditorWindow* window){
 	window->init();
 	window->initialized = true;
 }
+
 void windows_manager_init(){
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwSetErrorCallback(window_manager_error_callback);
     glfwInit();
 }
 
@@ -33,11 +40,10 @@ void window_create(EditorWindow *win, EditorWindow* share_window, const char* na
     if(share_window)
      share_glfw_window = share_window->window;
 
-		GLFWwindow* new_window = glfwCreateWindow(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
+		GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
 		if(!new_window){ 
 			LOG("Window can't be created\nPavon Engine was closed\n");
 			exit(-1);
-			return;
 		}
 		win->window = new_window;
 		glfwMakeContextCurrent(win->window);
