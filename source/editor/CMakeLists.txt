@@ -1,8 +1,7 @@
-set(Windows 
-		Windows/tabs.c
-		Windows/content_browser.c
-		Windows/windows_manager.c
-		Windows/static_mesh_editor.c
+set(windows 
+		windows/tabs.c
+		windows/content_browser.c
+		windows/static_mesh_editor.c
 		)
 
 
@@ -27,7 +26,7 @@ editor_command_queue.c
 file_explorer.c
 level.c
 path.c
-${Windows}
+${windows}
 ProjectManager/project_manager.c
 )
 

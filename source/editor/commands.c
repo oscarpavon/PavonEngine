@@ -1,7 +1,7 @@
 #include "commands.h"
 #include "editor.h"
 
-#include "Windows/content_browser.h"
+#include "windows/content_browser.h"
 #include "ProjectManager/project_manager.h"
 #include "../engine/utils.h"
 #include "../editor/editor_mode.h"

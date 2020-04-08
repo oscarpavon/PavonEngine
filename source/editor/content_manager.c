@@ -2,7 +2,7 @@
 #include "ProjectManager/project_manager.h"
 #include "Serialization/json_writer.h"
 #include "Textures/texture_factory.h"
-#include "Windows/content_browser.h"
+#include "windows/content_browser.h"
 #include "editor.h"
 #include <string.h>
 

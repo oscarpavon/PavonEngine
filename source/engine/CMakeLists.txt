@@ -40,6 +40,7 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
         ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
 				${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
+				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
         ${components}
 				${audio}
 )

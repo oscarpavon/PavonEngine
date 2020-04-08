@@ -24,7 +24,7 @@
 #include "EditServer/edit_server.h"
 
 #include "file_explorer.h"
-#include "Windows/content_browser.h"
+#include "windows/content_browser.h"
 
 #include "ProjectManager/project_manager.h"
 
