@@ -42,7 +42,7 @@ void editor_window_content_browser_update();
 
 void editor_window_content_browser_close_window();
 
-EditorWindow* window_content_browser;
+EngineWindow* window_content_browser;
 
 bool editor_window_content_browser_hint;
 

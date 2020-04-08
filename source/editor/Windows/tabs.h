@@ -1,7 +1,7 @@
 #ifndef EDITOR_TABS_H
 #define EDITOR_TABS_H
 #include "../../engine/camera.h"
-typedef struct EditorWindow EditorWindow;
+typedef struct EngineWindow EngineWindow;
 
 typedef struct{
 	void(*draw)(void);
@@ -11,6 +11,6 @@ typedef struct{
 	CameraComponent camera;
 }EditorTab;
 
-void tabs_new(EditorWindow* window, const char* name);
-void tabs_draw_tabs_bar(EditorWindow* window);
+void tabs_new(EngineWindow* window, const char* name);
+void tabs_draw_tabs_bar(EngineWindow* window);
 #endif

@@ -520,11 +520,11 @@ void editor_draw() {
     if (key_released(&input.A)) {
       editor_content_browser_show = false;
       editor_content_browser_updated = false;
-      EditorWindow *level_editor_window = array_get(&editor_windows, 0);
+      EngineWindow *level_editor_window = array_get(&editor_windows, 0);
       level_editor_window->input = &editor_window_level_editor_input_update;
       return;
     }
-    EditorWindow *level_editor_window = array_get(&editor_windows, 0);
+    EngineWindow *level_editor_window = array_get(&editor_windows, 0);
     level_editor_window->input = &editor_window_content_browser_input_update;
     //		editor_window_content_browser_input_update();
     editor_window_content_browser_draw();
@@ -594,7 +594,7 @@ void editor_main_loop(){
 
 void editor_init(){
 
-		array_init(&editor_windows,sizeof(EditorWindow),40);
+		array_init(&editor_windows,sizeof(EngineWindow),40);
 	
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
@@ -620,8 +620,8 @@ void editor_init(){
 
     edit_server_init();
 
-		EditorWindow main_window;
-		memset(&main_window,0,sizeof(EditorWindow));
+		EngineWindow main_window;
+		memset(&main_window,0,sizeof(EngineWindow));
 		main_window.init = editor_main_window_init;
 		main_window.draw = editor_draw;
 		main_window.finish = editor_render_finish;

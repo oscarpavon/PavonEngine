@@ -14,7 +14,7 @@ void window_manager_error_callback(int error, const char* description)
 	    fprintf(stderr, "Error: %s\n", description);
 }
 
-void window_manager_init_window(EditorWindow* window){
+void window_manager_init_window(EngineWindow* window){
 	window->init();
 	window->initialized = true;
 }
@@ -29,7 +29,7 @@ void windows_manager_init(){
     glfwInit();
 }
 
-void window_create(EditorWindow *win, EditorWindow* share_window, const char* name){
+void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
 
     if(win->initialized)
         return;
@@ -66,7 +66,7 @@ void window_resize_callback(GLFWwindow* window, int width, int height){
 }
 
 void window_focus_callback(GLFWwindow* window,int is_focus){
-    EditorWindow* editor_window = glfwGetWindowUserPointer(window);
+    EngineWindow* editor_window = glfwGetWindowUserPointer(window);
     if(is_focus == GLFW_TRUE){
         editor_window->focus = true;
     }
@@ -75,7 +75,7 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
 }
 
-void window_set_focus(EditorWindow* window){
+void window_set_focus(EngineWindow* window){
     current_window->focus = false;
     glfwShowWindow(window->window);
     glfwFocusWindow(window->window);
@@ -89,7 +89,7 @@ void window_set_focus(EditorWindow* window){
 void window_manager_draw_windows(){
 	//Draw tab bar 	& draw current tabb 
 	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EditorWindow* window = array_get(&editor_windows,i);
+		EngineWindow* window = array_get(&editor_windows,i);
 		glfwMakeContextCurrent(window->window);
 		if(!window->initialized)
 			   continue;
@@ -145,7 +145,7 @@ void window_manager_update_windows_input(){
     }
 	//Draw tab bar 	& draw current tabb 
 	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EditorWindow* window = array_get(&editor_windows,i);
+		EngineWindow* window = array_get(&editor_windows,i);
 		if(!window->initialized)
 			   continue;
 		for(u8 j = 0; j < window->tabs.count ; j++){
@@ -161,7 +161,7 @@ void window_manager_update_windows_input(){
 
 void window_initialize_windows(){
 	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EditorWindow* window = array_get(&editor_windows,i);
+		EngineWindow* window = array_get(&editor_windows,i);
 		if(window->initialized)
 			   continue;
 		window->init();	
@@ -171,8 +171,8 @@ void window_initialize_windows(){
 
 void window_manager_create_editor_windows_data(){
 
-	EditorWindow content_browser_window;
-	memset(&content_browser_window,0,sizeof(EditorWindow));
+	EngineWindow content_browser_window;
+	memset(&content_browser_window,0,sizeof(EngineWindow));
 	content_browser_window.init = editor_window_content_init;
 	content_browser_window.draw = editor_window_content_browser_draw;
 	content_browser_window.input = editor_window_content_browser_input_update;
