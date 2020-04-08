@@ -1,0 +1,145 @@
+cmake_minimum_required(VERSION 3.6.0)
+
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(components
+        Engine/components/components.c
+        )
+
+set(engine_source 
+        model.c
+        file_loader.c
+        camera.c
+        images.c
+        input.c        
+        gui.c
+        shader.c        
+        object_select.c
+        engine.c
+        skeletal.c
+        Engine/level.c
+        ThirdParty/jsmn.c
+        Engine/files_parser.c
+        Engine/memory.c
+        Engine/array.c
+        Engine/animation/animation.c
+        ${components}
+)
+
+
+
+set (game_source
+        game.c
+)
+
+if(NOT ANDROID)
+
+        add_compile_options (-fdiagnostics-color=always)
+
+        #set(CMAKE_BUILD_TYPE Debug)
+
+        set(editor_sources 
+        Editor/main.c
+        Editor/windows.c
+        Editor/input.c
+        Editor/editor.c
+        Editor/text.c
+        Editor/skeletal_editor.c
+        Editor/data.c
+        Editor/editor_gizmos.c
+        Editor/editor_mode.c
+        Editor/export_model.c
+        )
+
+
+        add_executable(Editor ${editor_sources} ${engine_source} ${game_source})
+        include(FindFreetype)
+        include_directories(${FREETYPE_INCLUDE_DIRS})
+        target_compile_definitions(Editor PRIVATE EDITOR)
+
+
+        add_executable(Game ${engine_source} Game/main.c Editor/windows.c ${game_source})        
+        set_target_properties( Game
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../Game/build"
+        )
+
+        target_link_libraries(Editor        
+                glfw
+                EGL
+                GLESv2
+                m
+                pthread
+                freetype
+                dl
+                )
+
+        target_link_libraries(Game        
+                glfw
+                EGL
+                GLESv2
+                m
+                pthread                
+                )
+
+endif(NOT ANDROID)
+
+if(ANDROID)
+
+        add_library(native_app_glue STATIC
+                ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+
+        target_include_directories(native_app_glue PUBLIC
+                ${ANDROID_NDK}/sources/android/native_app_glue)
+
+
+        find_library(log-lib
+        log)
+
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
+        set(main_file main.c audio.c)
+
+
+        add_library(maincode
+        SHARED
+                ${main_file}
+                ${engine_source}
+                ${game_source}
+        )
+
+endif(ANDROID)
+
+include_directories(/usr/include/cglm)
+
+
+if(ANDROID)
+        target_link_libraries(maincode
+                EGL
+                GLESv2
+                android
+                native_app_glue        
+                ${log-lib}
+                OpenSLES
+                ) 
+endif(ANDROID)
+
+
+
+set(CMAKE_CURRENT_BINARY_DIR ${PROJECT_SOURCE_DIR})
+
+ExternalProject_Add(FREETYPE
+                    SOURCE_DIR /home/pavon/sources/freetype2/
+                    DOWNLOAD_COMMAND ""
+                    UPDATE_COMMAND ""                
+                    INSTALL_COMMAND ""
+                    PREFIX=${CMAKE_CURRENT_BINARY_DIR}/freetype
+                    CMAKE_ARGS
+                    "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+                    "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
+                    "-DBUILD_SHARED_LIBS=ON"
+        )
+
+#ExternalProject_Get_Property(FREETYPE PROJECT_SOURCE_DIR)
+
+message("-----> Tool chain file ${CMAKE_TOOLCHAIN_FILE}")

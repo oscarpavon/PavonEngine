@@ -12,5 +12,5 @@ add_compile_definitions(PUBLIC EDITOR)
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
-add_subdirectory(Source/Engine)
-add_subdirectory(Source/Editor)
+add_subdirectory(source/engine)
+add_subdirectory(source/editor)
