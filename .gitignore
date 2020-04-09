@@ -75,3 +75,5 @@ tags
 *.swp
 *.swo
 *.swn
+bin/*
+lib/*
