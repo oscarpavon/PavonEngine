@@ -12,8 +12,8 @@ int main(int argc , char* argv[]){
       engine_init();
 
       editor_init();
-
-      editor_main_loop();
+			
+			engine_program_main_loop(&editor_main_loop,window_editor_main);
 
       editor_finish();
     }

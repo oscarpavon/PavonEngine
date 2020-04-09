@@ -57,8 +57,6 @@ void remove_selected_element();
 
 void reload_editor();
 
-void update_camera_aspect_ratio();
-
 void duplicate_selected_element(int,Element*);
 
 void add_editor_native_element(const char* native_element_name);
@@ -98,9 +96,6 @@ Texture editor_texture_checker;
 bool editor_running;
 
 static vec4 editor_background_color = {0.1,0.2,0.4,1};
-
-Array editor_windows;
-
 
 bool editor_file_explorer_show;
 bool editor_content_browser_show;

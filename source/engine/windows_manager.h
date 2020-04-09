@@ -54,6 +54,8 @@ EngineWindow* window_editor_main;
 
 EngineWindow* current_window;
 
+Array engine_windows;
+
 inline static void window_update_envents(){
        glfwPollEvents();
 }

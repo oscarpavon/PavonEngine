@@ -46,10 +46,17 @@ set(engine_source
 )
 
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
 add_library(engine
 STATIC
 ${engine_source}
 )
 
+add_library(engine_dynamic
+	SHARED
+	${engine_source}
+)
 

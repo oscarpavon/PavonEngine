@@ -2,6 +2,7 @@ set(windows
 		windows/tabs.c
 		windows/content_browser.c
 		windows/static_mesh_editor.c
+		windows/windows.c
 		)
 
 
@@ -40,9 +41,9 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../Binaries)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-add_executable(Editor ${editor_sources} ${game_source})
+add_executable(editor ${editor_sources} ${game_source})
 
 set(linux_libraries 
 	dl
@@ -57,7 +58,7 @@ asound
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
-target_link_libraries(Editor
+target_link_libraries(editor
 engine        
 m
 ${FREETYPE_LIBRARIES}
@@ -68,7 +69,7 @@ pthread
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-target_link_libraries(Editor
+target_link_libraries(editor
 engine
 ${linux_libraries}
 )

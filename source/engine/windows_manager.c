@@ -1,16 +1,8 @@
 #include "windows_manager.h"
 #include <stdio.h>
 
-#ifdef EDITOR
-#include "../editor/editor.h"
-#include "../editor/text.h"
-#include "../editor/windows/content_browser.h"
-#include "../editor/windows/tabs.h"
-#endif //EDITOR
-
 #include "game.h"
-
-
+#include "log.h"
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 
@@ -32,6 +24,8 @@ void windows_manager_init(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwSetErrorCallback(window_manager_error_callback);
     glfwInit();
+
+		array_init(&engine_windows,sizeof(EngineWindow),40);
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
@@ -84,7 +78,7 @@ void window_set_focus(EngineWindow* window){
     current_window->focus = false;
     glfwShowWindow(window->window);
     glfwFocusWindow(window->window);
-    memset(&input,0,sizeof(Input));
+    //memset(&input,0,sizeof(Input));
     glfwMakeContextCurrent(window->window);
     window->focus = true;
     current_window = window;
@@ -92,72 +86,35 @@ void window_set_focus(EngineWindow* window){
 }
 
 void window_manager_draw_windows(){
-	//Draw tab bar 	& draw current tabb 
-	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EngineWindow* window = array_get(&editor_windows,i);
+	
+	for(u8 i = 0; i<engine_windows.count ; i++ ){
+		EngineWindow* window = array_get(&engine_windows,i);
 		glfwMakeContextCurrent(window->window);
 		if(!window->initialized)
 			   continue;
 		
 	if(glfwWindowShouldClose(window->window)){
-		glfwDestroyWindow(window_content_browser->window);
 		window->finish();	
 		LOG("Window close\n");
 		continue;
 	}
 		
-		if(window->tab_current && window->tab_current->draw)		
-			window->tab_current->draw();
-		if(window->tabs.count > 0){
-			if(window->tabs.count == 1){
-				tabs_new(current_window,"Main Window");
-			}
-			tabs_draw_tabs_bar(window_editor_main);	
-		}
-		else
-			window->draw();
+		window->draw();
 		
-		for(u8 j = 0; j < window->tabs.count ; j++){
-			EditorTab* tab = array_get(&window->tabs,j);	
+    glfwSwapBuffers(window->window);
 
-		}
-
-		
-    	glfwSwapBuffers(window->window);
 	}
 }
 
 void window_manager_update_windows_input(){
 	
-    if(editor_sub_mode == EDITOR_SUB_MODE_NULL){
-        if(key__released(&input.A,GLFW_MOD_SHIFT)){
-		   if(!window_content_browser->initialized){
-			//	window_manager_init_window(window_content_browser);			
-		   }
-		   else{
-			//	window_set_focus(window_content_browser);
-			}	
-		}
-		if(key__released(&input.N,GLFW_MOD_CONTROL)){
-			tabs_new(current_window,"New Tab");
-			LOG("New tab added to Window: %s\n",current_window->name);	
-		}
-		if(key_released(&input.P)){
-			editor_content_browser_show = false;	
-		}
-		if(key_released(&input.T)){
-			LOG("INpur T\n");	
-		}
-    }
-	//Draw tab bar 	& draw current tabb 
-	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EngineWindow* window = array_get(&editor_windows,i);
+  	//Draw tab bar 	& draw current tabb 
+	for(u8 i = 0; i<engine_windows.count ; i++ ){
+		EngineWindow* window = array_get(&engine_windows,i);
 		if(!window->initialized)
 			   continue;
-		for(u8 j = 0; j < window->tabs.count ; j++){
-			EditorTab* tab = array_get(&window->tabs,j);
-		}
-//The mouse need to stay in the window for window->input call	
+		
+        //The mouse need to stay in the window for window->input call	
 		if(window->focus){
 			if(window->input)
 				window->input();
@@ -166,8 +123,8 @@ void window_manager_update_windows_input(){
 }
 
 void window_initialize_windows(){
-	for(u8 i = 0; i<editor_windows.count ; i++ ){
-		EngineWindow* window = array_get(&editor_windows,i);
+	for(u8 i = 0; i<engine_windows.count ; i++ ){
+		EngineWindow* window = array_get(&engine_windows,i);
 		if(window->initialized)
 			   continue;
 		window->init();	
@@ -175,15 +132,3 @@ void window_initialize_windows(){
 }
 
 
-void window_manager_create_editor_windows_data(){
-
-	EngineWindow content_browser_window;
-	memset(&content_browser_window,0,sizeof(EngineWindow));
-	content_browser_window.init = editor_window_content_init;
-	content_browser_window.draw = editor_window_content_browser_draw;
-	content_browser_window.input = editor_window_content_browser_input_update;
-	content_browser_window.finish = editor_window_content_browser_close_window;
-	array_add(&editor_windows,&content_browser_window);
-	window_content_browser = array_pop(&editor_windows);	
-
-}

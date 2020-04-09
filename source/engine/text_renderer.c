@@ -2,6 +2,9 @@
 #include "engine.h"
 #include "text_renderer.h"
 
+#include <ft2build.h>
+#include <freetype/freetype.h>
+
 FT_GlyphSlot glyph;
 
 DrawData text_draw_data;

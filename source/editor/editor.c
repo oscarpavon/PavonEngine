@@ -28,6 +28,8 @@
 
 #include "ProjectManager/project_manager.h"
 
+#include "windows/windows.h"
+
 Array editor_models;
 Array editor_textures;
 
@@ -227,9 +229,6 @@ void rotate_editor_selected_element_with_quaternion(versor quaternion){
         glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
 }
 
-void update_camera_aspect_ratio(){
-    glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
-}
 
 
 void editor_load_level(const char* name){
@@ -520,11 +519,11 @@ void editor_draw() {
     if (key_released(&input.A)) {
       editor_content_browser_show = false;
       editor_content_browser_updated = false;
-      EngineWindow *level_editor_window = array_get(&editor_windows, 0);
+      EngineWindow *level_editor_window = array_get(&engine_windows, 0);
       level_editor_window->input = &editor_window_level_editor_input_update;
       return;
     }
-    EngineWindow *level_editor_window = array_get(&editor_windows, 0);
+    EngineWindow *level_editor_window = array_get(&engine_windows, 0);
     level_editor_window->input = &editor_window_content_browser_input_update;
     //		editor_window_content_browser_input_update();
     editor_window_content_browser_draw();
@@ -576,26 +575,12 @@ void editor_main_render_thread(){
 
 void editor_main_loop(){
 
-    while(!engine_initialized){}//wait for initilization
-
-    
-    while (!glfwWindowShouldClose(window_editor_main->window))
-    {
-        window_update_envents();
-        
-        window_manager_update_windows_input();    
-        
         editor_update();    
-        usleep(2*1000);    
-        
-    }
 
 }
 
 void editor_init(){
 
-		array_init(&editor_windows,sizeof(EngineWindow),40);
-	
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
@@ -626,8 +611,8 @@ void editor_init(){
 		main_window.draw = editor_draw;
 		main_window.finish = editor_render_finish;
 		main_window.input = editor_window_level_editor_input_update;
-		array_add(&editor_windows,&main_window);
-		window_editor_main = array_pop(&editor_windows);	
+		array_add(&engine_windows,&main_window);
+		window_editor_main = array_pop(&engine_windows);	
 
 		//render thread initialization
     ExecuteCommand command;
@@ -644,7 +629,7 @@ void editor_init(){
 		//wait for window initialization in the render thread	
 		while(!window_editor_main->initialized){};
 
-		window_manager_create_editor_windows_data();	
+		editor_windows_init_data();
 
 		project_manager_init();
 

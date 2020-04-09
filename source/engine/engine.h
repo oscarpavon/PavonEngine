@@ -41,6 +41,8 @@
 
 #include "audio/audio_engine.h"
 
+#include "windows_manager.h"
+
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
@@ -48,6 +50,8 @@ void engine_init();
 void engine_init_render();
 void engine_loop();
 void init_game_engine();
+
+void engine_program_main_loop(void(*program_loop)(void),EngineWindow* program_window);
 
 void add_action_function(void(*f)(void));
 

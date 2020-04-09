@@ -52,3 +52,7 @@ void camera_rotate_control(float yaw, float pitch){
     glm_vec3_copy(front, main_camera.front);
 
 }
+
+void camera_update_aspect_ratio(){
+    glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
+}

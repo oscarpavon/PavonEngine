@@ -20,7 +20,7 @@ void update_skeletal_node_uniform(){
 
     skin_component->node_uniform.joint_count = new_skeletal.joints_count;
     #ifdef EDITOR
-    clear_skeletal_vertices();
+//    clear_skeletal_vertices();
     #endif // DEBUG
     for(int i = 0; i < skeletal->joints_count ; i++){       
         Node* joint = &skeletal->joints[i];
@@ -39,7 +39,7 @@ void update_skeletal_node_uniform(){
         glm_mat4_copy(joint_mat,skin_component->node_uniform.joints_matrix[i]);
 
         #ifdef EDITOR
-        update_skeletal_vertices_gizmo(global,i,joint);
+ //       update_skeletal_vertices_gizmo(global,i,joint);
         #endif // DEBUG
     }
 }

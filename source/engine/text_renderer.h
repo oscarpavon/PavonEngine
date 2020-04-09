@@ -1,8 +1,6 @@
 #ifndef ENGINE_TEXT_RENDERER_H
 #define ENGINE_TEXT_RENDERER_H
 
-#include <ft2build.h>
-#include <freetype/freetype.h>
 #include <stdbool.h>
 #include "../engine/types.h"
 
@@ -11,6 +9,8 @@ typedef struct {
 	vec4 color;
 	vec2 position;
 }TextRenderData;
+
+typedef struct FT_FaceRec_*  FT_Face;
 
 FT_Face face;
 

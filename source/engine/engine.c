@@ -226,10 +226,8 @@ void add_element_with_model_path(const char* model_gltf_path){
 
 
 void update_viewport_size(){
-    #ifdef EDITOR
     text_renderer_update_pixel_size();
-    update_camera_aspect_ratio();
-    #endif // EDITOR    
+		camera_update_aspect_ratio();
 }
 
 
@@ -487,6 +485,24 @@ void engine_init_data(){
     actual_standard_fragment_shader = standart_fragment_shader;  
 }
 
+void engine_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
+
+
+    while(!engine_initialized){}//wait for initilization
+
+    
+    while (!glfwWindowShouldClose(program_window->window))
+    {
+        window_update_envents();
+        
+        window_manager_update_windows_input();    
+				
+				program_loop();	
+
+        usleep(2*1000);    
+		}
+}
+
 void engine_init(){
 	
 	// VERY IMPORTANT
@@ -504,5 +520,6 @@ void engine_init(){
 	
 	audio_engine_init();
 
+	array_init(&engine_windows,sizeof(EngineWindow),40);
 }
 
