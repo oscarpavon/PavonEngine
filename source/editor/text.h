@@ -7,7 +7,6 @@
 #include "../engine/array.h"
 
 #include "input.h"
-
 #define DIRECTORY_MODELS 0
 #define DIRECTORY_TEXTURES 1
 

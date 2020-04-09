@@ -29,6 +29,7 @@
 #include "ProjectManager/project_manager.h"
 
 #include "windows/windows.h"
+#include "commands.h"
 
 Array editor_models;
 Array editor_textures;
@@ -439,11 +440,11 @@ void frame_clean(){
 void editor_main_window_init(){
     window_create(window_editor_main, NULL, "Engine"); 
 
-    glfwSetKeyCallback(window_editor_main->window, key_callback);
-	glfwSetCursorPosCallback(window_editor_main->window, mouse_callback);
-	glfwSetMouseButtonCallback(window_editor_main->window, mouse_button_callback);
+    glfwSetKeyCallback(window_editor_main->window, pe_input_key_callback);
+		glfwSetCursorPosCallback(window_editor_main->window, pe_input_mouse_movement_callback);
+		glfwSetMouseButtonCallback(window_editor_main->window, pe_input_mouse_button_callback);
     glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
-    glfwSetCharCallback(window_editor_main->window, character_callback);
+    glfwSetCharCallback(window_editor_main->window, pe_input_key_callback);
     glfwSetWindowFocusCallback(window_editor_main->window,window_focus_callback);
 
     shader_compile_standard_shaders();
@@ -599,7 +600,7 @@ void editor_init(){
     editor_mode_show_text = "Default Mode";
     editor_sub_mode_text = "";
 
-    init_input();
+    pe_input_init();
 
     camera_velocity = 0.04;  
 

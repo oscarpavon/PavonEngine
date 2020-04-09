@@ -316,14 +316,6 @@ void text_input_mode(){
 
 }
 
-void character_callback(GLFWwindow* window, unsigned int codepoint){
-    if(codepoint == 241)//equal "ñ"
-            return;
-    unsigned char character[1];
-    code_to_utf8(character,codepoint);
-    //LOG("Converted: %s\n",character);
-    parse_characters(character[0]);
-}
 
 int command_parse_from_command_line(int argc, char* argv[]){
 	if(argc <= 1){

@@ -589,13 +589,13 @@ void editor_window_content_init(){
 
   glfwMakeContextCurrent(window_content_browser->window);
 
-  glfwSetKeyCallback(window_content_browser->window, key_callback);
-  glfwSetCursorPosCallback(window_content_browser->window, mouse_callback);
+  glfwSetKeyCallback(window_content_browser->window, pe_input_key_callback);
+  glfwSetCursorPosCallback(window_content_browser->window, pe_input_mouse_movement_callback);
   glfwSetMouseButtonCallback(window_content_browser->window,
-                             mouse_button_callback);
+                             pe_input_mouse_button_callback);
   // glfwSetFramebufferSizeCallback(window_content_browser->window,
   // window_resize_callback);
-  glfwSetCharCallback(window_content_browser->window, character_callback);
+  glfwSetCharCallback(window_content_browser->window, pe_input_character_callback);
   glfwSetWindowFocusCallback(window_content_browser->window,
                              window_focus_callback);
 

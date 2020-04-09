@@ -43,6 +43,7 @@ set(engine_source
 				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
         ${components}
 				${audio}
+				${CMAKE_CURRENT_LIST_DIR}/input.c
 )
 
 
