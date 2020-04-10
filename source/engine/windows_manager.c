@@ -56,12 +56,18 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     win->initialized = true;
 }
 
+void window_update_viewport(){
+    text_renderer_update_pixel_size();
+		camera_update_aspect_ratio(&window_editor_main->camera);
+}
+
 void window_resize_callback(GLFWwindow* window, int width, int height){
-    glViewport(0,0,width,height);
+		window_set_focus(current_window); 
+		glViewport(0,0,width,height);
     camera_heigth_screen = height;
     camera_width_screen = width;
-
-    update_viewport_size();
+			
+		window_update_viewport();
 }
 
 void window_focus_callback(GLFWwindow* window,int is_focus){

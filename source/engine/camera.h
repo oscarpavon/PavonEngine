@@ -14,7 +14,7 @@ void camera_init(CameraComponent* camera);
 
 void camera_update(CameraComponent* camera);
 
-void camera_update_aspect_ratio();
+void camera_update_aspect_ratio(CameraComponent* camera);
 
 CameraComponent main_camera;
 CameraComponent saved_camera;

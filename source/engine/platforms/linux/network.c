@@ -1,57 +1,96 @@
 #include "../../network/network.h"
 #include "../../log.h"
-void network_create_server(struct NetworkConnecion* connection){
-    connection->server_socket = socket(AF_INET,SOCK_STREAM,0);
-    if (connection->server_socket< 0){
-        shutdown(connection->server_socket,SHUT_RDWR);
-        close(connection->server_socket);
-        LOG("ERROR opening socket");
-        return;
-    } 
+#include "network.h"
 
-    if (setsockopt(connection->server_socket, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)) < 0){
-        LOG("setsockopt(SO_REUSEADDR) failed");
-        shutdown(connection->server_socket,SHUT_RDWR);
-        close(connection->server_socket);
-        return;
-    }
-        
-	struct sockaddr_in address;
-	int addrlen = sizeof(address);
+void network_create_server(struct NetworkConnecion *in_connection) {
+	struct NetworkConnecion connection_copy;
+	memcpy(&connection_copy,in_connection,sizeof(struct NetworkConnecion));
+	
+	struct NetworkConnecion* connection = &connection_copy;
 
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = inet_addr("127.0.0.1");
-	address.sin_port = htons(connection->port);
+	LOG("Creating server: %s \n",connection->name); 
 
-	if ( bind(connection->server_socket,(struct sockaddr*)&address,sizeof(address)) < 0){
-        LOG("Fail to bind socket form connection %s \n",connection->name);
-        shutdown(connection->server_in_socket,SHUT_RDWR);
-        close(connection->server_socket);
-        return;
-    } 
+	connection->server_socket = socket(AF_INET, SOCK_STREAM, 0);
+  if (connection->server_socket < 0) {
+    shutdown(connection->server_socket, SHUT_RDWR);
+    close(connection->server_socket);
+    LOG("ERROR opening socket");
+    return;
+  }
 
-    
+  if (setsockopt(connection->server_socket, SOL_SOCKET, SO_REUSEADDR, &(int){1},
+                 sizeof(int)) < 0) {
+    LOG("setsockopt(SO_REUSEADDR) failed");
+    shutdown(connection->server_socket, SHUT_RDWR);
+    close(connection->server_socket);
+    return;
+  }
 
-	listen(connection->server_socket,3);
+  struct sockaddr_in address;
+  int addrlen = sizeof(address);
 
-    while(connection->server_running = 1){
-        connection->server_in_socket= accept(connection->server_socket,(struct sockaddr *)&address,(socklen_t*)&addrlen);
-        if(connection->server_running != 1)
-            return;    
-				connection->data_process(connection); 
-    }
-    shutdown(connection->server_socket,SHUT_RDWR);
-    close(connection->server_in_socket);    
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = inet_addr("127.0.0.1");
+  address.sin_port = htons(connection->port);
+
+  if (bind(connection->server_socket, (struct sockaddr *)&address,
+           sizeof(address)) < 0) {
+    LOG("Fail to bind socket form connection %s \n", connection->name);
+    shutdown(connection->server_in_socket, SHUT_RDWR);
+    close(connection->server_socket);
+    return;
+  }
+
+  listen(connection->server_socket, 3);
+
+  while (connection->server_running = 1) {
+    connection->server_in_socket =
+    accept(connection->server_socket, (struct sockaddr *)&address,
+               (socklen_t *)&addrlen);
+    if (connection->server_running != 1)
+      return;
+    connection->data_process(connection);
+  }
+  shutdown(connection->server_socket, SHUT_RDWR);
+  close(connection->server_in_socket);
+	LOG("Finish server: %s \n", connection->name);
 }
 
-void network_print_recieve_data(struct NetworkConnecion* connection){
-    char buffer[1024] = {0}; 
-    int readed = read( connection->server_in_socket, buffer, 1024);
-    if(readed < 0){
-        shutdown(connection->server_in_socket,SHUT_RDWR);
-        close(connection->server_in_socket);
-        return;
-    } 
-    printf("%s\n",buffer ); 
+void network_print_recieve_data(struct NetworkConnecion *connection) {
+  char buffer[1024] = {0};
+  int readed = read(connection->server_in_socket, buffer, 1024);
+  if (readed < 0) {
+    shutdown(connection->server_in_socket, SHUT_RDWR);
+    close(connection->server_in_socket);
+    return;
+  }
+  printf("%s\n", buffer);
+}
 
+void pe_network_connet(int port){
+  int sock = 0, valread;
+  struct sockaddr_in serv_addr;
+  char *hello = "Hello from client";
+  char buffer[1024] = {0};
+  if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    printf("\n Socket creation error \n");
+    return;
+  }
+
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(port);
+
+  if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
+    printf("\nInvalid address/ Address not supported \n");
+    return;
+  }
+
+  if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    printf("\nConnection Failed \n");
+    return;
+  }
+  send(sock, hello, strlen(hello), 0);
+  printf("Hello message sent\n");
+  //valread = read(sock,buffer,1024);
+  //printf("%s\n",buffer);
 }

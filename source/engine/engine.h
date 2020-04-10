@@ -68,8 +68,6 @@ void rotate_element(Element* element, versor quaternion);
 
 void set_element_position(Element* element, vec3 position);
 
-void update_viewport_size();
-
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id);
 void init_static_gpu_index_buffer(Array* array, GLuint *id);
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix);

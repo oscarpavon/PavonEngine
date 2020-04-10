@@ -438,14 +438,14 @@ void frame_clean(){
 }
 
 void editor_main_window_init(){
-    window_create(window_editor_main, NULL, "Engine"); 
+    window_create(window_editor_main, NULL, "editor"); 
 
     glfwSetKeyCallback(window_editor_main->window, pe_input_key_callback);
 		glfwSetCursorPosCallback(window_editor_main->window, pe_input_mouse_movement_callback);
 		glfwSetMouseButtonCallback(window_editor_main->window, pe_input_mouse_button_callback);
-    glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
     glfwSetCharCallback(window_editor_main->window, pe_input_key_callback);
     glfwSetWindowFocusCallback(window_editor_main->window,window_focus_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
 
     shader_compile_standard_shaders();
 
@@ -467,19 +467,31 @@ void editor_render_init(){
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     init_vec3(-6,0,2, main_camera.position);
-    camera_update(&current_window->camera);
     
-    editor_standard_fragment_shader = compile_shader(editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
+		camera_update(&current_window->camera);
+
+    editor_standard_fragment_shader = compile_shader(
+        editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
 
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/sphere.glb", "../NativeContent/Editor/sphere_diffuse.png");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/cube.glb", "../NativeContent/Editor/cube_diffuse.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
-    load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
-    texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
-	
-		editor_text_init();
-    gizmos_init();
+    load_model_to_array(&engine_native_models,
+                        "/home/pavon/PavonEngine/NativeContent/Editor/sphere.glb",
+                        "/home/pavon/PavonEngine/NativeContent/Editor/sphere_diffuse.png");
+    load_model_to_array(&engine_native_models,
+                        "/home/pavon/PavonEngine/NativeContent/Editor/cube.glb",
+                        "/home/pavon/PavonEngine/NativeContent/Editor/cube_diffuse.jpg");
+    load_model_to_array(&engine_native_models,
+                        "/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
+                        "/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(&engine_native_models,
+                        "/home/pavon/PavonEngine/NativeContent/Editor/floor.glb",
+                        "/home/pavon/PavonEngine/NativeContent/Editor/floor.jpg");
+    texture_load("/home/pavon/PavonEngine/NativeContent/Editor/checker_texture.png",
+                 &editor_texture_checker);
+
+    editor_text_init();
+   
+	 	gizmos_init();
    
    	editor_running = true;
 }
@@ -494,42 +506,6 @@ void editor_draw() {
   render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
 
   text_draw_commands();
-
-  if (editor_file_explorer_show) {
-    file_explorer_update();
-    if (key_released(&input.ESC)) {
-      editor_file_explorer_show = false;
-      LOG("File explorer exit\n");
-    }
-    return;
-  }
-  if (project_manager_can_show) {
-    project_manager_update();
-    return;
-  }
-
-  if (editor_content_browser_show) {
-    if (!editor_content_browser_initiliazed) {
-      editor_content_browser_initiliazed = true;
-      content_manager_init();
-    }
-    if (!editor_content_browser_updated) {
-      editor_window_content_get_models_path();
-      editor_content_browser_updated = true;
-    }
-    if (key_released(&input.A)) {
-      editor_content_browser_show = false;
-      editor_content_browser_updated = false;
-      EngineWindow *level_editor_window = array_get(&engine_windows, 0);
-      level_editor_window->input = &editor_window_level_editor_input_update;
-      return;
-    }
-    EngineWindow *level_editor_window = array_get(&engine_windows, 0);
-    level_editor_window->input = &editor_window_content_browser_input_update;
-    //		editor_window_content_browser_input_update();
-    editor_window_content_browser_draw();
-    return;
-  }
 
   if (isDrawUV)
     draw_UV();
@@ -582,6 +558,8 @@ void editor_main_loop(){
 
 void editor_init(){
 
+    engine_init();
+
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
     current_textures_array = &editor_textures;
@@ -600,22 +578,22 @@ void editor_init(){
     editor_mode_show_text = "Default Mode";
     editor_sub_mode_text = "";
 
-    pe_input_init();
-
     camera_velocity = 0.04;  
+
+    pe_input_init();
 
     edit_server_init();
 
-    engine_user_render_thread_init = editor_render_init;//
-    engine_user_render_thread_draw = editor_main_render_thread;//window manager draw windows
-   	engine_user_render_thread_finish = editor_render_finish; //glfw terminate 
+    engine_user_render_thread_init = &editor_render_init;//
+    engine_user_render_thread_draw = &editor_main_render_thread;//window manager draw windows
+   	engine_user_render_thread_finish = &editor_render_finish; //glfw terminate 
 
 		EngineWindow main_window;
 		memset(&main_window,0,sizeof(EngineWindow));
-		main_window.init = editor_main_window_init;
-		main_window.draw = editor_draw;
-		main_window.finish = editor_render_finish;
-		main_window.input = editor_window_level_editor_input_update;
+		main_window.init = &editor_main_window_init;
+		main_window.draw = &editor_draw;
+		main_window.finish = &editor_render_finish;
+		main_window.input = &editor_window_level_editor_input_update;
 		array_add(&engine_windows,&main_window);
 		window_editor_main = array_pop(&engine_windows);	
 
@@ -625,16 +603,12 @@ void editor_init(){
 		command.parameter = window_editor_main;
     array_add(&array_render_thread_init_commmands,&command);
 
-
 		engine_client_render_thread_initialized = true;
 		
 		//wait for window initialization in the render thread	
 		while(!window_editor_main->initialized){};
 
 		editor_windows_init_data();
-
-		//project_manager_init();
-
 
 		LOG("[OK]Editor initialized\n");
 }

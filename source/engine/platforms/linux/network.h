@@ -12,4 +12,6 @@ typedef struct NetworkConnecion;
 void network_print_recieve_data(struct NetworkConnecion* connection);
 void network_create_server(struct NetworkConnecion* connection);
 
+void pe_network_connet(int port);
+
 #endif

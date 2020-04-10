@@ -334,12 +334,23 @@ void gizmos_init(){
 
     array_init(&debug_objects, sizeof(DebugLine),300);
 
-    load_model_to_array(&gizmos,"../NativeContent/Editor/translate.glb","../NativeContent/Editor/transform_gizmo.jpg");
-    load_model_to_array(&gizmos,"../NativeContent/Editor/rotate.glb", "../NativeContent/Editor/rotate_gizmo.png");
-    load_model_to_array(&gizmos,"../NativeContent/Editor/scale.glb", "../NativeContent/Editor/transform_gizmo.jpg");
-    load_model_to_array(&gizmos,"../NativeContent/Editor/camera.gltf", "../NativeContent/Editor/camera_gizmo.jpg");
-    load_model_to_array(&gizmos,"../NativeContent/Editor/player_start.gltf", "../NativeContent/Editor/player_start_gizmo.jpg");
-    
+    load_model_to_array(
+        &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/translate.glb",
+        "/home/pavon/PavonEngine/NativeContent/Editor/transform_gizmo.jpg");
+    load_model_to_array(
+        &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/rotate.glb",
+        "/home/pavon/PavonEngine/NativeContent/Editor/rotate_gizmo.png");
+    load_model_to_array(
+        &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/scale.glb",
+        "/home/pavon/PavonEngine/NativeContent/Editor/transform_gizmo.jpg");
+    load_model_to_array(
+        &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
+        "/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
+    load_model_to_array(
+        &gizmos,
+        "/home/pavon/PavonEngine/NativeContent/Editor/player_start.gltf",
+        "/home/pavon/PavonEngine/NativeContent/Editor/player_start_gizmo.jpg");
+
     can_draw_gizmos = true;
     can_draw_skeletal_bones = false;
     can_draw_bounding_box_in_select_element = false;

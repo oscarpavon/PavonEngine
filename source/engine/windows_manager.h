@@ -14,10 +14,10 @@
 
 typedef struct EngineWindow{
 	Array tabs;
-    	char name[20];
-    	bool focus;
-    	bool initialized; 
-    	GLFWwindow* window;
+ 	char name[20];
+ 	bool focus;
+ 	bool initialized; 
+ 	GLFWwindow* window;
 	void(*draw)(void);
 	void(*init)(void);
 	void(*finish)(void);
@@ -36,6 +36,8 @@ void window_create(EngineWindow *win,EngineWindow* share_window,const char* name
 void window_manager_init_window(EngineWindow* window);
 void window_manager_draw_windows();
 void window_initialize_windows();
+
+void window_update_viewport();
 
 void window_manager_create_editor_windows_data();
 

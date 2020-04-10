@@ -81,6 +81,7 @@ void edit_server_init(){
 		new_connection.server_running = 1;
 		new_connection.data_process = &network_print_recieve_data;
 		strcat(new_connection.name,"CMD connection");	
+
 		thread_new_detached(network_create_server,&new_connection,"CMD server");
 }
 

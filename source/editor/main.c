@@ -2,9 +2,7 @@
 
 int main(int argc , char* argv[]){
 		
-		int command_line_result = command_parse_from_command_line(argc, argv);
-
-      engine_init();
+			int command_line_result = command_parse_from_command_line(argc, argv);
 
       editor_init();
 			

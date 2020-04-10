@@ -1,6 +1,4 @@
 //
-// Created by pavon on 6/23/19.
-//
 
 #include "camera.h"
 #include "utils.h"
@@ -23,8 +21,8 @@ void camera_init(CameraComponent* camera){
 
     glm_lookat(camera->position, look_pos, camera->front , camera->view);
 
-    glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , camera->projection);
-
+    glm_perspective(45.f, camera_width_screen / camera_heigth_screen, 0.001f,
+                    5000.f, camera->projection);
 }
 
 void camera_update(CameraComponent* camera){
@@ -53,6 +51,7 @@ void camera_rotate_control(float yaw, float pitch){
 
 }
 
-void camera_update_aspect_ratio(){
-    glm_perspective(45.f, camera_width_screen / camera_heigth_screen , 0.001f , 5000.f , main_camera.projection);
+void camera_update_aspect_ratio(CameraComponent* camera){
+  glm_perspective(45.f, camera_width_screen / camera_heigth_screen, 0.001f,
+                  5000.f, camera->projection);
 }

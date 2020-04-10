@@ -225,12 +225,6 @@ void add_element_with_model_path(const char* model_gltf_path){
 }
 
 
-void update_viewport_size(){
-    text_renderer_update_pixel_size();
-		camera_update_aspect_ratio();
-}
-
-
 void engine_draw_elements(Array *elements){
     for(size_t i = 0; i < elements->count ; i++) { 
         Model** model = array_get(elements,i);

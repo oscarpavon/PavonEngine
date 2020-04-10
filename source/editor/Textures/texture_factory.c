@@ -189,7 +189,8 @@ void render_to_texture(int size, void(*function)(int) )
     glBindFramebuffer(GL_FRAMEBUFFER, old_fbo);
     
     glViewport(0, 0, camera_width_screen, camera_heigth_screen);
-    update_viewport_size();
+
+		window_update_viewport();
     
 }
 
