@@ -449,8 +449,8 @@ void editor_main_window_init(){
 
     shader_compile_standard_shaders();
 
-    draw_loading_screen();
-    glfwSwapBuffers(window_editor_main->window);    
+    //draw_loading_screen();
+    //glfwSwapBuffers(window_editor_main->window);    
 }
 
 void editor_update(){
@@ -478,7 +478,7 @@ void editor_render_init(){
     load_model_to_array(&engine_native_models,"../NativeContent/Editor/floor.glb", "../NativeContent/Editor/floor.jpg");
     texture_load("../NativeContent/Editor/checker_texture.png",&editor_texture_checker);   
 	
-	editor_text_init();
+		editor_text_init();
     gizmos_init();
    
    	editor_running = true;
@@ -606,6 +606,10 @@ void editor_init(){
 
     edit_server_init();
 
+    engine_user_render_thread_init = editor_render_init;//
+    engine_user_render_thread_draw = editor_main_render_thread;//window manager draw windows
+   	engine_user_render_thread_finish = editor_render_finish; //glfw terminate 
+
 		EngineWindow main_window;
 		memset(&main_window,0,sizeof(EngineWindow));
 		main_window.init = editor_main_window_init;
@@ -621,9 +625,6 @@ void editor_init(){
 		command.parameter = window_editor_main;
     array_add(&array_render_thread_init_commmands,&command);
 
-    engine_user_render_thread_init = editor_render_init;
-    engine_user_render_thread_draw = editor_main_render_thread;
-   	engine_user_render_thread_finish = editor_render_finish; 
 
 		engine_client_render_thread_initialized = true;
 		
@@ -632,7 +633,7 @@ void editor_init(){
 
 		editor_windows_init_data();
 
-		project_manager_init();
+		//project_manager_init();
 
 
 		LOG("[OK]Editor initialized\n");

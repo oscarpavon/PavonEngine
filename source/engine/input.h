@@ -4,8 +4,11 @@
 #ifdef ANDROID
     #include "../Platforms/Android/input.h"
 #else
-    #include "../editor/input.h"
-#endif
+    
+	#ifdef EDITOR
+		#include "../editor/input.h"
+	#endif
+
 
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
@@ -95,4 +98,6 @@ void pe_input_mouse_movement_callback(GLFWwindow* window, double xpos, double yp
 void pe_input_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 void pe_input_character_callback(GLFWwindow* window, unsigned int codepoint, void(*parse_function)(unsigned char));
+
+#endif//NOT ANDROID
 #endif

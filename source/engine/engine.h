@@ -117,6 +117,12 @@ EngineThread thread_render;
 
 bool engine_client_render_thread_initialized;
 
+typedef struct RenderThread{
+	void(*draw)(void);
+	void(*init)(void);
+	void(*finish)(void);
+};
+
 void(*engine_user_render_thread_draw)(void);
 void(*engine_user_render_thread_init)(void);
 void(*engine_user_render_thread_finish)(void);

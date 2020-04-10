@@ -6,9 +6,12 @@ include_directories(/home/pavon/sources/freetype2/include)
 
 endif()
 
-if(LINUX)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(audio 
-		${CMAKE_CURRENT_LIST_DIR}/../Platform/Linux/audio_alsa.c
+		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
+		)
+	set(network 
+		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
 		)
 endif()
 
@@ -43,6 +46,8 @@ set(engine_source
 				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
         ${components}
 				${audio}
+				${CMAKE_CURRENT_LIST_DIR}/network/network.c
+				${network}
 				${CMAKE_CURRENT_LIST_DIR}/input.c
 )
 
@@ -56,8 +61,8 @@ STATIC
 ${engine_source}
 )
 
-add_library(engine_dynamic
-	SHARED
-	${engine_source}
-)
+#add_library(engine_dynamic
+#	SHARED
+#	${engine_source}
+#)
 

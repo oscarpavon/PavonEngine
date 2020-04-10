@@ -1,7 +1,7 @@
 #include "audio_alsa.h"
 #include <alsa/asoundlib.h>
-#include "../../Engine/log.h"
-#include "../../Engine/file_loader.h"
+#include "../../log.h"
+#include "../../file_loader.h"
 
 
 #define PCM_DEVICE "default"

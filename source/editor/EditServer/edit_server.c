@@ -1,10 +1,6 @@
 #include "edit_server.h"
 #include "../editor.h"
-
-#include <sys/socket.h>
-#include <unistd.h>
-#include <netinet/in.h> 
-#include <arpa/inet.h>
+#include "../../engine/network/network.h"
 
 int edit_server_socket;
 int edit_server_accept_socket;
@@ -78,6 +74,14 @@ void edit_server_create_socket(){
 void edit_server_init(){
     LOG("Edit Server start\n");
     thread_new_detached(edit_server_create_socket,NULL,"EditServer");
+
+		struct NetworkConnecion new_connection;
+		memset(&new_connection,0,sizeof(struct NetworkConnecion));
+		new_connection.port = 9999;
+		new_connection.server_running = 1;
+		new_connection.data_process = &network_print_recieve_data;
+		strcat(new_connection.name,"CMD connection");	
+		thread_new_detached(network_create_server,&new_connection,"CMD server");
 }
 
 void edit_server_finish(){
