@@ -49,25 +49,24 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     
     glfwSetWindowUserPointer(win->window,win);
 
-    glViewport(0,0,INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
+		window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     camera_heigth_screen = INIT_WINDOW_SIZE_Y;
     camera_width_screen = INIT_WINDOW_SIZE_X;
     
     win->initialized = true;
 }
 
-void window_update_viewport(){
+void window_update_viewport(int width, int height){
+		glViewport(0,0,width,height);
     text_renderer_update_pixel_size();
 		camera_update_aspect_ratio(&window_editor_main->camera);
 }
 
 void window_resize_callback(GLFWwindow* window, int width, int height){
-		window_set_focus(current_window); 
-		glViewport(0,0,width,height);
     camera_heigth_screen = height;
     camera_width_screen = width;
-			
-		window_update_viewport();
+		window_set_focus(current_window); 
+		window_update_viewport(width,height);
 }
 
 void window_focus_callback(GLFWwindow* window,int is_focus){
@@ -88,7 +87,7 @@ void window_set_focus(EngineWindow* window){
     glfwMakeContextCurrent(window->window);
     window->focus = true;
     current_window = window;
-    LOG("Focus windows change\n");
+    //LOG("Focus windows change\n");
 }
 
 void window_manager_draw_windows(){

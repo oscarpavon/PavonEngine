@@ -15,7 +15,7 @@ void GPU_buffers_create_for_model(Model* model);
 
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
-    //debug_break();
+    debug_break();
 }
 
 

@@ -173,7 +173,7 @@ void text_renderer_init()
 
     File font;
     #ifndef ANDROID
-    load_file("../NativeContent/DejaVuSerif.ttf",&font);
+    load_file("/home/pavon/PavonEngine/NativeContent/DejaVuSerif.ttf",&font);
     #else
     load_file("DejaVuSerif.ttf",&font);
     #endif

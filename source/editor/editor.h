@@ -102,4 +102,9 @@ bool editor_content_browser_show;
 bool editor_content_browser_initiliazed;
 bool editor_content_browser_updated;
 
+Array editor_models;
+Array editor_textures;
+
+Array LOD_models;
+
 #endif
