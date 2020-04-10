@@ -318,13 +318,14 @@ void text_input_mode(){
 
 
 int command_parse_from_command_line(int argc, char* argv[]){
-	if(argc <= 1){
+	if(argc < 1){
 		return 0;	
 	}	
-	if(strcmp(argv[1] , "-c") == 0){
-		LOG("Runnig in Console Mode\n");
-		return EDITOR_CONSOLE_MODE_NORMAL;
-
+	if(strcmp(argv[1] , "-o") == 0){
+		memset(editor_level_open_path,0,sizeof(editor_level_open_path));
+		strcpy(editor_level_open_path, argv[2]);			
+		LOG("Open level: %s \n",editor_level_open_path);
+		return 1;
 	}
 	return 1;
 }	
