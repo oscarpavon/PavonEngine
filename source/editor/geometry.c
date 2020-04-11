@@ -1,5 +1,5 @@
 #include "geometry.h"
-#include "../engine/engine.h"
+#include "engine/engine.h"
 
 const unsigned short int cube_indices[] = {
     0, 1, 2, 0, 2, 3, // front

@@ -87,160 +87,151 @@ void command_while_not_space(const char* command){
     }
 }
 
-void parse_command(const char* command){
-    first_char_command = command[1];
+void parse_command(const char *in_command) {
+	 
+	char command[1000];
+	memset(command,0,sizeof(command));
+	strcpy(command,in_command);
+	//LOG("Command lenght: %i\n",strlen(command));
+	//LOG("In Command resulr: %s\n",command);
+	first_char_command = command[1];
 
-    command_while_not_space(&command[1]);
-	command_parse(&command[1]);
-    
-	if(strcmp(&command[1],"gui") == 0){
-        change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
-        return;
-    }
+  //command_while_not_space(&command[1]);
+  //command_parse(&command[1]);
 
-    if(strcmp(&command[1],"compile") == 0){
-	LOG("compiling...\n");
-	return;
+  if (strcmp(&command[1], "gui") == 0) {
+    change_to_editor_mode(EDITOR_MODE_GUI_EDITOR);
+    return;
+  }
 
-    }
-    if(strcmp(&command[1],"add cube") == 0){
-        editor_generate_and_add_cube_element();
-        return;
-    }
-			
+  if (strcmp(&command[1], "compile") == 0) {
+    LOG("compiling...\n");
+    return;
+  }
 
-    if(strcmp(&command[1],"hlod") == 0){
-        generate_HLODS(false);
-		return;
-    }
-    if(strcmp(&command[1],"hlode") == 0){
-        generate_HLODS(true);
-        gizmos_can_draw_spheres = false;
-        return;
-    }
-	
-    switch (first_char_command)
-    {
-    case 'w':
-    {
-        switch (editor_mode)
-        {
-        case EDITOR_MODE_GUI_EDITOR:
-            save_gui_data(&command[3]);
-            LOG("GUI saved: %s\n",&command[3]);
-            return;
-        case EDITOR_DEFAULT_MODE:
-            save_level_data(&command[3]);
-            LOG("Level saved: %s\n",&command[3]);
-            return;
-        default:
-            break;
-        }
-    }
-    case 'o':
-    {
-        switch (editor_mode)
-        {
-        case EDITOR_MODE_GUI_EDITOR:
-            load_gui(&command[3]);       
-            LOG("GUI loaded\n");
-            return;
-            
-        case EDITOR_DEFAULT_MODE:
-            editor_level_open(&command[3]);
-            LOG("Level loaded\n");
-            return;
-            
-        default:
-            break;
-        }
-    }
-	case 't':{
-					 
-	    add_texture_to_selected_element_with_image_path(&command[3]);
-		break;
-			 }
-    case 'r':{
-        reload_editor();
-        LOG("reload\n");
-        return;
-    }
-    break;
-    case 'u':{
-        isDrawUV = true;
-        break;
-    }
-    case 'e':
-    {
-        data_export_select_element("/home/pavon/PavonTheGame/Content/export",true);
-        //system("blender --python ../scripts/Blender/import.py");
-        //reload_editor();
-        //add_element_with_model_path("../assets/HLOD/out.gltf");
-        return;
-    }
-    case 'a':
-    {
-        editor_add_element_with_model_path(&command[3]);
-        return;
-    }
-    case 'q':{
-        exit(0);
-        return;
-    }
-    case 'g':{
+  if (strcmp(&command[1], "ac") == 0) {
+    editor_generate_and_add_cube_element();
+    return;
+  }
 
-        return;
-    }
-    case 's':
-        {
-            if(command[2] == 'z'){
-                mat4 idenity;
-                glm_mat4_identity(idenity);
-                glm_mat4_copy(idenity,selected_element->transform->model_matrix);
-                update_translation(VEC3(0,0,0));
-                return;
-            }
+  if (strcmp(&command[1], "hlod") == 0) {
+    generate_HLODS(false);
+    return;
+  }
+  if (strcmp(&command[1], "hlode") == 0) {
+    generate_HLODS(true);
+    gizmos_can_draw_spheres = false;
+    return;
+  }
 
-            if(command[3] == 'p'){//player
-                player1 = selected_element;            
-                add_editor_native_element("Player Controller");
-                return;
-            }
-
-            if(command[2] == 'n'){
-                switch (editor_mode)
-                {
-                case EDITOR_MODE_GUI_EDITOR:
-                    strcpy(selected_button->name,&command[4]);
-                    return;
-                    
-                case EDITOR_DEFAULT_MODE:
-                    strcpy(selected_element->name,&command[4]);
-                    return;
-                    
-                default:
-                    break;
-                }
-                
-            }
-        }
-    case 'd':
-    {
-        unsigned int duplicate_count = atoi(&command[3]); 
-        int duplicate_offset = atoi(&command[5]);
-        Element* original = selected_element;
-        for(int i = 0; i< duplicate_count; i++){            
-            duplicate_selected_element(i,original);      
-            vec3 move = {duplicate_offset,0,0};
-            update_translation(move);            
-        }      
-        LOG("duplicated %i\n",duplicate_count);
-    }
+  switch (first_char_command) {
+  case 'w': {
+    switch (editor_mode) {
+    case EDITOR_MODE_GUI_EDITOR:
+      save_gui_data(&command[3]);
+      LOG("GUI saved: %s\n", &command[3]);
+      return;
+    case EDITOR_DEFAULT_MODE:
+      save_level_data(&command[3]);
+      LOG("Level saved: %s\n", &command[3]);
+      return;
     default:
-        break;
+      break;
     }
-    
+  }
+  case 'o': {
+    switch (editor_mode) {
+    case EDITOR_MODE_GUI_EDITOR:
+      load_gui(&command[3]);
+      LOG("GUI loaded\n");
+      return;
 
+    case EDITOR_DEFAULT_MODE:
+      editor_level_open(&command[3]);
+      LOG("Level loaded\n");
+      return;
+
+    default:
+      break;
+    }
+  }
+  case 't': {
+
+    add_texture_to_selected_element_with_image_path(&command[3]);
+    break;
+  }
+  case 'r': {
+    reload_editor();
+    LOG("reload\n");
+    return;
+  } break;
+  case 'u': {
+    isDrawUV = true;
+    break;
+  }
+  case 'e': {
+    data_export_select_element("/home/pavon/PavonTheGame/Content/export", true);
+    // system("blender --python ../scripts/Blender/import.py");
+    // reload_editor();
+    // add_element_with_model_path("../assets/HLOD/out.gltf");
+    return;
+  }
+  case 'a': {
+    editor_add_element_with_model_path(&command[3]);
+    return;
+  }
+  case 'q': {
+    exit(0);
+    return;
+  }
+  case 'g': {
+
+    return;
+  }
+  case 's': {
+    if (command[2] == 'z') {
+      mat4 idenity;
+      glm_mat4_identity(idenity);
+      glm_mat4_copy(idenity, selected_element->transform->model_matrix);
+      update_translation(VEC3(0, 0, 0));
+      return;
+    }
+
+    if (command[3] == 'p') { // player
+      player1 = selected_element;
+      add_editor_native_element("Player Controller");
+      return;
+    }
+
+    if (command[2] == 'n') {
+      switch (editor_mode) {
+      case EDITOR_MODE_GUI_EDITOR:
+        strcpy(selected_button->name, &command[4]);
+        return;
+
+      case EDITOR_DEFAULT_MODE:
+        strcpy(selected_element->name, &command[4]);
+        return;
+
+      default:
+        break;
+      }
+    }
+  }
+  case 'd': {
+    unsigned int duplicate_count = atoi(&command[3]);
+    int duplicate_offset = atoi(&command[5]);
+    Element *original = selected_element;
+    for (int i = 0; i < duplicate_count; i++) {
+      duplicate_selected_element(i, original);
+      vec3 move = {duplicate_offset, 0, 0};
+      update_translation(move);
+    }
+    LOG("duplicated %i\n", duplicate_count);
+  }
+  default:
+    break;
+  }
 }
 
 void parse_characters(unsigned char character){

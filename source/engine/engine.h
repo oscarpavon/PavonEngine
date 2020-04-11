@@ -51,7 +51,7 @@ void engine_init_render();
 void engine_loop();
 void init_game_engine();
 
-void engine_program_main_loop(void(*program_loop)(void),EngineWindow* program_window);
+void pe_program_main_loop(void(*program_loop)(void),EngineWindow* program_window);
 
 void add_action_function(void(*f)(void));
 
@@ -195,6 +195,10 @@ Array array_skinned_mesh_for_distance_test;
 //
 Array texts;
 Array textures_paths;
+
+//ThreadsCommads
+Array render_thread_commads;
+Array main_thread_commads;
 
 
 static inline void update_mvp(mat4 model, mat4 mvp_out){

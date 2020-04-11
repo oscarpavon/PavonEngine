@@ -5,7 +5,7 @@
 typedef struct EditorCommand{
     bool done;
     void* data;
-    char command_text[100];
+    char command_text[1000];
     void (*command)(void*);
 }EditorCommand;
 

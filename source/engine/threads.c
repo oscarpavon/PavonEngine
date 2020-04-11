@@ -32,3 +32,29 @@ void thread_new_job(EngineThread* thread){
 	
 
 }
+
+void pe_thread_control(Array* thread_commads){
+		if(thread_commads->block)
+				return;
+
+		for (u8 i = 0; i < thread_commads->count; i++)
+		{
+				PEThread_Command* new_command = array_get(thread_commads,i);
+				if(new_command && !new_command->done){
+						new_command->command(new_command->command_text);//Execute command
+						new_command->done = true;
+				}
+		}
+		int undone_jobs = 0;
+		for (u8 i = 0; i < thread_commads->count; i++)
+		{
+				PEThread_Command* new_command = array_get(thread_commads,i);
+				if(new_command && !new_command->done){
+						undone_jobs ++;
+				}
+		}
+		
+		if(undone_jobs == 0)
+				array_clean(thread_commads);
+}
+

@@ -44,35 +44,27 @@ find_package(glfw3 REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-add_executable(editor ${editor_sources} ${game_source})
+add_executable(peditor ${editor_sources} ${game_source})
 
-set(linux_libraries 
-	dl
-glfw
-EGL
-GLESv2
-m
-pthread
-freetype
-dl
-asound
-)
-
+set(lib 
+	engine        
+	m
+	glfw
+	pthread
+	${FREETYPE_LIBRARIES}
+	${OPENGL_LIBRARIES}
+	)
 if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
-target_link_libraries(editor
-engine        
-m
-${FREETYPE_LIBRARIES}
-${OPENGL_LIBRARIES}
-glfw
-pthread
-)
+
+	
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-target_link_libraries(editor
-engine
-${linux_libraries}
+set(linux_libraries 
+	dl
+	asound
 )
+set(lib ${lib} ${linux_libraries})
 endif()
 
+target_link_libraries(peditor ${lib})

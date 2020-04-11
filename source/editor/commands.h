@@ -9,5 +9,6 @@ u8 command_character_count;
 
 void system_command(const char* command, const char* argument);
 
+int command_parse_from_command_line(int argc, char* argv[]);
 
 #endif

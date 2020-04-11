@@ -11,6 +11,13 @@ typedef struct{
 
 }EngineThread;
 
+typedef struct PEThreadCommand{
+    bool done;
+    void* data;
+    char command_text[1000];
+    void (*command)(void*);
+}PEThread_Command;
+
 void thread_new_function(void*(*function)(void*),void* argument);
 void thread_new_detached(void*(*function)(void*),void* argument,const char* name);
 
@@ -18,4 +25,5 @@ void thread_engine_thread_system_init();
 
 Array array_engine_threads;
 
+void pe_thread_control(Array* thread_commads);
 #endif // !ENGINE_THREADS

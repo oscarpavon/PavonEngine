@@ -1,5 +1,4 @@
 
-
 if(ANDROID)
 include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 include_directories(/home/pavon/sources/freetype2/include)
@@ -46,8 +45,8 @@ set(engine_source
 				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
         ${components}
 				${audio}
-				${CMAKE_CURRENT_LIST_DIR}/network/network.c
 				${network}
+				${CMAKE_CURRENT_LIST_DIR}/network/network.c
 				${CMAKE_CURRENT_LIST_DIR}/input.c
 )
 

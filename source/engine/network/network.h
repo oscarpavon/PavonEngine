@@ -1,10 +1,11 @@
 #ifndef ENGINE_NETWORK
 #define ENGINE_NETWORK
 #ifdef LINUX
-	#include "../platforms/linux/network.h"
+	#include "engine/platforms/linux/network.h"
 #endif
 
-typedef struct NetworkConnecion;
+typedef struct NetworkConnecion NetworkConnecion;
+
 typedef struct NetworkConnecion{
 	int server_socket;
 	int server_in_socket;
@@ -12,6 +13,6 @@ typedef struct NetworkConnecion{
 	void(*data_process)(struct NetworkConnecion*);
 	int server_running;
 	char name[20];
-};
+}NetworkConnecion;
 
 #endif

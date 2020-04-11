@@ -3,17 +3,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h> 
-#include "../engine/engine.h"
+
+#include "engine/engine.h"
 
 #include "text.h"
 
-#include "../engine/camera.h"
+#include "engine/camera.h"
 
-#include "../engine/images.h"
+#include "engine/images.h"
 
 #include "skeletal_editor.h"
 
-#include "../engine/level.h"
+#include "engine/level.h"
 
 #include "geometry.h"
 
@@ -109,7 +110,7 @@ void editor_generate_and_add_cube_element(){
     GPU_buffers_create_for_model(selected_model); 
     
     add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
-
+		LOG("Generated cubed added\n");
 
 }
 
