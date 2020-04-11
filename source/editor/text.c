@@ -242,14 +242,6 @@ void text_renderer_loop() { draw_engine_memory();
 
   text_render_in_screen_space(12, editor_mode_show_text,
                               camera_width_screen - 100, 0);
-  text_render_in_screen_space(12, "Project:", 200, 0);
-
-  if (strlen(project_manager_current_project_name) == 0) {
-    text_render_in_screen_space(12, "NO PROJECT", 260, 0);
-  } else {
-    text_render_in_screen_space(12, project_manager_current_project_name, 260,
-                                0);
-  }
 
   if (editor_sub_mode != EDITOR_SUB_MODE_NULL) {
     text_render_in_screen_space(12, editor_sub_mode_text,

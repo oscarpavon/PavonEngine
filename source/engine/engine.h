@@ -43,11 +43,12 @@
 
 #include "windows_manager.h"
 
+#include "render_thread.h"
+
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
 void engine_init();
-void engine_init_render();
 void engine_loop();
 void init_game_engine();
 
@@ -111,9 +112,6 @@ static const char* const gui_folder = "../assets/gui/";
 //
 // Global variables
 //
-EngineThread thread_render;
-
-bool engine_client_render_thread_initialized;
 
 typedef struct RenderThread{
 	void(*draw)(void);
@@ -121,9 +119,6 @@ typedef struct RenderThread{
 	void(*finish)(void);
 };
 
-void(*engine_user_render_thread_draw)(void);
-void(*engine_user_render_thread_init)(void);
-void(*engine_user_render_thread_finish)(void);
 
 bool engine_running;
 
@@ -154,8 +149,6 @@ Array array_models_loaded;
 
 Array array_hirarchical_level_of_detail;
 
-Array array_render_thread_init_commmands;
-Array array_render_thread_commands;
 
 
 Array actions_pointers;;

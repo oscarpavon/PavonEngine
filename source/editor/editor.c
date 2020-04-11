@@ -527,9 +527,7 @@ void editor_main_loop(){
 
 }
 
-void editor_init(){
-
-    engine_init();
+void editor_data_init(){
 
     actual_model_array = &editor_models;
     actual_elements_array = &editor_elements;
@@ -541,7 +539,6 @@ void editor_init(){
     array_init(&editor_models, sizeof(Model),100);
     array_init(&editor_textures, sizeof(Texture),100);    
     
-    editor_command_queue_init();   
     element_id_count = 0;    
     editor_mode = EDITOR_DEFAULT_MODE;
     editor_sub_mode = EDITOR_SUB_MODE_NULL;
@@ -550,10 +547,19 @@ void editor_init(){
     editor_sub_mode_text = "";
 
     camera_velocity = 0.04;  
+}
+
+void editor_init(){
+
+    engine_init();
+
+		editor_data_init();
 
     pe_input_init();
 
-    edit_server_init();
+    editor_command_queue_init();   
+    
+		edit_server_init();
 
     engine_user_render_thread_init = &editor_render_init;//
     engine_user_render_thread_draw = &editor_main_render_thread;//window manager draw windows
@@ -569,6 +575,7 @@ void editor_init(){
 		window_editor_main = array_pop(&engine_windows);	
 
 		//render thread initialization
+		//Send window initialization to the render thread
     ExecuteCommand command;
     command.command = window_manager_init_window;
 		command.parameter = window_editor_main;
