@@ -67,30 +67,34 @@ void network_print_recieve_data(struct NetworkConnecion *connection) {
   printf("%s\n", buffer);
 }
 
-void pe_network_connet(int port){
-  int sock = 0, valread;
+void pe_network_connect(struct NetworkConnecion* connection){
+  int valread;
   struct sockaddr_in serv_addr;
-  char *hello = "Hello from client";
   char buffer[1024] = {0};
-  if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+  if ((connection->server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     printf("\n Socket creation error \n");
     return;
   }
 
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(port);
+  serv_addr.sin_port = htons(connection->port);
 
   if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
     printf("\nInvalid address/ Address not supported \n");
     return;
   }
 
-  if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+  if (connect(connection->server_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
     printf("\nConnection Failed \n");
     return;
   }
-  send(sock, hello, strlen(hello), 0);
-  printf("Hello message sent\n");
   //valread = read(sock,buffer,1024);
   //printf("%s\n",buffer);
 }
+
+void pe_net_send_message(struct NetworkConnecion* connection,const char* message){
+	
+  send(connection->server_socket, message, strlen(message), 0);
+
+}
+

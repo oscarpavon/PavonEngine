@@ -161,13 +161,9 @@ void save_level_data(const char* level_name){
         level_name = opened_file_name;
     }
         
-    char new_file_name_with_path[strlen(project_manager_current_path) + 30];
-	memset(new_file_name_with_path,0,sizeof(new_file_name_with_path));
-    sprintf(new_file_name_with_path,"%s%s%s.lvl",project_manager_current_path,"/Content/",level_name);
-  
-    FILE* new_file = fopen(new_file_name_with_path,"w");
+    FILE* new_file = fopen(level_name,"w");
     if(!new_file){
-        LOG("File not created: %s\n",new_file_name_with_path);
+        LOG("File not created: %s\n",level_name);
         return;
     }
     actual_file = new_file;
@@ -179,7 +175,7 @@ void save_level_data(const char* level_name){
     
     fclose(new_file);
     previous_id_saved = 0;
-    LOG("Saved to %s\n",new_file_name_with_path);
+    LOG("Saved to %s\n",level_name);
 }
 
 void serializer_serialize_data(const char* path, void(*function)(void)){

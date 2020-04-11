@@ -79,7 +79,7 @@ void edit_server_init(){
 		memset(&new_connection,0,sizeof(struct NetworkConnecion));
 		new_connection.port = 9999;
 		new_connection.server_running = 1;
-		new_connection.data_process = &network_print_recieve_data;
+		new_connection.data_process = &pe_net_editor_command;
 		strcat(new_connection.name,"CMD connection");	
 
 		thread_new_detached(network_create_server,&new_connection,"CMD server");

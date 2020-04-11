@@ -29,6 +29,7 @@ level.c
 path.c
 ${windows}
 ProjectManager/project_manager.c
+network/network.c
 )
 
 set (game_source

@@ -31,6 +31,8 @@
 #include "commands.h"
 #include "editor_mode.h"
 
+#include "network/network.h"
+
 typedef struct HLODCluster HLODCluster;
 
 void editor_init();

@@ -9,9 +9,9 @@
 
 typedef struct NetworkConnecion;
 
-void network_print_recieve_data(struct NetworkConnecion* connection);
-void network_create_server(struct NetworkConnecion* connection);
+void network_print_recieve_data(struct NetworkConnecion*);
+void network_create_server(struct NetworkConnecion*);
 
-void pe_network_connet(int port);
-
+void pe_network_connect(struct NetworkConnecion*);
+void pe_net_send_message(struct NetworkConnecion*,const char* message);
 #endif
