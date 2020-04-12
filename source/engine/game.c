@@ -16,21 +16,20 @@
 
 
 void pe_game_render_init(){
-
-    init_vec3(-6,0,2, main_camera.position);
+ 
     
-		camera_update(&current_window->camera);
 }
+
 void pe_game_window_init(){
 
-    window_create(game_window, NULL, "editor"); 
+    window_create(game_window, NULL, "game"); 
 
-    glfwSetKeyCallback(window_editor_main->window, pe_input_key_callback);
-		glfwSetCursorPosCallback(window_editor_main->window, pe_input_mouse_movement_callback);
-		glfwSetMouseButtonCallback(window_editor_main->window, pe_input_mouse_button_callback);
-    glfwSetCharCallback(window_editor_main->window, pe_input_key_callback);
-    glfwSetWindowFocusCallback(window_editor_main->window,window_focus_callback);
-    glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
+    glfwSetKeyCallback(game_window->window, pe_input_key_callback);
+		glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
+		glfwSetMouseButtonCallback(game_window->window, pe_input_mouse_button_callback);
+    glfwSetCharCallback(game_window->window, pe_input_key_callback);
+    glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
+    glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
 
     shader_compile_standard_shaders();
 }

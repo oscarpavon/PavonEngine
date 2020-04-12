@@ -388,16 +388,6 @@ void collision_test(){
 
 }
 
-void frame_clean(){
-    //clean frame
-    array_clean(&models_for_test_occlusion);
-    array_clean(&array_static_meshes_pointers);
-    array_clean(&array_static_meshes_pointers_for_test_distance);
-    array_clean(&array_skinned_mesh_pointers);
-    array_clean(&array_skinned_mesh_for_distance_test);
-    for_each_element_components(&clean_component_value);
-    //end clean frame
-}
 
 void editor_main_window_init(){
     window_create(window_editor_main, NULL, "editor"); 
@@ -500,7 +490,7 @@ void editor_draw() {
 
   engine_draw_elements(&frame_draw_elements);
 
-  frame_clean();
+  pe_frame_clean();
 
   draw_gizmos();
 

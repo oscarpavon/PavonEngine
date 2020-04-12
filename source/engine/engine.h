@@ -111,6 +111,10 @@ void engine_add_texture_from_memory_to_selected_element(void* data, u32 size);
 
 void pe_end();
 
+void pe_frame_clean();
+
+void pe_frame_draw();
+
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
@@ -118,11 +122,6 @@ static const char* const gui_folder = "../assets/gui/";
 // Global variables
 //
 
-typedef struct RenderThread{
-	void(*draw)(void);
-	void(*init)(void);
-	void(*finish)(void);
-};
 
 
 bool engine_running;

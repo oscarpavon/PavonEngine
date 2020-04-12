@@ -4,6 +4,12 @@
 #include "threads.h"
 
 
+typedef struct RenderThread{
+	void(*draw)(void);
+	void(*init)(void);
+	void(*finish)(void);
+};
+
 void engine_init_render();
 
 EngineThread thread_render;

@@ -20,6 +20,32 @@ Array engine_elements;
 Array engine_textures;
 
 
+void pe_frame_draw(){
+
+  glClearColor(1,0,0,1);
+  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
+
+  for_each_element_components(&update_per_frame_component);
+
+  test_elements_occlusion();
+  check_meshes_distance();
+
+  engine_draw_elements(&frame_draw_elements);
+
+  pe_frame_clean();
+
+}
+
+void pe_frame_clean(){
+    //clean frame
+    array_clean(&models_for_test_occlusion);
+    array_clean(&array_static_meshes_pointers);
+    array_clean(&array_static_meshes_pointers_for_test_distance);
+    array_clean(&array_skinned_mesh_pointers);
+    array_clean(&array_skinned_mesh_for_distance_test);
+    for_each_element_components(&clean_component_value);
+    //end clean frame
+}
 
 void pe_end(){
     engine_running = false;   

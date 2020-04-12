@@ -352,7 +352,12 @@ void component_add_HLOD_to_select_element(){
 
 
 void for_each_element_components(void(*do_to)(ComponentDefinition*)){
-    for(int i = 0; i < actual_elements_array->count ; i++){
+		if(!actual_elements_array){
+			LOG("No actual elements array\n");
+			return;
+		}
+				
+		for(int i = 0; i < actual_elements_array->count ; i++){
         Element* element = array_get(actual_elements_array,i);
         if(!element->proccess)
             continue;
