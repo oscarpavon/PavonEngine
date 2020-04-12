@@ -580,6 +580,7 @@ void editor_init(){
 		thread_commad.command = &window_manager_init_window;
 		thread_commad.data = window_editor_main;
 		thread_commad.done = false;
+		thread_commad.type = POINTER;
 		array_add(&render_thread_commads,&thread_commad);
 
 		engine_init_render();			

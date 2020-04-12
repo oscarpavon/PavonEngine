@@ -11,11 +11,18 @@ typedef struct{
 
 }EngineThread;
 
+
+typedef enum PEThreadCommandType{
+	POINTER,
+	TEXT
+}PEThreadCommandType;
+
 typedef struct PEThreadCommand{
     bool done;
     void* data;
     char command_text[1000];
     void (*command)(void*);
+		PEThreadCommandType type;
 }PEThreadCommand;
 
 void thread_new_function(void*(*function)(void*),void* argument);

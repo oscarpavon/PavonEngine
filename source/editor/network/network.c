@@ -15,6 +15,7 @@ void pe_net_editor_command(struct NetworkConnecion *connection) {
     struct PEThreadCommand new_command;
     memset(&new_command, 0, sizeof(PEThreadCommand));
     new_command.command = &parse_command;
+		new_command.type = TEXT;
     strcat(new_command.command_text, buffer);
     array_add(&render_thread_commads,&new_command);
 
