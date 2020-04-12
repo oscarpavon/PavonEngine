@@ -16,7 +16,7 @@ typedef struct PEThreadCommand{
     void* data;
     char command_text[1000];
     void (*command)(void*);
-}PEThread_Command;
+}PEThreadCommand;
 
 void thread_new_function(void*(*function)(void*),void* argument);
 void thread_new_detached(void*(*function)(void*),void* argument,const char* name);

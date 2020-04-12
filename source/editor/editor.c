@@ -184,9 +184,8 @@ void add_editor_native_element(const char* native_element_name){
 
 void editor_finish(){
     editor_running = false;
-    engine_running = false;   
-    clear_engine_memory();
-    edit_server_finish();
+		pe_end(); 
+		edit_server_finish();
 	
 }
 
@@ -561,9 +560,9 @@ void editor_init(){
     
 		edit_server_init();
 
-    engine_user_render_thread_init = &editor_render_init;//
-    engine_user_render_thread_draw = &editor_main_render_thread;//window manager draw windows
-   	engine_user_render_thread_finish = &editor_render_finish; //glfw terminate 
+		render_thread_definition.init = &editor_render_init;
+		render_thread_definition.draw = &editor_main_render_thread;
+		render_thread_definition.end = &editor_finish;	
 
 		EngineWindow main_window;
 		memset(&main_window,0,sizeof(EngineWindow));
@@ -576,12 +575,14 @@ void editor_init(){
 
 		//render thread initialization
 		//Send window initialization to the render thread
-    ExecuteCommand command;
-    command.command = window_manager_init_window;
-		command.parameter = window_editor_main;
-    array_add(&array_render_thread_init_commmands,&command);
 
-		engine_client_render_thread_initialized = true;
+		PEThreadCommand thread_commad;	
+		thread_commad.command = &window_manager_init_window;
+		thread_commad.data = window_editor_main;
+		thread_commad.done = false;
+		array_add(&render_thread_commads,&thread_commad);
+
+		engine_init_render();			
 		
 		//wait for window initialization in the render thread	
 		while(!window_editor_main->initialized){};

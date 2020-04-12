@@ -139,6 +139,10 @@ void parse_command(const char *in_command) {
       break;
     }
   }
+  case 'a': {
+    editor_add_element_with_model_path(&command[3]);
+    return;
+  }
   case 'o': {
     switch (editor_mode) {
     case EDITOR_MODE_GUI_EDITOR:
@@ -174,10 +178,6 @@ void parse_command(const char *in_command) {
     // system("blender --python ../scripts/Blender/import.py");
     // reload_editor();
     // add_element_with_model_path("../assets/HLOD/out.gltf");
-    return;
-  }
-  case 'a': {
-    editor_add_element_with_model_path(&command[3]);
     return;
   }
   case 'q': {

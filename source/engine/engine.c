@@ -20,6 +20,12 @@ Array engine_elements;
 Array engine_textures;
 
 
+
+void pe_end(){
+    engine_running = false;   
+    clear_engine_memory();
+}
+
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
     GLuint id_copy;
@@ -426,10 +432,11 @@ void engine_init(){
   array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
   array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
 
+	array_init(&render_thread_commads,sizeof(PEThreadCommand),100);
+
   engine_init_data();
-  engine_running = true;
-	
-	engine_init_render();
+  
+	engine_running = true;
 	
 	audio_engine_init();
 

@@ -49,9 +49,9 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     
     glfwSetWindowUserPointer(win->window,win);
 
-		window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     camera_heigth_screen = INIT_WINDOW_SIZE_Y;
     camera_width_screen = INIT_WINDOW_SIZE_X;
+		window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     
     win->initialized = true;
 }
@@ -59,7 +59,7 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
 void window_update_viewport(int width, int height){
 		glViewport(0,0,width,height);
     text_renderer_update_pixel_size();
-		camera_update_aspect_ratio(&window_editor_main->camera);
+		camera_update_aspect_ratio(&current_window->camera);
 }
 
 void window_resize_callback(GLFWwindow* window, int width, int height){

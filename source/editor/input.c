@@ -24,9 +24,6 @@
 
 float rotate_value = 100;
 
-float horizontalAngle = 0;
-float verticalAngle = 0;
-
 
 float last_mouse_x = 400;
 float last_mouse_y = 300;
@@ -42,26 +39,8 @@ float move_ui_element_value_per_axis = 0.6;
 bool player_in_start_position = false;
 
 
-void mouse_movement_control(float xpos, float ypos){   
-
-    horizontalAngle += camera_width_screen/2 - xpos ;
-    
-    verticalAngle  += camera_heigth_screen/2 - ypos ;
-
-    horizontalAngle *= 0.05;
-    verticalAngle *= 0.05;
-
-    camera_rotate_control(0, horizontalAngle);   
-     
-}
 
 void input_change_mode(){
-  if(selected_element != NULL){ 
-	if(editor_mode != EDITOR_NAVIGATE_MODE){
-		if(key_released(&input.S)){
-			 change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
-		}
-	}
 
     if(key_released(&input.G)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
@@ -70,7 +49,7 @@ void input_change_mode(){
     if(key_released(&input.R)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
     }
-  }
+  
   if(key_released(&input.V)){
         change_to_editor_mode(EDITOR_NAVIGATE_MODE);
   }
@@ -396,6 +375,11 @@ void default_mode(){
 
     input_change_mode();
         
+  if(selected_element != NULL){ 
+		if(key_released(&input.S)){
+			 change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
+		}
+	}
     //edit in blender
     if(key_released(&input.TAB)){
         if(selected_element){

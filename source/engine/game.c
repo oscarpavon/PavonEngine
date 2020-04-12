@@ -14,6 +14,33 @@
 
 #include <dlfcn.h>
 
+
+void pe_game_render_init(){
+
+    init_vec3(-6,0,2, main_camera.position);
+    
+		camera_update(&current_window->camera);
+}
+void pe_game_window_init(){
+
+    window_create(game_window, NULL, "editor"); 
+
+    glfwSetKeyCallback(window_editor_main->window, pe_input_key_callback);
+		glfwSetCursorPosCallback(window_editor_main->window, pe_input_mouse_movement_callback);
+		glfwSetMouseButtonCallback(window_editor_main->window, pe_input_mouse_button_callback);
+    glfwSetCharCallback(window_editor_main->window, pe_input_key_callback);
+    glfwSetWindowFocusCallback(window_editor_main->window,window_focus_callback);
+    glfwSetFramebufferSizeCallback(window_editor_main->window, window_resize_callback);
+
+    shader_compile_standard_shaders();
+}
+
+void pe_game_render_config(){
+		render_thread_definition.init = &pe_game_render_init;
+		render_thread_definition.draw = &window_manager_draw_windows; 
+		render_thread_definition.end = &glfwTerminate;
+}
+
 int load_gamplay_code(){
     
     char *error;
@@ -38,6 +65,8 @@ void close_dynamic_game_play(){
     if(dynamic_lib_handle)
         dlclose(dynamic_lib_handle);
 }
+
+
 void move_player_forward(){
     //LOG("Action pointer work\n");
     update_translation(VEC3(0,-0.3,0));

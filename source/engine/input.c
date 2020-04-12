@@ -6,6 +6,20 @@ bool left_click = false;
 float actual_mouse_position_x;
 float actual_mouse_position_y;
 
+
+void mouse_movement_control(float xpos, float ypos){   
+
+    horizontalAngle += camera_width_screen/2 - xpos ;
+    
+    verticalAngle  += camera_heigth_screen/2 - ypos ;
+
+    horizontalAngle *= 0.05;
+    verticalAngle *= 0.05;
+
+    camera_rotate_control(0, horizontalAngle);   
+     
+}
+
 void pe_input_character_callback(GLFWwindow* window, unsigned int codepoint, void(*parse_function)(unsigned char)){
     if(codepoint == 241)//equal "ñ"
             return;

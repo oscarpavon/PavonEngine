@@ -49,6 +49,7 @@ set(engine_source
 				${CMAKE_CURRENT_LIST_DIR}/network/network.c
 				${CMAKE_CURRENT_LIST_DIR}/input.c
 				${CMAKE_CURRENT_LIST_DIR}/render_thread.c
+				${CMAKE_CURRENT_LIST_DIR}/game.c
 )
 
 

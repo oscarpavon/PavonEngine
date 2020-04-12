@@ -45,6 +45,8 @@
 
 #include "render_thread.h"
 
+#include "game.h"
+
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
@@ -106,6 +108,9 @@ void new_empty_model_in_array(Array* array);
 void check_meshes_distance();
 
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size);
+
+void pe_end();
+
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 

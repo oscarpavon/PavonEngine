@@ -13,7 +13,7 @@ void pe_net_editor_command(struct NetworkConnecion *connection) {
   printf("Net command: %s\n", buffer);
 	
     struct PEThreadCommand new_command;
-    memset(&new_command, 0, sizeof(PEThread_Command));
+    memset(&new_command, 0, sizeof(PEThreadCommand));
     new_command.command = &parse_command;
     strcat(new_command.command_text, buffer);
     array_add(&render_thread_commads,&new_command);

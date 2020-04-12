@@ -3,32 +3,22 @@
 #include "types.h"
 #include "threads.h"
 
-bool engine_user_render_thread_initialized_in_loop = false;
 
-void engine_render_thread_init(){
+void render_thread_init(){
+  pe_thread_control(&render_thread_commads);
+
+  render_thread_definition.init();
+
+  engine_initialized = true;
+
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
 
   camera_init(&main_camera);
   init_gui();
   text_renderer_init();
-}
 
-void engine_client_initialize_render_thread(){
-    if(array_render_thread_init_commmands.count == 0){
-        LOG("Critical, no render thread initialize commmand\n");
-        debug_break();
-    }
-
-    for (u8 i = 0; i < array_render_thread_init_commmands.count; i++)
-    {
-        ExecuteCommand* exectute = array_get(&array_render_thread_init_commmands,i);
-        exectute->command(exectute->parameter);
-    }
-		array_clean(&array_render_thread_init_commmands);
-
-    engine_user_render_thread_init();
-    engine_initialized = true;
+  camera_update(&main_camera);
 }
 
 void engine_render_thread() {
@@ -41,41 +31,20 @@ void engine_render_thread() {
   float frame_second = 0;
 //************************
 
-  while (engine_running) {
-		
-		pe_thread_control(&render_thread_commads);	
+  render_thread_init();
+  
+	while (engine_running) {
 
-   //Initialize 
-		if (!engine_user_render_thread_initialized_in_loop) {
-      if (engine_client_render_thread_initialized) {
-        engine_client_initialize_render_thread();
-        engine_render_thread_init();
-        camera_update(&main_camera);
-        engine_user_render_thread_initialized_in_loop = true;
-      }
-    }
 
     render_frame_time += time_delta;
 
     time_start();
 
-    int executed_commmand_count = 0;
-    for (u8 i = 0; i < array_render_thread_commands.count; i++) {
-      ExecuteCommand *command = array_get(&array_render_thread_commands, i);
-      if (command->executed == false) {
-        command->command(command->parameter);
-        command->executed = true;
-        executed_commmand_count++;
-      }
-    }
-    if (executed_commmand_count == 0) {
-      array_clean(&array_render_thread_commands);
-    }
+		pe_thread_control(&render_thread_commads);
 
-    if (engine_client_render_thread_initialized &&
-        engine_user_render_thread_initialized_in_loop)
-      engine_user_render_thread_draw();
-
+		render_thread_definition.draw();
+		
+		//********* Timing **********
     time_end();
     frame_second += time_elapsed_time;
     if (frame_second >= 1000) {
@@ -84,13 +53,14 @@ void engine_render_thread() {
       frame_second = 0;
     } else
       frames++;
-  }
+		//********* End timing ********
+  
+	}
 	//end while
-  engine_user_render_thread_finish();
+	render_thread_definition.end();
 }
 
 /*Init the render thread*/
 void engine_init_render(){
-		array_init(&render_thread_commads,sizeof(PEThread_Command),100);
     thread_new_detached(engine_render_thread,NULL,"Render");    
 }

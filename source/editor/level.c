@@ -30,7 +30,7 @@ void editor_level_open(const char* name){
         char* model_path = array_get(&texts,i);
 				memset(new_file_name_with_path,0,sizeof(new_file_name_with_path));
 				sprintf(new_file_name_with_path,"%s%s%s",pavon_the_game_project_folder,"Content/",model_path);
-        load_model(new_file_name_with_path);
+        load_model(model_path);
     }    
     actual_model_array = &editor_models;
 

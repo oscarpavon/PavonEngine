@@ -6,6 +6,7 @@
 #define PAVON_MOBILE_GAME_H
 
 #include "model.h"
+#include "windows_manager.h"
 
 int init_game();
 
@@ -17,4 +18,12 @@ bool loaded_gamplay_library;
 void* dynamic_lib_handle;
 void(*loop_fuction_dynamic_loaded)(void*); 
 void close_dynamic_game_play();
+
+
+void pe_game_render_config();
+
+void pe_game_window_init();
+
+EngineWindow* game_window;
+
 #endif //PAVON_MOBILE_GAME_H

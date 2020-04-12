@@ -4,6 +4,12 @@
 #include <stdbool.h>
 #include "../engine/types.h"
 
+typedef struct PRenderThreadDefinition{
+	void(*init)(void);
+	void(*draw)(void);
+	void(*end)(void);
+}PRenderThreadDefinition;
+
 typedef struct {
 	u8 size;
 	vec4 color;
@@ -29,5 +35,7 @@ void text_render_in_screen_space_with_data( const char* text, TextRenderData* da
 void text_render(const char *text, float x, float y, float sx, float sy , bool mark);
 
 void text_render_in_screen_space( int text_size , const char* text, int x , int y);
+
+PRenderThreadDefinition render_thread_definition;
 
 #endif
