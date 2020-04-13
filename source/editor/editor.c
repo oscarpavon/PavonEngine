@@ -540,7 +540,7 @@ void editor_data_init(){
 
 void editor_init(){
 
-    engine_init();
+    pe_init();
 
 		editor_data_init();
 

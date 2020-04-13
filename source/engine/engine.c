@@ -448,7 +448,7 @@ void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_windo
 		}
 }
 
-void engine_init(){
+void pe_init(){
 	
 	// VERY IMPORTANT
   init_engine_memory();
@@ -464,7 +464,7 @@ void engine_init(){
   
 	engine_running = true;
 	
-	audio_engine_init();
+	pe_audio_init();
 
 	array_init(&engine_windows,sizeof(EngineWindow),40);
 }

@@ -50,7 +50,7 @@
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
-void engine_init();
+void pe_init();
 void engine_loop();
 void init_game_engine();
 
