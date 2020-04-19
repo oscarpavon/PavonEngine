@@ -7,11 +7,11 @@
 #include <arpa/inet.h>
 
 
-typedef struct NetworkConnecion;
+typedef struct NetworkConnecion NetworkConnecion;
 
-void network_print_recieve_data(struct NetworkConnecion*);
-void network_create_server(struct NetworkConnecion*);
+void network_print_recieve_data(NetworkConnecion*);
+void network_create_server(NetworkConnecion*);
 
-void pe_network_connect(struct NetworkConnecion*);
-void pe_net_send_message(struct NetworkConnecion*,const char* message);
+void pe_network_connect(NetworkConnecion*);
+void pe_net_send_message(NetworkConnecion*,const char* message);
 #endif

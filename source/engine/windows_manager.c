@@ -3,6 +3,8 @@
 
 #include "game.h"
 #include "log.h"
+#include "text_renderer.h"
+
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
 

@@ -9,11 +9,11 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(audio 
 		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
 		)
-	set(network 
-		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
-		)
 endif()
 
+set(network 
+		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
+)
 set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/components.c
         )

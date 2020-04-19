@@ -11,8 +11,9 @@ void pe_audio_play(PEAudio* audio){
 
 void audio_engine_main_thread(void* argument){
 
-
+	#ifdef LINUX		
 	audio_init();
+	#endif
 	while(1){
 		pe_thread_control(&thread_audio_commads);
 

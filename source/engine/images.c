@@ -67,10 +67,10 @@ int load_image_with_format(const char* path, GLint format, Image* out_image){
     Image new_image;
 
     int width, height, comp, req_comp;
-    if(format = GL_RGB)
+    if(format == GL_RGB)
         req_comp = 3;
 
-    if(format = GL_RGBA)
+    if(format == GL_RGBA)
         req_comp = 4;
 
     unsigned char* decoded = stbi_load_from_memory(new_file.data, (int)new_file.size_in_bytes, &width, &height, &comp, req_comp);

@@ -1,6 +1,6 @@
 #include "input.h"
 #include "camera.h"
-
+#include <string.h>
 
 bool left_click = false;
 float actual_mouse_position_x;

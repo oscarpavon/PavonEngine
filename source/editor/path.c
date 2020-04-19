@@ -1,6 +1,6 @@
 #include "path.h"
 #include "../engine/types.h"
-
+#include <string.h>
 void path_extract_file_name(const char *file_name, const char *buf) {
 	bool found = false;
   int name_lenght = strlen(file_name);

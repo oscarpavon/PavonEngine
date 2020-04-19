@@ -15,6 +15,7 @@
 
 #include "LOD_system.h"
 
+#include "windows_manager.h"
 
 Array engine_elements;
 Array engine_textures;

@@ -21,7 +21,7 @@
 #include "../engine/gui.h"
 
 #include "commands.h"
-
+#include "skeletal_editor.h"
 float rotate_value = 100;
 
 

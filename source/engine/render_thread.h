@@ -8,7 +8,7 @@ typedef struct RenderThread{
 	void(*draw)(void);
 	void(*init)(void);
 	void(*finish)(void);
-};
+}PERenderThread;
 
 void engine_init_render();
 

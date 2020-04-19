@@ -16,6 +16,7 @@
 #include <dirent.h>
 #include "ProjectManager/project_manager.h"
 
+
 unsigned short int directory_show_type = 50;
 
 void list_directory_files(TextMenu *menu)

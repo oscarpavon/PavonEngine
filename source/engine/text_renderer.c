@@ -9,6 +9,11 @@ FT_GlyphSlot glyph;
 
 DrawData text_draw_data;
 
+void pe_text_set_size(int size){
+
+    FT_Set_Pixel_Sizes(face, 0, size);  
+}
+
 void text_texture_create_buffer()
 {
 

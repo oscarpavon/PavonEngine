@@ -45,7 +45,7 @@ typedef struct ActionPointer{
 typedef struct{
     void (*command)(void*);
 	bool executed;
-	void* parameter
+	void* parameter;
 }ExecuteCommand;
 
 

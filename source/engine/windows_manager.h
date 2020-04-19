@@ -47,6 +47,8 @@ void windows_manager_init();
 
 void window_update_windows_input();
 
+void window_manager_update_windows_input();
+
 float actual_window_width;
 float actual_window_height;
 

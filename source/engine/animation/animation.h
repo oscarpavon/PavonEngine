@@ -35,6 +35,8 @@ void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* n
 
 void play_animation_list();
 
+void update_skeletal_node_uniform();
+
 #ifdef EDITOR
 bool update_vertex_bones_gizmos;
 #endif

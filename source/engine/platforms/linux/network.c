@@ -1,7 +1,7 @@
 #include "../../network/network.h"
 #include "../../log.h"
 #include "network.h"
-
+#include <string.h>
 void network_create_server(struct NetworkConnecion *in_connection) {
 	struct NetworkConnecion connection_copy;
 	memcpy(&connection_copy,in_connection,sizeof(struct NetworkConnecion));
@@ -43,7 +43,7 @@ void network_create_server(struct NetworkConnecion *in_connection) {
 
   listen(connection->server_socket, 3);
 
-  while (connection->server_running = 1) {
+  while (connection->server_running == 1) {
     connection->server_in_socket =
     accept(connection->server_socket, (struct sockaddr *)&address,
                (socklen_t *)&addrlen);
