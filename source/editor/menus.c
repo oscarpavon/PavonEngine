@@ -1,9 +1,9 @@
-#include "editor.h"
-
 #include "../engine/gui.h"
 
 #include "menus.h"
-
+#include <string.h>
+#include <engine/components/components.h>
+#include "editor.h"
 void text_menu_update(TextMenu *menu)
 {
 
@@ -205,12 +205,12 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 
 
 void menu_draw_menus(){
-    TextMenu* menus_list = array_get(&menus,0);
     for(int i = 0; i < menus.count ; i++){
-		if(&menus_list[i].menu_in_editor == false)
-			continue;
-        menu_can_open_with_key(&menus_list[i],menus_list[i].open_key,menus_list[i].mods_key);
-        text_menu_update(&menus_list[i]);
+    	TextMenu* menus_list = array_get(&menus,i);
+	if(menus_list->menu_in_editor == false)
+		continue;
+        menu_can_open_with_key(menus_list,menus_list->open_key,menus_list->mods_key);
+        text_menu_update(menus_list);
     }
 }
 

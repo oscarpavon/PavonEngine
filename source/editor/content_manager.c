@@ -5,7 +5,7 @@
 #include "windows/content_browser.h"
 #include "editor.h"
 #include <string.h>
-
+#include "path.h"
 void content_manager_serialize_static_mesh_values() {
   new_text_token("name", "Content Name");
 }

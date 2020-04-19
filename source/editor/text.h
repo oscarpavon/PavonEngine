@@ -11,14 +11,6 @@
 #define DIRECTORY_TEXTURES 1
 
 
-void text_renderer_init();
-
-void draw_directory_files();
-void draw_directory_file_type(unsigned short int type);
-
-void text_renderer_loop();
-
-void text_draw_commands();
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,
@@ -47,9 +39,18 @@ typedef struct TextMenu{
     int mods_key;
 }TextMenu;
 
+void draw_directory_files();
+void draw_directory_file_type(unsigned short int type);
+
+void draw_element_text_list(TextMenu *menu, const char *text, int i);
+
+void text_renderer_loop();
+
+void text_draw_commands();
 
 int mark_id;
 
+void editor_text_init();
 Array menus;
 
 #endif

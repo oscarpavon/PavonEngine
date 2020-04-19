@@ -2,7 +2,8 @@
 #include "../engine/shader.h"
 
 #include "geometry.h"
-
+#include "HLOD/HLOD_factory.h"
+#include "skeletal_editor.h"
 
 
 Array debug_objects;

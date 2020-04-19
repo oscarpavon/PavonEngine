@@ -31,7 +31,7 @@
 
 #include "windows/windows.h"
 #include "commands.h"
-
+#include <engine/text_renderer.h>
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }

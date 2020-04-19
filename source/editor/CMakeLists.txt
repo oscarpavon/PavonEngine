@@ -30,6 +30,7 @@ path.c
 ${windows}
 ProjectManager/project_manager.c
 network/network.c
+directories.c
 )
 
 set (game_source

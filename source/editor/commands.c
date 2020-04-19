@@ -5,7 +5,8 @@
 #include "ProjectManager/project_manager.h"
 #include "../engine/utils.h"
 #include "../editor/editor_mode.h"
-
+#include "HLOD/HLOD_factory.h"
+#include <unistd.h>
 int log_command_offset = 0;
 bool activate_text_input_mode = false;
 

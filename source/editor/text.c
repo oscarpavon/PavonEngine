@@ -15,8 +15,8 @@
 
 #include <dirent.h>
 #include "ProjectManager/project_manager.h"
-
-
+#include <engine/text_renderer.h>
+#include "menus.h"
 unsigned short int directory_show_type = 50;
 
 void list_directory_files(TextMenu *menu)
@@ -160,14 +160,14 @@ void draw_element_text_list(TextMenu *menu, const char *text, int i)
 
 void draw_directory_files()
 {
-    FT_Set_Pixel_Sizes(face, 0, 20);
 
+   pe_text_set_size(20); 
     list_directory_files(&add_element_menu);
 }
 
 void draw_directory_file_type(unsigned short int type)
 {
-    FT_Set_Pixel_Sizes(face, 0, 20);
+   pe_text_set_size(20); 
     directory_show_type = type;
     if (type == DIRECTORY_TEXTURES)
         list_directory_files(&menu_add_texture);
@@ -272,7 +272,7 @@ void text_renderer_loop() { draw_engine_memory();
   }
 
   if (editor_mode == EDITOR_MODE_GUI_EDITOR)
-    menu_can_open_with_key(&menu_show_gui_elements, &input.L, NULL);
+    menu_can_open_with_key(&menu_show_gui_elements, &input.L, -1);
 }
 
 void editor_text_init(){

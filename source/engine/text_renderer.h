@@ -39,6 +39,8 @@ void text_render_in_screen_space( int text_size , const char* text, int x , int 
 static inline void set_text_size(float size){
 	pe_text_set_size(size);
 }
+
+
 PRenderThreadDefinition render_thread_definition;
 
 #endif

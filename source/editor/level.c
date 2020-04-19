@@ -1,5 +1,6 @@
 #include "level.h"
 #include "editor.h"
+#include <engine/level.h>
 void editor_level_new(const char * name){
 	LOG("New level\n");
 

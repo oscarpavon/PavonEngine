@@ -6,7 +6,9 @@
 #include "content_manager.h"
 #include "path.h"
 #include "directories.h"
-
+#include "editor.h"
+#include <stdlib.h>
+#include <string.h>
 int file_manager_current_directory_count = 0;
 int file_manager_current_directory_id = 0;
 char file_manager_current_path[200] = "/";

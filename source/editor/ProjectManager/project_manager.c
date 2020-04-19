@@ -4,7 +4,8 @@
 #include "../menus.h"
 #include "../file_explorer.h"
 #include "../content_manager.h"
-
+#include <sys/stat.h>
+#include <editor/directories.h>
 TextMenuType project_manager_menu;
 
 TextMenu project_select_menu;
@@ -112,6 +113,6 @@ void project_manager_init() {
   project_select_menu.show = true;
   project_select_menu.menu_in_editor = true;
   project_select_menu.open_key = NULL;
-  project_select_menu.mods_key = NULL;
+  project_select_menu.mods_key = -1;
   project_select_menu.element_count = 0;
 }
