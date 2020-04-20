@@ -28,7 +28,7 @@ void* allocate_stack_memory(StackMemory* stack, int bytes_size){
     if(stack->available > bytes_size){
 
         int expanded_size_bytes = bytes_size + 16;
-        unsigned long int raw_memory = (unsigned long int)&stack->memory[stack->marker];
+        unsigned long int raw_memory = (unsigned long int)(stack->memory + stack->marker);
 
         int mask = (16 - 1);
         unsigned long int misalignment = (raw_memory & mask);
@@ -65,7 +65,7 @@ void* allocate_memory(int size){
     if(actual_free_memory > size){
         memory_used += size;
         actual_free_memory -= size;
-        void* allocated_memory = (void*)&engine_memory[memory_marker];
+        void* allocated_memory = (engine_memory + memory_marker);
         previous_marker = memory_marker;
         memory_marker += size;
         memory_lock = false;

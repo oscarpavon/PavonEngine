@@ -72,8 +72,8 @@ void edit_server_create_socket(){
 }
 
 void edit_server_init(){
-    LOG("Edit Server start\n");
-    thread_new_detached(edit_server_create_socket,NULL,"EditServer");
+//    LOG("Edit Server start\n");
+   thread_new_detached(edit_server_create_socket,NULL,"EditServer");
 
 		struct NetworkConnecion new_connection;
 		memset(&new_connection,0,sizeof(struct NetworkConnecion));

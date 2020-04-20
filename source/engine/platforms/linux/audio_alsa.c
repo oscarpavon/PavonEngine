@@ -87,7 +87,7 @@ void audio_play(const char* file_path){
 
 		if (pcm = file_read(&new_audio_file, buff, buff_size) == 0) {
 			printf("Early end of file.\n");
-			return 0;
+			return;
 		}
 
 		if (pcm = snd_pcm_writei(pcm_handle, buff, frames) == -EPIPE) {

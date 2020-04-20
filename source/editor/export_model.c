@@ -261,7 +261,7 @@ int prepare_vertices_data_from_model(Model* model){
 
 typedef struct CodedData{
     int buffer_bytes_count;
-    const char* coded_buffer;
+    char* coded_buffer;
 }CodedData;
 
 CodedData merge_all_encoded_data(){

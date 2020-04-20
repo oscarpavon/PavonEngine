@@ -1,7 +1,7 @@
 #include "geometry.h"
 #include "engine/engine.h"
 
-const unsigned short int cube_indices[] = {
+unsigned short int cube_indices[] = {
     0, 1, 2, 0, 2, 3, // front
     4, 5, 6, 4, 6, 7, // back
     0, 4, 1, 1, 4, 7, // top

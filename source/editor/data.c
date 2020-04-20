@@ -53,13 +53,13 @@ void save_element_component_data(int id){
     switch (component->type)
     {
     case TRASNFORM_COMPONENT:{
-        TransformComponent* transform = &component->data[0];
+        TransformComponent* transform = component->data;
         new_text_vec3_token("position",transform->position);
         new_text_vec4_token("rotation",transform->rotation);
         break;
     }
     case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* mesh = &component->data[0];
+        StaticMeshComponent* mesh = component->data;
         if(mesh->meshes.count >= 1){
             new_array_data_with_pointer("models",&save_models_id,mesh);
             new_array_data_with_pointer("textures",&save_textures_id,mesh);
@@ -117,7 +117,7 @@ void save_model_paths(){
 
     for(int i = 0; i< texts.count ; i++){       
         hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",array_get(&texts,i));
+        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&texts,i));
     }
    
 }
@@ -125,7 +125,7 @@ void save_textures_paths(){
 
     for(int i = 0; i< textures_paths.count ; i++){       
         hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",array_get(&textures_paths,i));
+        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&textures_paths,i));
     }
    
 }

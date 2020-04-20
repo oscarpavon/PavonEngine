@@ -116,7 +116,7 @@ void draw_available_components(TextMenu* menu){
     menu->element_count = 5;
     for(int i = 0; i < 4 ; i++){
 
-        char* name = components_names[i];
+        const char* name = components_names[i];
         
         draw_element_text_list(menu,name,i);
     }

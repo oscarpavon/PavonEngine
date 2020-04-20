@@ -40,7 +40,7 @@ void editor_level_open(const char* name){
                                 sprintf(new_file_name_with_path, "%s%s%s",
                                         pavon_the_game_project_folder,
                                         "Content/",
-                                        array_get(&textures_paths, i));
+                                        (char*)array_get(&textures_paths, i));
                                 load_simple_image(new_file_name_with_path);
     } 
 

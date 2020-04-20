@@ -41,7 +41,9 @@ void texture_write_function(void *context, void *data, int size){
 TextureCreated texture_create_to_memory(u8 format, u8 size){
     if(textures_pixels[0] == NULL){
         LOG("Texture not exported\n");
-        return;
+				TextureCreated texture;
+				memset(&texture,0,sizeof(TextureCreated));
+        return texture;
     }
     TextureCreated new_texture;
     unsigned char* new_image = malloc(size * size * 3);

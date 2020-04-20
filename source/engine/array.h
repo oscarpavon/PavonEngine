@@ -18,7 +18,7 @@ typedef struct Array{
 
 int array_init(Array * array, u32 element_bytes_size, int count);
 
-void array_add(Array* array, void* element);
+void array_add(Array* array, const void* element);
 
 void *array_get(Array*,int index);
 

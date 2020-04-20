@@ -36,7 +36,7 @@ void create_gui_shaders(){
 
         size_t offset = buttons.element_bytes_size;
 
-        Button *button = &buttons.data[0] + (i * offset);
+        Button *button = buttons.data + (i * offset);
 
         button->shader = create_engine_shader(vert_shader,frag_shader);
       
@@ -100,7 +100,7 @@ void draw_buttons(){
 
         size_t offset = buttons.element_bytes_size;
 
-        Button* button = &buttons.data[0] + (i*offset);
+        Button* button = buttons.data + (i*offset);
 
         glUseProgram(button->shader);
         glBindTexture(GL_TEXTURE_2D,0);

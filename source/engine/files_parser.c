@@ -389,7 +389,7 @@ int parse_tokens(const char* json_file, int json_file_size){
     memset(&token,0,sizeof(Token));
     array_add(&tokens_array_memory,&token);
   }
-  tokens = &tokens_array_memory.data[0];
+  tokens = tokens_array_memory.data;
 
   jsmn_init(&parser);
  

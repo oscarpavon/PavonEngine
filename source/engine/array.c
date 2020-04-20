@@ -21,7 +21,7 @@ int array_init(Array * array, u32 element_bytes_size, int count){
     return 0;
 }
 
-void array_add(Array* array, void* element){
+void array_add(Array* array,const void* element){
     if(array->initialized == false){
         LOG("Array not initialized\n");
         debug_break();;
@@ -71,8 +71,8 @@ void *array_get(Array* array,int index){
 
    
     if(index == 0)
-        return &array->data[0];
-    return &array->data[0] + (index*offset);
+        return array->data;
+    return array->data + (index*offset);
 }
 
 void array_clean(Array* array){

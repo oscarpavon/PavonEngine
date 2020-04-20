@@ -248,7 +248,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
         break;
     }   
     case CAMERA_COMPONENT:{
-        CameraComponent* component = &element_component->data[0];
+        CameraComponent* component = element_component->data;
         mat4 local;
         glm_mat4_identity(local);
         glm_translate(local,component->position);
@@ -311,7 +311,7 @@ void* get_component_from_selected_element(ComponentType type){
     for(int i = 0; i< selected_element->components.count ; i++){       
         ComponentDefinition* component = array_get(&selected_element->components,i);
         if(component->type == type){
-            return &component->data[0];
+            return component->data;
         }           
     }        
     

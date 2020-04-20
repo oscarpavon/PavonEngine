@@ -66,7 +66,7 @@ int load_file(const char* path, File* output){
 }
 
 int file_read(File *file, char *buffer, int buffer_size) {
-  memcpy(buffer, &file->data[file->bytes_readed], buffer_size);
+  memcpy(buffer, file->data + file->bytes_readed, buffer_size);
   file->bytes_readed += buffer_size;
 	return buffer_size;
 }
