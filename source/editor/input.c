@@ -22,8 +22,9 @@
 
 #include "commands.h"
 #include "skeletal_editor.h"
-float rotate_value = 100;
+float rotate_value = 1;
 
+vec3 rotate_direction = (vec3){0,0,1};
 
 float last_mouse_x = 400;
 float last_mouse_y = 300;
@@ -473,34 +474,40 @@ void rotate_input_mode(){
     draw_translate_gizmo = false;
     gizmos_draw_scale = false;
 
+		bool can_rotate = false;
+
     if(key_released(&input.R)){
         change_to_editor_mode(EDITOR_DEFAULT_MODE);
         return;
     }
 
     if(key_released(&input.X)){
-
+				glm_vec3(VEC3(1,0,0),rotate_direction);
     }
 
-    if(input.SHIFT.pressed){
-        if(key_released(&input.J)){
-            rotate_editor_element(selected_element, -5, (vec3){0,0,1});
-        }
-        if(key_released(&input.K)){
-            
-            rotate_editor_element(selected_element, 5, (vec3){0,0,1});
-        }
+    if(key_released(&input.Y)){
+				glm_vec3(VEC3(0,1,0),rotate_direction);
     }
-    else{
-        float rotate_value = 1;
-        if(input.J.pressed){
-            rotate_editor_element(selected_element, -rotate_value, (vec3){0,0,1});
-        }
-        if(input.K.pressed){
-            
-            rotate_editor_element(selected_element, rotate_value, (vec3){0,0,1});
-        }
+    if(key_released(&input.Z)){
+				glm_vec3(VEC3(0,0,1),rotate_direction);
     }
+
+    if (input.SHIFT.pressed) {
+      rotate_value = 0.1f;
+    } else {
+      rotate_value = 1;
+    }
+
+    if (input.J.pressed) {
+      rotate_value = -rotate_value;
+			can_rotate = true;
+    }
+    if (input.K.pressed) {
+      rotate_value = rotate_value;
+			can_rotate = true;
+    }
+		if(can_rotate)
+			rotate_editor_element(selected_element, rotate_value, rotate_direction);
 }
 
 

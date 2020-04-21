@@ -400,6 +400,7 @@ void editor_main_window_init(){
 
     shader_compile_standard_shaders();
 		window_editor_main->char_parser = pe_editor_parse_cmd_char;
+
     //draw_loading_screen();
     //glfwSwapBuffers(window_editor_main->window);    
 		//
@@ -409,7 +410,8 @@ void editor_main_window_init(){
 		if(strcmp(editor_level_open_path,"") != 0){
 			editor_level_open(editor_level_open_path);
 		}	
-
+		
+		
 }
 
 void editor_update(){
@@ -534,7 +536,7 @@ void editor_data_init(){
     editor_mode_show_text = "Default Mode";
     editor_sub_mode_text = "";
 
-    camera_velocity = 0.04;  
+    camera_velocity = 0.10;  
 }
 
 void editor_init(){
@@ -553,12 +555,15 @@ void editor_init(){
 		render_thread_definition.draw = &editor_main_render_thread;
 		render_thread_definition.end = &editor_finish;	
 
+
+		//All window definition here
 		EngineWindow main_window;
 		memset(&main_window,0,sizeof(EngineWindow));
-		main_window.init = &editor_main_window_init;
-		main_window.draw = &editor_draw;
+		main_window.init = &editor_main_window_init;//window specific data
+		main_window.draw = &editor_draw;//Main loop draw in window
 		main_window.finish = &editor_render_finish;
-		main_window.input = &editor_window_level_editor_input_update;
+		main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
+
 		array_add(&engine_windows,&main_window);
 		window_editor_main = array_pop(&engine_windows);	
 
