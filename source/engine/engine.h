@@ -32,7 +32,7 @@
 
 #include "camera.h"
 
-#include "Renderer/OpenGL/opengl_es2.h"
+#include "renderer/renderer.h"
 
 #include "Collision/collision.h"
 #include "content_manager.h"
@@ -42,8 +42,6 @@
 #include "audio/audio_engine.h"
 
 #include "windows_manager.h"
-
-#include "render_thread.h"
 
 #include "game.h"
 

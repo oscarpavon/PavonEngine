@@ -1,7 +1,7 @@
 #include "render_thread.h"
-#include "engine.h"
-#include "types.h"
-#include "threads.h"
+#include <engine/engine.h>
+#include <engine/types.h>
+#include <engine/threads.h>
 
 
 void render_thread_init(){

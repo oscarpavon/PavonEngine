@@ -60,7 +60,6 @@ build
 .externalNativeBuild
 local.properties
 src/Game/assets
-Engine/binaries/*
 
 *.blend1
 *.blend2
@@ -70,7 +69,6 @@ Engine/generated_glTF_files/*
 
 Engine/assets/HLOD/*
 Project/*
-Binaries/*
 tags
 *.swp
 *.swo

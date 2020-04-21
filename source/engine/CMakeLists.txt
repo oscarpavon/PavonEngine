@@ -21,7 +21,7 @@ set(components
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
-        ${CMAKE_CURRENT_LIST_DIR}/Renderer/OpenGL/opengl_es2.c
+        ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
         ${CMAKE_CURRENT_LIST_DIR}/LOD_system.c
         ${CMAKE_CURRENT_LIST_DIR}/memory.c
         ${CMAKE_CURRENT_LIST_DIR}/model.c
@@ -48,7 +48,7 @@ set(engine_source
 				${network}
 				${CMAKE_CURRENT_LIST_DIR}/network/network.c
 				${CMAKE_CURRENT_LIST_DIR}/input.c
-				${CMAKE_CURRENT_LIST_DIR}/render_thread.c
+				${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
 				${CMAKE_CURRENT_LIST_DIR}/game.c
 )
 

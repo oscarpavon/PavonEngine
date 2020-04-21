@@ -1,7 +1,7 @@
 #ifndef ENGINE_RENDER_THREAD
 #define ENGINE_RENDER_THREAD
-#include "array.h"
-#include "threads.h"
+#include <engine/array.h>
+#include <engine/threads.h>
 
 
 typedef struct RenderThread{
