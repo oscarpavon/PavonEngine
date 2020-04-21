@@ -2,54 +2,10 @@
 #include <vulkan/vulkan.h>
 #include <engine/log.h>
 
-
 VkInstance vk_instance;
-VkDebugUtilsMessengerEXT debug_messenger;
-VkDebugUtilsMessengerCreateInfoEXT g_messenger_info;
+VkPhysicalDevice vk_physical_device;
 
-static VKAPI_ATTR VkBool32 VKAPI_CALL pe_vk_debug_callback(
-		VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
-		VkDebugUtilsMessageTypeFlagsEXT message_type,
-		const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
-		void* user_data) {
-	
-	printf("PEvk_validation: %s\n",callback_data->pMessage);
-
-	return VK_FALSE;	
-}
-
-VkResult pe_vk_create_debug_messeger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* info,
-		const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messeger){
-
-		PFN_vkCreateDebugUtilsMessengerEXT func = 
-			(PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance,"vkCreateDebugUtilsMessengerEXT");
-
-		if(func != NULL){
-			return func(instance,info,allocator,debug_messeger);
-		}else{
-			LOG("Cant't create debug messenger\n");
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
-		}
-
-}
-void pe_vk_populate_messeger_debug_info(VkDebugUtilsMessengerCreateInfoEXT info_messeger){
-
-	info_messeger.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	info_messeger.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
-													VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-													VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	info_messeger.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-	info_messeger.pfnUserCallback = pe_vk_debug_callback;
-	info_messeger.pUserData = NULL;
-}
-
-void pe_vk_setup_debug_messenger(){
-
-	pe_vk_create_debug_messeger(vk_instance,&g_messenger_info,NULL,&debug_messenger);	
-
-}
+#include "debug.h"
 
 int pe_vk_init(){
 	int instance_layer_properties_count = 0;
@@ -95,6 +51,20 @@ int pe_vk_init(){
 	if(r != VK_SUCCESS)
 		LOG("Can't create vk instance\n");
 	pe_vk_setup_debug_messenger();
+
+	//****************
+	//Physical devices
+	//****************
+	int devices_count = 0;
+	vkEnumeratePhysicalDevices(vk_instance,&devices_count,NULL);
+	if(devices_count == 0)
+		LOG("Not devices compatibles\n");
+	VkPhysicalDevice phy_devices[devices_count];
+	vkEnumeratePhysicalDevices(vk_instance,&devices_count,phy_devices);
+	
+
+
+
 	return 0;
 }
 void pe_vk_end(){

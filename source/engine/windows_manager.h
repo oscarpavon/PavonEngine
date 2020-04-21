@@ -22,6 +22,7 @@ typedef struct EngineWindow{
 	void(*init)(void);
 	void(*finish)(void);
 	void(*input)(void);
+	void(*char_parser)(unsigned char);
 #ifdef EDITOR
 	u8 tab_current_id;
 	EditorTab* tab_current;

@@ -236,10 +236,10 @@ void text_draw_commands(){
 }
 
 void text_renderer_loop() { draw_engine_memory();
-  draw_frame_time();
-  draw_FPS();
-  draw_count_of_draw_call();
-  draw_stats_triangles();
+  //draw_frame_time();
+ // draw_FPS();
+  //draw_count_of_draw_call();
+  //draw_stats_triangles();
 
   text_render_in_screen_space(12, editor_mode_show_text,
                               camera_width_screen - 100, 0);

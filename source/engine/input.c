@@ -1,7 +1,8 @@
 #include "input.h"
 #include "camera.h"
 #include <string.h>
-
+#include <engine/log.h>
+#include <engine/windows_manager.h>
 bool left_click = false;
 float actual_mouse_position_x;
 float actual_mouse_position_y;
@@ -20,13 +21,22 @@ void mouse_movement_control(float xpos, float ypos){
      
 }
 
-void pe_input_character_callback(GLFWwindow* window, unsigned int codepoint, void(*parse_function)(unsigned char)){
+
+void pe_input_character(unsigned int codepoint){
     if(codepoint == 241)//equal "ñ"
             return;
     unsigned char character[1];
     code_to_utf8(character,codepoint);
     //LOG("Converted: %s\n",character);
-		parse_function(character[0]);
+		if(current_window->char_parser == NULL){
+			LOG("Not charter parser assing to PEWindow\n");
+			return;	
+		}
+		current_window->char_parser(character[0]);
+}
+
+void pe_input_character_callback(GLFWwindow* window, unsigned int codepoint){
+	pe_input_character(codepoint);
 }
 
 void pe_input_mouse_movement_callback(GLFWwindow* window, double xpos, double ypos){

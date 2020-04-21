@@ -235,7 +235,7 @@ void parse_command(const char *in_command) {
   }
 }
 
-void parse_characters(unsigned char character){
+void pe_editor_parse_cmd_char(unsigned char character){
     if(character == ':'){
         LOG("Command mode\n");
         command_text_buffer[command_character_count] = character;

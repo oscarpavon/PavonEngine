@@ -11,4 +11,6 @@ void system_command(const char* command, const char* argument);
 
 int command_parse_from_command_line(int argc, char* argv[]);
 
+void pe_editor_parse_cmd_char(unsigned char character);
+
 #endif
