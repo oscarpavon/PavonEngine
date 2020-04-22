@@ -56,6 +56,7 @@ void *array_get(Array* array,int index){
     }
     if(index > array->count-1){
         LOG("Element out of range, array count: %i , requested %i\n",array->count,index);
+				debug_break();
         return NULL;
     }
     size_t offset = array->element_bytes_size;

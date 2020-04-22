@@ -173,8 +173,12 @@ void init_element_component(ComponentDefinition* element_component){
 
                 duplicate_model_data(selected_model,original_model);
                 selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader); 
-                u8* texture_id = array_get(&mesh_component->textures,i);
-                if(texture_id){
+							
+								u8* texture_id = NULL;
+								if(mesh_component->textures.count > 0)
+									texture_id = array_get(&mesh_component->textures,i);
+                
+								if(texture_id){
                     Texture* texture = array_get(current_textures_array,*texture_id);
                     if(texture)
                         selected_model->texture.id = texture->id;
