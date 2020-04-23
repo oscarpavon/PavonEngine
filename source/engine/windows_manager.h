@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_ES2
 #define GLFW_INCLUDE_GLEXT
 
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include "../engine/camera.h"
@@ -60,6 +61,13 @@ EngineWindow* window_editor_main;
 EngineWindow* current_window;
 
 Array engine_windows;
+
+typedef enum PEWindowManagerRendererType{
+	PEWMVULKAN,
+	PEWMOPENGLES2
+}PEWindowManagerRendererType;
+
+PEWindowManagerRendererType pe_wm_renderer_type;
 
 inline static void window_update_envents(){
        glfwPollEvents();

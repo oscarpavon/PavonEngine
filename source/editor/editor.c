@@ -540,7 +540,7 @@ void editor_data_init(){
 }
 
 void editor_init(){
-
+		pe_wm_renderer_type = PEWMOPENGLES2;
     pe_init();
 
 		editor_data_init();

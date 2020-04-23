@@ -1,0 +1,4 @@
+#ifndef RENDER_VK_SWAPCHAIN
+#define RENDER_VK_SWAPCHAIN
+
+#endif

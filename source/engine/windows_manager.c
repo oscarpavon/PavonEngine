@@ -10,8 +10,24 @@
 
 void window_manager_error_callback(int error, const char* description)
 {
-	    fprintf(stderr, "Error: %s\n", description);
+	    fprintf(stderr, "PEglfw error: %s\n", description);
 }
+
+void pe_wm_glfw_init(){
+   if(pe_wm_renderer_type == PEWMOPENGLES2){ 
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	 }else if(pe_wm_renderer_type == PEWMVULKAN){
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	 }
+
+    glfwSetErrorCallback(window_manager_error_callback);
+    glfwInit();
+}
+
 
 void window_manager_init_window(EngineWindow* window){
 	window->init();
@@ -19,15 +35,8 @@ void window_manager_init_window(EngineWindow* window){
 }
 
 void windows_manager_init(){
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    glfwSetErrorCallback(window_manager_error_callback);
-    glfwInit();
-
-		array_init(&engine_windows,sizeof(EngineWindow),40);
+	pe_wm_glfw_init();		
+	array_init(&engine_windows,sizeof(EngineWindow),40);
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){

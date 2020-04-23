@@ -9,6 +9,7 @@
 #else
 #include <stdio.h>
 #define LOG printf
+#define LOGW(t) printf(t); printf("\n")
 #endif//DEF ANDROID
 
 
