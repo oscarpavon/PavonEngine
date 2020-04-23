@@ -94,7 +94,7 @@ void parse_command(const char *in_command) {
 	memset(command,0,sizeof(command));
 	strcpy(command,in_command);
 	//LOG("Command lenght: %i\n",strlen(command));
-	//LOG("In Command resulr: %s\n",command);
+	LOG("In Command result: %s\n",command);
 	first_char_command = command[1];
 
   //command_while_not_space(&command[1]);

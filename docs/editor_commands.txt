@@ -2,8 +2,10 @@ This commnads can be introduting in the Editor with GUI Mode
 
 :t 'path'
 	- Add texture to selected element
+
 :r
 	- Reload editor
+
 :u
 	-Show UVs
 

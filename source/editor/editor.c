@@ -320,8 +320,8 @@ void editor_init_new_added_element(){
 
 void editor_add_element_with_model_path(const char* path){
 
-    add_element_with_model_path(path);
-
+    if(add_element_with_model_path(path) == -1)
+			return;
     editor_init_new_added_element();
 }
 

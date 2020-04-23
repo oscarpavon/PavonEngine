@@ -34,12 +34,7 @@ void editor_level_open(const char* name){
     actual_model_array = &editor_models;
 
     for(int i = 0; i< textures_paths.count ; i++){
-				memset(new_file_name_with_path,0,sizeof(new_file_name_with_path));
-                                sprintf(new_file_name_with_path, "%s%s%s",
-                                        pavon_the_game_project_folder,
-                                        "Content/",
-                                        (char*)array_get(&textures_paths, i));
-                                load_simple_image(new_file_name_with_path);
+      load_simple_image(array_get(&textures_paths, i));
     } 
 
     for_each_element_components(&init_element_component);

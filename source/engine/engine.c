@@ -238,10 +238,10 @@ void engine_add_element_from_content(Content* content){
     
 }
 
-void add_element_with_model_path(const char* model_gltf_path){
+int add_element_with_model_path(const char* model_gltf_path){
     if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
         LOG("Error to load, null path (add_editor_element)\n");
-        return;
+        return -1;
     }
 
     Array* prev_array = actual_model_array;
@@ -249,7 +249,7 @@ void add_element_with_model_path(const char* model_gltf_path){
 
     int models_loaded = load_model(model_gltf_path);
     if( models_loaded == -1){
-        return;
+        return -1;
     }
     actual_model_array = prev_array;
     
