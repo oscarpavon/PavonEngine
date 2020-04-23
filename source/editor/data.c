@@ -9,12 +9,12 @@
 Element* current_element = NULL;
 
 int previous_id_saved = 0;
-int previous_path_id = 0;
+u8 previous_path_id = 0;
 StaticMeshComponent* previous_component = NULL;
 
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;
-    int* path_id = array_get(&mesh->meshes,0);
+    u8* path_id = array_get(&mesh->meshes,0);
     int count = 0;
     int offset = 0;
     if(previous_path_id != *path_id){
@@ -29,7 +29,7 @@ void save_models_id(void* component){
     
     
     for(int o = 0; o < mesh->meshes.count-1 ; o++){
-        int id = previous_id_saved + o;
+        u8 id = previous_id_saved + o;
         fprintf(actual_file,"%i,",id);
         count++;
     }
@@ -86,10 +86,8 @@ void save_element_component_data(int id){
 }
 
 void components_data(){
-    SaveDataFunction component = &save_element_component_data;
-    
     for(int i = 0; i < current_element->components.count ; i++){
-        new_save_element(component,i);
+        new_save_element(&save_element_component_data,i);
     }
 }
 
@@ -104,11 +102,8 @@ void save_level_element_data(int id){
 
 
 void level_elements_data(){
-    SaveDataFunction element_save_function =  &save_level_element_data;
     for(int i = 0; i < editor_elements.count ; i++){        
-        
-        new_save_element(element_save_function,i);
-
+        new_save_element(&save_level_element_data,i);
     }
 
 }
@@ -169,8 +164,7 @@ void save_level_data(const char* level_name){
     actual_file = new_file;
      
  
-    SaveDataFunction level =  &save_level;
-    new_save_element(level,0);
+    new_save_element(&save_level,0);
     
     
     fclose(new_file);
