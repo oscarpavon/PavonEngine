@@ -32,6 +32,9 @@
 #include "windows/windows.h"
 #include "commands.h"
 #include <engine/text_renderer.h>
+
+#include "menus.h"
+
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
@@ -501,7 +504,7 @@ void editor_draw() {
   }
 
   text_renderer_loop();
-
+	pe_editor_menus_update();	
   // editor_message("editor message");
 }
 

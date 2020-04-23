@@ -23,4 +23,5 @@ void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods);
 void text_menu_update(TextMenu *menu);
 
 void menu_draw_menus();
+void pe_editor_menus_update();
 #endif

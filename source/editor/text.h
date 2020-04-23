@@ -14,7 +14,7 @@
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,
-    MENU_TYPE_ADD_TEXTURE    
+    MENU_TYPE_ADD_TEXTURE,
 }TextMenuType;
 
 typedef struct TextMenu TextMenu;

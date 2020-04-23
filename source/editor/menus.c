@@ -292,7 +292,8 @@ void menu_action_select_element(TextMenu* menu){
 }
 
 void menu_action_add_editor_native_element(TextMenu* menu){
-    add_editor_native_element(menu->text_for_action);
+    
+		add_editor_native_element(menu->text_for_action);
     LOG("Add editor native element: %s\n",menu->text_for_action);
 }
 
@@ -303,9 +304,8 @@ const char* elements_names[] = {
     };
 
 void menu_action_draw_native_editor_elments(TextMenu* menu){
-    float text_size = 12;
-    set_text_size(text_size);
-    menu->text_size = text_size;   
+    set_text_size(12);
+    menu->text_size = 12;   
     menu->element_count = 9;
     
     for(int i = 0; i < EDITOR_NATIVE_ELEMETN_COUNT; i++){
@@ -314,7 +314,7 @@ void menu_action_draw_native_editor_elments(TextMenu* menu){
         draw_element_text_list(menu,name,i);
        
     }
-    
+		strcpy(menu->text_for_action,elements_names[menu->actual_element_select]);
 }
 
 void menu_action_draw_editor_elements(TextMenu* menu){
@@ -351,6 +351,34 @@ void menu_action_draw_gui_elements(TextMenu* menu){
         Button* button = array_get(actual_buttons_array,i);
         draw_element_text_list(menu,button->name,i);
     }
+}
+void pe_editor_menus_update() {
+
+  if (editor_mode == EDITOR_DEFAULT_MODE &&
+      editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT &&
+      window_editor_main->focus) {
+
+    // can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
+    // can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
+    // can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
+
+    menu_can_open_with_key(&menu_add_native_editor_element, &input.E,
+                           GLFW_MOD_SHIFT);
+
+    text_menu_update(&menu_add_texture);
+
+    // text_menu_update(&add_element_menu);
+
+    text_menu_update(&menu_editor_element_list);
+
+    text_menu_update(&menu_add_native_editor_element);
+
+    // text_menu_update(&menu_show_gui_elements);
+    menu_draw_menus();
+  }
+
+  if (editor_mode == EDITOR_MODE_GUI_EDITOR)
+    menu_can_open_with_key(&menu_show_gui_elements, &input.L, -1);
 }
 
 void menus_init(){

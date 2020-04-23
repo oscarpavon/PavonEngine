@@ -19,9 +19,6 @@ void editor_level_open(const char* name){
     int temp;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-    char new_file_name_with_path[strlen(pavon_the_game_project_folder) + 40];
-		sprintf(new_file_name_with_path,"%s%s%s.lvl",pavon_the_game_project_folder,"Content/levels/",name);
-
     int level_result = load_level_to_elements_array(name, actual_elements_array);
     if(level_result != 0)
         return;   
