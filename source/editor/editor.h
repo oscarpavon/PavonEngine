@@ -76,7 +76,7 @@ void editor_add_element_with_model_path(const char*);
 void editor_init_new_added_element();
 //++++++++++++++++++++++
 //Global variables
-char* editor_mode_show_text;
+char editor_mode_show_text[50];
 char* editor_sub_mode_text;
 
 float camera_velocity;

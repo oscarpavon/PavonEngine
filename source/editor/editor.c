@@ -536,8 +536,9 @@ void editor_data_init(){
     editor_mode = EDITOR_DEFAULT_MODE;
     editor_sub_mode = EDITOR_SUB_MODE_NULL;
     
-    editor_mode_show_text = "Default Mode";
     editor_sub_mode_text = "";
+
+		strcpy(editor_mode_show_text,"Default");
 
     camera_velocity = 0.10;  
 }

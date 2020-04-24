@@ -4,6 +4,8 @@
 #include <GLES2/gl2.h>
 
 #include "numbers.h"
+#include <engine/types.h>
+
 typedef struct Image{
   unsigned short int width;
   unsigned short int heigth;
@@ -13,6 +15,7 @@ typedef struct Image{
 typedef struct Texture{
     Image image;
     unsigned int id;
+		bool gpu_loaded;
 }Texture;
 
 int image_load(const char* path, Image* image);

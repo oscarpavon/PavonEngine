@@ -33,6 +33,7 @@ bool first_mouse_movement = true;
 
 //grab mode
 float move_object_value = 0.5;
+float scale_object_value= 0.01;
 bool grid_translate = false;
 vec2 move_ui_element_value;//per pixel
 float move_ui_element_value_per_axis = 0.6;
@@ -322,48 +323,45 @@ void grab_mode(){
     
 }
 
+void scale_mode() {
 
+  input_change_mode();
 
+  gizmos_draw_scale = true;
 
-void scale_mode(){
-    
-    input_change_mode();
+  if (editor_mode == EDITOR_DEFAULT_MODE) {
 
-    gizmos_draw_scale = true;
+    vec3 move;
+    bool update = false;
 
-    if(editor_mode == EDITOR_DEFAULT_MODE){     
-        
-        vec3 move;
-        bool update = false;
-                  
-            if(input.J.pressed){
-                glm_vec3_copy( VEC3(0,-move_object_value,0) , move );
-                update = true;
-            }
-            if(input.K.pressed){
-                glm_vec3_copy( VEC3(0,move_object_value,0) , move );
-                update = true;            }
-            if(input.D.pressed){
-                glm_vec3_copy( VEC3(-move_object_value,0,0) , move );
-                update = true;            
-            }
-            if(input.A.pressed){
-                glm_vec3_copy( VEC3(move_object_value,0,0) , move );
-                update = true;            
-            }
-            if(input.E.pressed){
-                glm_vec3_copy( VEC3(0,0,move_object_value) , move );
-                update = true;            
-            }
-            if(input.Q.pressed){
-                glm_vec3_copy( VEC3(0,0,-move_object_value) , move );
-                update = true;            
-            }
-            
-            if(update)
-                update_scale(move);
-            
-        }
+    if (input.J.pressed) {
+      glm_vec3_copy(VEC3(0, -scale_object_value, 0), move);
+      update = true;
+    }
+    if (input.K.pressed) {
+      glm_vec3_copy(VEC3(0, scale_object_value, 0), move);
+      update = true;
+    }
+    if (input.D.pressed) {
+      glm_vec3_copy(VEC3(-scale_object_value, 0, 0), move);
+      update = true;
+    }
+    if (input.A.pressed) {
+      glm_vec3_copy(VEC3(scale_object_value, 0, 0), move);
+      update = true;
+    }
+    if (input.E.pressed) {
+      glm_vec3_copy(VEC3(0, 0, scale_object_value), move);
+      update = true;
+    }
+    if (input.Q.pressed) {
+      glm_vec3_copy(VEC3(0, 0, -scale_object_value), move);
+      update = true;
+    }
+
+    if (update)
+      update_scale(move);
+  }
 }
 
 void default_mode(){

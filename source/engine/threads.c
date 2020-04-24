@@ -1,8 +1,9 @@
 #include "threads.h"
-
+#include <engine/macros.h>
 
 #include "log.h"
-
+#include <string.h>
+#include <engine/engine.h>
 void thread_new_function(void*(*function)(void*), void* argument){
     pthread_t new_thread_id;
     pthread_create(&new_thread_id,NULL,function,argument);
@@ -12,17 +13,18 @@ void thread_new_function(void*(*function)(void*), void* argument){
     } */
 }
 
-void thread_new_detached(void*(*function)(void*), void* argument, const char* name){
+void thread_new_detached(void*(*function)(void*), void* argument, const char* name, PEThreadID* id){
     pthread_t new_thread_id;
     pthread_create(&new_thread_id,NULL,function,argument);
 #ifdef LINUX
     pthread_setname_np(new_thread_id,name);
 #endif
-
     int result = pthread_detach(new_thread_id);
     if(result != 0){
         LOG("ERROR detaching thread\n");
     }
+		memcpy(id,&new_thread_id,sizeof(PEThreadID));
+
 }
 void thread_init_engine_thread(const char* name, EngineThread* thead, void*(*function)(void*)){
 	
@@ -62,3 +64,23 @@ void pe_thread_control(Array* thread_commads){
 				array_clean(thread_commads);
 }
 
+void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment){
+	
+	PEThreadID curren_thread_id = pthread_self();
+
+	if(curren_thread_id == to_id){
+		func(argment);
+		return;
+	}
+
+	PEThreadCommand command;
+	ZERO(command);
+	command.type = POINTER;
+	command.command = func;	
+	command.data = argment;
+
+	if(to_id == pe_th_render_id){
+		array_add(&render_thread_commads,&command);	
+		LOG("exec in renderen therd\n");
+	}
+}

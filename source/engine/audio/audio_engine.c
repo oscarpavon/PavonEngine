@@ -21,7 +21,7 @@ void audio_engine_main_thread(void* argument){
 }
 
 int pe_audio_init(){
-	thread_new_detached(audio_engine_main_thread,NULL,"Audio");
+	thread_new_detached(audio_engine_main_thread,NULL,"Audio",&pe_th_audio_id);
 	
 }
 

@@ -2,7 +2,7 @@
 #define ENGINE_THREADS
 
 #include "array.h"
-#include "pthread.h"
+#include <pthread.h>
 
 typedef struct{
     pthread_t id;
@@ -12,7 +12,10 @@ typedef struct{
 }EngineThread;
 
 
-typedef enum PEThreadCommandType{
+
+typedef unsigned long int PEThreadID;
+
+typedef enum PEThreadCommandType{ 
 	POINTER,
 	TEXT
 }PEThreadCommandType;
@@ -26,11 +29,16 @@ typedef struct PEThreadCommand{
 }PEThreadCommand;
 
 void thread_new_function(void*(*function)(void*),void* argument);
-void thread_new_detached(void*(*function)(void*),void* argument,const char* name);
+void thread_new_detached(void*(*function)(void*),void* argument,const char* name,PEThreadID*);
 
 void thread_engine_thread_system_init();
 
 Array array_engine_threads;
 
 void pe_thread_control(Array* thread_commads);
+
+PEThreadID pe_th_render_id;
+PEThreadID pe_th_main_id;
+PEThreadID pe_th_audio_id;
+
 #endif // !ENGINE_THREADS

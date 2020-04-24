@@ -38,6 +38,7 @@ void load_texture_to_GPU(Texture* texture){
     glGenerateMipmap(GL_TEXTURE_2D);
 
     check_error("Texture to GPU");
+		texture->gpu_loaded = true;
 }
 
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){

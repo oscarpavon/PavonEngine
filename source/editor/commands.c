@@ -14,6 +14,35 @@ char first_char_command;
 char* command_array_pointer;
 char* argument_array_pointer;
 
+void pe_editor_parse_cmd_char(unsigned char character){
+    if(character == ':'){
+        LOG("Command mode\n");
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;        
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+        return;
+    }else if(character == '/'){
+        if(editor_sub_mode == EDITOR_SUB_MODE_NULL)
+        { 
+            LOG("Search mode\n");
+            command_text_buffer[command_character_count] = character;
+            command_character_count++;
+            editor_search_objects = true;
+            change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+            return;
+        }
+    }
+
+    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;
+    }
+if(editor_window_content_browser_hint && window_content_browser->focus){
+        command_text_buffer[command_character_count] = character;
+        command_character_count++;
+    }
+}
+
 void system_command(const char* command, const char* argument){
     char final_command[strlen(command) + strlen(argument)];
     memset(final_command,0,strlen(final_command));
@@ -89,7 +118,7 @@ void command_while_not_space(const char* command){
 }
 
 void parse_command(const char *in_command) {
-	 
+
 	char command[1000];
 	memset(command,0,sizeof(command));
 	strcpy(command,in_command);
@@ -144,6 +173,10 @@ void parse_command(const char *in_command) {
     editor_add_element_with_model_path(&command[3]);
     return;
   }
+  case 't': {
+    add_texture_to_selected_element_with_image_path(&command[3]);
+    break;
+  }
   case 'o': {
     switch (editor_mode) {
     case EDITOR_MODE_GUI_EDITOR:
@@ -159,11 +192,6 @@ void parse_command(const char *in_command) {
     default:
       break;
     }
-  }
-  case 't': {
-
-    add_texture_to_selected_element_with_image_path(&command[3]);
-    break;
   }
   case 'r': {
     reload_editor();
@@ -235,35 +263,6 @@ void parse_command(const char *in_command) {
   }
 }
 
-void pe_editor_parse_cmd_char(unsigned char character){
-    if(character == ':'){
-        LOG("Command mode\n");
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;        
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-        return;
-    }else if(character == '/'){
-        if(editor_sub_mode == EDITOR_SUB_MODE_NULL)
-        { 
-            LOG("Search mode\n");
-            command_text_buffer[command_character_count] = character;
-            command_character_count++;
-            editor_search_objects = true;
-            change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-            return;
-        }
-    }
-
-    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;
-    }
-
-    if(editor_window_content_browser_hint && window_content_browser->focus){
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;
-    }
-}
 
 void text_input_mode(){
     if(key_released(&input.ENTER)){

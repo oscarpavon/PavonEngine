@@ -125,10 +125,9 @@ void new_empty_model(){
 
 
 void engine_select_element_add_texture(Texture* texture){
+		while(!texture->gpu_loaded){
 
-    array_add(current_textures_array,texture);
-    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
-
+		}
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
      
     if(mesh){
@@ -138,7 +137,7 @@ void engine_select_element_add_texture(Texture* texture){
             for(u8 i = 1; i<mesh->meshes.count; i++){
                 u8* model_id = array_get(&mesh->meshes,i);
                 Model* model = array_get(actual_model_array,*model_id);
-                model->texture.id = texture_loaded->id;
+                model->texture.id = texture->id;
                 u8 id = textures_paths.count-1;
                 array_add(&mesh->textures,&id);
             }
@@ -171,12 +170,18 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     }
     
     Texture new_texture;
-    memset(&new_texture,0,sizeof(Texture));
-    texture_load(image_path,&new_texture);
+		ZERO(new_texture);
+    array_add(current_textures_array,&new_texture);
+
+    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
+		if(texture_load(image_path,texture_loaded) == -1)
+				return;
 
     array_add(&textures_paths,image_path);
-    engine_select_element_add_texture(&new_texture);
-	LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
+
+    engine_select_element_add_texture(texture_loaded);
+		
+		LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
 }
 
 void load_simple_image(const char* path){
@@ -468,5 +473,8 @@ void pe_init(){
 	pe_audio_init();
 
 	array_init(&engine_windows,sizeof(EngineWindow),40);
+
+	pe_th_main_id = pthread_self();
+
 }
 

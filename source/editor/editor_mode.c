@@ -69,20 +69,21 @@ void change_to_editor_mode(EditorMode mode){
     switch (mode)
     {    
     case EDITOR_DEFAULT_MODE:
-        editor_mode_show_text = "Default Mode";
+				strcpy(editor_mode_show_text,"Default");
         break;
     case EDITOR_NAVIGATE_MODE:
-        editor_mode_show_text = "Navigate Mode";
+				strcpy(editor_mode_show_text,"Navigate");
         move_camera_input = true;
         break;
     case EDITOR_GRAB_MODE:
-        editor_mode_show_text = "Grab Mode";
+				strcpy(editor_mode_show_text,"Grab");
         break;
     case EDITOR_ROTATE_MODE:
-        editor_mode_show_text = "Rotate Mode";
+				strcpy(editor_mode_show_text,"Rotate");
         break;
     case EDITOR_MODE_GUI_EDITOR:
-        editor_mode_show_text = "GUI Editor";
+				strcpy(editor_mode_show_text,"GUI");
+        break;
         break;
     case EDITOR_PLAY_MODE:{
         if(game_initialized == false){
@@ -97,7 +98,7 @@ void change_to_editor_mode(EditorMode mode){
             return;
         }            
         game_initialized = true;
-        editor_mode_show_text = "Play Mode";
+				strcpy(editor_mode_show_text,"Rotate");
         if(loaded_gamplay_library == false){
             load_gamplay_code();
             loaded_gamplay_library = true;

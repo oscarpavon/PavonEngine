@@ -22,6 +22,7 @@ void render_thread_init(){
 }
 
 void engine_render_thread() {
+	LOG("Render thread id= %ld\n",pthread_self());
 
 //*********  Timing ******
   float render_frame_time = 0;
@@ -62,5 +63,5 @@ void engine_render_thread() {
 
 /*Init the render thread*/
 void engine_init_render(){
-    thread_new_detached(engine_render_thread,NULL,"Render");    
+	thread_new_detached(engine_render_thread,NULL,"Render",&pe_th_render_id);    
 }

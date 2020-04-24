@@ -21,40 +21,37 @@ int image_load_from_memory(Image* image,void* data, u32 size){
 }
 
 int image_load(const char* path, Image* image){
-    File new_file;
-    if( load_file(path,&new_file) == -1 ){
-        LOG("Image not loaded: %s\n",path);
-        return -1;
-    }
-	image_load_from_memory(image,new_file.data,new_file.size_in_bytes);
-	close_file(&new_file);
-    return 0;
+  File new_file;
+  if (load_file(path, &new_file) == -1) {
+    LOG("Image not loaded: %s\n", path);
+    return -1;
+  }
+  image_load_from_memory(image, new_file.data, new_file.size_in_bytes);
+  close_file(&new_file);
+  return 0;
 }
 
-void texture_load_current_to_render_thread(){
-
-	load_texture_to_GPU(texture_current_to_load);
-}
 int texture_load_from_memory(Texture* texture,u32 size,void* data){
 	memset(texture,0,sizeof(Texture));
 	texture_current_to_load = texture;
 	if(image_load_from_memory(&texture->image,data,size)== -1){
 		return -1;
 	}
+
 	load_texture_to_GPU(texture_current_to_load);
 		
 	return 0;
 }
 
-int texture_load(const char* path, Texture* new_texture){
-    memset(new_texture,0,sizeof(Texture));
-	texture_current_to_load = new_texture;
-    if(image_load(path,&new_texture->image) == -1){
-        new_texture->id = 0;
-        return -1;
-    }
-	
-	load_texture_to_GPU(texture_current_to_load);
+int texture_load(const char *path, Texture *new_texture) {
+  texture_current_to_load = new_texture;
+  if (image_load(path, &new_texture->image) == -1) {
+    new_texture->id = 0;
+    return -1;
+  }
+
+//  load_texture_to_GPU(texture_current_to_load);
+	pe_th_exec_in(pe_th_render_id,&load_texture_to_GPU,texture_current_to_load);
 }
 
 int load_image_with_format(const char* path, GLint format, Image* out_image){
