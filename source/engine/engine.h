@@ -190,7 +190,7 @@ Array array_skinned_mesh_for_distance_test;
 //
 //Paths data
 //
-Array texts;
+Array pe_arr_models_paths;
 Array textures_paths;
 
 //ThreadsCommads

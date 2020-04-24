@@ -156,7 +156,7 @@ void editor_input_navigate(){
     if(editor_input_camera_rotate_control()){	
 		//camera_update(&current_window->camera);
         camera_update(&main_camera);
-	} 
+		} 
 	if(update)
         camera_update(&main_camera);
 }

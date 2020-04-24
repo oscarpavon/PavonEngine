@@ -176,7 +176,8 @@ void load_mesh(cgltf_mesh* mesh){
     actual_vertex_array = &selected_model->vertex_array;
     actual_index_array = &selected_model->index_array;
     load_primitive(&mesh->primitives[i]);
-    GPU_buffers_create_for_model(selected_model);
+		//pe_th_exec_in(pe_th_render_id,&GPU_buffers_create_for_model,selected_model);	
+		GPU_buffers_create_for_model(selected_model);
     models_parsed++;
   }  
 
@@ -412,7 +413,7 @@ int load_model(const char* path){
     
   close_file(&new_file);
 
-  LOG("gltf loaded: %s. \n",path);
+  LOG("glTF2 loaded: %s. \n",path);
 
   int model_result = models_parsed;
   models_parsed = 0;

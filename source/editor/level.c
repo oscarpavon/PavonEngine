@@ -24,8 +24,8 @@ void editor_level_open(const char* name){
         return;   
     
     actual_model_array = &array_models_loaded;
-    for(int i = 0; i< texts.count ; i++){
-        char* model_path = array_get(&texts,i);
+    for(int i = 0; i< pe_arr_models_paths.count ; i++){
+        char* model_path = array_get( &pe_arr_models_paths,i);
         load_model(model_path);
     }    
     actual_model_array = &editor_models;

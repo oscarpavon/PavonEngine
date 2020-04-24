@@ -11,8 +11,6 @@ typedef struct{
 
 }EngineThread;
 
-
-
 typedef unsigned long int PEThreadID;
 
 typedef enum PEThreadCommandType{ 
@@ -33,9 +31,9 @@ void thread_new_detached(void*(*function)(void*),void* argument,const char* name
 
 void thread_engine_thread_system_init();
 
-Array array_engine_threads;
-
 void pe_thread_control(Array* thread_commads);
+
+void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment);
 
 PEThreadID pe_th_render_id;
 PEThreadID pe_th_main_id;

@@ -110,9 +110,9 @@ void level_elements_data(){
 
 void save_model_paths(){
 
-    for(int i = 0; i< texts.count ; i++){       
+    for(int i = 0; i< pe_arr_models_paths.count ; i++){       
         hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&texts,i));
+        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&pe_arr_models_paths,i));
     }
    
 }

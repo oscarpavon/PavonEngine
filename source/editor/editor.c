@@ -95,7 +95,7 @@ void editor_generate_and_add_cube_element(){
     StaticMeshComponent mesh_component;    
     array_init(&mesh_component.meshes,sizeof(unsigned int),2);
     array_init(&mesh_component.textures,sizeof(unsigned int),2);
-    int model_path_id = texts.count-1;
+    int model_path_id = pe_arr_models_paths.count-1;
     array_add(&mesh_component.meshes,&model_path_id);
 
     new_empty_model();
@@ -288,7 +288,7 @@ void reload_editor(){
     
     array_clean(&editor_elements);   
     array_clean(&editor_models);
-    array_clean(&texts);
+    array_clean(&pe_arr_models_paths);
     array_clean(&textures_paths);
     array_clean(actual_buttons_array);
     array_clean(&array_models_loaded);

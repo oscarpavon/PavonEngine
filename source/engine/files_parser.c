@@ -353,7 +353,7 @@ void parse_level_tokens(Token* tokens, int count){
           for (int i = 0; i < (last_element_parsed+1)->size; i++) {   
             char text[20];
             get_token_string(text,array_value_token+i);
-            array_add(&texts,text);
+            array_add(&pe_arr_models_paths,text);
           }
           break;
         }

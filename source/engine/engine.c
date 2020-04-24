@@ -202,8 +202,7 @@ void engine_add_element(u32 models_loaded){
         {
             LOG("Skinned mesh need fill now\n");
             SkinnedMeshComponent skin_mesh_component;
-            memset(&skin_mesh_component,0,sizeof(SkinnedMeshComponent));
-            
+	          ZERO(skin_mesh_component); 
             add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
 
         }
@@ -216,7 +215,7 @@ void engine_add_element(u32 models_loaded){
             array_init(&mesh_component.meshes,sizeof(u8),models_loaded+1);//the first element is the id of the model path in texts.array
             array_init(&mesh_component.textures,sizeof(u8),models_loaded+1);
 
-            u8 model_path_id = texts.count-1;
+            u8 model_path_id = pe_arr_models_paths.count-1;
             array_add(&mesh_component.meshes,&model_path_id);
 
             //add model loaded id
@@ -258,7 +257,7 @@ int add_element_with_model_path(const char* model_gltf_path){
     }
     actual_model_array = prev_array;
     
-    array_add(&texts,model_gltf_path);
+    array_add(&pe_arr_models_paths,model_gltf_path);
     
     engine_add_element(models_loaded);
 }
@@ -409,7 +408,7 @@ void duplicate_model_data(Model* destination , Model* source){
 }
 
 void engine_init_data(){
-    array_init(&texts,sizeof(char[100]),50);
+    array_init(&pe_arr_models_paths,sizeof(char[100]),50);
     array_init(&textures_paths,sizeof(char[20]),50);
     array_init(&array_models_loaded,sizeof(Model),100);
 

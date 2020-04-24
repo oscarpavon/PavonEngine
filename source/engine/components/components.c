@@ -214,7 +214,7 @@ void init_element_component(ComponentDefinition* element_component){
         Model* original_model = array_get(&array_models_loaded,array_models_loaded.count-1);
         
         duplicate_model_data(selected_model,original_model);
-        GLuint skin_vertex_shader = load_shader_file("../assets/shaders/skin_vertex_shader.glsl",GL_VERTEX_SHADER);
+        GLuint skin_vertex_shader = load_shader_file("/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",GL_VERTEX_SHADER);
         selected_model->shader = create_engine_shader(skin_vertex_shader,standart_fragment_shader); 
         
         glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);    
