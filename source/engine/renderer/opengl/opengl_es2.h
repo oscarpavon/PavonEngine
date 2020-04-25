@@ -16,6 +16,13 @@ void load_texture_to_GPU(Texture*);
 
 void GPU_buffers_create_for_model(Model* model);
 
+void init_static_gpu_vertex_buffer(Array* array, GLuint *id);
+void init_static_gpu_index_buffer(Array* array, GLuint *id);
+void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix);
+void update_gpu_vertex_data(Array* array, GLuint id);
+
+void pe_render_skinned_model(Model * new_model);
+
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
   //  debug_break();

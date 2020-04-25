@@ -21,59 +21,9 @@ Array engine_elements;
 Array engine_textures;
 
 
-void pe_frame_draw(){
-
-  glClearColor(1,0,0,1);
-  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
-
-  for_each_element_components(&update_per_frame_component);
-
-  test_elements_occlusion();
-  check_meshes_distance();
-
-  engine_draw_elements(&frame_draw_static_elements);
-
-  pe_frame_clean();
-
-}
-
-void pe_frame_clean(){
-    //clean frame
-    array_clean(&models_for_test_occlusion);
-    array_clean(&array_static_meshes_pointers);
-    array_clean(&array_static_meshes_pointers_for_test_distance);
-    array_clean(&array_skinned_mesh_pointers);
-    array_clean(&array_skinned_mesh_for_distance_test);
-    for_each_element_components(&clean_component_value);
-    //end clean frame
-}
-
 void pe_end(){
     engine_running = false;   
     clear_engine_memory();
-}
-
-void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
-    glGenBuffers(1,id);
-    GLuint id_copy;
-    memcpy(&id_copy,id,sizeof(GLuint));
-    glBindBuffer(GL_ARRAY_BUFFER,id_copy);
-    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
-
-}
-
-void init_static_gpu_index_buffer(Array* array, GLuint *id){
-    glGenBuffers(1,id);
-    GLuint id_copy;
-    memcpy(&id_copy,id,sizeof(GLuint));
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_copy);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
-}
-
-void update_gpu_vertex_data(Array* array, GLuint id){
-    glBindBuffer(GL_ARRAY_BUFFER,id);
-    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
-
 }
 
 void select_last_element(){
@@ -239,10 +189,6 @@ void engine_add_element(u32 models_loaded){
     LOG("model loaded and shader created \n");
 }
 
-void engine_add_element_from_content(Content* content){
-    
-}
-
 int add_element_with_model_path(const char* model_gltf_path){
     if(model_gltf_path == NULL || model_gltf_path[0] == '\0'){
         LOG("Error to load, null path (add_editor_element)\n");
@@ -263,25 +209,6 @@ int add_element_with_model_path(const char* model_gltf_path){
     engine_add_element(models_loaded);
 }
 
-
-void engine_draw_elements(Array *elements){
-    for(size_t i = 0; i < elements->count ; i++) { 
-        Model** model = array_get(elements,i);
-        Model* draw_model = model[0];        
-        draw_simgle_model(draw_model);
-    }
-    array_clean(elements);
-}
-
-void pe_render_skinned_elements(Array* elements){
-  for (size_t i = 0; i < elements->count; i++) {
-    Model **model = array_get(elements, i);
-    Model *draw_model = model[0];
-    pe_render_skinned_model(draw_model);
-  }
-
-  array_clean(elements);
-}
 
 void set_element_position(Element* element, vec3 position){    
     glm_mat4_identity(element->transform->model_matrix);
@@ -330,6 +257,11 @@ void update_translation(vec3 translation){
         ComponentDefinition* component = array_get(&selected_element->components,i);
         update_component(component);
     }
+		SkinnedMeshComponent* skin = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+		if(!skin)
+			return;
+
+		update_skeletal_node_uniform();		
 }
 
 void update_scale(vec3 translation){

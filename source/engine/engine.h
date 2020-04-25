@@ -72,11 +72,6 @@ void rotate_element(Element* element, versor quaternion);
 
 void set_element_position(Element* element, vec3 position);
 
-void init_static_gpu_vertex_buffer(Array* array, GLuint *id);
-void init_static_gpu_index_buffer(Array* array, GLuint *id);
-void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix);
-void update_gpu_vertex_data(Array* array, GLuint id);
-
 void new_empty_element();
 
 /*Create new model in actual model array and you can use selected_model after */

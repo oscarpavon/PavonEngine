@@ -242,7 +242,7 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
     current_nodes_array = &model_nodes;
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
     
-    read_accessor(in_cgltf_node->skin->inverse_bind_matrices,inverse_bind_matrices);
+    read_accessor(in_cgltf_node->skin->inverse_bind_matrices,model_loaded_inverse_bind_matrices);
     LOG("Nodes assigned to current_nodes_array\n");
   }
   

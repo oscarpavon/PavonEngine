@@ -225,7 +225,9 @@ void init_element_component(ComponentDefinition* element_component){
 
         memcpy(&mesh_component->animations,&model_animation,sizeof(Array));
 
-        memcpy(&mesh_component->inverse_bind_matrices,inverse_bind_matrices,sizeof(inverse_bind_matrices));
+				memcpy(mesh_component->inverse_bind_matrices,model_loaded_inverse_bind_matrices,sizeof(model_loaded_inverse_bind_matrices)); 
+
+				mesh_component->node_uniform.joint_count = mesh_component->joints.count;
 
         update_skeletal_node_uniform();       
 

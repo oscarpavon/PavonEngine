@@ -6,6 +6,29 @@
 #include <engine/camera.h>
 #include <engine/engine.h>
 
+void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
+    glGenBuffers(1,id);
+    GLuint id_copy;
+    memcpy(&id_copy,id,sizeof(GLuint));
+    glBindBuffer(GL_ARRAY_BUFFER,id_copy);
+    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
+
+}
+
+void init_static_gpu_index_buffer(Array* array, GLuint *id){
+    glGenBuffers(1,id);
+    GLuint id_copy;
+    memcpy(&id_copy,id,sizeof(GLuint));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_copy);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
+}
+
+void update_gpu_vertex_data(Array* array, GLuint id){
+    glBindBuffer(GL_ARRAY_BUFFER,id);
+    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
+
+}
+
 void GPU_buffers_create_for_model(Model* model){
     Array* vertex_array = &model->vertex_array;
     Array* index_array = &model->index_array;
