@@ -5,6 +5,25 @@
 #include "editor.h"
 #include"../engine/Math/sphere.h"
 
+typedef struct Grid{
+    bool initialized;
+    vec2 size;    
+    Array vertex_array;
+    GLuint vertex_buffer_id;
+    GLuint shader;
+}Grid;
+
+typedef struct DebugLine{
+    bool initialized;
+    vec3 start;
+    vec3 end;
+    float duration;
+    vec4 color;    
+    Array vertex_array;
+    GLuint vertex_buffer_id;
+    GLuint shader;
+}DebugLine;
+
 void draw_gizmos();
 void gizmos_init();
 
