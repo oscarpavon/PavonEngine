@@ -57,40 +57,38 @@ void input_change_mode(){
   }
 }
 
-bool editor_input_camera_rotate_control(){
-   bool rotate_keys_pressed = false;
-	if(input.J.pressed){
-		rotate_keys_pressed = true;
-        rotate_value -= 10;
-        if(rotate_value < -10000){
-            rotate_value = -100;
-        }
-
+bool editor_input_camera_rotate_control() {
+  float rotate_velocity = 200;
+  bool rotate_keys_pressed = false;
+  if (input.J.pressed) {
+    rotate_keys_pressed = true;
+    rotate_value -= rotate_velocity * time_delta;
+    if (rotate_value < -10000) {
+      rotate_value = -100;
     }
+  }
 
-    if(input.K.pressed){
-		rotate_keys_pressed = true;
-        rotate_value += 10;
-        if(rotate_value > 10000){
-            rotate_value = 100;
-        }
-
+  if (input.K.pressed) {
+    rotate_keys_pressed = true;
+    rotate_value += rotate_velocity * time_delta;
+    if (rotate_value > 10000) {
+      rotate_value = 100;
     }
-	if(rotate_keys_pressed){
-		
-        horizontalAngle += camera_width_screen/2 - rotate_value ;
-        
-		verticalAngle  += 600/2 - 100 ;
+  }
+  if (rotate_keys_pressed) {
 
-        horizontalAngle *= 0.05;
-        verticalAngle *= 0.05;
+    horizontalAngle += camera_width_screen / 2 - rotate_value;
 
-        camera_rotate_control(0, horizontalAngle);
-		return true;
-	}
-	return false;
+    verticalAngle += 600 / 2 - 100;
+
+    horizontalAngle *= 0.05;
+    verticalAngle *= 0.05;
+
+    camera_rotate_control(0, horizontalAngle);
+    return true;
+  }
+  return false;
 }
-
 
 void editor_input_navigate(){
     input_change_mode();
@@ -154,7 +152,6 @@ void editor_input_navigate(){
     }
     
     if(editor_input_camera_rotate_control()){	
-		//camera_update(&current_window->camera);
         camera_update(&main_camera);
 		} 
 	if(update)

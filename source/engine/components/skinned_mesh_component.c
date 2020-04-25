@@ -11,7 +11,8 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   GLuint skin_vertex_shader = load_shader_file(
       "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
       GL_VERTEX_SHADER);
-  selected_model->shader =
+
+	selected_model->shader =
       create_engine_shader(skin_vertex_shader, standart_fragment_shader);
 
   glm_mat4_copy(element_component->parent->transform->model_matrix,

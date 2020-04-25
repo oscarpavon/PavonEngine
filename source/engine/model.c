@@ -353,7 +353,7 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
   current_loaded_component_type = STATIC_MESH_COMPONENT;
 
   if(data->skins_count >= 1){
-    array_init(&model_nodes,sizeof(Node),data->nodes_count+1);
+    array_init(&model_nodes,sizeof(Node),data->nodes_count);
     memset(model_nodes.data,0,sizeof(Node) * data->nodes_count);
     copy_nodes = true; 
 		current_loaded_component_type = COMPONENT_SKINNED_MESH;

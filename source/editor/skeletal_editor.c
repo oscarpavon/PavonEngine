@@ -49,6 +49,11 @@ void create_skeletal_vertices(){
     }
 
 		int vertex_count = skin_component->joints.count;
+    struct Vertex vertices[vertex_count];
+		ZERO(vertices);
+
+		array_init(&skeletal_gizmo.vertex_array,sizeof(Vertex),skin_component->joints.count);
+
    //joints index for vertex 
     int index = 0;
     for(int i = 0; i < skin_component->joints.count; i++){
@@ -57,12 +62,9 @@ void create_skeletal_vertices(){
         index++;
 		}
     
-    struct Vertex vertices[vertex_count];
-		ZERO(vertices);
 
     array_init(&skeletal_gizmo.index_array,sizeof(unsigned short int),100);
     
-		array_init(&skeletal_gizmo.vertex_array,sizeof(Vertex),skin_component->joints.count);
 
     for(int i = 0; i < skin_component->joints.count ; i++){       
         
