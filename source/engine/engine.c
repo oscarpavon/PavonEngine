@@ -31,7 +31,7 @@ void pe_frame_draw(){
   test_elements_occlusion();
   check_meshes_distance();
 
-  engine_draw_elements(&frame_draw_elements);
+  engine_draw_elements(&frame_draw_static_elements);
 
   pe_frame_clean();
 
@@ -211,7 +211,8 @@ void engine_add_element(u32 models_loaded){
     case STATIC_MESH_COMPONENT:
         {
             StaticMeshComponent mesh_component;
-            memset(&mesh_component,0,sizeof(StaticMeshComponent));    
+						ZERO(mesh_component);
+
             array_init(&mesh_component.meshes,sizeof(u8),models_loaded+1);//the first element is the id of the model path in texts.array
             array_init(&mesh_component.textures,sizeof(u8),models_loaded+1);
 
@@ -270,6 +271,16 @@ void engine_draw_elements(Array *elements){
         draw_simgle_model(draw_model);
     }
     array_clean(elements);
+}
+
+void pe_render_skinned_elements(Array* elements){
+  for (size_t i = 0; i < elements->count; i++) {
+    Model **model = array_get(elements, i);
+    Model *draw_model = model[0];
+    pe_render_skinned_model(draw_model);
+  }
+
+  array_clean(elements);
 }
 
 void set_element_position(Element* element, vec3 position){    
@@ -362,7 +373,7 @@ void check_meshes_distance(){
 
     for(int i = 0; i < array_skinned_mesh_for_distance_test.count ; i++) { 
         SkinnedMeshComponent** ppSkinComponent = array_get(&array_skinned_mesh_for_distance_test,i);
-        array_add(&frame_draw_elements,&ppSkinComponent[0]->mesh);
+        array_add(&frame_draw_skinned_elements,&ppSkinComponent[0]->mesh);
     }
     
 }
@@ -373,7 +384,7 @@ void test_elements_occlusion(){
     glm_mat4_mul(main_camera.projection,main_camera.view,view_projection_mat);
     glm_frustum_planes(view_projection_mat,frustrum_planes);
 
-
+		//this is for gizmos and native elements
     for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
         Model** model = array_get(&models_for_test_occlusion,i);
         Model* test_model = model[0];
@@ -384,8 +395,9 @@ void test_elements_occlusion(){
 
         glm_aabb_transform(box, test_model->model_mat, box);
 
-        if(glm_aabb_frustum(box,frustrum_planes) == true)
-            array_add(&frame_draw_elements,&model[0]);
+        if(glm_aabb_frustum(box,frustrum_planes) == true){
+            array_add(&frame_draw_static_elements,&model[0]);
+				}
     }   
 
 
@@ -418,7 +430,9 @@ void engine_init_data(){
         
     array_init(&actions_pointers,sizeof(ActionPointer),20);
 
-    array_init(&frame_draw_elements,sizeof(void*),100);
+    array_init(&frame_draw_static_elements,sizeof(void*),100);
+    array_init(&frame_draw_skinned_elements,sizeof(void*),100);
+
     array_init(&models_for_test_occlusion,sizeof(void*),300);
     array_init(&array_static_meshes_pointers,sizeof(void*),300);
     array_init(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);

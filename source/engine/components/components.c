@@ -218,6 +218,7 @@ void init_element_component(ComponentDefinition* element_component){
         selected_model->shader = create_engine_shader(skin_vertex_shader,standart_fragment_shader); 
         
         glm_mat4_copy(element_component->parent->transform->model_matrix,selected_model->model_mat);    
+
         mesh_component->mesh = selected_model;
 
         memcpy(&mesh_component->joints,&model_nodes,sizeof(Array));

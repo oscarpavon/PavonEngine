@@ -46,8 +46,9 @@ int load_model(const char* path);
 
 int model_load_from_content(void* gltf_data, u32 size);
 
+//SKINNED MESH
 Array model_nodes;
 Array model_animation;
-mat4 inverse_bind_matrices[35];
-
+mat4 inverse_bind_matrices[50];
+//Skeletal loaded_skeletal;
 #endif // !MODEL_H

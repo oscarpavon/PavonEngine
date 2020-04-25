@@ -35,7 +35,7 @@ Node* get_node_by_name(Array* array, const char* name){
 void read_accessor_indices(cgltf_accessor* accessor){
   array_init(actual_index_array,sizeof(u8),accessor->count);
   for(u8 i = 0 ; i < accessor->count ; i++){
-      u8 index = cgltf_accessor_read_index(accessor,i);
+		u8 index = cgltf_accessor_read_index(accessor,i);
       array_add(actual_index_array,&index);
   }
 }
@@ -243,7 +243,6 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
     
     read_accessor(in_cgltf_node->skin->inverse_bind_matrices,inverse_bind_matrices);
-
     LOG("Nodes assigned to current_nodes_array\n");
   }
   
@@ -357,6 +356,8 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
     array_init(&model_nodes,sizeof(Node),data->nodes_count+1);
     memset(model_nodes.data,0,sizeof(Node) * data->nodes_count);
     copy_nodes = true; 
+		current_loaded_component_type = COMPONENT_SKINNED_MESH;
+
   }
 
   for(int i = 0; i < data->scene->nodes_count ; i++){
@@ -368,13 +369,19 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
   actual_index_array = NULL;
 
   if(data->animations_count >= 1){
+		LOG("Loding animation\n");
     array_init(&model_animation,sizeof(Animation),data->animations_count);
     for(int i = 0; i < data->animations_count; i++){
       current_animation = &data->animations[i];
       load_current_animation();
     }
   }
- 
+	//When the model has loaded, copy skin info to loaded skeletal	 
+  if(data->skins_count >= 1){
+
+
+	}
+
   cgltf_free(data);
   current_data = NULL;
 
@@ -394,7 +401,7 @@ int model_load_from_content(void* gltf_data, u32 size){
 int load_model(const char* path){
   memset(&model_animation,0,sizeof(Array));
   memset(&model_nodes,0,sizeof(Array));
-
+//	ZERO(loaded_skeletal);
   File new_file;
 
   if(load_file(path,&new_file) == -1)

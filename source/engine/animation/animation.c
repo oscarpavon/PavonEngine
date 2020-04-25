@@ -14,13 +14,14 @@ void update_skeletal_node_uniform(){
 
     Skeletal new_skeletal;
     memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = array_get(&skin_component->joints,2);
+//    new_skeletal.joints = array_get(&skin_component->joints,2);
+		new_skeletal.joints = skin_component->joints.data;
     new_skeletal.joints_count = skin_component->joints.count-2;
     Skeletal* skeletal = &new_skeletal;
 
     skin_component->node_uniform.joint_count = new_skeletal.joints_count;
     #ifdef EDITOR
-//    clear_skeletal_vertices();
+	    //clear_skeletal_vertices();
     #endif // DEBUG
     for(int i = 0; i < skeletal->joints_count ; i++){       
         Node* joint = &skeletal->joints[i];

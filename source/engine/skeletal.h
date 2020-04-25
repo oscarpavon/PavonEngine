@@ -10,7 +10,7 @@
 struct Node;
 typedef struct Node{
     int id;
-    char name[15];
+    char name[50];
     struct Node* parent;
     vec3 translation;
     versor rotation;

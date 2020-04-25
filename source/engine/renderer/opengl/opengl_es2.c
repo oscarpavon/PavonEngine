@@ -1,10 +1,10 @@
-#include "GLES2/gl2.h"
-#include "../../../engine/model.h"
+#include <GLES2/gl2.h>
+#include "opengl_es2.h"
 #include <signal.h>
-#include "../../log.h"
-#include "../../components/components.h"
-#include "../../../engine/camera.h"
-#include "../../../engine/engine.h"
+#include <engine/log.h>
+#include <engine/components/components.h>
+#include <engine/camera.h>
+#include <engine/engine.h>
 
 void GPU_buffers_create_for_model(Model* model){
     Array* vertex_array = &model->vertex_array;
@@ -41,6 +41,43 @@ void load_texture_to_GPU(Texture* texture){
 		texture->gpu_loaded = true;
 }
 
+void pe_mat_skinned(GLuint shader, GLuint buffer, mat4 matrix){
+
+  glUseProgram(shader);
+
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                        (void *)0);
+
+  GLint model_uniform = get_uniform_location(shader, "model");
+
+  GLint projection_uniform = get_uniform_location(shader, "projection");
+  GLint view_uniform = get_uniform_location(shader, "view");
+  GLint joints_matrices_uniform = get_uniform_location(shader, "joint_matrix");
+
+  glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
+  glUniformMatrix4fv(projection_uniform, 1, GL_FALSE,
+                     &main_camera.projection[0][0]);
+  glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
+  check_send_matrix_error("view");
+
+  SkinnedMeshComponent *skin_component =
+      get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+  glUniformMatrix4fv(joints_matrices_uniform,
+                     skin_component->node_uniform.joint_count, GL_FALSE,
+                     skin_component->node_uniform.joints_matrix);
+  check_send_matrix_error("Skin");
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex),
+                        (void *)offsetof(Vertex, joint));
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex),
+                        (void *)offsetof(Vertex, weight));
+}
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     glUseProgram(shader);   
@@ -63,16 +100,17 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
         glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
         glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
         check_send_matrix_error("view");
-
-        SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-        glUniformMatrix4fv(joints_matrices_uniform,skin_component->node_uniform.joint_count , GL_FALSE, skin_component->node_uniform.joints_matrix);
+        
+				SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+        glUniformMatrix4fv(joints_matrices_uniform,skin_component->node_uniform.joint_count , 
+													GL_FALSE, skin_component->node_uniform.joints_matrix);
         check_send_matrix_error("Skin");
         
         glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, joint));
+				glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, joint));
 
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
+				glEnableVertexAttribArray(3);
+				glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
         
     }else{
         glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &matrix[0][0]);
@@ -130,12 +168,29 @@ void draw_model_like(Model* model, GLenum mode){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
+void pe_render_skinned_model(Model * new_model){
+    
+		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+   
+	 	pe_mat_skinned(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
+
+    if(new_model->index_array.count == 0)
+        LOG("Index is equal to 0, model not render\n");
+    glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
+
+    check_error("sigle model error");
+}
 void draw_simgle_model(Model * new_model){
     mat4 mvp;      
     update_mvp(new_model->model_mat, mvp);  
     
-	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
-    update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,mvp);
+		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+   
+	 	update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,mvp);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));

@@ -331,8 +331,8 @@ void editor_add_element_with_model_path(const char* path){
 
 void editor_stats_calculates_triangles(){
     int triangles = 0;
-    for(int i = 0; i<frame_draw_elements.count; i++){
-        Model** model = array_get(&frame_draw_elements,i);
+    for(int i = 0; i<frame_draw_static_elements.count; i++){
+        Model** model = array_get(&frame_draw_static_elements,i);
         if(!model)
             return;
         int vertices_count = model[0]->vertex_array.count;
@@ -485,14 +485,15 @@ void editor_draw() {
   test_elements_occlusion();
   check_meshes_distance();
 
-  editor_stats_draw_calls = frame_draw_elements.count;
+  editor_stats_draw_calls = frame_draw_static_elements.count;
 
   editor_stats_calculates_triangles();
 
   if (update_vertex_bones_gizmos)
     update_joints_vertex();
 
-  engine_draw_elements(&frame_draw_elements);
+  engine_draw_elements(&frame_draw_static_elements);
+	pe_render_skinned_elements(&frame_draw_skinned_elements);
 
   pe_frame_clean();
 

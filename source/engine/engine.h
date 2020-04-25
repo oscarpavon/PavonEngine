@@ -62,6 +62,7 @@ void add_action_function(void(*f)(void));
 if in editor the shader need color multiplication uniform otherwise 
 it not show it becouse color is multiplied per 0 ! */
 void engine_draw_elements(Array* elements);
+void pe_render_skinned(Array* elements);
 void draw_simgle_model(struct Model * new_model);
 
 void draw_editor_viewport(); 
@@ -180,7 +181,8 @@ Array* actual_buttons_array;
 //
 /*Draw frame data */
 //
-Array frame_draw_elements;
+Array frame_draw_static_elements;
+Array frame_draw_skinned_elements;
 Array models_for_test_occlusion;
 Array array_static_meshes_pointers;
 Array array_static_meshes_pointers_for_test_distance;

@@ -70,11 +70,14 @@ typedef struct StaticMeshComponent{
 
 
 typedef struct SkinnedMeshComponent{    
+    Array meshes;
+    Array distances;
+    Array textures;
     Model* mesh;
     Array joints;
     vec3 bounding_box[2];
     Array animations;
-    mat4 inverse_bind_matrices[35];
+    mat4 inverse_bind_matrices[50];
     struct SkeletalNodeUniform node_uniform;
 }SkinnedMeshComponent;
 

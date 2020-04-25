@@ -1,6 +1,9 @@
 #ifndef OPENGL_ES_2_RENDERER_H
 #define OPENGL_ES_2_RENDERER_H
 
+#include <engine/model.h>
+#include <engine/log.h>
+
 #define RENDER_COLOR_BUFFER GL_COLOR_BUFFER_BIT
 #define RENDER_DEPTH_BUFFER GL_DEPTH_BUFFER_BIT
 
@@ -15,7 +18,7 @@ void GPU_buffers_create_for_model(Model* model);
 
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
-    debug_break();
+  //  debug_break();
 }
 
 
@@ -36,7 +39,7 @@ static inline void check_error(const char* message){
 static inline GLint get_uniform_location(GLuint shader, const char* name){
     GLint uniform = glGetUniformLocation(shader,name);
     if(uniform == -1){
-        mvp_error(name);
+        //mvp_error(name);
     }
     return uniform;
 }

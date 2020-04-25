@@ -84,5 +84,5 @@ void LOD_check_distance_static_mesh_component_and_add_to_draw_elements(StaticMes
     }
     Model* draw_model = array_get(actual_model_array,id);
     
-    array_add(&frame_draw_elements,&draw_model);
+    array_add(&frame_draw_static_elements,&draw_model);
 }  

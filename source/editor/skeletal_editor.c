@@ -58,11 +58,8 @@ void create_skeletal_vertices(){
         return;
     }
 
-    Skeletal new_skeletal;
-    memset(&new_skeletal,0,sizeof(Skeletal));
-    new_skeletal.joints = array_get(&skin_component->joints,2);
-    new_skeletal.joints_count = skin_component->joints.count-2;
-    Skeletal* skeletal = &new_skeletal;
+		Skeletal new_skeletal;
+		Skeletal* skeletal = &new_skeletal;
     assign_nodes_indices(skeletal);
     if(skeletal == NULL)
         return;
@@ -71,7 +68,7 @@ void create_skeletal_vertices(){
     memset(vertices,0,sizeof(vertices));
 
     array_init(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),50);
-    array_init(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count);
+    array_init(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count+10);
 
     for(int i = 0; i < skeletal->joints_count ; i++){
         mat4 local;
@@ -92,7 +89,7 @@ void draw_skeletal_bones(){
     glm_mat4_identity(model);
     update_draw_vertices(skelta_gizmo_shader,skeletal_gizmo_vertices_buffer_id,model);  
 
-	glDrawArrays(GL_POINTS, 0, skeletal_bones_gizmo_geometry.vertex_array.count);
+		glDrawArrays(GL_POINTS, 0, skeletal_bones_gizmo_geometry.vertex_array.count);
 
     glLineWidth(2);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo_index_buffer_id);
