@@ -5,50 +5,40 @@
 
 #include "../engine/components/components.h"
 #include "../engine/vertex.h"
+#include <engine/renderer/renderer.h>
 
-struct LoadGeometry skeletal_bones_gizmo_geometry;
-GLuint skeletal_gizmo_vertices_buffer_id;
-GLuint skeletal_gizmo_index_buffer_id;
 
-void assign_nodes_indices(Skeletal* skeletal){
-    int vertex_count = skeletal->joints_count;
-    int index = 0;
-    for(int i = 0; i < skeletal->joints_count ; i++){
-        skeletal->joints[i].id = index;       
-        index++;
-    }
-}
-
+Model skeletal_gizmo;
 void update_joints_vertex(){  
 
-    update_gpu_vertex_data(&skeletal_bones_gizmo_geometry.vertex_array, skeletal_gizmo_vertices_buffer_id);
+    update_gpu_vertex_data(&skeletal_gizmo.vertex_array, skeletal_gizmo.vertex_buffer_id);
 }
 
 void clear_skeletal_vertices(){
-    array_clean(&skeletal_bones_gizmo_geometry.vertex_array);
+    array_clean(&skeletal_gizmo.vertex_array);
 }
 
 void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-    array_add(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
+    array_add(&skeletal_gizmo.vertex_array,&vert);
 
     if(current_joint->parent != NULL){
         if(i == 2){
             int id = i-1;
-            array_add(&skeletal_bones_gizmo_geometry.index_array,&id);
+            array_add(&skeletal_gizmo.index_array,&id);
         }else if(i >= 3){
-            array_add(&skeletal_bones_gizmo_geometry.index_array,&current_joint->parent->id);
+            array_add(&skeletal_gizmo.index_array,&current_joint->parent->id);
         }
     }
-    array_add(&skeletal_bones_gizmo_geometry.index_array,&i);
+    array_add(&skeletal_gizmo.index_array,&i);
 
     LOG("Created vertices for: %s\n",current_joint->name);
 
 }
 void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-    if(skeletal_bones_gizmo_geometry.vertex_array.initialized)
-    array_add(&skeletal_bones_gizmo_geometry.vertex_array,&vert);
+    if(skeletal_gizmo.vertex_array.initialized)
+    array_add(&skeletal_gizmo.vertex_array,&vert);
 }
 
 void create_skeletal_vertices(){
@@ -58,61 +48,63 @@ void create_skeletal_vertices(){
         return;
     }
 
-		Skeletal new_skeletal;
-		Skeletal* skeletal = &new_skeletal;
-    assign_nodes_indices(skeletal);
-    if(skeletal == NULL)
-        return;
-    int vertex_count = skeletal->joints_count;
+		int vertex_count = skin_component->joints.count;
+   //joints index for vertex 
+    int index = 0;
+    for(int i = 0; i < skin_component->joints.count; i++){
+        Node* joint = (Node*)array_get(&skin_component->joints,i);
+        joint->id = index;       
+        index++;
+		}
+    
     struct Vertex vertices[vertex_count];
-    memset(vertices,0,sizeof(vertices));
+		ZERO(vertices);
 
-    array_init(&skeletal_bones_gizmo_geometry.index_array,sizeof(unsigned short int),50);
-    array_init(&skeletal_bones_gizmo_geometry.vertex_array,sizeof(Vertex),skeletal->joints_count+10);
+    array_init(&skeletal_gizmo.index_array,sizeof(unsigned short int),100);
+    
+		array_init(&skeletal_gizmo.vertex_array,sizeof(Vertex),skin_component->joints.count);
 
-    for(int i = 0; i < skeletal->joints_count ; i++){
-        mat4 local;
-        Node* current_joint = &skeletal->joints[i];       
-        get_global_matrix(current_joint, local);
+    for(int i = 0; i < skin_component->joints.count ; i++){       
+        
+        Node* joint = (Node*)array_get(&skin_component->joints,i);
+    
+				mat4 local;
+        get_global_matrix(joint, local);
         mat4 global;
         glm_mat4_mul(selected_element->transform->model_matrix, local, global);
-        
-        init_skeletal_vertices(global,i,current_joint);
+
+				init_skeletal_vertices(global,i,joint);
     }     
 
 }
 
-GLuint skelta_gizmo_shader;
 
 void draw_skeletal_bones(){
     mat4 model;
     glm_mat4_identity(model);
-    update_draw_vertices(skelta_gizmo_shader,skeletal_gizmo_vertices_buffer_id,model);  
+		mat4 mvp;
+    update_mvp(model, mvp);  
 
-		glDrawArrays(GL_POINTS, 0, skeletal_bones_gizmo_geometry.vertex_array.count);
+    update_draw_vertices(skeletal_gizmo.shader,skeletal_gizmo.vertex_buffer_id,mvp);  
+
+		glDrawArrays(GL_POINTS, 0, skeletal_gizmo.vertex_array.count);
 
     glLineWidth(2);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo_index_buffer_id);
-    glDrawElements(GL_LINES,skeletal_bones_gizmo_geometry.index_array.count,GL_UNSIGNED_SHORT,(void*)0);
-
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("skeletal draw error \n");
-        LOG("Error %08x \n",error);
-    }
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo.vertex_buffer_id);
+    glDrawElements(GL_LINES,skeletal_gizmo.index_array.count,GL_UNSIGNED_SHORT,(void*)0);
 
 }
 
 
 void init_skeletal_editor(){      
-
+		LOG("Skeletal editor\n");
     create_skeletal_vertices();
-    init_static_gpu_vertex_buffer(&skeletal_bones_gizmo_geometry.vertex_array,&skeletal_gizmo_vertices_buffer_id);
-    init_static_gpu_index_buffer(&skeletal_bones_gizmo_geometry.index_array,&skeletal_gizmo_index_buffer_id);  
+    init_static_gpu_vertex_buffer(&skeletal_gizmo.vertex_array,&skeletal_gizmo.vertex_buffer_id);
+    init_static_gpu_index_buffer(&skeletal_gizmo.index_array,&skeletal_gizmo.index_buffer_id);  
 
     skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
 
-    skelta_gizmo_shader = create_engine_shader(standart_vertex_shader,skeletal_blue_shader); 
+    skeletal_gizmo.shader= create_engine_shader(standart_vertex_shader,skeletal_blue_shader); 
     
 }
 

@@ -111,35 +111,9 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
 
     GLint mvp_uniform =  get_uniform_location(shader,"MVP");
-    if(mvp_uniform == -1){
-        
-        GLint model_uniform = get_uniform_location(shader,"model");
 
-        GLint projection_uniform = get_uniform_location(shader,"projection");
-        GLint view_uniform = get_uniform_location(shader,"view");
-        GLint joints_matrices_uniform = get_uniform_location(shader,"joint_matrix");
-
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
-        glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, &main_camera.projection[0][0]);
-        glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
-        check_send_matrix_error("view");
-        
-				SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
-        glUniformMatrix4fv(joints_matrices_uniform,skin_component->node_uniform.joint_count , 
-													GL_FALSE, skin_component->node_uniform.joints_matrix);
-        check_send_matrix_error("Skin");
-        
-        glEnableVertexAttribArray(2);
-				glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, joint));
-
-				glEnableVertexAttribArray(3);
-				glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (void *)offsetof(Vertex, weight));
-        
-    }else{
-        glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &matrix[0][0]);
-        check_send_matrix_error("MVP");
-    }    
-
+    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &matrix[0][0]);
+    check_send_matrix_error("MVP");
 }
 
 void draw_vertices_like(GLenum mode, Model* model, vec4 color){

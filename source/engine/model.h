@@ -30,11 +30,6 @@ typedef struct Model{
 
 }Model;
 
-struct LoadGeometry{
-    Array vertex_array;
-    Array index_array;
-};
-
 typedef struct DrawData{
     u32 shader;
     u32 texture;

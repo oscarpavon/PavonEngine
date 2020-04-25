@@ -37,7 +37,10 @@ void play_animation(Animation* animation){
         AnimationSampler* sampler = &channel->sampler;
 
         Node* node = channel->node;        
-        
+				if(!node){
+					LOGW("No node in this channel");
+					return;	
+				}
 
         for(int j = 0; j < sampler->inputs.count - 1 ; j++){
             float* input0 = array_get(&sampler->inputs,j);
@@ -75,7 +78,7 @@ void play_animation(Animation* animation){
 }
 
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop){
-    Animation* animation; 
+    Animation* animation = NULL; 
     for( int i = 0 ; i<skin_component->animations.count ; i++){
         Animation* geted_animation = array_get(&skin_component->animations, i);
         if( strcmp(name , geted_animation->name) == 0 ){
@@ -84,7 +87,7 @@ void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* n
         }
     }
 
-    if(!animation){
+    if(animation == NULL){
         LOG("Animation not found: %s\n",name);
         return;
     }

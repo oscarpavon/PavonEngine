@@ -14,9 +14,11 @@ endif()
 set(network 
 		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
 )
+
 set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/components.c
         ${CMAKE_CURRENT_LIST_DIR}/components/static_mesh_component.c
+        ${CMAKE_CURRENT_LIST_DIR}/components/skinned_mesh_component.c
         )
          
 set(engine_source

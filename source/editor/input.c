@@ -435,11 +435,14 @@ void default_mode(){
         return;
     }
     if(key_released(&input.KEY_2)){
-        init_skeletal_editor();
-        can_draw_skeletal_bones = true;
+				 
+			 	init_skeletal_editor();
+        
+				can_draw_skeletal_bones = true;
         return; 
     }
     if(key_released(&input.KEY_3)){        
+				LOG("Draw bounding box\n");
         can_draw_bounding_box_in_select_element = true;
         return; 
     }
