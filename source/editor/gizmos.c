@@ -412,6 +412,19 @@ void draw_gizmos() {
 		if(actual_gizmo != NULL)
 			draw_simgle_model(actual_gizmo);
 
+				PEComponentPlayerStart* player_start_comp = get_component_from_selected_element(PE_COMP_PLAYER_START);
+				if(player_start_comp){
+					actual_gizmo = array_get(&gizmos,4);
+					
+					TransformComponent *transform =
+							get_component_from_selected_element(TRASNFORM_COMPONENT);
+
+					if (transform && actual_gizmo) {
+						glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
+					}
+					draw_simgle_model(actual_gizmo);					
+				}
+
     // Draw camera gizmo
     if (editor_mode == EDITOR_DEFAULT_MODE) {
       if (current_component_selected) {
@@ -424,6 +437,8 @@ void draw_gizmos() {
         distance *= 0.008;
         glm_scale(actual_gizmo->model_mat, VEC3(distance, distance, distance));
         draw_simgle_model(actual_gizmo);
+			
+
       }
       if (editor_mode == EDITOR_MODE_GUI_EDITOR) {
         if (selected_button == NULL)

@@ -11,6 +11,7 @@ typedef struct Element Element;
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
+		PE_COMP_PLAYER_START,
     SPHERE_COMPONENT,
     CAMERA_COMPONENT,
     CUBE_COMPONENT,
@@ -18,9 +19,12 @@ typedef enum ComponentType{
     COMPONENT_SKINNED_MESH,
     LEVEL_OF_DETAIL_COMPONENT,
     COMPONENT_HLOD,
-    COMPONENT_HLOD_BOX
+    COMPONENT_HLOD_BOX,
 }ComponentType;
 
+typedef struct PEComponentPlayerStart{
+	vec3 position;
+}PEComponentPlayerStart;
 
 typedef struct ComponentDefinition{
     ComponentType type;

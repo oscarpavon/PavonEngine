@@ -136,7 +136,11 @@ void add_editor_native_element(const char* native_element_name){
         player_start = selected_element;
         add_transform_component_to_selected_element();        
         selected_model = NULL;
-        
+			
+				PEComponentPlayerStart player_start_comp;
+				ZERO(player_start_comp);
+				add_component_to_selected_element(sizeof(PEComponentPlayerStart),&player_start_comp,PE_COMP_PLAYER_START);
+						
     }else if ( strcmp("Player Controller", native_element_name) == 0 )
     {
         new_empty_element();
