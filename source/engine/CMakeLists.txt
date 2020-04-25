@@ -16,6 +16,7 @@ set(network
 )
 set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/components.c
+        ${CMAKE_CURRENT_LIST_DIR}/components/static_mesh_component.c
         )
          
 set(engine_source
