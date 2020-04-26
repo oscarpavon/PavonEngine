@@ -430,80 +430,86 @@ void load_level_elements_from_json(const char* json_file, int json_file_size){
   array_clean(&tokens_array_memory);
 }
 
-void pe_parse_single_component_with_type_id(JSON_Object* object, int type){
-	switch(type){
+void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
+  switch (type) {
 
-  case TRASNFORM_COMPONENT:
-    {
-			JSON_Array* position_array = json_object_get_array(object,"position");
-			JSON_Array* rotation_array = json_object_get_array(object,"rotation");
-			vec3 position;
-			vec4 rotation;
-				
-			for (int i = 0; i < 3; i++) {
-				float n = (float)json_array_get_number(position_array, i);
-				position[i] = n;
-			}
+  case TRASNFORM_COMPONENT: {
+    JSON_Array *position_array = json_object_get_array(object, "position");
+    JSON_Array *rotation_array = json_object_get_array(object, "rotation");
+    vec3 position;
+    vec4 rotation;
 
-			for (int i = 0; i < 4; i++) {
-				float n = (float)json_array_get_number(rotation_array, i);
-				rotation[i] = n;
-			}
+    for (int i = 0; i < 3; i++) {
+      float n = (float)json_array_get_number(position_array, i);
+      position[i] = n;
+    }
+
+    for (int i = 0; i < 4; i++) {
+      float n = (float)json_array_get_number(rotation_array, i);
+      rotation[i] = n;
+    }
 
     add_transform_component_to_selected_element();
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
-		glm_vec3_copy(position,transform->position);
-		glm_vec4_copy(rotation,transform->rotation);
+    TransformComponent *transform =
+        get_component_from_selected_element(TRASNFORM_COMPONENT);
+    glm_vec3_copy(position, transform->position);
+    glm_vec4_copy(rotation, transform->rotation);
 
-    glm_translate(transform->model_matrix,transform->position);
-    rotate_element(selected_element,transform->rotation);
+    glm_translate(transform->model_matrix, transform->position);
+    rotate_element(selected_element, transform->rotation);
 
+  } break;
+  case STATIC_MESH_COMPONENT: {
+    StaticMeshComponent mesh_component;
+    ZERO(mesh_component);
+    add_component_to_selected_element(sizeof(StaticMeshComponent),
+                                      &mesh_component, STATIC_MESH_COMPONENT);
+    StaticMeshComponent *mesh =
+        get_component_from_selected_element(STATIC_MESH_COMPONENT);
+
+    JSON_Array *models = json_object_get_array(object, "models");
+
+    int models_ids_count = json_array_get_count(models);
+    array_init(&mesh->meshes, sizeof(u8), models_ids_count);
+    for (int i = 0; i < models_ids_count; i++) {
+      u8 id = (u8)json_array_get_number(models, i);
+      array_add(&mesh->meshes, &id);
     }
-    break;
-  case STATIC_MESH_COMPONENT:{
-      StaticMeshComponent mesh_component;
-			ZERO(mesh_component); 
-			add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);
-			StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
 
-			JSON_Array* models = json_object_get_array(object,"models");
+    JSON_Array *textures = json_object_get_array(object, "textures");
 
-			int models_ids_count = json_array_get_count(models);
-			array_init(&mesh->meshes,sizeof(u8),models_ids_count);
-			for(int i = 0; i < models_ids_count ; i++){
-					u8 id = (u8)json_array_get_number(models,i);
-					array_add(&mesh->meshes,&id);
-			}
-
-			JSON_Array* textures = json_object_get_array(object,"textures");
-
-			int textures_ids_count = json_object_get_count(textures);
-			array_init(&mesh->textures,sizeof(u8) , textures_ids_count);
-			for(int i = 0; i < textures_ids_count ; i++){
-					u8 id = (u8)json_array_get_number(textures,i);
-					array_add(&mesh->textures,&id);
-			}
-
+    int textures_ids_count = json_object_get_count(textures);
+    array_init(&mesh->textures, sizeof(u8), textures_ids_count);
+    for (int i = 0; i < textures_ids_count; i++) {
+      u8 id = (u8)json_array_get_number(textures, i);
+      array_add(&mesh->textures, &id);
     }
-    break;
-  case CAMERA_COMPONENT:
-  {
+
+  } break;
+  case CAMERA_COMPONENT: {
     add_camera_component_to_selected_element();
     break;
   }
-  case SPHERE_COMPONENT:
-    {
-      SphereComponent sphere;
-			ZERO(sphere); 
-			init_sphere_component(&sphere);
-      add_component_to_selected_element(sizeof(SphereComponent), &sphere, SPHERE_COMPONENT);
-      break;
-    }
+  case PE_COMP_PLAYER_START: {
+
+    PEComponentPlayerStart player_start_comp;
+    ZERO(player_start_comp);
+    add_component_to_selected_element(sizeof(PEComponentPlayerStart),
+                                      &player_start_comp, PE_COMP_PLAYER_START);
+    player_start = selected_element;
+    break;
+  }
+  case SPHERE_COMPONENT: {
+    SphereComponent sphere;
+    ZERO(sphere);
+    init_sphere_component(&sphere);
+    add_component_to_selected_element(sizeof(SphereComponent), &sphere,
+                                      SPHERE_COMPONENT);
+    break;
+  }
   default:
     break;
   }
-
-	
 }
 
 void pe_parse_components(JSON_Array* array){

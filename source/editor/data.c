@@ -199,9 +199,6 @@ void pe_serialize_components(Element* element, JSON_Array* array){
     switch (component->type) {
     case TRASNFORM_COMPONENT: {
       TransformComponent *transform = component->data;
-     // new_text_vec3_token("position", transform->position);
-      //new_text_vec4_token("rotation", transform->rotation);
-					
 			JSON_Value* array_component_val = json_value_init_array();
 			JSON_Array* array_component = json_value_get_array(array_component_val);
 			
