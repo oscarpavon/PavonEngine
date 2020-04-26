@@ -35,7 +35,9 @@ static inline Token* get_next_array_token(Token* token){
 
 
 static int string_equal(Token *tok, const char *s) {
-  
+	if(tok == NULL)
+		return 0;
+
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
       strncmp(actual_json_file + tok->start, s, tok->end - tok->start) == 0) {
     return 0;
@@ -362,8 +364,8 @@ void parse_level_tokens(Token* tokens, int count){
 
 
   }
-
-  while (string_equal(last_element_parsed,"textures") != 0)
+  
+	while (string_equal(last_element_parsed,"textures") != 0)
   {
     last_element_parsed++;
   }

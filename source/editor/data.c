@@ -6,12 +6,51 @@
 
 #include "Serialization/json_writer.h"
 
+#include "ThirdParty/parson.h"
+
 Element* current_element = NULL;
 
 int previous_id_saved = 0;
 u8 previous_path_id = 0;
 StaticMeshComponent* previous_component = NULL;
 
+void pe_serialize_textures_ids(StaticMeshComponent* mesh, JSON_Array* array){
+    if(mesh->textures.count == 0){
+       // fprintf(actual_file,"%i,",0);
+				json_array_append_number(array,0);
+    }  
+   for(int i = 0; i<mesh->textures.count; i++){
+       int* texture_id = array_get(&mesh->textures,i);
+				json_array_append_number(array,*texture_id);
+       //fprintf(actual_file,"%i,",*texture_id);
+   }
+}
+void pe_serialize_models_ids(StaticMeshComponent* mesh,JSON_Array* array){
+   
+    u8* path_id = array_get(&mesh->meshes,0);
+    int count = 0;
+    int offset = 0;
+    if(previous_path_id != *path_id){
+        previous_path_id = *path_id;
+        if(previous_component){
+            offset = previous_component->meshes.count-1;
+            previous_id_saved += offset;
+        }
+    }
+
+   // fprintf(actual_file,"%i,",*path_id);
+    
+		json_array_append_number(array,*path_id);
+    
+    for(int o = 0; o < mesh->meshes.count-1 ; o++){
+        u8 id = previous_id_saved + o;
+        //fprintf(actual_file,"%i,",id);
+				json_array_append_number(array,id);
+        count++;
+    }
+    //previous_component = mesh;
+
+}
 void save_models_id(void* component){
     StaticMeshComponent* mesh = component;
     u8* path_id = array_get(&mesh->meshes,0);
@@ -149,6 +188,165 @@ void save_level(int id){
     new_array_data("level",&leve_data_element_plus_data);
 }
 
+void pe_serialize_components(Element* element, JSON_Array* array){
+  for (int i = 0; i < element->components.count; i++) {
+    ComponentDefinition *component = array_get(&element->components,i);
+			JSON_Value *element_obj_val = json_value_init_object();
+			JSON_Object *element_obj = json_value_get_object(element_obj_val);
+
+			json_object_set_number(element_obj,"type",component->type);
+			json_array_append_value(array,element_obj_val);
+    switch (component->type) {
+    case TRASNFORM_COMPONENT: {
+      TransformComponent *transform = component->data;
+     // new_text_vec3_token("position", transform->position);
+      //new_text_vec4_token("rotation", transform->rotation);
+					
+			JSON_Value* array_component_val = json_value_init_array();
+			JSON_Array* array_component = json_value_get_array(array_component_val);
+			
+			json_array_append_number(array_component,transform->position[0]);	
+			json_array_append_number(array_component,transform->position[1]);	
+			json_array_append_number(array_component,transform->position[2]);	
+
+			JSON_Value* array_rot_val = json_value_init_array();
+			JSON_Array* array_rot = json_value_get_array(array_rot_val);
+			
+			json_array_append_number(array_rot,transform->rotation[0]);	
+			json_array_append_number(array_rot,transform->rotation[1]);	
+			json_array_append_number(array_rot,transform->rotation[2]);	
+			json_array_append_number(array_rot,transform->rotation[3]);	
+
+
+			json_object_set_value(element_obj,"position",array_component_val);
+			json_object_set_value(element_obj,"rotation",array_rot_val);
+
+      break;
+    }
+    case STATIC_MESH_COMPONENT:{
+        StaticMeshComponent* mesh = component->data;
+        if(mesh->meshes.count >= 1){
+           // new_array_data_with_pointer("models",&save_models_id,mesh);
+            //new_array_data_with_pointer("textures",&save_textures_id,mesh);
+						//
+
+           JSON_Value *array_component_val = json_value_init_array();
+           JSON_Array *array_component =
+               json_value_get_array(array_component_val);
+
+           JSON_Value *array_rot_val = json_value_init_array();
+           JSON_Array *array_rot = json_value_get_array(array_rot_val);
+
+           pe_serialize_models_ids(mesh, array_component);
+           pe_serialize_textures_ids(mesh, array_rot);
+
+           json_object_set_value(element_obj, "models", array_component_val);
+           json_object_set_value(element_obj, "textures", array_rot_val);
+
+           break;
+        }
+
+        break;
+    }
+    }
+  }
+}
+
+void pe_serialize_elements(JSON_Array* array){
+	for(int i = 0; i < editor_elements.count; i++){
+			Element* element = array_get(&editor_elements,i);
+			JSON_Value *element_obj_val = json_value_init_object();
+			JSON_Object *element_obj = json_value_get_object(element_obj_val);
+			json_object_set_string(element_obj,"name",element->name);	
+
+
+			JSON_Value* array_component_val = json_value_init_array();
+			JSON_Array* array_component = json_value_get_array(array_component_val);
+			pe_serialize_components(element,array_component);
+
+			json_object_set_value(element_obj,"components",array_component_val);	
+				
+			json_array_append_value(array,element_obj_val);	
+	}
+
+}
+
+void serialization_example(void) {
+  JSON_Value *root_value = json_value_init_object();
+  JSON_Object *root_object = json_value_get_object(root_value);
+  char *serialized_string = NULL;
+	
+  JSON_Value *value2 = json_value_init_object();
+  JSON_Object *value2_obj = json_value_get_object(value2);
+
+  JSON_Value *elements_obj_val = json_value_init_object();
+  JSON_Object *elements_obj = json_value_get_object(elements_obj_val);
+
+  JSON_Value *data_obj_val = json_value_init_object();
+  JSON_Object *data_obj = json_value_get_object(data_obj_val);
+
+	JSON_Value * elements_array_val = json_value_init_array();
+
+	JSON_Array * element_array = json_value_get_array(elements_array_val);	
+	
+	JSON_Value * data_array_val = json_value_init_array();
+
+	JSON_Array * data_array = json_value_get_array(data_array_val);	
+
+	JSON_Value * models_paths_val= json_value_init_array();
+
+	JSON_Array * models_paths_arr= json_value_get_array(models_paths_val);	
+
+	JSON_Value * textures_paths_val= json_value_init_array();
+
+	JSON_Array * textures_paths_arr= json_value_get_array(textures_paths_val);	
+
+	JSON_Value * level = json_value_init_array();
+
+	JSON_Array * level_arr	= json_value_get_array(level);
+
+	json_object_set_number(value2_obj, "type", 3);
+	json_array_append_value(level_arr,elements_obj_val);
+	json_array_append_value(level_arr,data_obj_val);
+	
+		
+  JSON_Value *model_obj_val= json_value_init_object();
+  JSON_Object *model_obj= json_value_get_object(model_obj_val);
+
+  JSON_Value *texture_obj_val= json_value_init_object();
+  JSON_Object *texture_obj= json_value_get_object(texture_obj_val);
+	
+	json_object_set_value(model_obj,"models",models_paths_val);
+	json_object_set_value(texture_obj,"textures",textures_paths_val);
+
+	json_array_append_value(data_array,model_obj_val);
+	json_array_append_value(data_array,texture_obj_val);
+	
+	json_object_set_value(root_object,"level",level);
+	json_object_set_value(elements_obj,"elements",elements_array_val);
+	json_object_set_value(data_obj,"data",data_array_val);
+
+	pe_serialize_elements(element_array);
+
+	for(int i = 0; i < pe_arr_models_paths.count ; i++){
+			char* path = (char*)array_get(&pe_arr_models_paths,i);
+			json_array_append_string(models_paths_arr,path);	
+	}
+	
+	for(int i = 0; i < textures_paths.count ; i++){
+			char* path = (char*)array_get(&textures_paths,i);
+			json_array_append_string(textures_paths_arr,path);	
+	}
+	
+	serialized_string = json_serialize_to_string_pretty(root_value);
+  //puts(serialized_string);
+	 
+	fputs(serialized_string,actual_file);	
+
+	json_free_serialized_string(serialized_string);
+  json_value_free(root_value);
+}
+
 void save_level_data(const char* level_name){
     if(strcmp(level_name, "") == 0){
         if( strcmp(opened_file_name,"") == 0)
@@ -164,8 +362,8 @@ void save_level_data(const char* level_name){
     actual_file = new_file;
      
  
-    new_save_element(&save_level,0);
-    
+    //new_save_element(&save_level,0);
+		serialization_example(); 
     
     fclose(new_file);
     previous_id_saved = 0;
@@ -204,6 +402,7 @@ void save_buttons_data(int id){
     }   
     
 }
+
 
 void ui_elements_data(){
     SaveDataFunction save = &save_buttons_data;
