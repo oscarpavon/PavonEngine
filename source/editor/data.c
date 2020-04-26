@@ -16,13 +16,11 @@ StaticMeshComponent* previous_component = NULL;
 
 void pe_serialize_textures_ids(StaticMeshComponent* mesh, JSON_Array* array){
     if(mesh->textures.count == 0){
-       // fprintf(actual_file,"%i,",0);
 				json_array_append_number(array,0);
     }  
    for(int i = 0; i<mesh->textures.count; i++){
        int* texture_id = array_get(&mesh->textures,i);
 				json_array_append_number(array,*texture_id);
-       //fprintf(actual_file,"%i,",*texture_id);
    }
 }
 void pe_serialize_models_ids(StaticMeshComponent* mesh,JSON_Array* array){
@@ -37,86 +35,32 @@ void pe_serialize_models_ids(StaticMeshComponent* mesh,JSON_Array* array){
             previous_id_saved += offset;
         }
     }
-
-   // fprintf(actual_file,"%i,",*path_id);
-    
+		
 		json_array_append_number(array,*path_id);
     
     for(int o = 0; o < mesh->meshes.count-1 ; o++){
         u8 id = previous_id_saved + o;
-        //fprintf(actual_file,"%i,",id);
 				json_array_append_number(array,id);
         count++;
     }
-    //previous_component = mesh;
 
-}
-void save_models_id(void* component){
-    StaticMeshComponent* mesh = component;
-    u8* path_id = array_get(&mesh->meshes,0);
-    int count = 0;
-    int offset = 0;
-    if(previous_path_id != *path_id){
-        previous_path_id = *path_id;
-        if(previous_component){
-            offset = previous_component->meshes.count-1;
-            previous_id_saved += offset;
-        }
-    }
-
-    fprintf(actual_file,"%i,",*path_id);
-    
-    
-    for(int o = 0; o < mesh->meshes.count-1 ; o++){
-        u8 id = previous_id_saved + o;
-        fprintf(actual_file,"%i,",id);
-        count++;
-    }
-    previous_component = mesh;
-
-}
-void save_textures_id(void* component){
-    StaticMeshComponent* mesh = component; 
-    if(mesh->textures.count == 0){
-        fprintf(actual_file,"%i,",0);
-    }  
-   for(int i = 0; i<mesh->textures.count; i++){
-       int* texture_id = array_get(&mesh->textures,i);
-       fprintf(actual_file,"%i,",*texture_id);
-   }
 }
 
 void save_element_component_data(int id){
     ComponentDefinition* component = array_get(&current_element->components,id);
-    new_text_primitive_token("type",component->type);
+    //new_text_primitive_token("type",component->type);
     switch (component->type)
     {
-    case TRASNFORM_COMPONENT:{
-        TransformComponent* transform = component->data;
-        new_text_vec3_token("position",transform->position);
-        new_text_vec4_token("rotation",transform->rotation);
-        break;
-    }
-    case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* mesh = component->data;
-        if(mesh->meshes.count >= 1){
-            new_array_data_with_pointer("models",&save_models_id,mesh);
-            new_array_data_with_pointer("textures",&save_textures_id,mesh);
-            break;
-        }
-
-        break;
-    }
     case CAMERA_COMPONENT:
         {
             CameraComponent* camera = component->data;
-            new_text_vec3_token("position",camera->position);
+     //       new_text_vec3_token("position",camera->position);
             break;
         }
     case LEVEL_OF_DETAIL_COMPONENT:
     {
         LevelOfDetailComponent* detail = component->data;
-        new_text_primitive_token("texture",detail->texture_id);
+    //    new_text_primitive_token("texture",detail->texture_id);
         break;
     } 
     default:
@@ -124,122 +68,56 @@ void save_element_component_data(int id){
     }
 }
 
-void components_data(){
-    for(int i = 0; i < current_element->components.count ; i++){
-        new_save_element(&save_element_component_data,i);
-    }
-}
-
-void save_level_element_data(int id){ 
-    
-    Element* element = array_get(&editor_elements,id);
-    current_element = element;
-
-    new_text_token("name",element->name); 
-    new_array_data("components",&components_data);
-}
-
-
-void level_elements_data(){
-    for(int i = 0; i < editor_elements.count ; i++){        
-        new_save_element(&save_level_element_data,i);
-    }
-
-}
-
-void save_model_paths(){
-
-    for(int i = 0; i< pe_arr_models_paths.count ; i++){       
-        hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&pe_arr_models_paths,i));
-    }
-   
-}
-void save_textures_paths(){
-
-    for(int i = 0; i< textures_paths.count ; i++){       
-        hirachical_tab();
-        fprintf(actual_file,"\"%s\",\n",(char*)array_get(&textures_paths,i));
-    }
-   
-}
-
-void level_data(){
-    new_array_data("models",&save_model_paths);
-    new_array_data("textures",&save_textures_paths);
-}
-
-typedef void(*function_with_function)( const char*text, void(*function2)(void));
-
-void new_element_wiht_data( function_with_function t,const char* text, void(*function2)(void)){
-    hirachical_tab(); fputs("{\n", actual_file);
-    hirarchical_count++;
-    t(text,function2);
-    hirarchical_count--;
-    hirachical_tab(); fputs("},\n",actual_file);
-}
-
-void leve_data_element_plus_data(){
-   new_element_wiht_data(&new_array_data,"elements",&level_elements_data);
-   new_element_wiht_data(&new_array_data,"data",&level_data);   
-}
-
-void save_level(int id){
-    new_array_data("level",&leve_data_element_plus_data);
-}
-
-void pe_serialize_components(Element* element, JSON_Array* array){
+void pe_serialize_components(Element *element, JSON_Array *array) {
   for (int i = 0; i < element->components.count; i++) {
-    ComponentDefinition *component = array_get(&element->components,i);
-			JSON_Value *element_obj_val = json_value_init_object();
-			JSON_Object *element_obj = json_value_get_object(element_obj_val);
+    ComponentDefinition *component = array_get(&element->components, i);
+    JSON_Value *element_obj_val = json_value_init_object();
+    JSON_Object *element_obj = json_value_get_object(element_obj_val);
 
-			json_object_set_number(element_obj,"type",component->type);
-			json_array_append_value(array,element_obj_val);
+    json_object_set_number(element_obj, "type", component->type);
+    json_array_append_value(array, element_obj_val);
     switch (component->type) {
     case TRASNFORM_COMPONENT: {
       TransformComponent *transform = component->data;
-			JSON_Value* array_component_val = json_value_init_array();
-			JSON_Array* array_component = json_value_get_array(array_component_val);
-			
-			json_array_append_number(array_component,transform->position[0]);	
-			json_array_append_number(array_component,transform->position[1]);	
-			json_array_append_number(array_component,transform->position[2]);	
+      JSON_Value *array_component_val = json_value_init_array();
+      JSON_Array *array_component = json_value_get_array(array_component_val);
 
-			JSON_Value* array_rot_val = json_value_init_array();
-			JSON_Array* array_rot = json_value_get_array(array_rot_val);
-			
-			json_array_append_number(array_rot,transform->rotation[0]);	
-			json_array_append_number(array_rot,transform->rotation[1]);	
-			json_array_append_number(array_rot,transform->rotation[2]);	
-			json_array_append_number(array_rot,transform->rotation[3]);	
+      json_array_append_number(array_component, transform->position[0]);
+      json_array_append_number(array_component, transform->position[1]);
+      json_array_append_number(array_component, transform->position[2]);
 
+      JSON_Value *array_rot_val = json_value_init_array();
+      JSON_Array *array_rot = json_value_get_array(array_rot_val);
 
-			json_object_set_value(element_obj,"position",array_component_val);
-			json_object_set_value(element_obj,"rotation",array_rot_val);
+      json_array_append_number(array_rot, transform->rotation[0]);
+      json_array_append_number(array_rot, transform->rotation[1]);
+      json_array_append_number(array_rot, transform->rotation[2]);
+      json_array_append_number(array_rot, transform->rotation[3]);
+
+      json_object_set_value(element_obj, "position", array_component_val);
+      json_object_set_value(element_obj, "rotation", array_rot_val);
 
       break;
     }
-    case STATIC_MESH_COMPONENT:{
-        StaticMeshComponent* mesh = component->data;
-        if(mesh->meshes.count >= 1){
-           JSON_Value *array_component_val = json_value_init_array();
-           JSON_Array *array_component =
-               json_value_get_array(array_component_val);
+    case STATIC_MESH_COMPONENT: {
+      StaticMeshComponent *mesh = component->data;
+      if (mesh->meshes.count >= 1) {
+        JSON_Value *array_component_val = json_value_init_array();
+        JSON_Array *array_component = json_value_get_array(array_component_val);
 
-           JSON_Value *array_rot_val = json_value_init_array();
-           JSON_Array *array_rot = json_value_get_array(array_rot_val);
+        JSON_Value *array_rot_val = json_value_init_array();
+        JSON_Array *array_rot = json_value_get_array(array_rot_val);
 
-           pe_serialize_models_ids(mesh, array_component);
-           pe_serialize_textures_ids(mesh, array_rot);
+        pe_serialize_models_ids(mesh, array_component);
+        pe_serialize_textures_ids(mesh, array_rot);
 
-           json_object_set_value(element_obj, "models", array_component_val);
-           json_object_set_value(element_obj, "textures", array_rot_val);
-
-           break;
-        }
+        json_object_set_value(element_obj, "models", array_component_val);
+        json_object_set_value(element_obj, "textures", array_rot_val);
 
         break;
+      }
+
+      break;
     }
     }
   }
@@ -264,7 +142,7 @@ void pe_serialize_elements(JSON_Array* array){
 
 }
 
-void serialization_example(void) {
+void pe_serialize_level() {
   JSON_Value *root_value = json_value_init_object();
   JSON_Object *root_object = json_value_get_object(root_value);
   char *serialized_string = NULL;
@@ -332,7 +210,6 @@ void serialization_example(void) {
 	}
 	
 	serialized_string = json_serialize_to_string_pretty(root_value);
-  //puts(serialized_string);
 	 
 	fputs(serialized_string,actual_file);	
 
@@ -353,10 +230,8 @@ void save_level_data(const char* level_name){
         return;
     }
     actual_file = new_file;
-     
- 
-    //new_save_element(&save_level,0);
-		serialization_example(); 
+    
+		pe_serialize_level();	
     
     fclose(new_file);
     previous_id_saved = 0;
@@ -384,6 +259,12 @@ void serializer_serialize_data(const char* path, void(*function)(void)){
     LOG("Saved to %s\n",path);
 }
 
+
+
+
+//**********************
+//GUI save data
+//**********************
 void save_buttons_data(int id){    
     Button* button = array_get(actual_buttons_array,id);
     if(button != NULL){
