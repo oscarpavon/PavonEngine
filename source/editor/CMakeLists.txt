@@ -31,7 +31,6 @@ ${windows}
 ProjectManager/project_manager.c
 network/network.c
 directories.c
-../ThirdParty/parson.c
 )
 
 set (game_source

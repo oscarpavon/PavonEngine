@@ -12,6 +12,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif()
 
 set(network 
+		${CMAKE_CURRENT_LIST_DIR}/network/network.c
 		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
 )
 
@@ -20,11 +21,13 @@ set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/static_mesh_component.c
         ${CMAKE_CURRENT_LIST_DIR}/components/skinned_mesh_component.c
         )
-         
+set(third_party
+        ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
+        ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/parson.c
+	)	
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
-        ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
         ${CMAKE_CURRENT_LIST_DIR}/LOD_system.c
         ${CMAKE_CURRENT_LIST_DIR}/memory.c
         ${CMAKE_CURRENT_LIST_DIR}/model.c
@@ -42,17 +45,17 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/animation/animation.c
         ${CMAKE_CURRENT_LIST_DIR}/Collision/collision.c
         ${CMAKE_CURRENT_LIST_DIR}/content_manager.c
-        ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
-        ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
 				${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
 				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
+				${CMAKE_CURRENT_LIST_DIR}/game.c
+				${CMAKE_CURRENT_LIST_DIR}/input.c
         ${components}
 				${audio}
 				${network}
-				${CMAKE_CURRENT_LIST_DIR}/network/network.c
-				${CMAKE_CURRENT_LIST_DIR}/input.c
+				${third_party}
 				${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
-				${CMAKE_CURRENT_LIST_DIR}/game.c
+        ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
+        ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 )
 
 

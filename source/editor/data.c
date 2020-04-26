@@ -226,10 +226,6 @@ void pe_serialize_components(Element* element, JSON_Array* array){
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* mesh = component->data;
         if(mesh->meshes.count >= 1){
-           // new_array_data_with_pointer("models",&save_models_id,mesh);
-            //new_array_data_with_pointer("textures",&save_textures_id,mesh);
-						//
-
            JSON_Value *array_component_val = json_value_init_array();
            JSON_Array *array_component =
                json_value_get_array(array_component_val);
