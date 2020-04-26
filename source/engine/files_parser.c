@@ -436,12 +436,19 @@ void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
   case TRASNFORM_COMPONENT: {
     JSON_Array *position_array = json_object_get_array(object, "position");
     JSON_Array *rotation_array = json_object_get_array(object, "rotation");
+    JSON_Array *scale_array = json_object_get_array(object, "scale");
     vec3 position;
     vec4 rotation;
+		vec3 scale;
 
     for (int i = 0; i < 3; i++) {
       float n = (float)json_array_get_number(position_array, i);
       position[i] = n;
+    }
+
+    for (int i = 0; i < 3; i++) {
+      float n = (float)json_array_get_number(scale_array, i);
+      scale[i] = n;
     }
 
     for (int i = 0; i < 4; i++) {
@@ -454,9 +461,11 @@ void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
         get_component_from_selected_element(TRASNFORM_COMPONENT);
     glm_vec3_copy(position, transform->position);
     glm_vec4_copy(rotation, transform->rotation);
+    glm_vec3_copy(scale, transform->scale);
 
     glm_translate(transform->model_matrix, transform->position);
     rotate_element(selected_element, transform->rotation);
+		glm_scale(transform->model_matrix,transform->scale);
 
   } break;
   case STATIC_MESH_COMPONENT: {

@@ -46,28 +46,6 @@ void pe_serialize_models_ids(StaticMeshComponent* mesh,JSON_Array* array){
 
 }
 
-void save_element_component_data(int id){
-    ComponentDefinition* component = array_get(&current_element->components,id);
-    //new_text_primitive_token("type",component->type);
-    switch (component->type)
-    {
-    case CAMERA_COMPONENT:
-        {
-            CameraComponent* camera = component->data;
-     //       new_text_vec3_token("position",camera->position);
-            break;
-        }
-    case LEVEL_OF_DETAIL_COMPONENT:
-    {
-        LevelOfDetailComponent* detail = component->data;
-    //    new_text_primitive_token("texture",detail->texture_id);
-        break;
-    } 
-    default:
-        break;
-    }
-}
-
 void pe_serialize_components(Element *element, JSON_Array *array) {
   for (int i = 0; i < element->components.count; i++) {
     ComponentDefinition *component = array_get(&element->components, i);
@@ -94,8 +72,16 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
       json_array_append_number(array_rot, transform->rotation[2]);
       json_array_append_number(array_rot, transform->rotation[3]);
 
+      JSON_Value *array_scale_val = json_value_init_array();
+      JSON_Array *array_scale = json_value_get_array(array_scale_val);
+
+      json_array_append_number(array_scale, transform->scale[0]);
+      json_array_append_number(array_scale, transform->scale[1]);
+      json_array_append_number(array_scale, transform->scale[2]);
+
       json_object_set_value(element_obj, "position", array_component_val);
       json_object_set_value(element_obj, "rotation", array_rot_val);
+      json_object_set_value(element_obj, "scale", array_scale_val);
 
       break;
     }
@@ -119,6 +105,18 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
 
       break;
     }
+    case CAMERA_COMPONENT:
+        {
+            CameraComponent* camera = component->data;
+     //       new_text_vec3_token("position",camera->position);
+            break;
+        }
+    case LEVEL_OF_DETAIL_COMPONENT:
+    {
+        LevelOfDetailComponent* detail = component->data;
+    //    new_text_primitive_token("texture",detail->texture_id);
+        break;
+    } 
     }
   }
 }
