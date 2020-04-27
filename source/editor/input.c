@@ -332,11 +332,15 @@ void scale_mode() {
     bool update = false;
 
     if (input.J.pressed) {
-      glm_vec3_copy(VEC3(0, -scale_object_value, 0), move);
+      glm_vec3_copy(VEC3(scale_object_value,
+					 	scale_object_value,
+					 	scale_object_value), move);
       update = true;
     }
     if (input.K.pressed) {
-      glm_vec3_copy(VEC3(0, scale_object_value, 0), move);
+      glm_vec3_copy(VEC3(-scale_object_value, 
+						-scale_object_value, 
+						-scale_object_value), move);
       update = true;
     }
     if (input.D.pressed) {
