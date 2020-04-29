@@ -18,7 +18,7 @@ void pe_frame_draw();
 
 void pe_render_skinned_elements(Array* elements);
 
-EngineThread thread_render;
+PEThread thread_render;
 
 Array array_render_thread_init_commmands;
 Array array_render_thread_commands;

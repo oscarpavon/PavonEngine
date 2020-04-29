@@ -26,14 +26,6 @@ void thread_new_detached(void*(*function)(void*), void* argument, const char* na
 		memcpy(id,&new_thread_id,sizeof(PEThreadID));
 
 }
-void thread_init_engine_thread(const char* name, EngineThread* thead, void*(*function)(void*)){
-	
-
-}
-void thread_new_job(EngineThread* thread){
-	
-
-}
 
 void pe_thread_control(Array* thread_commads){
 		
@@ -84,3 +76,4 @@ void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment){
 		LOG("exec in renderen therd\n");
 	}
 }
+

@@ -11,6 +11,6 @@ int pe_audio_init();
 
 void pe_audio_play(PEAudio* audio);
 
-EngineThread thread_audio;
+PEThread thread_audio;
 Array thread_audio_commads;
 #endif

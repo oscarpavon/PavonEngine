@@ -4,14 +4,13 @@
 #include "array.h"
 #include <pthread.h>
 
-typedef struct{
-    pthread_t id;
+typedef unsigned long int PEThreadID;
+
+typedef struct PEThread{
+		PEThreadID id; 
     Array commands;
     char name[20];
-
-}EngineThread;
-
-typedef unsigned long int PEThreadID;
+}PEThread;
 
 typedef enum PEThreadCommandType{ 
 	POINTER,
@@ -28,8 +27,6 @@ typedef struct PEThreadCommand{
 
 void thread_new_function(void*(*function)(void*),void* argument);
 void thread_new_detached(void*(*function)(void*),void* argument,const char* name,PEThreadID*);
-
-void thread_engine_thread_system_init();
 
 void pe_thread_control(Array* thread_commads);
 
