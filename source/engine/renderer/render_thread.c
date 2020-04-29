@@ -52,12 +52,14 @@ void pe_frame_clean(){
 void render_thread_init(){
   pe_thread_control(&render_thread_commads);
 
-  render_thread_definition.init();
-
-  engine_initialized = true;
+	glEnable(GL_MULTISAMPLE);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
+
+  render_thread_definition.init();
+
+  engine_initialized = true;
 
   camera_init(&main_camera);
   init_gui();
