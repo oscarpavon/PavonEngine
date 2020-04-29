@@ -16,6 +16,7 @@ cgltf_animation* current_animation;
 cgltf_animation_channel* current_channel;
 cgltf_animation_sampler* current_sampler;
 bool copy_nodes = false;
+int nodes_counter = 0;
 
 Array* actual_vertex_array;
 Array* actual_index_array;
@@ -218,6 +219,8 @@ void check_LOD_names(cgltf_node* node){
 int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int index_to_store){
 
   if(copy_nodes){
+		if(nodes_counter > 1){
+			
     Node new_node;
     memset(&new_node,0,sizeof(Node));  
 
@@ -231,6 +234,8 @@ int load_node(Node* parent, cgltf_node *in_cgltf_node, Node* store_nodes, int in
 
     if(model_nodes.initialized)
       array_add(&model_nodes,&new_node);
+		}
+		nodes_counter++;
   }
 
   if(in_cgltf_node->mesh != NULL){
@@ -317,6 +322,7 @@ void load_current_animation(){
   Animation new_animation;
   memset(&new_animation,0,sizeof(Animation));
   strcpy(new_animation.name,current_animation->name);
+	LOG("Loading animation: %s\n",current_animation->name);
   array_init(&new_animation.channels,sizeof(AnimationChannel),current_animation->channels_count);
   for(int i = 0; i< current_animation->channels_count ; i++){
     current_channel = &current_animation->channels[i];

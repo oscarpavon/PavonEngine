@@ -77,9 +77,14 @@ void play_animation(Animation* animation){
 }
 
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop){
-    Animation* animation = NULL; 
+    Animation* animation = NULL;
+		if(skin_component->animations.count == 0){
+			LOGW("No animations in skinned mesh");
+			return;
+		}	
     for( int i = 0 ; i<skin_component->animations.count ; i++){
         Animation* geted_animation = array_get(&skin_component->animations, i);
+				LOG("Comparing geted animation %s , with %s \n",geted_animation->name, name);
         if( strcmp(name , geted_animation->name) == 0 ){
             animation = geted_animation;
             break;
