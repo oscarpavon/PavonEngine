@@ -202,7 +202,7 @@ int add_element_with_model_path(const char* model_gltf_path){
     Array* prev_array = actual_model_array;
     actual_model_array = &array_models_loaded;
 
-    int models_loaded = load_model(model_gltf_path);
+    int models_loaded = pe_loader_model(model_gltf_path);
     if( models_loaded == -1){
         return -1;
     }
@@ -233,7 +233,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     Array* prev_model_array = actual_model_array;
     actual_model_array = array;
         
-    load_model(path_model);
+    pe_loader_model(path_model);
 
     selected_model->shader = create_engine_shader(standart_vertex_shader, standart_fragment_shader);
 

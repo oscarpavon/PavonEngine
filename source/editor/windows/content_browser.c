@@ -386,7 +386,7 @@ void content_browser_window_create_contents_thumbnails(){
             continue;
         char directory[sizeof(pavon_the_game_project_folder) + 150];
         sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",content_view->content_name);
-        int models_count = load_model(directory);
+        int models_count = pe_loader_model(directory);
         Model* model = array_get(&models_loaded_for_create_thumbnails,i+model_offset);
         model_offset = 0;
         if(models_count > 1){

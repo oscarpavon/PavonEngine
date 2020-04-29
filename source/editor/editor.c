@@ -76,7 +76,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
 
     char path[strlen(pavon_the_game_project_folder) + 40];
     sprintf(path,"%sContent/HLOD/HLOD_out%i.gltf",pavon_the_game_project_folder,cluster->id);
-    load_model(path);
+    pe_loader_model(path);
     Model* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);

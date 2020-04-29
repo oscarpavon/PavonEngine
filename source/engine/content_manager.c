@@ -79,7 +79,6 @@ int content_manager_load_content(const char* path){
     case CONTENT_TYPE_STATIC_MESH:{
         Array* prev_array = actual_model_array;
         actual_model_array = &array_models_loaded;
-        model_load_from_content(new_file.data+24,data_size);
 
         actual_model_array = prev_array;
         

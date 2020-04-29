@@ -37,7 +37,7 @@ typedef struct DrawData{
     u32 index;
 }DrawData;
 
-int load_model(const char* path);
+int pe_loader_model(const char* path);
 
 int model_load_from_content(void* gltf_data, u32 size);
 
