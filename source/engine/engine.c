@@ -61,7 +61,7 @@ void new_empty_model_in_array(Array* array){
 
 void new_empty_model(){
     Model new_model;
-    memset(&new_model,0,sizeof(Model));
+		ZERO(new_model);
     if(!actual_model_array)
         return;
     glm_mat4_identity(new_model.model_mat);
@@ -150,7 +150,7 @@ void engine_add_element(u32 models_loaded){
     {
     case COMPONENT_SKINNED_MESH:
         {
-            LOG("Skinned mesh need fill now\n");
+            //LOG("Skinned mesh need fill now\n");
             SkinnedMeshComponent skin_mesh_component;
 	          ZERO(skin_mesh_component); 
             add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);

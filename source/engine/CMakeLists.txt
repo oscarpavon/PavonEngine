@@ -25,6 +25,13 @@ set(third_party
         ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
         ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/parson.c
 	)	
+
+set(renderer
+	${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
+	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
+	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
+  ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
+	)
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
@@ -38,7 +45,6 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/object_select.c
         ${CMAKE_CURRENT_LIST_DIR}/engine.c
         ${CMAKE_CURRENT_LIST_DIR}/skeletal.c
-        ${CMAKE_CURRENT_LIST_DIR}/shader.c        
         ${CMAKE_CURRENT_LIST_DIR}/level.c
         ${CMAKE_CURRENT_LIST_DIR}/files_parser.c        
         ${CMAKE_CURRENT_LIST_DIR}/time.c
@@ -53,9 +59,7 @@ set(engine_source
 				${audio}
 				${network}
 				${third_party}
-				${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
-        ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
-        ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
+				${renderer}
 )
 
 

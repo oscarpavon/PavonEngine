@@ -6,6 +6,7 @@
 #include <engine/camera.h>
 #include <engine/engine.h>
 
+
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id){
     glGenBuffers(1,id);
     GLuint id_copy;
@@ -41,6 +42,8 @@ void GPU_buffers_create_for_model(Model* model){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_array->count * sizeof(u8), index_array->data , GL_STATIC_DRAW);
 
+		model->gpu_ready = true;
+		LOGW("Buffer created");
 }
 
 void load_texture_to_GPU(Texture* texture){
@@ -71,7 +74,7 @@ void pe_mat_skinned(GLuint shader, GLuint buffer, mat4 matrix){
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
   glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
+//  glEnableVertexAttribArray(1);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
                         (void *)0);
 

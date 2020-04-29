@@ -3,7 +3,7 @@
 //
 
 #include "shader.h"
-#include "../engine/file_loader.h"
+#include <engine/file_loader.h>
 
 void print_shader_compile_log(GLuint shader, const char* path_for_error_debug){
 

@@ -11,7 +11,6 @@
 #include "shader.h"
 
 #include <string.h>
-#include <GLES2/gl2.h>
 #include "images.h"
 
 #include "engine.h"

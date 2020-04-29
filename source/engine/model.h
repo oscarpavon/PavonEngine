@@ -27,7 +27,7 @@ typedef struct Model{
     GLuint shader;
 
     Texture texture;
-
+		bool gpu_ready;
 }Model;
 
 typedef struct DrawData{

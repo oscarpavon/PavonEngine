@@ -177,8 +177,8 @@ void load_mesh(cgltf_mesh* mesh){
     actual_vertex_array = &selected_model->vertex_array;
     actual_index_array = &selected_model->index_array;
     load_primitive(&mesh->primitives[i]);
-		//pe_th_exec_in(pe_th_render_id,&GPU_buffers_create_for_model,selected_model);	
-		GPU_buffers_create_for_model(selected_model);
+		pe_th_exec_in(pe_th_render_id,&GPU_buffers_create_for_model,selected_model);	
+		while(!selected_model->gpu_ready){};	
     models_parsed++;
   }  
 
@@ -405,10 +405,10 @@ int model_load_from_content(void* gltf_data, u32 size){
 }
 
 int load_model(const char* path){
-  memset(&model_animation,0,sizeof(Array));
-  memset(&model_nodes,0,sizeof(Array));
-//	ZERO(loaded_skeletal);
-  File new_file;
+	ZERO(model_animation);
+	ZERO(model_nodes);	
+  
+	File new_file;
 
   if(load_file(path,&new_file) == -1)
     return -1;
