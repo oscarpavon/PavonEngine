@@ -16,10 +16,10 @@ char* argument_array_pointer;
 
 void pe_editor_parse_cmd_char(unsigned char character){
     if(character == ':'){
-        LOG("Command mode\n");
         command_text_buffer[command_character_count] = character;
         command_character_count++;        
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+				if(editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT) 
+					change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
         return;
     }else if(character == '/'){
         if(editor_sub_mode == EDITOR_SUB_MODE_NULL)
