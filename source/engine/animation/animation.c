@@ -13,17 +13,16 @@ void update_skeletal_node_uniform(){
 
         mat4 local;
         get_global_matrix(joint, local);
-        mat4 global;
-				if(!selected_element || !selected_element->transform)
-					return;
-        glm_mat4_mul(selected_element->transform->model_matrix, local, global);
-
-        mat4 inverse_model;
+				//needed for transform
+				mat4 negative;
+        glm_mat4_inv(selected_element->transform->model_matrix,negative);
+				//
+				mat4 inverse_model;
         mat4 inverse_dot_local;
         mat4 joint_mat;
 
-        glm_mat4_inv(selected_element->transform->model_matrix,inverse_model);
-        glm_mat4_mul(inverse_model,global,inverse_dot_local);
+        glm_mat4_inv(negative,inverse_model);
+        glm_mat4_mul(inverse_model,local,inverse_dot_local);
         glm_mat4_mul(inverse_dot_local,skin_component->inverse_bind_matrices[i],joint_mat);
 
         glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);

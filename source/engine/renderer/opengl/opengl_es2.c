@@ -169,7 +169,9 @@ void draw_model_like(Model* model, GLenum mode){
 }
 
 void pe_render_skinned_model(Model * new_model){
-    
+		if(!new_model)
+			return;
+
 		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
    
 	 	pe_mat_skinned(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
