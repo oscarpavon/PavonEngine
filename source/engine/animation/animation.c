@@ -14,6 +14,8 @@ void update_skeletal_node_uniform(){
         mat4 local;
         get_global_matrix(joint, local);
         mat4 global;
+				if(!selected_element || !selected_element->transform)
+					return;
         glm_mat4_mul(selected_element->transform->model_matrix, local, global);
 
         mat4 inverse_model;
@@ -108,7 +110,7 @@ void play_animation_list(){
         if(animation->time <= animation->end){
             play_animation(animation);
             #ifdef EDITOR
-            update_vertex_bones_gizmos = true;
+            //update_vertex_bones_gizmos = true;
             #endif
         }            
         else{

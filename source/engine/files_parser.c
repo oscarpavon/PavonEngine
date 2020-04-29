@@ -468,6 +468,12 @@ void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
 		glm_scale(transform->model_matrix,transform->scale);
 
   } break;
+  case COMPONENT_SKINNED_MESH: {
+    SkinnedMeshComponent skin_mesh_component;
+	  ZERO(skin_mesh_component); 
+    add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
+	break;
+	}
   case STATIC_MESH_COMPONENT: {
     StaticMeshComponent mesh_component;
     ZERO(mesh_component);

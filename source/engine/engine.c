@@ -135,10 +135,14 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 }
 
 void load_simple_image(const char* path){
-    Texture new_texture;
-    texture_load(path,&new_texture);
        
-    array_add(current_textures_array,&new_texture);    
+    Texture new_texture;
+		ZERO(new_texture);
+    array_add(current_textures_array,&new_texture);
+
+    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
+		if(texture_load(path,texture_loaded) == -1)
+				return;
 }
 
 void engine_add_element(u32 models_loaded){
