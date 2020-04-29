@@ -85,6 +85,14 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
 
       break;
     }
+    case COMPONENT_SKINNED_MESH: {
+      SkinnedMeshComponent *skin =
+          get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+      if (!skin)
+        break;
+
+      break;
+    }
     case STATIC_MESH_COMPONENT: {
       StaticMeshComponent *mesh = component->data;
       if (mesh->meshes.count >= 1) {

@@ -2,12 +2,10 @@
 #define ENGINE_COMPONENTS_H
 
 typedef struct Element Element;
-#include "../model.h"
+#include <engine/array.h>
+#include <engine/skeletal.h>
+#include <engine/types.h>
 #include "../../ThirdParty/cglm/cglm.h"
-#include "../array.h"
-#include "../skeletal.h"
-#include "../../engine/types.h"
-#include "../skeletal.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
