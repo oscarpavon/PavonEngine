@@ -71,6 +71,7 @@ void pe_mat_skinned(GLuint shader, GLuint buffer, mat4 matrix){
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
   glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
                         (void *)0);
 

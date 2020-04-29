@@ -92,7 +92,7 @@ void draw_skeletal_bones(){
 		glDrawArrays(GL_POINTS, 0, skeletal_gizmo.vertex_array.count);
 
     glLineWidth(2);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo.vertex_buffer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,skeletal_gizmo.index_buffer_id);
     glDrawElements(GL_LINES,skeletal_gizmo.index_array.count,GL_UNSIGNED_SHORT,(void*)0);
 
 }
