@@ -44,10 +44,19 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
     new_empty_model();
 
     duplicate_model_data(selected_model, original_model);
-    selected_model->shader =
-        create_engine_shader(standart_vertex_shader, standart_fragment_shader);
+   
+		PEShaderCreation shader_creation;
+		ZERO(shader_creation);
+		shader_creation.model = selected_model;
+		shader_creation.vertex = standart_vertex_shader;
+		shader_creation.pixel = standart_fragment_shader;
+		
+		pe_th_exec_in(pe_th_render_id,&pe_shader_create,&shader_creation);
 
-    u8 *texture_id = NULL;
+		thread_main.wait = true;
+		pe_th_wait(&thread_main); 
+
+		u8 *texture_id = NULL;
     if (mesh_component->textures.count > 0)
       texture_id = array_get(&mesh_component->textures, i);
 

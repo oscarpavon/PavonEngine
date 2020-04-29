@@ -4,6 +4,9 @@
 #include "log.h"
 #include <string.h>
 #include <engine/engine.h>
+
+#include <unistd.h>
+
 void thread_new_function(void*(*function)(void*), void* argument){
     pthread_t new_thread_id;
     pthread_create(&new_thread_id,NULL,function,argument);
@@ -77,3 +80,8 @@ void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment){
 	}
 }
 
+void pe_th_wait(PEThread* thread){
+	while(thread->wait){
+		sleep(0.01);			
+	}	
+}

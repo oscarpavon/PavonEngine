@@ -405,7 +405,6 @@ void editor_main_window_init(){
     glfwSetWindowFocusCallback(window_editor_main->window,&window_focus_callback);
     glfwSetFramebufferSizeCallback(window_editor_main->window, &window_resize_callback);
 
-    shader_compile_standard_shaders();
 		window_editor_main->char_parser = pe_editor_parse_cmd_char;
 
     //draw_loading_screen();

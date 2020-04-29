@@ -31,7 +31,6 @@ void pe_game_window_init(){
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
 
-    shader_compile_standard_shaders();
 }
 
 void pe_game_render_config(){

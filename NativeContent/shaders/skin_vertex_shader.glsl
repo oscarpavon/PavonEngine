@@ -25,7 +25,6 @@ void main(){
 
 	vec4 pos = mv * skin_matrix * vec4(position,1.0);
 	gl_Position = projection * pos;
-//	gl_Position = vec4(mv * projection);
 	v_TexCoord = inUV;
 }
-//end\0
+//end

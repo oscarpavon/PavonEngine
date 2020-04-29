@@ -43,7 +43,6 @@ void GPU_buffers_create_for_model(Model* model){
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_array->count * sizeof(u8), index_array->data , GL_STATIC_DRAW);
 
 		model->gpu_ready = true;
-		LOGW("Buffer created");
 }
 
 void load_texture_to_GPU(Texture* texture){

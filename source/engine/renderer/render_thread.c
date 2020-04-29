@@ -52,6 +52,8 @@ void pe_frame_clean(){
 void render_thread_init(){
   pe_thread_control(&render_thread_commads);
 
+  pe_shader_compile_std();
+
 	glEnable(GL_MULTISAMPLE);
 
   glEnable(GL_DEPTH_TEST);

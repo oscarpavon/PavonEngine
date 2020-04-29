@@ -46,7 +46,7 @@ static inline void check_error(const char* message){
 static inline GLint get_uniform_location(GLuint shader, const char* name){
     GLint uniform = glGetUniformLocation(shader,name);
     if(uniform == -1){
-        //mvp_error(name);
+        mvp_error(name);
     }
     return uniform;
 }

@@ -8,12 +8,18 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
       array_get(&array_models_loaded, array_models_loaded.count - 1);
 
   duplicate_model_data(selected_model, original_model);
-  GLuint skin_vertex_shader = load_shader_file(
-      "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
-      GL_VERTEX_SHADER);
 
-	selected_model->shader =
-      create_engine_shader(skin_vertex_shader, standart_fragment_shader);
+  PEShaderCreation shader_creation;
+  ZERO(shader_creation);
+  shader_creation.model = selected_model;
+  shader_creation.vertex = shader_skin_vertex;
+  shader_creation.pixel = standart_fragment_shader;
+
+	thread_main.wait = true;
+
+  pe_th_exec_in(pe_th_render_id, &pe_shader_create, &shader_creation);
+
+	pe_th_wait(&thread_main); 
 
   glm_mat4_copy(element_component->parent->transform->model_matrix,
                 selected_model->model_mat);
