@@ -1,6 +1,5 @@
 #include "animation.h"
-#include "../../engine/engine.h"
-
+#include <engine/engine.h>
 void pe_anim_nodes_update(SkinnedMeshComponent* skin_component){
     if(!skin_component){
         LOG("No skinned mesh component\n");
@@ -14,7 +13,7 @@ void pe_anim_nodes_update(SkinnedMeshComponent* skin_component){
         get_global_matrix(joint, local);
 				//needed for transform
 				mat4 negative;
-        glm_mat4_inv(selected_element->transform->model_matrix,negative);
+        glm_mat4_inv(skin_component->transform->model_matrix,negative);
 				//
 				mat4 inverse_model;
         mat4 inverse_dot_local;
@@ -28,7 +27,7 @@ void pe_anim_nodes_update(SkinnedMeshComponent* skin_component){
     }
 }
 
-void play_animation(Animation* animation){
+void play_animation(SkinnedMeshComponent* skin, Animation* animation){
     animation->time += 0.01;
     float time = animation->time;
     for(int i = 0; i<animation->channels.count ; i++){
@@ -72,7 +71,7 @@ void play_animation(Animation* animation){
     
     }
 
-    pe_anim_nodes_update(get_component_from_selected_element(COMPONENT_SKINNED_MESH));
+    pe_anim_nodes_update(skin);
 
 }
 
@@ -96,17 +95,21 @@ void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* n
         return;
     }
     animation->loop = loop;
-    array_add(&array_animation_play_list,&animation);
+		PEAnimationPlay new_play;
+		ZERO(new_play);
+		new_play.anim = animation;
+		new_play.skin = skin_component;
+    array_add(&array_animation_play_list,&new_play);
     
 }
 
 
 void play_animation_list(){    
     for(int i = 0; i< array_animation_play_list.count; i++){
-        Animation** ppAnimation = array_get(&array_animation_play_list,i);
-        Animation* animation = ppAnimation[0];
+        PEAnimationPlay* play = array_get(&array_animation_play_list,i);
+				Animation* animation = play->anim;
         if(animation->time <= animation->end){
-            play_animation(animation);
+            play_animation(play->skin,animation);
             #ifdef EDITOR
             //update_vertex_bones_gizmos = true;
             #endif

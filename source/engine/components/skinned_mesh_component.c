@@ -25,7 +25,8 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
                 selected_model->model_mat);
 
 	memcpy(mesh_component,pe_curr_skin_loading,sizeof(SkinnedMeshComponent));
-  
+
+	mesh_component->transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);  
   mesh_component->mesh = selected_model;
 	mesh_component->node_uniform.joint_count = mesh_component->joints.count;
 

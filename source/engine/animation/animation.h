@@ -29,6 +29,11 @@ typedef struct Animation{
     float end; 
 }Animation;
 
+typedef struct PEAnimationPlay{
+	Animation* anim;
+	SkinnedMeshComponent* skin;
+}PEAnimationPlay;
+
 Array array_animation_play_list;
 
 void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop);
