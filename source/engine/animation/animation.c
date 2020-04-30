@@ -1,8 +1,7 @@
 #include "animation.h"
 #include "../../engine/engine.h"
 
-void update_skeletal_node_uniform(){
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+void pe_anim_nodes_update(SkinnedMeshComponent* skin_component){
     if(!skin_component){
         LOG("No skinned mesh component\n");
         return;
@@ -73,7 +72,7 @@ void play_animation(Animation* animation){
     
     }
 
-    update_skeletal_node_uniform();
+    pe_anim_nodes_update(get_component_from_selected_element(COMPONENT_SKINNED_MESH));
 
 }
 

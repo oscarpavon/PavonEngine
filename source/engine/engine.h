@@ -146,7 +146,7 @@ Array components;
 Array engine_native_models;
 
 Array array_models_loaded;
-
+Array pe_arr_skin_loaded;
 Array array_hirarchical_level_of_detail;
 
 
@@ -166,7 +166,6 @@ ComponentDefinition* current_component_selected;
 
 Array* previous_models_array;
 Array* current_textures_array;
-Array* current_nodes_array;
 Array* actual_model_array;
 Array* actual_elements_array;
 

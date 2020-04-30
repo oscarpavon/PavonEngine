@@ -24,7 +24,7 @@ Array* current_array;
 
 int models_parsed = 0;
 
-Node* get_node_by_name(Array* array, const char* name){
+Node* pe_node_by_name(Array* array, const char* name){
   for( int i = 0; i < array->count ; i++ ){
     Node* node = array_get(array,i);
     if( strcmp( node->name , name ) == 0){
@@ -95,7 +95,7 @@ void pe_loader_read_accessor(cgltf_accessor* accessor, float* out){
     break;
   }
 }
-void load_attribute(cgltf_attribute* attribute){
+void pe_loader_attribute(cgltf_attribute* attribute){
   switch (attribute->type)
   {
   case cgltf_attribute_type_position:{
@@ -164,7 +164,7 @@ void load_attribute(cgltf_attribute* attribute){
 void load_primitive(cgltf_primitive* primitive){
   
   for(u8 i = 0; i < primitive->attributes_count; i++){
-    load_attribute(&primitive->attributes[i]);
+    pe_loader_attribute(&primitive->attributes[i]);
   }
   
   read_accessor_indices(primitive->indices);
@@ -192,23 +192,16 @@ void check_LOD_names(cgltf_node* node){
   for(int n = 0; n<node_name_size; n++){
     if(name[n] == '_'){
       if(strcmp("LOD0",&name[n]+1) == 0){
-        
-
         LOG("Found LOD0\n");
-
-        
         break;
       }
       if(strcmp("LOD1",&name[n]+1) == 0){
         LOG("Found LOD1\n");
-
-
         break;
       }
       
       if(strcmp("LOD2",&name[n]+1) == 0){
         LOG("Found LOD2\n");
-
         break;
       }
       
@@ -216,50 +209,6 @@ void check_LOD_names(cgltf_node* node){
   }
 }
 
-int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
-
-  if(copy_nodes){
-		if(nodes_counter > 1){
-			
-    Node new_node;
-    memset(&new_node,0,sizeof(Node));  
-
-    if(in_cgltf_node->parent && parent != NULL)
-      new_node.parent = parent;  
-
-    strcpy(new_node.name,in_cgltf_node->name);
-
-    memcpy(new_node.translation,in_cgltf_node->translation,sizeof(vec3));
-    memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
-
-    if(model_nodes.initialized)
-      array_add(&model_nodes,&new_node);
-		}
-		nodes_counter++;
-  }
-
-  if(in_cgltf_node->mesh != NULL){
-    check_LOD_names(in_cgltf_node);
-    pe_loader_mesh(in_cgltf_node->mesh);   
-  }
-
-  if(in_cgltf_node->skin != NULL){    
-    current_nodes_array = &model_nodes;
-    current_loaded_component_type = COMPONENT_SKINNED_MESH;
-    
-    pe_loader_read_accessor(in_cgltf_node->skin->inverse_bind_matrices,model_loaded_inverse_bind_matrices);
-    LOG("Nodes assigned to current_nodes_array\n");
-  }
-  
-  Node* loaded_parent = array_get(&model_nodes,model_nodes.count-1);
-  if(in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL)
-    return 1;
-
-  for(int i = 0; i < in_cgltf_node->children_count; i++){ 
-    pe_node_load( loaded_parent , in_cgltf_node->children[i]);
-  }
-
-}
 
 
 void load_current_sampler_to_channel(AnimationChannel* channel){
@@ -295,7 +244,7 @@ void load_current_sampler_to_channel(AnimationChannel* channel){
 void load_current_channel_to_animation(Animation* animation){
   AnimationChannel channel;
   memset(&channel,0,sizeof(AnimationChannel));
-  channel.node = get_node_by_name(&model_nodes,current_channel->target_node->name);
+  channel.node = pe_node_by_name(&pe_curr_skin_loading->joints,current_channel->target_node->name);
   switch (current_channel->target_path)
   {
   case cgltf_animation_path_type_rotation:
@@ -338,10 +287,57 @@ void load_current_animation(){
   }
   new_animation.end = max;
 
-  array_add(&model_animation,&new_animation);
+  array_add(&pe_curr_skin_loading->animations,&new_animation);
 }
 
-cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path){
+int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
+
+  if (copy_nodes) {
+    if (nodes_counter > 1) {
+
+      Node new_node;
+      ZERO(new_node);
+
+      if (in_cgltf_node->parent && parent != NULL)
+        new_node.parent = parent;
+
+      strcpy(new_node.name, in_cgltf_node->name);
+
+      memcpy(new_node.translation, in_cgltf_node->translation, sizeof(vec3));
+      memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
+
+      array_add(&pe_curr_skin_loading->joints, &new_node);
+    }
+    nodes_counter++;
+  }
+
+  if(in_cgltf_node->mesh != NULL){
+    check_LOD_names(in_cgltf_node);
+    pe_loader_mesh(in_cgltf_node->mesh);   
+  }
+
+  if(in_cgltf_node->skin != NULL){    
+    current_loaded_component_type = COMPONENT_SKINNED_MESH;
+
+		pe_loader_read_accessor(in_cgltf_node->skin->inverse_bind_matrices,
+                            pe_curr_skin_loading->inverse_bind_matrices);
+
+  }
+	
+	Node* loaded_parent = NULL;
+	if(pe_curr_skin_loading)
+		loaded_parent = array_pop(&pe_curr_skin_loading->joints); 
+
+  if(in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL)
+    return 1;
+
+  for(int i = 0; i < in_cgltf_node->children_count; i++){ 
+    pe_node_load( loaded_parent , in_cgltf_node->children[i]);
+  }
+
+}
+
+cgltf_result pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   cgltf_options options = {0};
   cgltf_data* data = NULL;
 
@@ -355,12 +351,22 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
   if(result != cgltf_result_success)
     return result; 
   
+	if(!data || !data->scene)
+		return cgltf_result_invalid_options;
+
   current_loaded_component_type = STATIC_MESH_COMPONENT;
 
   if(data->skins_count >= 1){
-    array_init(&model_nodes,sizeof(Node),data->nodes_count);
-    memset(model_nodes.data,0,sizeof(Node) * data->nodes_count);
-    copy_nodes = true; 
+		SkinnedMeshComponent skin;
+		ZERO(skin);
+
+		array_init(&skin.joints,sizeof(Node),data->nodes_count);	 
+    memset(skin.joints.data,0,sizeof(Node) * data->nodes_count);
+		
+		array_add(&pe_arr_skin_loaded,&skin);
+		pe_curr_skin_loading = array_pop(&pe_arr_skin_loaded); 
+
+		copy_nodes = true; 
 		current_loaded_component_type = COMPONENT_SKINNED_MESH;
 
   }
@@ -375,7 +381,7 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
 
   if(data->animations_count >= 1){
 		LOG("Loding animation\n");
-    array_init(&model_animation,sizeof(Animation),data->animations_count);
+    array_init(&pe_curr_skin_loading->animations,sizeof(Animation),data->animations_count);
     for(int i = 0; i < data->animations_count; i++){
       current_animation = &data->animations[i];
       load_current_animation();
@@ -389,15 +395,12 @@ cgltf_result model_load_from_memory(void* gltf_data, u32 size, const char* path)
 }
 
 int pe_loader_model(const char* path){
-	ZERO(model_animation);
-	ZERO(model_nodes);	
-  
 	File new_file;
 
   if(load_file(path,&new_file) == -1)
     return -1;
 
-  cgltf_result result = model_load_from_memory(new_file.data,new_file.size_in_bytes,path);
+  cgltf_result result = pe_loader_model_from_memory(new_file.data,new_file.size_in_bytes,path);
 
   if (result != cgltf_result_success){
     LOG("Model no loaded: %s \n", new_file.path);
@@ -414,6 +417,7 @@ int pe_loader_model(const char* path){
 
   int model_result = models_parsed;
   models_parsed = 0;
+  nodes_counter = 0;
   return model_result;
 }
 

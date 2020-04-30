@@ -19,24 +19,8 @@ void pe_render_skinned_elements(Array* elements){
     Model *draw_model = model[0];
     pe_render_skinned_model(draw_model);
   }
-
+	
   array_clean(elements);
-}
-
-void pe_frame_draw(){
-
-  glClearColor(1,0,0,1);
-  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
-
-  for_each_element_components(&update_per_frame_component);
-
-  test_elements_occlusion();
-  check_meshes_distance();
-
-  engine_draw_elements(&frame_draw_static_elements);
-
-  pe_frame_clean();
-
 }
 
 void pe_frame_clean(){
@@ -113,4 +97,20 @@ void engine_render_thread() {
 /*Init the render thread*/
 void engine_init_render(){
 	thread_new_detached(engine_render_thread,NULL,"Render",&pe_th_render_id);    
+}
+
+void pe_frame_draw(){
+
+  glClearColor(1,0,0,1);
+  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
+
+  for_each_element_components(&update_per_frame_component);
+
+  test_elements_occlusion();
+  check_meshes_distance();
+
+  engine_draw_elements(&frame_draw_static_elements);
+
+  pe_frame_clean();
+
 }

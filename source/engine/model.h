@@ -13,6 +13,8 @@
 
 #include "array.h"
 
+typedef struct SkinnedMeshComponent SkinnedMeshComponent;
+
 typedef struct Model{
     int id;
     Array vertex_array;
@@ -39,11 +41,6 @@ typedef struct DrawData{
 
 int pe_loader_model(const char* path);
 
-int model_load_from_content(void* gltf_data, u32 size);
+SkinnedMeshComponent* pe_curr_skin_loading;
 
-//SKINNED MESH
-Array model_nodes;
-Array model_animation;
-mat4 model_loaded_inverse_bind_matrices[50];
-//Skeletal loaded_skeletal;
 #endif // !MODEL_H

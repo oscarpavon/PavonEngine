@@ -4,8 +4,8 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
   SkinnedMeshComponent *mesh_component = element_component->data;
   new_empty_model();
-  Model *original_model =
-      array_get(&array_models_loaded, array_models_loaded.count - 1);
+
+	Model *original_model = array_pop(&array_models_loaded);
 
   duplicate_model_data(selected_model, original_model);
 
@@ -26,15 +26,18 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
   mesh_component->mesh = selected_model;
 
-  memcpy(&mesh_component->joints, &model_nodes, sizeof(Array));
+  memcpy(&mesh_component->joints, &pe_curr_skin_loading->joints, sizeof(Array));
 
-  memcpy(&mesh_component->animations, &model_animation, sizeof(Array));
+  memcpy(&mesh_component->animations, &pe_curr_skin_loading->animations, sizeof(Array));
 
   memcpy(mesh_component->inverse_bind_matrices,
-         model_loaded_inverse_bind_matrices,
-         sizeof(model_loaded_inverse_bind_matrices));
+         pe_curr_skin_loading->inverse_bind_matrices,
+         sizeof(pe_curr_skin_loading->inverse_bind_matrices));
 
-  mesh_component->node_uniform.joint_count = mesh_component->joints.count;
+  
+	mesh_component->node_uniform.joint_count = mesh_component->joints.count;
 
-  update_skeletal_node_uniform();
+	pe_curr_skin_loading = NULL;//for new skin loading
+
+  pe_anim_nodes_update(mesh_component);
 }

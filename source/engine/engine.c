@@ -265,7 +265,7 @@ void update_translation(vec3 translation){
 		if(!skin)
 			return;
 
-		update_skeletal_node_uniform();		
+		pe_anim_nodes_update(skin);		
 }
 
 void update_scale(vec3 translation){
@@ -345,7 +345,7 @@ void test_elements_occlusion(){
 
     for(int i = 0; i<array_skinned_mesh_pointers.count; i++){
         SkinnedMeshComponent** skin_component = array_get(&array_skinned_mesh_pointers,i);
-        if(glm_aabb_frustum(skin_component[0]->bounding_box,frustrum_planes) == true)
+        //if(glm_aabb_frustum(skin_component[0]->bounding_box,frustrum_planes) == true)
             array_add(&array_skinned_mesh_for_distance_test,&skin_component[0]);
     }
 
@@ -358,7 +358,10 @@ void duplicate_model_data(Model* destination , Model* source){
 void engine_init_data(){
     array_init(&pe_arr_models_paths,sizeof(char[100]),50);
     array_init(&textures_paths,sizeof(char[20]),50);
-    array_init(&array_models_loaded,sizeof(Model),100);
+    
+		
+		array_init(&array_models_loaded,sizeof(Model),100);
+		array_init(&pe_arr_skin_loaded,sizeof(SkinnedMeshComponent),100);
 
     array_init(&engine_native_models,sizeof(Model),100);   
 
