@@ -118,6 +118,14 @@ void update_component(ComponentDefinition* element_component){
            pe_comp_static_mesh_update(element_component); 
         }
         break;
+		case COMPONENT_SKINNED_MESH:
+        {
+					SkinnedMeshComponent* skin = element_component->data;
+					//glm_mat4_copy(element_component->parent->transform->model_matrix,
+           //       skin->mesh->model_mat);
+
+        }
+        break;
      case TRASNFORM_COMPONENT:{
     
         break;

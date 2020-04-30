@@ -15,12 +15,14 @@ void engine_draw_elements(Array *elements){
 
 void pe_render_skinned_elements(Array* elements){
   for (size_t i = 0; i < elements->count; i++) {
-    Model **model = array_get(elements, i);
-    Model *draw_model = model[0];
-    pe_render_skinned_model(draw_model);
+		SkinnedMeshComponent** skinp= array_get(elements,i); 
+		SkinnedMeshComponent* skin = skinp[0];
+		
+    pe_render_skinned_model(skin);
   }
 	
   array_clean(elements);
+	array_clean(&frame_draw_skinned_elements);
 }
 
 void pe_frame_clean(){

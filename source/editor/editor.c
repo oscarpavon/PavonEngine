@@ -342,6 +342,13 @@ void editor_stats_calculates_triangles(){
         int vertices_count = model[0]->vertex_array.count;
         triangles += vertices_count/3;
     }
+    for(int i = 0; i<frame_draw_skinned_elements.count; i++){
+        Model** model = array_get(&frame_draw_static_elements,i);
+        if(!model)
+            return;
+        int vertices_count = model[0]->vertex_array.count;
+        triangles += vertices_count/3;
+    }
 	editor_stats_triangles = triangles;
 
 }
@@ -488,7 +495,7 @@ void editor_draw() {
   test_elements_occlusion();
   check_meshes_distance();
 
-  editor_stats_draw_calls = frame_draw_static_elements.count;
+  editor_stats_draw_calls = frame_draw_static_elements.count + frame_draw_skinned_elements.count;
 
   editor_stats_calculates_triangles();
 
@@ -496,7 +503,7 @@ void editor_draw() {
     update_joints_vertex();
 
   engine_draw_elements(&frame_draw_static_elements);
-	pe_render_skinned_elements(&frame_draw_skinned_elements);
+	pe_render_skinned_elements(&array_skinned_mesh_pointers);
 
   pe_frame_clean();
 

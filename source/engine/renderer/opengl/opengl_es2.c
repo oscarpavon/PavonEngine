@@ -66,7 +66,7 @@ void load_texture_to_GPU(Texture* texture){
 		texture->gpu_loaded = true;
 }
 
-void pe_mat_skinned(GLuint shader, GLuint buffer, mat4 matrix){
+void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, mat4 matrix){
 
   glUseProgram(shader);
 
@@ -89,8 +89,7 @@ void pe_mat_skinned(GLuint shader, GLuint buffer, mat4 matrix){
   glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
   check_send_matrix_error("view");
 
-  SkinnedMeshComponent *skin_component =
-      get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+  SkinnedMeshComponent *skin_component = skin;
   glUniformMatrix4fv(joints_matrices_uniform,
                      skin_component->node_uniform.joint_count, GL_FALSE,
                      skin_component->node_uniform.joints_matrix);
@@ -168,13 +167,14 @@ void draw_model_like(Model* model, GLenum mode){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
-void pe_render_skinned_model(Model * new_model){
+void pe_render_skinned_model(SkinnedMeshComponent* skin){
+		Model* new_model = skin->mesh;	
 		if(!new_model)
 			return;
 
 		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
    
-	 	pe_mat_skinned(new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
+	 	pe_mat_skinned(skin, new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
 

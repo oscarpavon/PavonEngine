@@ -5,10 +5,10 @@
       "configuration": {
         "type":    "cppdbg",
         "request": "launch",
-        "program": "${workspaceRoot}/Binaries/Editor",
+        "program": "${workspaceRoot}/bin/peditor",
         "args": [
         ],
-        "cwd": "${workspaceRoot}/Binaries",
+        "cwd": "${workspaceRoot}/bin",
         "environment": [
         ],
         "externalConsole": false,

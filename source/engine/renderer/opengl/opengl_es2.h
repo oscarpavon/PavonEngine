@@ -21,7 +21,7 @@ void init_static_gpu_index_buffer(Array* array, GLuint *id);
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix);
 void update_gpu_vertex_data(Array* array, GLuint id);
 
-void pe_render_skinned_model(Model * new_model);
+void pe_render_skinned_model(SkinnedMeshComponent * new_model);
 
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);

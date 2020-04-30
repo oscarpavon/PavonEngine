@@ -24,17 +24,9 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   glm_mat4_copy(element_component->parent->transform->model_matrix,
                 selected_model->model_mat);
 
-  mesh_component->mesh = selected_model;
-
-  memcpy(&mesh_component->joints, &pe_curr_skin_loading->joints, sizeof(Array));
-
-  memcpy(&mesh_component->animations, &pe_curr_skin_loading->animations, sizeof(Array));
-
-  memcpy(mesh_component->inverse_bind_matrices,
-         pe_curr_skin_loading->inverse_bind_matrices,
-         sizeof(pe_curr_skin_loading->inverse_bind_matrices));
-
+	memcpy(mesh_component,pe_curr_skin_loading,sizeof(SkinnedMeshComponent));
   
+  mesh_component->mesh = selected_model;
 	mesh_component->node_uniform.joint_count = mesh_component->joints.count;
 
 	pe_curr_skin_loading = NULL;//for new skin loading
