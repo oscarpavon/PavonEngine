@@ -1,17 +1,16 @@
 #include "content_manager.h"
 #include "ProjectManager/project_manager.h"
-#include "Serialization/json_writer.h"
 #include "Textures/texture_factory.h"
 #include "windows/content_browser.h"
 #include "editor.h"
 #include <string.h>
 #include "path.h"
 void content_manager_serialize_static_mesh_values() {
-  new_text_token("name", "Content Name");
+
 }
 
 void content_manager_serialize_static_mesh() {
-  new_element(content_manager_serialize_static_mesh_values);
+
 }
 
 void content_manager_create_thumbnails(const char* name, FILE* file, ContentType type){

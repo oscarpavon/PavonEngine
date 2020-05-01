@@ -22,8 +22,7 @@ set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/skinned_mesh_component.c
         )
 set(third_party
-        ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/jsmn.c
-        ${CMAKE_CURRENT_LIST_DIR}/../ThirdParty/parson.c
+	../ThirdParty/parson.c
 	)	
 
 set(renderer

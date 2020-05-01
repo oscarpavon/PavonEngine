@@ -1,11 +1,7 @@
 #include "data.h"
 #include "editor.h"
-#include "../engine/camera.h"
-#include "../engine/gui.h"
-#include "ProjectManager/project_manager.h"
-
-#include "Serialization/json_writer.h"
-
+#include <engine/camera.h>
+#include <engine/gui.h>
 #include "ThirdParty/parson.h"
 
 Element* current_element = NULL;
@@ -271,25 +267,7 @@ void serializer_serialize_data(const char* path, void(*function)(void)){
 //**********************
 //GUI save data
 //**********************
-void save_buttons_data(int id){    
-    Button* button = array_get(actual_buttons_array,id);
-    if(button != NULL){
-        new_text_token("name",button->name);
-        new_text_vec2_token("position",button->position);
-        new_text_vec2_token("size",button->size);
-        //new_text_primitive_token("relative",button->relative_to);
-        new_text_primitive_token("function",button->action_function_id);
-    }   
-    
-}
 
-
-void ui_elements_data(){
-    SaveDataFunction save = &save_buttons_data;
-    for(int i = 0; i < actual_buttons_array->count ; i++){
-         new_save_element(save,i);
-    }
-}
 
 void pe_serialize_gui(){
 
@@ -344,7 +322,6 @@ void save_gui_data(const char* gui_name){
     actual_file = new_file;    
     element_id_count = actual_buttons_array->count;  
     
-    //new_element(&ui_elements_data);
 		pe_serialize_gui();		
 
     fclose(new_file);
