@@ -75,6 +75,7 @@ void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods){
     }    
 }
 
+//All menus need to assig elemnts count
 void menu_new_from_data(const char* name, TextMenu* new_menu){
     TextMenu menu;
     memset(&menu,0,sizeof(TextMenu));
@@ -208,13 +209,14 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 
 
 void menu_draw_menus(){
-    for(int i = 0; i < menus.count ; i++){
-    	TextMenu* menus_list = array_get(&menus,i);
-	if(menus_list->menu_in_editor == false)
-		continue;
-        menu_can_open_with_key(menus_list,menus_list->open_key,menus_list->mods_key);
-        text_menu_update(menus_list);
-    }
+  for (int i = 0; i < menus.count; i++) {
+    TextMenu *menus_list = array_get(&menus, i);
+    if (menus_list->menu_in_editor == false)
+      continue;
+    menu_can_open_with_key(menus_list, menus_list->open_key,
+                           menus_list->mods_key);
+    text_menu_update(menus_list);
+  }
 }
 
 void menu_action_add_element(TextMenu* menu){
@@ -266,7 +268,6 @@ void menu_action_add_texture_to_element(TextMenu* menu){
 }
 
 void menu_action_select_element(TextMenu* menu){
-    LOG("Selected element\n");
     int id = menu->actual_element_select;
     Element* element = NULL;
    
@@ -292,6 +293,7 @@ void menu_action_select_element(TextMenu* menu){
         memcpy(&id_number,id,sizeof(unsigned short int));
         LOG("seleteted: %i\n", id_number);
     }
+    LOG("Selected element\n");
 }
 
 void menu_action_add_editor_native_element(TextMenu* menu){
@@ -349,6 +351,7 @@ void menu_action_select_gui_element(TextMenu* menu){
 
 void menu_action_draw_gui_elements(TextMenu* menu){
     menu->text_size = 12;
+		menu->element_count = actual_buttons_array->count;
     for (int i = 0; i < actual_buttons_array->count ; i++)
     {
         Button* button = array_get(actual_buttons_array,i);
@@ -357,31 +360,10 @@ void menu_action_draw_gui_elements(TextMenu* menu){
 }
 void pe_editor_menus_update() {
 
-  if (editor_mode == EDITOR_DEFAULT_MODE &&
-      editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT &&
-      window_editor_main->focus) {
+	if(editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT){
+		menu_draw_menus();
+	}
 
-    // can_open_text_menu_with_key(&add_element_menu, &input.A, GLFW_MOD_SHIFT);
-    // can_open_text_menu_with_key(&menu_editor_element_list, &input.L, NULL);
-    // can_open_text_menu_with_key(&menu_add_texture, &input.T, GLFW_MOD_SHIFT);
-
-    menu_can_open_with_key(&menu_add_native_editor_element, &input.E,
-                           GLFW_MOD_SHIFT);
-
-    text_menu_update(&menu_add_texture);
-
-    // text_menu_update(&add_element_menu);
-
-    text_menu_update(&menu_editor_element_list);
-
-    text_menu_update(&menu_add_native_editor_element);
-
-    // text_menu_update(&menu_show_gui_elements);
-    menu_draw_menus();
-  }
-
-  if (editor_mode == EDITOR_MODE_GUI_EDITOR)
-    menu_can_open_with_key(&menu_show_gui_elements, &input.L, -1);
 }
 
 void menus_init(){
@@ -396,29 +378,30 @@ void menus_init(){
   menu_add_texture.type = MENU_TYPE_ADD_TEXTURE;
   menu_add_texture.execute_function = &menu_action_add_texture_to_element;
 
-  menu_editor_element_list.execute_function = &menu_action_select_element;
-  menu_editor_element_list.draw_text_funtion =
-      &menu_action_draw_editor_elements;
-
-  menu_add_native_editor_element.execute_function =
-      &menu_action_add_editor_native_element;
-  menu_add_native_editor_element.draw_text_funtion =
-      &menu_action_draw_native_editor_elments;
-
-  menu_show_gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
-  menu_show_gui_elements.execute_function = &menu_action_select_gui_element;
-
   // New way to create texts menus
   array_init(&menus, sizeof(TextMenu), 10);
 
   menu_new("Element Component List", &input.C, -1,
            &draw_components_from_selected_element,
            &menu_action_select_component_from_selected_element);
+
   menu_new("Add Component", &input.C, GLFW_MOD_SHIFT,
            &draw_available_components,
            &menu_action_add_component_to_select_element);
-  menu_new("List Elements", &input.L, -1, &menu_action_draw_editor_elements,
-           menu_action_select_element);
+	
+	TextMenu native_elemets;
+	native_elemets.draw_text_funtion = &menu_action_draw_native_editor_elments;
+	native_elemets.execute_function = &menu_action_add_editor_native_element;	
+	native_elemets.open_key = &input.E;
+	native_elemets.mods_key = GLFW_MOD_SHIFT;
+	menu_new_from_data("NativeElements", &native_elemets);
+
+	TextMenu editor_elements;
+	editor_elements.execute_function = &menu_action_select_element;
+	editor_elements.draw_text_funtion = &menu_action_draw_editor_elements;
+	editor_elements.open_key = &input.L;
+	editor_elements.mods_key = -1;
+	menu_new_from_data("Elements", &editor_elements);
 
   TextMenu animation_menu;
   animation_menu.open_key = &input.B;
@@ -426,4 +409,13 @@ void menus_init(){
   animation_menu.draw_text_funtion = &draw_animations_names;
   animation_menu.execute_function = &menu_action_play_animation;
   menu_new_from_data("Animations", &animation_menu);
+
+	TextMenu gui_elements;
+	ZERO(gui_elements);
+	gui_elements.open_key = &input.Q;
+	gui_elements.mods_key = -1;
+	gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
+	gui_elements.execute_function = &menu_action_select_gui_element;
+  menu_new_from_data("GUIElements", &gui_elements);
+
 }
