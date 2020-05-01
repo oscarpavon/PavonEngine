@@ -5,7 +5,7 @@
 #include "shader.h"
 #include <engine/file_loader.h>
 #include <engine/threads.h>
-
+#include <string.h>
 void pe_shader_get_error(GLuint shader, GLenum info_type,
                          const char *path_for_error_debug) {
 
@@ -81,9 +81,15 @@ GLuint create_engine_shader(GLuint vertex, GLuint fragment){
     return new_shader;
 }
 
+void pe_shader_new(PEShaderCreation* creation){
+	thread_main.wait = true;
+	GLuint shader = create_engine_shader(creation->vertex,creation->pixel);	
+	memcpy(creation->shader,&shader,sizeof(shader));
+	thread_main.wait = false;
+}
+
 void pe_shader_create(PEShaderCreation* creation){
 	thread_main.wait = true;
 	creation->model->shader = create_engine_shader(creation->vertex,creation->pixel);	
-	LOG("Shader creating id: %i\n",creation->model->shader);
 	thread_main.wait = false;
 }

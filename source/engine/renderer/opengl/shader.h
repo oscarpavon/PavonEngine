@@ -15,6 +15,7 @@ typedef struct PEShaderCreation{
 	Model* model;
 	GLuint vertex;
 	GLuint pixel;
+	GLuint* shader;
 }PEShaderCreation;
 
 GLuint compile_shader(const char* src , GLenum type);
@@ -24,6 +25,8 @@ GLuint create_engine_shader(GLuint vertex, GLuint fragment);
 GLuint load_shader_file(const char* path, GLenum shader_type);
 
 void pe_shader_create(PEShaderCreation* creation);
+
+void pe_shader_new(PEShaderCreation* creation);
 
 void pe_shader_compile_std();
 

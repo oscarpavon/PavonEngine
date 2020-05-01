@@ -11,13 +11,11 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
   PEShaderCreation shader_creation;
   ZERO(shader_creation);
-  shader_creation.model = selected_model;
   shader_creation.vertex = shader_skin_vertex;
   shader_creation.pixel = standart_fragment_shader;
+	shader_creation.shader = &selected_model->shader;
 
-	thread_main.wait = true;
-
-  pe_th_exec_in(pe_th_render_id, &pe_shader_create, &shader_creation);
+  pe_th_exec_in(pe_th_render_id, &pe_shader_new, &shader_creation);
 
 	pe_th_wait(&thread_main); 
 
