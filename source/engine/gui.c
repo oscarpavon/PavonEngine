@@ -16,8 +16,10 @@
 #include "engine.h"
 
 
-GLuint vert_shader;
-GLuint frag_shader;
+GLuint logo_shader;
+
+GLuint pe_gui_shader_vert;
+GLuint pe_gui_shader_farg;
 
 Array gui_vertex_array;
 
@@ -25,10 +27,6 @@ GLuint logo_texture_id;
 
 Array buttons;
 
-void compile_shaders(){
-    vert_shader = standart_vertex_shader;
-    frag_shader = standart_fragment_shader;
-}
 
 void create_gui_shaders(){
     for(size_t i = 0; i < buttons.count ; i++) {
@@ -37,11 +35,18 @@ void create_gui_shaders(){
 
         Button *button = buttons.data + (i * offset);
 
-        button->shader = create_engine_shader(vert_shader,frag_shader);
+        button->shader = create_engine_shader(pe_gui_shader_vert,pe_gui_shader_farg);
       
     }
 
 
+}
+
+void pe_gui_compile_shaders(){
+    pe_gui_shader_vert = standart_vertex_shader;
+    pe_gui_shader_farg = standart_fragment_shader;
+
+    create_gui_shaders();
 }
 
 void check_if_pressed(struct Button* button){
@@ -196,19 +201,19 @@ void init_gui_element_geometry(){
     array_add(&gui_vertex_array,&vert3);
     array_add(&gui_vertex_array,&vert4);
 }
-void init_gui(){
+
+void pe_gui_init(){
 
     array_init(&buttons, sizeof(Button),20);
 
-    create_gui_shaders();
+		pe_gui_compile_shaders();	
 
     actual_buttons_array = &buttons;
 }
 
-GLuint logo_shader;
 
 void create_logo_shader(){
-    logo_shader = create_engine_shader(vert_shader,frag_shader);
+    logo_shader = create_engine_shader(pe_gui_shader_vert,pe_gui_shader_farg);
 
 }
 
@@ -270,7 +275,7 @@ void draw_logo(){
 
     init_gui_element_geometry();
 
-    compile_shaders();
+    pe_gui_compile_shaders();
 
     create_vertex_buffer();
 
@@ -309,15 +314,22 @@ void draw_gui(){
 
 void new_empty_button(){
     Button new_button;
-    
+		ZERO(new_button); 
     init_button(&new_button, camera_width_screen/2, camera_heigth_screen/2, 15, 15);
 
-    array_add(actual_buttons_array,&new_button);
+    new_button.action_function_id = 0;
+    new_button.pressed = false;
 
-    Button* button = array_get(actual_buttons_array,actual_buttons_array->count-1);
-    button->shader = create_engine_shader(vert_shader,frag_shader);
-    button->action_function_id = 0;
-    button->pressed = false;
+		PEShaderCreation creation;
+		creation.pixel = pe_gui_shader_farg;
+		creation.vertex = pe_gui_shader_vert;
+		creation.shader = &new_button.shader;
+		
+		pe_th_exec_in(pe_th_render_id,&pe_shader_new,&creation);	
+
+		pe_th_wait(&thread_main);
+
+    array_add(actual_buttons_array,&new_button);
 }
 
 void load_gui(const char* name){
@@ -344,7 +356,7 @@ void load_gui(const char* name){
 
     for(int i = 0; i < buttons.count; i++){
         Button* button = array_get(&buttons,i);
-        button->shader = create_engine_shader(vert_shader,frag_shader);
+        button->shader = create_engine_shader(pe_gui_shader_vert,pe_gui_shader_farg);
         button->pressed = false;
     }
 }

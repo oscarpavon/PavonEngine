@@ -36,7 +36,7 @@ typedef struct Menu{
 
 void two_dimension_screen_space_send_matrix(u32 shader_id, vec2 size, vec2 position);
 
-void init_gui();
+void pe_gui_init();
 void draw_button();
 void draw_gui();
 void draw_loading_screen();

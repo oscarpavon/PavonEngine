@@ -50,7 +50,7 @@ void render_thread_init(){
   engine_initialized = true;
 
   camera_init(&main_camera);
-  init_gui();
+  pe_gui_init();
   text_renderer_init();
 
   camera_update(&main_camera);
