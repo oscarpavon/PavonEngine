@@ -206,6 +206,12 @@ void pe_gui_init(){
 
     array_init(&buttons, sizeof(Button),20);
 
+    init_gui_element_geometry();
+
+    pe_gui_compile_shaders();
+
+    create_vertex_buffer();
+
 		pe_gui_compile_shaders();	
 
     actual_buttons_array = &buttons;
