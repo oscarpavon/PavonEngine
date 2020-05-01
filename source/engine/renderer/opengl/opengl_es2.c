@@ -45,13 +45,20 @@ void GPU_buffers_create_for_model(Model* model){
 		model->gpu_ready = true;
 }
 
-void load_texture_to_GPU(Texture* texture){
+void pe_tex_to_gpu(Texture* texture){
     glGenTextures(1, &texture->id);
     glBindTexture(GL_TEXTURE_2D, texture->id);
 
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, texture->image.width,
+		GLint format = 0;	
+		if(texture->format != GL_RGBA){
+			format = GL_RGB;
+		}else{
+			format = GL_RGBA;
+		}
+
+    glTexImage2D( GL_TEXTURE_2D, 0, format, texture->image.width,
                     texture->image.heigth, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, texture->image.pixels_data);
+                    format, GL_UNSIGNED_BYTE, texture->image.pixels_data);
 
     free_image(&texture->image);
 
@@ -64,6 +71,7 @@ void load_texture_to_GPU(Texture* texture){
 
     check_error("Texture to GPU");
 		texture->gpu_loaded = true;
+		thread_main.wait = false;
 }
 
 void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, mat4 matrix){

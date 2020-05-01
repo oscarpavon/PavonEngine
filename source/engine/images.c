@@ -38,7 +38,7 @@ int texture_load_from_memory(Texture* texture,u32 size,void* data){
 		return -1;
 	}
 
-	load_texture_to_GPU(texture_current_to_load);
+	pe_tex_to_gpu(texture_current_to_load);
 		
 	return 0;
 }
@@ -49,9 +49,7 @@ int texture_load(const char *path, Texture *new_texture) {
     new_texture->id = 0;
     return -1;
   }
-
-//  load_texture_to_GPU(texture_current_to_load);
-	pe_th_exec_in(pe_th_render_id,&load_texture_to_GPU,new_texture);
+	pe_th_exec_in(pe_th_render_id,&pe_tex_to_gpu,new_texture);
 }
 
 int load_image_with_format(const char* path, GLint format, Image* out_image){

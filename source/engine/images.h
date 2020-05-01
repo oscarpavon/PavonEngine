@@ -15,6 +15,7 @@ typedef struct Image{
 typedef struct Texture{
     Image image;
     unsigned int id;
+		int format;
 		bool gpu_loaded;
 }Texture;
 

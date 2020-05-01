@@ -12,7 +12,7 @@ void draw_model_with_color(Model* model, GLenum mode, vec4 color);
 void draw_model_like(Model* model, GLenum mode);
 void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color);
 
-void load_texture_to_GPU(Texture*);
+void pe_tex_to_gpu(Texture*);
 
 void GPU_buffers_create_for_model(Model* model);
 

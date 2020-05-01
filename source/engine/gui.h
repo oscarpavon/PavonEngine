@@ -9,7 +9,7 @@
 #include "array.h"
 
 #include "types.h"
-
+#include <engine/images.h>
 
 #define POSITION_RELATIVE_LEFT_BOTTON 0
 #define POSITION_RELATIVE_LEFT_TOP 1
@@ -27,6 +27,7 @@ typedef struct Button{
     u32 shader;
 
     int action_function_id;
+		Texture texture;
 }Button;
 
 
@@ -45,11 +46,15 @@ void update_user_iterface_status();
 
 void new_empty_button();
 
+void pe_gui_button_set_tex_with_path(Button *button, const char *path);
+
 void load_gui(const char* name);
 
 float pixel_size_x;
 float pixel_size_y;
 
 u32 UI_plane_vertex_buffer_id;
+
+Button* selected_button;
 
 #endif //ENGINE_GUI_H

@@ -107,7 +107,7 @@ void pe_buttons_draw(){
 				DrawData data;
 				data.shader = button->shader;
 				data.vertex = UI_plane_vertex_buffer_id;
-				data.texture = 0;
+				data.texture = button->texture.id;
 
 				pe_render_2d(&data,button->position,button->size,NULL);	
         
@@ -237,9 +237,15 @@ void draw_logo_image(){
 
 }
 
-void pe_gui_set_tex_with_path(){
+void pe_gui_button_set_tex_with_path(Button *button, const char *path) {
+  button->texture.format = GL_RGBA;
+  int result = load_image_with_format(path, GL_RGBA, &button->texture.image);
+  if (result == -1)
+    return;
 
-
+  pe_th_exec_in(pe_th_render_id, &pe_tex_to_gpu, &button->texture);
+	pe_th_wait(&thread_main);
+	LOGW("button imgae");
 }
 
 void draw_logo(){
@@ -257,14 +263,13 @@ void draw_logo(){
                   logo_image.heigth, 0,
                   GL_RGBA, GL_UNSIGNED_BYTE, logo_image.pixels_data);
 
-    free_image(&logo_image);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
+    free_image(&logo_image);
 
     init_gui_element_geometry();
 

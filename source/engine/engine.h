@@ -157,7 +157,6 @@ Array actions_pointers;;
 // Global pointers
 //
 Element* selected_element;
-Button* selected_button;
 Model* selected_model;
 Element* player1;
 Element* player_start;

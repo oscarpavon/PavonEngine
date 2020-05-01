@@ -174,7 +174,22 @@ void parse_command(const char *in_command) {
     return;
   }
   case 't': {
-    add_texture_to_selected_element_with_image_path(&command[3]);
+    switch (editor_mode) {
+    case EDITOR_MODE_GUI_EDITOR: {
+      if (!selected_button)
+        return;
+
+      pe_gui_button_set_tex_with_path(selected_button, &command[3]);
+      return;
+    }
+
+    case EDITOR_DEFAULT_MODE:
+      add_texture_to_selected_element_with_image_path(&command[3]);
+      return;
+
+    default:
+      break;
+    }
     break;
   }
   case 'o': {
