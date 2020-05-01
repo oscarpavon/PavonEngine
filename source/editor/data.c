@@ -312,11 +312,11 @@ void pe_serialize_gui(){
 		JSON_Array* pos_arr = json_value_get_array(postion_val);
 		JSON_Array* size_arr = json_value_get_array(size_val);
 		
-		json_array_append_number(pos_arr,button->position[0]);
-		json_array_append_number(pos_arr,button->position[1]);
+		json_array_append_number(pos_arr,(int)button->position[0]);
+		json_array_append_number(pos_arr,(int)button->position[1]);
 
-		json_array_append_number(size_arr, button->size[0]);
-		json_array_append_number(size_arr, button->size[2]);
+		json_array_append_number(size_arr, (int)button->size[0]);
+		json_array_append_number(size_arr, (int)button->size[1]);
 
 
 		json_object_set_value(json_object(button_val),"position",postion_val);

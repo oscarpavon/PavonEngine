@@ -356,8 +356,6 @@ void load_gui(const char* name){
     }
     actual_buttons_array = &buttons;
 
-    parse_gui_file(level_file.data , level_file.size_in_bytes);
-		
 		pe_parser_gui(level_file.data);
 
     close_file(&level_file);

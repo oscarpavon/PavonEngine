@@ -617,7 +617,23 @@ void pe_parser_gui(const char* json){
 		LOGW("no array buttons");
 	}
 	int buttons_count = json_array_get_count(buttons_arr);			
-	LOG("Buttons count: %i\n",buttons_count);
+	//LOG("Buttons count: %i\n",buttons_count);
+	for(int i = 0; i < buttons_count ; i++){
+    new_empty_button();
+    Button* new_button = array_get(actual_buttons_array,actual_buttons_array->count-1);
+		JSON_Object* button_json_obj = json_array_get_object(buttons_arr,i);
+		strcpy(new_button->name,json_object_get_string(button_json_obj,"name"));		
+		JSON_Array* pos_arr = json_object_get_array(button_json_obj,"position");
+		JSON_Array* size_arr = json_object_get_array(button_json_obj,"size");
+		
+		new_button->position[0] = (int)json_array_get_number(pos_arr,0);	
+		new_button->position[1] = (int)json_array_get_number(pos_arr,1);	
+
+
+		new_button->size[0] = (int)json_array_get_number(size_arr,0);	
+		new_button->size[1] = (int)json_array_get_number(size_arr,1);	
+	
+	}
 }
 
 void parse_gui_file(const char* json_file, int json_file_size){
