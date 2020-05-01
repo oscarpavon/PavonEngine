@@ -330,7 +330,7 @@ void content_create_draw_image_thumbnail(int size){
     data.texture = texture.id;
     camera_heigth_screen = 128;
     camera_width_screen  = 128;
-    draw_two_dimention_element(&data, (vec2){64,64}, (vec2){64,64}, (vec4){1,1,1,1});
+    pe_render_2d(&data, (vec2){64,64}, (vec2){64,64}, (vec4){1,1,1,1});
     camera_heigth_screen = 720;
     camera_width_screen = 1280;
 }

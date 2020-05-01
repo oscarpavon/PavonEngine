@@ -125,7 +125,7 @@ void draw_vertices_like(GLenum mode, Model* model, vec4 color){
     check_error("simple draw");
 }
 
-void draw_two_dimention_element(DrawData* data, vec2 position , vec2 size, vec4 color){
+void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color){
     glDisable(GL_CULL_FACE);
 
     glUseProgram(data->shader);
@@ -140,7 +140,8 @@ void draw_two_dimention_element(DrawData* data, vec2 position , vec2 size, vec4 
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
+		
+		if(color != NULL)	
     send_color_to_shader(data->shader,color);
 
     glDrawArrays(GL_TRIANGLE_STRIP,0,4);        

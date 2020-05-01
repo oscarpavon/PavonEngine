@@ -98,37 +98,20 @@ void two_dimension_screen_space_send_matrix(GLuint shader_id, vec2 size, vec2 po
     check_error("Screen space send mat");
 }
 
-void draw_buttons(){
+void pe_buttons_draw(){
 
     for(size_t i = 0; i < buttons.count ; i++){
 
-        size_t offset = buttons.element_bytes_size;
+        Button* button = array_get(&buttons,i);
+					
+				DrawData data;
+				data.shader = button->shader;
+				data.vertex = UI_plane_vertex_buffer_id;
+				data.texture = 0;
 
-        Button* button = buttons.data + (i*offset);
-
-        glUseProgram(button->shader);
-        glBindTexture(GL_TEXTURE_2D,0);
-
-        two_dimension_screen_space_send_matrix(button->shader, button->size, button->position);
-
-        glBindBuffer(GL_ARRAY_BUFFER,UI_plane_vertex_buffer_id);
-
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-
-        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
+				pe_render_2d(&data,button->position,button->size,NULL);	
         
     }
-
-
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("buttons error\n");
-        LOG("Error %08x \n",error);
-    }
-
 
 }
 
@@ -254,6 +237,10 @@ void draw_logo_image(){
 
 }
 
+void pe_gui_set_tex_with_path(){
+
+
+}
 
 void draw_logo(){
 
@@ -313,7 +300,7 @@ void update_user_iterface_status(){
 
 void draw_gui(){
     glCullFace(GL_FRONT);
-    draw_buttons();
+    pe_buttons_draw();
     update_user_iterface_status();
     glCullFace(GL_BACK);
 }
