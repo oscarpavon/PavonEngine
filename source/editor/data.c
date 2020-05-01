@@ -291,10 +291,52 @@ void ui_elements_data(){
     }
 }
 
+void pe_serialize_gui(){
+
+  JSON_Value *root_value = json_value_init_object();
+  JSON_Object *root_object = json_value_get_object(root_value);
+  char *serialized_string = NULL;
+	
+	JSON_Value* button_arr_val = json_value_init_array();
+	JSON_Array* button_arr = json_value_get_array(button_arr_val);
+	json_object_set_value(root_object,"buttons",button_arr_val);
+
+  
+	for (int i = 0; i < actual_buttons_array->count; i++) {
+		Button* button = array_get(actual_buttons_array,i); 
+		JSON_Value* button_val = json_value_init_object();
+		json_object_set_string(json_object(button_val),"name",button->name);
+		json_object_set_number(json_object(button_val),"function",button->action_function_id);
+		JSON_Value* postion_val = json_value_init_array();
+		JSON_Value* size_val = json_value_init_array();
+		JSON_Array* pos_arr = json_value_get_array(postion_val);
+		JSON_Array* size_arr = json_value_get_array(size_val);
+		
+		json_array_append_number(pos_arr,button->position[0]);
+		json_array_append_number(pos_arr,button->position[1]);
+
+		json_array_append_number(size_arr, button->size[0]);
+		json_array_append_number(size_arr, button->size[2]);
+
+
+		json_object_set_value(json_object(button_val),"position",postion_val);
+		json_object_set_value(json_object(button_val),"size",size_val);
+
+		json_array_append_value(button_arr,button_val);
+ 	}
+
+	serialized_string = json_serialize_to_string_pretty(root_value);
+	 
+	fputs(serialized_string,actual_file);	
+
+	json_free_serialized_string(serialized_string);
+  json_value_free(root_value);
+}
+
 void save_gui_data(const char* gui_name){
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
-    strcat(save_name, gui_folder);
+    //strcat(save_name, gui_folder);
     strcat(save_name,gui_name);
     strcat(save_name,".gui");   
 
@@ -302,7 +344,8 @@ void save_gui_data(const char* gui_name){
     actual_file = new_file;    
     element_id_count = actual_buttons_array->count;  
     
-    new_element(&ui_elements_data);
+    //new_element(&ui_elements_data);
+		pe_serialize_gui();		
 
     fclose(new_file);
 

@@ -609,6 +609,17 @@ void parse_ui_tokens(int count){
   }
 }
 
+void pe_parser_gui(const char* json){
+	JSON_Value* gui_val = json_parse_string(json);
+	JSON_Array* buttons_arr = 
+		json_object_get_array(json_object(gui_val),"buttons");
+	if(!buttons_arr){
+		LOGW("no array buttons");
+	}
+	int buttons_count = json_array_get_count(buttons_arr);			
+	LOG("Buttons count: %i\n",buttons_count);
+}
+
 void parse_gui_file(const char* json_file, int json_file_size){
   int result = parse_tokens(json_file,json_file_size);
   

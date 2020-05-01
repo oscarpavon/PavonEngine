@@ -9,4 +9,6 @@ void parse_gui_file(const char* json_file, int json_file_size);
 
 int pe_parse_level(const char* json);
 
+void pe_parser_gui(const char* json);
+
 #endif // !ENGINE_FILES_PARSER

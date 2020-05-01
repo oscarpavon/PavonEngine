@@ -342,7 +342,7 @@ void load_gui(const char* name){
     char save_name[50];
     memset(save_name,0,sizeof(save_name));
     #ifdef EDITOR
-    strcat(save_name, gui_folder);
+    //strcat(save_name, gui_folder);
     strcat(save_name,name);
     strcat(save_name,".gui");
     #else
@@ -351,12 +351,14 @@ void load_gui(const char* name){
     
     File level_file;
     if( load_file(save_name, &level_file) == -1){
-        
         LOG("GUI file not found: %s\n",name);
         return;
     }
     actual_buttons_array = &buttons;
+
     parse_gui_file(level_file.data , level_file.size_in_bytes);
+		
+		pe_parser_gui(level_file.data);
 
     close_file(&level_file);
 
