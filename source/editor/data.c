@@ -10,12 +10,12 @@ int previous_id_saved = 0;
 u8 previous_path_id = 0;
 StaticMeshComponent* previous_component = NULL;
 
-void pe_serialize_textures_ids(StaticMeshComponent* mesh, JSON_Array* array){
-    if(mesh->textures.count == 0){
+void pe_serialize_textures_ids(Array* textures, JSON_Array* array){
+    if(textures->count == 0){
 				json_array_append_number(array,0);
     }  
-   for(int i = 0; i<mesh->textures.count; i++){
-       int* texture_id = array_get(&mesh->textures,i);
+   for(int i = 0; i<textures->count; i++){
+       int* texture_id = array_get(textures,i);
 				json_array_append_number(array,*texture_id);
    }
 }
@@ -86,6 +86,18 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
           pe_comp_get(COMPONENT_SKINNED_MESH);
       if (!skin)
         break;
+			
+        JSON_Value *arr_models_id_val= json_value_init_array();
+        JSON_Array *arr_models = json_value_get_array(arr_models_id_val);
+
+        JSON_Value *arr_tex_val= json_value_init_array();
+        JSON_Array *arr_tex= json_value_get_array(arr_tex_val);
+
+				//pe_serialize_models_ids(skin->meshes, arr_models);
+        pe_serialize_textures_ids(&skin->textures, arr_tex);
+
+				json_object_set_value(element_obj, "models", arr_models_id_val);
+        json_object_set_value(element_obj, "textures", arr_tex_val);
 
       break;
     }
@@ -99,7 +111,7 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
         JSON_Array *arr_tex= json_value_get_array(arr_tex_val);
 
         pe_serialize_models_ids(mesh, arr_models);
-        pe_serialize_textures_ids(mesh, arr_tex);
+        pe_serialize_textures_ids(&mesh->textures, arr_tex);
 
         json_object_set_value(element_obj, "models", arr_models_id_val);
         json_object_set_value(element_obj, "textures", arr_tex_val);

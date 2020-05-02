@@ -413,7 +413,7 @@ int pe_loader_model(const char* path){
     
   close_file(&new_file);
 
-  LOG("glTF2 loaded: %s. \n",path);
+  //LOG("glTF2 loaded: %s. \n",path);
 
   int model_result = models_parsed;
   models_parsed = 0;

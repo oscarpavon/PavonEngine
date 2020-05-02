@@ -131,7 +131,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 		ZERO(new_texture);
     array_add(current_textures_array,&new_texture);
 
-    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
+    Texture* texture_loaded = array_pop(current_textures_array); 
 		if(texture_load(image_path,texture_loaded) == -1)
 				return;
 
