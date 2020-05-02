@@ -69,6 +69,7 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
       selected_model->texture.id = editor_texture_checker.id;
 #endif
     }
+
     glm_mat4_copy(element_component->parent->transform->model_matrix,
                   selected_model->model_mat);
   }

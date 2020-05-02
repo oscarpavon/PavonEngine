@@ -6,6 +6,8 @@ typedef struct Element Element;
 #include <engine/skeletal.h>
 #include <engine/types.h>
 #include "../../ThirdParty/cglm/cglm.h"
+#include "static_mesh_component.h"
+#include "skinned_mesh_component.h"
 
 typedef enum ComponentType{
     TRASNFORM_COMPONENT = 0,
@@ -61,30 +63,6 @@ typedef struct CameraComponent{
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
 
-typedef struct StaticMeshComponent{
-    Array meshes;
-    Array distances;
-    Array textures;
-    vec3 center;
-    vec3 bounding_box[2];
-}StaticMeshComponent;
-
-
-
-typedef struct SkinnedMeshComponent{    
-    Array meshes;
-    Array distances;
-    Array textures;
-    Model* mesh;
-    Array joints;
-    vec3 bounding_box[2];
-    Array animations;
-    mat4 inverse_bind_matrices[50];
-    struct SkeletalNodeUniform node_uniform;
-		TransformComponent* transform;
-}SkinnedMeshComponent;
-
-
 typedef struct HierarchicalLevelOfDetail{
     Model model;
     float distance;
@@ -121,6 +99,8 @@ typedef struct LevelOfDetailComponent{
     HierarchicalLevelOfDetail* hirarchical_level_of_detail;
 }LevelOfDetailComponent;
 
+/*Add components to selected element. The u32 is the models loaded*/
+void pe_comp_add(u32);
 
 void add_component_to_selected_element(int component_byte_size, void* new_component, ComponentType type);
 void init_sphere_component(SphereComponent* component);

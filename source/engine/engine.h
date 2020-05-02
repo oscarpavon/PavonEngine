@@ -79,8 +79,6 @@ void new_empty_model();
 
 void select_last_element();
 
-void engine_add_element(u32 models_loaded);
-
 int add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 

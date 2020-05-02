@@ -324,3 +324,78 @@ void init_element_component(ComponentDefinition* element_component){
         break;
     }
 }
+
+void pe_comp_mesh_init(void *component, u32 models_loaded) {
+
+  switch (current_loaded_component_type) {
+  case COMPONENT_SKINNED_MESH: {
+    SkinnedMeshComponent *mesh_component = (SkinnedMeshComponent *)component;
+    // the first element is the id of the model path in texts.array
+    array_init(&mesh_component->meshes, sizeof(u8), models_loaded + 1);
+    array_init(&mesh_component->textures, sizeof(u8), models_loaded + 1);
+
+    u8 model_path_id = pe_arr_models_paths.count - 1;
+    array_add(&mesh_component->meshes, &model_path_id);
+
+    // add model loaded id
+    u8 id = array_models_loaded.count - models_loaded;
+    for (u8 i = 0; i < models_loaded; i++) {
+      array_add(&mesh_component->meshes, &id);
+      id++;
+    }
+  } break;
+
+  case STATIC_MESH_COMPONENT: {
+
+    SkinnedMeshComponent *mesh_component = (SkinnedMeshComponent *)component;
+    // the first element is the id of the model path in texts.array
+    array_init(&mesh_component->meshes, sizeof(u8), models_loaded + 1);
+    array_init(&mesh_component->textures, sizeof(u8), models_loaded + 1);
+
+    u8 model_path_id = pe_arr_models_paths.count - 1;
+    array_add(&mesh_component->meshes, &model_path_id);
+
+    // add model loaded id
+    u8 id = array_models_loaded.count - models_loaded;
+    for (u8 i = 0; i < models_loaded; i++) {
+      array_add(&mesh_component->meshes, &id);
+      id++;
+    }
+  }
+  }
+}
+
+void pe_comp_add(u32 models_loaded){
+    new_empty_element();   
+
+    add_transform_component_to_selected_element();
+
+    switch (current_loaded_component_type)
+    {
+    case COMPONENT_SKINNED_MESH:
+        {
+            //LOG("Skinned mesh need fill now\n");
+            SkinnedMeshComponent skin_mesh_component;
+	          ZERO(skin_mesh_component); 
+						pe_comp_mesh_init(&skin_mesh_component,models_loaded);
+            add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
+
+        }
+        break;
+    
+    case STATIC_MESH_COMPONENT:
+        {
+            StaticMeshComponent mesh_component;
+						ZERO(mesh_component);
+						pe_comp_mesh_init(&mesh_component,models_loaded);
+            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);           
+            
+        }
+    }
+
+    for(int i = 0; i <selected_element->components.count ; i++){
+        ComponentDefinition* component_definition = array_get(&selected_element->components,i);
+        init_element_component(component_definition);
+    }
+
+}

@@ -82,7 +82,7 @@ int content_manager_load_content(const char* path){
 
         actual_model_array = prev_array;
         
-        engine_add_element(2);
+        pe_comp_add(2);
         
         break;
     }
