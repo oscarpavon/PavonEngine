@@ -6,9 +6,9 @@
 #include "../content_manager.h"
 #include <sys/stat.h>
 #include <editor/directories.h>
-TextMenuType project_manager_menu;
+PETextMenuType project_manager_menu;
 
-TextMenu project_select_menu;
+PETextMenu project_select_menu;
 
 int project_manager_open(const char* name){
 	LOG("Open project with path: %s\n", name);
@@ -74,7 +74,7 @@ void project_manager_window_draw(){
 }
 
 	
-void project_manager_menu_select_project_draw(TextMenu* menu){
+void project_manager_menu_select_project_draw(PETextMenu* menu){
 		char projects_names[30][30];
 		memset(projects_names,0,sizeof(projects_names));
 		directory_get_only_directories(projects_folder,projects_names);	
@@ -105,7 +105,7 @@ void project_manager_update(){
 void project_manager_init() {
   project_manager_can_show = true;
 
-  memset(&project_select_menu, 0, sizeof(TextMenu));
+  memset(&project_select_menu, 0, sizeof(PETextMenu));
   project_select_menu.execute_function = NULL;
   project_select_menu.draw_text_funtion =
       &project_manager_menu_select_project_draw;

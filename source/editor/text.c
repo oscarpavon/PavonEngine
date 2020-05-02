@@ -19,7 +19,7 @@
 #include "menus.h"
 unsigned short int directory_show_type = 50;
 
-void list_directory_files(TextMenu *menu)
+void list_directory_files(PETextMenu *menu)
 {
 
     struct dirent *de; // Pointer for directory entry
@@ -136,7 +136,7 @@ void list_directory_files(TextMenu *menu)
     }
 }
 
-void draw_element_text_list(TextMenu *menu, const char *text, int i)
+void draw_element_text_list(PETextMenu *menu, const char *text, int i)
 {
     if (text == NULL)
         return;

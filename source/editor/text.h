@@ -15,13 +15,13 @@
 typedef enum{
     MENU_TYPE_ADD_MODEL,
     MENU_TYPE_ADD_TEXTURE,
-}TextMenuType;
+}PETextMenuType;
 
-typedef struct TextMenu TextMenu;
+typedef struct PETextMenu PETextMenu;
 
-typedef void(*TextMenuFunction)(TextMenu*);
+typedef void(*PETextMenuFunction)(PETextMenu*);
 
-typedef struct TextMenu{
+typedef struct PETextMenu{
     char name[30];
     bool show;
     bool element_selected;
@@ -30,20 +30,20 @@ typedef struct TextMenu{
 		bool menu_in_editor;
 		EditorMode editor_mode;
     unsigned int actual_element_select;
-    TextMenuFunction execute_function;
-    TextMenuFunction draw_text_funtion;
-    TextMenuType type;
+    PETextMenuFunction execute_function;
+    PETextMenuFunction draw_text_funtion;
+    PETextMenuType type;
     unsigned short int element_count;
     unsigned short int text_size;
     char text_for_action[30];
     Key* open_key;
     int mods_key;
-}TextMenu;
+}PETextMenu;
 
 void draw_directory_files();
 void draw_directory_file_type(unsigned short int type);
 
-void draw_element_text_list(TextMenu *menu, const char *text, int i);
+void draw_element_text_list(PETextMenu *menu, const char *text, int i);
 
 void text_renderer_loop();
 
@@ -52,6 +52,5 @@ void text_draw_commands();
 int mark_id;
 
 void editor_text_init();
-Array menus;
 
 #endif

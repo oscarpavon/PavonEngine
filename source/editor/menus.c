@@ -4,7 +4,7 @@
 #include <string.h>
 #include <engine/components/components.h>
 #include "editor.h"
-void text_menu_update(TextMenu *menu)
+void text_menu_update(PETextMenu *menu)
 {
 
   if (menu->execute) {
@@ -57,7 +57,7 @@ void text_menu_update(TextMenu *menu)
   }
 }
 
-void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods){
+void menu_can_open_with_key(PETextMenu* menu, Key* open_key, int mods){
     if(mods == -1){
         if(input.SHIFT.pressed)
             return;
@@ -76,9 +76,9 @@ void menu_can_open_with_key(TextMenu* menu, Key* open_key, int mods){
 }
 
 //All menus need to assig elemnts count
-void menu_new_from_data(const char* name, TextMenu* new_menu){
-    TextMenu menu;
-    memset(&menu,0,sizeof(TextMenu));
+void menu_new_from_data(const char* name, PETextMenu* new_menu){
+    PETextMenu menu;
+    memset(&menu,0,sizeof(PETextMenu));
     menu.execute_function = new_menu->execute_function;
     menu.draw_text_funtion = new_menu->draw_text_funtion;
     menu.execute = false;
@@ -93,10 +93,10 @@ void menu_new_from_data(const char* name, TextMenu* new_menu){
 }
 
 void menu_new(const char* name, Key* open_key, int mods_key, 
-                    TextMenuFunction draw_function, 
-                    TextMenuFunction execute_function){
-    TextMenu menu;
-    memset(&menu,0,sizeof(TextMenu));
+                    PETextMenuFunction draw_function, 
+                    PETextMenuFunction execute_function){
+    PETextMenu menu;
+    memset(&menu,0,sizeof(PETextMenu));
     menu.execute_function = execute_function;
     menu.draw_text_funtion = draw_function;
     menu.execute = false;
@@ -111,7 +111,7 @@ void menu_new(const char* name, Key* open_key, int mods_key,
 
 const char* components_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
 
-void draw_available_components(TextMenu* menu){
+void draw_available_components(PETextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size  = text_size;
@@ -124,7 +124,7 @@ void draw_available_components(TextMenu* menu){
     }
 }
 
-void draw_animations_names(TextMenu* menu){
+void draw_animations_names(PETextMenu* menu){
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
     if(!skin_component){
         return;
@@ -143,20 +143,20 @@ void draw_animations_names(TextMenu* menu){
     }
 }
 
-void menu_action_play_animation(TextMenu* menu){
+void menu_action_play_animation(PETextMenu* menu){
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
 		
     play_animation_by_name(skin_component, menu->text_for_action, true);   
 }
 
-void menu_action_select_component_from_selected_element(TextMenu* menu){
+void menu_action_select_component_from_selected_element(PETextMenu* menu){
     current_component_selected = array_get(&selected_element->components,2);
     if(current_component_selected)
         LOG("Component selected\n");
 
 }
 
-void draw_components_from_selected_element(TextMenu* menu){
+void draw_components_from_selected_element(PETextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size  = text_size;
@@ -196,7 +196,7 @@ void draw_components_from_selected_element(TextMenu* menu){
     }
 }
 
-void menu_action_add_component_to_select_element(TextMenu* menu){
+void menu_action_add_component_to_select_element(PETextMenu* menu){
     if( strcmp("Transform Component", menu->text_for_action) == 0 ){ 
         TransformComponent transform;
         init_transfrom_component(&transform);
@@ -211,7 +211,7 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 
 void menu_draw_menus(){
   for (int i = 0; i < menus.count; i++) {
-    TextMenu *menus_list = array_get(&menus, i);
+    PETextMenu *menus_list = array_get(&menus, i);
 		if(menus_list->editor_mode != editor_mode)
 			continue;
     if (menus_list->menu_in_editor == false)
@@ -222,7 +222,7 @@ void menu_draw_menus(){
   }
 }
 
-void menu_action_add_element(TextMenu* menu){
+void menu_action_add_element(PETextMenu* menu){
     int name_lenght = strlen(menu->text_for_action);
     for(int n = 0; n < name_lenght; n++){
         if(menu->text_for_action[n] == '.'){
@@ -266,11 +266,11 @@ void menu_action_add_element(TextMenu* menu){
     update_translation(new_position);
 }
 
-void menu_action_add_texture_to_element(TextMenu* menu){
+void menu_action_add_texture_to_element(PETextMenu* menu){
     add_texture_to_selected_element_with_image_path(menu->text_for_action);
 }
 
-void menu_action_select_element(TextMenu* menu){
+void menu_action_select_element(PETextMenu* menu){
     int id = menu->actual_element_select;
     Element* element = NULL;
    
@@ -299,7 +299,7 @@ void menu_action_select_element(TextMenu* menu){
     LOG("Selected element\n");
 }
 
-void menu_action_add_editor_native_element(TextMenu* menu){
+void menu_action_add_editor_native_element(PETextMenu* menu){
     
 		add_editor_native_element(menu->text_for_action);
     LOG("Add editor native element: %s\n",menu->text_for_action);
@@ -311,7 +311,7 @@ const char* elements_names[] = {
     "HLOD Cluster"
     };
 
-void menu_action_draw_native_editor_elments(TextMenu* menu){
+void menu_action_draw_native_editor_elments(PETextMenu* menu){
     set_text_size(12);
     menu->text_size = 12;   
     menu->element_count = 9;
@@ -325,7 +325,7 @@ void menu_action_draw_native_editor_elments(TextMenu* menu){
 		strcpy(menu->text_for_action,elements_names[menu->actual_element_select]);
 }
 
-void menu_action_draw_editor_elements(TextMenu* menu){
+void menu_action_draw_editor_elements(PETextMenu* menu){
     float text_size = 12;
     set_text_size(text_size);
     menu->text_size  = text_size;
@@ -348,11 +348,11 @@ void menu_action_draw_editor_elements(TextMenu* menu){
        
 }
 
-void menu_action_select_gui_element(TextMenu* menu){
+void menu_action_select_gui_element(PETextMenu* menu){
     selected_button = array_get(actual_buttons_array,menu->actual_element_select);    
 }
 
-void menu_action_draw_gui_elements(TextMenu* menu){
+void menu_action_draw_gui_elements(PETextMenu* menu){
     menu->text_size = 12;
 		menu->element_count = actual_buttons_array->count;
     for (int i = 0; i < actual_buttons_array->count ; i++)
@@ -370,9 +370,9 @@ void pe_editor_menus_update() {
 }
 
 void menus_init(){
-  memset(&add_element_menu, 0, sizeof(TextMenu));
-  memset(&menu_add_texture, 0, sizeof(TextMenu));
-  memset(&menu_editor_element_list, 0, sizeof(TextMenu));
+  memset(&add_element_menu, 0, sizeof(PETextMenu));
+  memset(&menu_add_texture, 0, sizeof(PETextMenu));
+  memset(&menu_editor_element_list, 0, sizeof(PETextMenu));
 
   /*Text Menu functions */
   add_element_menu.execute_function = &menu_action_add_element;
@@ -382,7 +382,7 @@ void menus_init(){
   menu_add_texture.execute_function = &menu_action_add_texture_to_element;
 
   // New way to create texts menus
-  array_init(&menus, sizeof(TextMenu), 10);
+  array_init(&menus, sizeof(PETextMenu), 10);
 
   menu_new("Element Component List", &input.C, -1,
            &draw_components_from_selected_element,
@@ -392,7 +392,7 @@ void menus_init(){
            &draw_available_components,
            &menu_action_add_component_to_select_element);
 	
-	TextMenu native_elemets;
+	PETextMenu native_elemets;
 	native_elemets.draw_text_funtion = &menu_action_draw_native_editor_elments;
 	native_elemets.execute_function = &menu_action_add_editor_native_element;	
 	native_elemets.open_key = &input.E;
@@ -400,7 +400,7 @@ void menus_init(){
 	native_elemets.editor_mode = EDITOR_DEFAULT_MODE; 
 	menu_new_from_data("NativeElements", &native_elemets);
 
-	TextMenu editor_elements;
+	PETextMenu editor_elements;
 	editor_elements.execute_function = &menu_action_select_element;
 	editor_elements.draw_text_funtion = &menu_action_draw_editor_elements;
 	editor_elements.open_key = &input.L;
@@ -408,7 +408,7 @@ void menus_init(){
 	editor_elements.editor_mode = EDITOR_DEFAULT_MODE; 
 	menu_new_from_data("Elements", &editor_elements);
 
-  TextMenu animation_menu;
+  PETextMenu animation_menu;
   animation_menu.open_key = &input.B;
   animation_menu.mods_key = -1;
   animation_menu.draw_text_funtion = &draw_animations_names;
@@ -416,7 +416,7 @@ void menus_init(){
 	animation_menu.editor_mode = EDITOR_DEFAULT_MODE; 
   menu_new_from_data("Animations", &animation_menu);
 
-	TextMenu gui_elements;
+	PETextMenu gui_elements;
 	ZERO(gui_elements);
 	gui_elements.open_key = &input.Q;
 	gui_elements.mods_key = -1;
