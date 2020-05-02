@@ -87,6 +87,7 @@ void menu_new_from_data(const char* name, TextMenu* new_menu){
     menu.open_key = new_menu->open_key;
     menu.mods_key = new_menu->mods_key;
     menu.element_count = 0;
+		menu.editor_mode = new_menu->editor_mode;
     strcpy(menu.name,name);
     array_add(&menus,&menu);
 }
@@ -211,6 +212,8 @@ void menu_action_add_component_to_select_element(TextMenu* menu){
 void menu_draw_menus(){
   for (int i = 0; i < menus.count; i++) {
     TextMenu *menus_list = array_get(&menus, i);
+		if(menus_list->editor_mode != editor_mode)
+			continue;
     if (menus_list->menu_in_editor == false)
       continue;
     menu_can_open_with_key(menus_list, menus_list->open_key,
@@ -394,6 +397,7 @@ void menus_init(){
 	native_elemets.execute_function = &menu_action_add_editor_native_element;	
 	native_elemets.open_key = &input.E;
 	native_elemets.mods_key = GLFW_MOD_SHIFT;
+	native_elemets.editor_mode = EDITOR_DEFAULT_MODE; 
 	menu_new_from_data("NativeElements", &native_elemets);
 
 	TextMenu editor_elements;
@@ -401,6 +405,7 @@ void menus_init(){
 	editor_elements.draw_text_funtion = &menu_action_draw_editor_elements;
 	editor_elements.open_key = &input.L;
 	editor_elements.mods_key = -1;
+	editor_elements.editor_mode = EDITOR_DEFAULT_MODE; 
 	menu_new_from_data("Elements", &editor_elements);
 
   TextMenu animation_menu;
@@ -408,6 +413,7 @@ void menus_init(){
   animation_menu.mods_key = -1;
   animation_menu.draw_text_funtion = &draw_animations_names;
   animation_menu.execute_function = &menu_action_play_animation;
+	animation_menu.editor_mode = EDITOR_DEFAULT_MODE; 
   menu_new_from_data("Animations", &animation_menu);
 
 	TextMenu gui_elements;
@@ -416,6 +422,7 @@ void menus_init(){
 	gui_elements.mods_key = -1;
 	gui_elements.draw_text_funtion = &menu_action_draw_gui_elements;
 	gui_elements.execute_function = &menu_action_select_gui_element;
+	gui_elements.editor_mode = EDITOR_MODE_GUI_EDITOR;
   menu_new_from_data("GUIElements", &gui_elements);
 
 }

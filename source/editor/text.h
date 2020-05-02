@@ -1,16 +1,16 @@
 #ifndef EDITOR_TEXT_H
 #define EDITOR_TEXT_H
 
-#include "../engine/text_renderer.h"
+#include <engine/text_renderer.h>
+#include <editor/editor_mode.h>
 
 #include <stdbool.h>
-#include "../engine/array.h"
+#include <engine/array.h>
 
 #include "input.h"
+
 #define DIRECTORY_MODELS 0
 #define DIRECTORY_TEXTURES 1
-
-
 
 typedef enum{
     MENU_TYPE_ADD_MODEL,
@@ -26,8 +26,9 @@ typedef struct TextMenu{
     bool show;
     bool element_selected;
     bool execute;
-	bool always_open;
-	bool menu_in_editor;
+		bool always_open;
+		bool menu_in_editor;
+		EditorMode editor_mode;
     unsigned int actual_element_select;
     TextMenuFunction execute_function;
     TextMenuFunction draw_text_funtion;

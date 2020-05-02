@@ -24,4 +24,6 @@ void text_menu_update(TextMenu *menu);
 
 void menu_draw_menus();
 void pe_editor_menus_update();
+
+Array menus;
 #endif
