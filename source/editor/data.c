@@ -83,7 +83,7 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
     }
     case COMPONENT_SKINNED_MESH: {
       SkinnedMeshComponent *skin =
-          get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+          pe_comp_get(COMPONENT_SKINNED_MESH);
       if (!skin)
         break;
 
@@ -92,17 +92,17 @@ void pe_serialize_components(Element *element, JSON_Array *array) {
     case STATIC_MESH_COMPONENT: {
       StaticMeshComponent *mesh = component->data;
       if (mesh->meshes.count >= 1) {
-        JSON_Value *array_component_val = json_value_init_array();
-        JSON_Array *array_component = json_value_get_array(array_component_val);
+        JSON_Value *arr_models_id_val= json_value_init_array();
+        JSON_Array *arr_models = json_value_get_array(arr_models_id_val);
 
-        JSON_Value *array_rot_val = json_value_init_array();
-        JSON_Array *array_rot = json_value_get_array(array_rot_val);
+        JSON_Value *arr_tex_val= json_value_init_array();
+        JSON_Array *arr_tex= json_value_get_array(arr_tex_val);
 
-        pe_serialize_models_ids(mesh, array_component);
-        pe_serialize_textures_ids(mesh, array_rot);
+        pe_serialize_models_ids(mesh, arr_models);
+        pe_serialize_textures_ids(mesh, arr_tex);
 
-        json_object_set_value(element_obj, "models", array_component_val);
-        json_object_set_value(element_obj, "textures", array_rot_val);
+        json_object_set_value(element_obj, "models", arr_models_id_val);
+        json_object_set_value(element_obj, "textures", arr_tex_val);
 
         break;
       }

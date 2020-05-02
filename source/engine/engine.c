@@ -92,13 +92,13 @@ void pe_mesh_tex_fill_ids(Texture* texture){
 		while(!texture->gpu_loaded){
 
 		}
-    StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
+    StaticMeshComponent* mesh = pe_comp_get(STATIC_MESH_COMPONENT);
 		if(mesh){
 				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture);
         return;
     }   
     
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
 		if(!skin_component)
 				return;
     u8 id = textures_paths.count-1;
@@ -210,7 +210,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 }
 
 void update_translation(vec3 translation){
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
     if(!transform)
         return;
     vec3 translation_per_frame;
@@ -221,7 +221,7 @@ void update_translation(vec3 translation){
         ComponentDefinition* component = array_get(&selected_element->components,i);
         update_component(component);
     }
-		SkinnedMeshComponent* skin = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+		SkinnedMeshComponent* skin = pe_comp_get(COMPONENT_SKINNED_MESH);
 		if(!skin)
 			return;
 
@@ -229,7 +229,7 @@ void update_translation(vec3 translation){
 }
 
 void update_scale(vec3 translation){
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
     if(!transform)
         return;
 

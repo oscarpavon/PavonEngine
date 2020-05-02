@@ -60,7 +60,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     strcpy(selected_element->name, name);              
     add_transform_component_to_selected_element();
     component_add_HLOD_to_select_element();
-    HLODComponent* hlod = get_component_from_selected_element(COMPONENT_HLOD);
+    HLODComponent* hlod = pe_comp_get(COMPONENT_HLOD);
 
     array_init(&hlod->childs,sizeof(void*),cluster->elements.count);
     for(int i = 0; i<cluster->elements.count; i++){
@@ -226,7 +226,7 @@ void rotate_editor_selected_element_with_quaternion(versor quaternion){
     mat4 model_rot_mat;
     glm_quat_mat4(quaternion,model_rot_mat);
 
-    TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
     if(transform)
         glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
 }
@@ -246,7 +246,7 @@ void duplicate_selected_element(int current_count, Element* original){
         {
         case TRASNFORM_COMPONENT:
             add_transform_component_to_selected_element();
-            TransformComponent* transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+            TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
             memcpy(transform,last_copy->transform, sizeof(TransformComponent));
             break;
         case CAMERA_COMPONENT:
@@ -312,7 +312,7 @@ void editor_init_new_added_element(){
     update_translation(new_position);
 
     
-    StaticMeshComponent* mesh_component = get_component_from_selected_element(STATIC_MESH_COMPONENT); 
+    StaticMeshComponent* mesh_component = pe_comp_get(STATIC_MESH_COMPONENT); 
     if(!mesh_component)
         return;     
                
@@ -486,7 +486,7 @@ void editor_draw() {
 
   if (controlling_camera_component) {
     CameraComponent *camera =
-        get_component_from_selected_element(CAMERA_COMPONENT);
+        pe_comp_get(CAMERA_COMPONENT);
     update_main_camera_with_camera_component_values(camera);
   }
 

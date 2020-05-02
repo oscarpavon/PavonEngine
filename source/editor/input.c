@@ -455,7 +455,7 @@ void default_mode(){
             camera_update(&main_camera);
             return;
         }
-        CameraComponent* camera_component = get_component_from_selected_element(CAMERA_COMPONENT);
+        CameraComponent* camera_component = pe_comp_get(CAMERA_COMPONENT);
         if(camera_component){
             controlling_camera_component = true;
             change_view_to_camera_component(camera_component);

@@ -47,7 +47,7 @@ void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
 
     add_transform_component_to_selected_element();
     TransformComponent *transform =
-        get_component_from_selected_element(TRASNFORM_COMPONENT);
+        pe_comp_get(TRASNFORM_COMPONENT);
     glm_vec3_copy(position, transform->position);
     glm_vec4_copy(rotation, transform->rotation);
     glm_vec3_copy(scale, transform->scale);
@@ -69,7 +69,7 @@ void pe_parse_single_component_with_type_id(JSON_Object *object, int type) {
     add_component_to_selected_element(sizeof(StaticMeshComponent),
                                       &mesh_component, STATIC_MESH_COMPONENT);
     StaticMeshComponent *mesh =
-        get_component_from_selected_element(STATIC_MESH_COMPONENT);
+        pe_comp_get(STATIC_MESH_COMPONENT);
 
     JSON_Array *models = json_object_get_array(object, "models");
 

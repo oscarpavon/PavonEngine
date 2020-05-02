@@ -109,7 +109,7 @@ void init_cube_component(CubeComponent* component);
 void update_per_frame_component(ComponentDefinition*);
 void update_component(ComponentDefinition*);
 void init_transfrom_component(TransformComponent* component);
-void* get_component_from_selected_element(ComponentType type);
+void* pe_comp_get(ComponentType type);
 void* get_component_from_element(Element* element, ComponentType type);
 void change_view_to_camera_component(CameraComponent* camera_component);
 void add_transform_component_to_selected_element();

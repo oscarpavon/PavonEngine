@@ -42,7 +42,7 @@ void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
 }
 
 void create_skeletal_vertices(){
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
     if(!skin_component){
         LOG("No skinned mesh component\n");
         return;

@@ -31,14 +31,14 @@ void add_debug_line(vec3 start, vec3 end) {
 int create_bounding_vertices() {
   float *bounding_box = NULL;
   StaticMeshComponent *mesh_component =
-      get_component_from_selected_element(STATIC_MESH_COMPONENT);
+      pe_comp_get(STATIC_MESH_COMPONENT);
   if (mesh_component) {
     bounding_box = mesh_component->bounding_box[0];
   }
   if (!mesh_component) {
 
     HLODBoxComponent *HLOD_box =
-        get_component_from_selected_element(COMPONENT_HLOD_BOX);
+        pe_comp_get(COMPONENT_HLOD_BOX);
     if (!HLOD_box) {
       LOG("No valid component for draw bounding box\n");
       can_draw_box = false;
@@ -372,7 +372,7 @@ void draw_gizmos() {
       HLODs_generated_debug();
       if (selected_element) {
         StaticMeshComponent *mesh =
-            get_component_from_selected_element(STATIC_MESH_COMPONENT);
+            pe_comp_get(STATIC_MESH_COMPONENT);
         if (!mesh)
           return;
         Sphere sphere;
@@ -399,7 +399,7 @@ void draw_gizmos() {
 		//Gizmo scale relative main camera position
     if (selected_element != NULL) {
       TransformComponent *transform =
-          get_component_from_selected_element(TRASNFORM_COMPONENT);
+          pe_comp_get(TRASNFORM_COMPONENT);
       if (transform && actual_gizmo) {
         glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
         float distance =

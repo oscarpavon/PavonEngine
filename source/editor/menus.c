@@ -125,7 +125,7 @@ void draw_available_components(PETextMenu* menu){
 }
 
 void draw_animations_names(PETextMenu* menu){
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
     if(!skin_component){
         return;
     }
@@ -144,7 +144,7 @@ void draw_animations_names(PETextMenu* menu){
 }
 
 void menu_action_play_animation(PETextMenu* menu){
-    SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
 		
     play_animation_by_name(skin_component, menu->text_for_action, true);   
 }

@@ -220,7 +220,7 @@ void update_per_frame_component(ComponentDefinition* element_component){
     }
 }
 
-void* get_component_from_selected_element(ComponentType type){
+void* pe_comp_get(ComponentType type){
     if(!selected_element)
         return NULL;
     
@@ -236,7 +236,7 @@ void* get_component_from_selected_element(ComponentType type){
 void* get_component_from_element(Element* element, ComponentType type){
     Element* previous_element = selected_element;
     selected_element = element;
-    Element* result = get_component_from_selected_element(type);
+    Element* result = pe_comp_get(type);
     if(result){
         selected_element = previous_element;
         return result;
@@ -249,7 +249,7 @@ void add_transform_component_to_selected_element(){
     TransformComponent transform;
     init_transfrom_component(&transform);
     add_component_to_selected_element(sizeof(TransformComponent),&transform,TRASNFORM_COMPONENT);
-    selected_element->transform = get_component_from_selected_element(TRASNFORM_COMPONENT);
+    selected_element->transform = pe_comp_get(TRASNFORM_COMPONENT);
 
 }
 
