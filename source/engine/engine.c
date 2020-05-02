@@ -73,39 +73,47 @@ void new_empty_model(){
 
 }
 
+void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture) {
 
-void engine_select_element_add_texture(Texture* texture){
+  if (meshes->count >= 1) {
+    u8 id = textures_paths.count - 1;
+    array_add(textures, &id);
+    for (u8 i = 1; i < meshes->count; i++) {
+      u8 *model_id = array_get(meshes, i);
+      Model *model = array_get(actual_model_array, *model_id);
+      model->texture.id = texture->id;
+      u8 id = textures_paths.count - 1;
+      array_add(textures, &id);
+    }
+  }
+}
+
+void pe_mesh_tex_fill_ids(Texture* texture){
 		while(!texture->gpu_loaded){
 
 		}
     StaticMeshComponent* mesh = get_component_from_selected_element(STATIC_MESH_COMPONENT);
-     
-    if(mesh){
-        if(mesh->meshes.count >= 1){
-            u8 id = textures_paths.count-1;
-            array_add(&mesh->textures,&id);
-            for(u8 i = 1; i<mesh->meshes.count; i++){
-                u8* model_id = array_get(&mesh->meshes,i);
-                Model* model = array_get(actual_model_array,*model_id);
-                model->texture.id = texture->id;
-                u8 id = textures_paths.count-1;
-                array_add(&mesh->textures,&id);
-            }
-        }
+		if(mesh){
+				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture);
         return;
-    }    
+    }   
     
     SkinnedMeshComponent* skin_component = get_component_from_selected_element(COMPONENT_SKINNED_MESH);
+		if(!skin_component)
+				return;
     u8 id = textures_paths.count-1;
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
+		
+		pe_mesh_data_fill_tex_ids(&skin_component->meshes,&skin_component->textures,texture);	
+
 }
 
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
 	Texture new_texture;
 	texture_load_from_memory(&new_texture,size,data);	
-    array_add(&textures_paths,"from_memory");
-	engine_select_element_add_texture(&new_texture);
+  array_add(&textures_paths,"from_memory");
+	pe_mesh_tex_fill_ids(&new_texture);
 }
 
 void add_texture_to_selected_element_with_image_path(const char* image_path){
@@ -129,7 +137,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 
     array_add(&textures_paths,image_path);
 
-    engine_select_element_add_texture(texture_loaded);
+    pe_mesh_tex_fill_ids(texture_loaded);
 		
 		LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
 }
