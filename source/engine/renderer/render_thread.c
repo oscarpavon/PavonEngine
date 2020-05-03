@@ -7,7 +7,9 @@
 void engine_draw_elements(Array *elements){
     for(size_t i = 0; i < elements->count ; i++) { 
         Model** model = array_get(elements,i);
-        Model* draw_model = model[0];        
+        Model* draw_model = model[0];  
+				if(!draw_model)
+					continue;			
         draw_simgle_model(draw_model);
     }
     array_clean(elements);

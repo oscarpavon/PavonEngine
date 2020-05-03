@@ -336,17 +336,23 @@ void editor_add_element_with_model_path(const char* path){
 void editor_stats_calculates_triangles(){
     int triangles = 0;
     for(int i = 0; i<frame_draw_static_elements.count; i++){
-        Model** model = array_get(&frame_draw_static_elements,i);
-        if(!model)
+        Model** modelp = array_get(&frame_draw_static_elements,i);
+        if(!modelp)
             return;
-        int vertices_count = model[0]->vertex_array.count;
+				Model* model = modelp[0];
+				if(!model)
+					return;	
+        int vertices_count = model->vertex_array.count;
         triangles += vertices_count/3;
     }
     for(int i = 0; i<frame_draw_skinned_elements.count; i++){
-        Model** model = array_get(&frame_draw_static_elements,i);
-        if(!model)
+        Model** modelp = array_get(&frame_draw_static_elements,i);
+        if(!modelp)
             return;
-        int vertices_count = model[0]->vertex_array.count;
+				Model* model = modelp[0];
+				if(!model)
+					return;	
+        int vertices_count = model->vertex_array.count;
         triangles += vertices_count/3;
     }
 	editor_stats_triangles = triangles;
