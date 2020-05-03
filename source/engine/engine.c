@@ -73,17 +73,14 @@ void new_empty_model(){
 
 }
 
-void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture) {
-
+void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture, u8 path_id) {
   if (meshes->count >= 1) {
-    u8 id = pe_arr_tex_paths.count - 1;
-    array_add(textures, &id);
+    array_add(textures, &path_id);
     for (u8 i = 1; i < meshes->count; i++) {
       u8 *model_id = array_get(meshes, i);
       Model *model = array_get(actual_model_array, *model_id);
       model->texture.id = texture->id;
-      u8 id = pe_arr_tex_paths.count - 1;
-      array_add(textures, &id);
+      array_add(textures, &path_id);
     }
   }
 }
@@ -92,9 +89,12 @@ void pe_mesh_tex_fill_ids(Texture* texture){
 		while(!texture->gpu_loaded){
 
 		}
+
+    u8 path_id = pe_arr_tex_paths.count - 1;
+
     StaticMeshComponent* mesh = pe_comp_get(STATIC_MESH_COMPONENT);
 		if(mesh){
-				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture);
+				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture,path_id);
         return;
     }   
     
@@ -105,8 +105,17 @@ void pe_mesh_tex_fill_ids(Texture* texture){
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 		
-		pe_mesh_data_fill_tex_ids(&skin_component->meshes,&skin_component->textures,texture);	
+		pe_mesh_data_fill_tex_ids(&skin_component->meshes,&skin_component->textures,texture,path_id);	
 
+}
+void pe_tex_loaded_to_model(int id){
+  Texture *texture = array_get(current_textures_array, id);
+
+  StaticMeshComponent *mesh = pe_comp_get(STATIC_MESH_COMPONENT);
+  if (mesh) {
+    pe_mesh_data_fill_tex_ids(&mesh->meshes, &mesh->textures, texture, id);
+    return;
+  }
 }
 
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){

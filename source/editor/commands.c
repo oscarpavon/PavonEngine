@@ -117,13 +117,70 @@ void command_while_not_space(const char* command){
     }
 }
 
+void text_input_mode(){
+    if(key_released(&input.ENTER)){
+        parse_command(command_text_buffer);
+        command_character_count = 0;
+        save_commnad_history(command_text_buffer);
+        memset(command_text_buffer,0,sizeof(command_text_buffer));
+        
+        change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
+        return;
+    }
+    if(key_released(&input.BACKSPACE)){
+        command_character_count--;
+        command_text_buffer[command_character_count] = '\0';
+    }
+    if(key_released(&input.KEY_UP)){
+       
+        FILE* file = fopen("/home/pavon/sources/PavonEngineC/Binaries/command_history.txt","r");
+        if(!file)
+            return;
+
+        fseek(file, 0, SEEK_END);
+     
+        static const long max_len = 55 + 1;
+
+        char buf[max_len + 1];
+
+        /* now read that many bytes from the end of the file */
+        fseek(file, -max_len, SEEK_END);
+        int len = fread(buf,1, 55, file);
+
+        buf[len] = '\0';
+
+        /* and find the last newline character (there must be one, right?) */
+        char *last_newline = strrchr(buf, '\n');
+        char *last_line = last_newline+1;
+
+        LOG("Last line: %s\n",last_line);
+        memcpy(&command_text_buffer[command_character_count],last_line,strlen(last_line));
+
+    }
+
+}
+
+
+int command_parse_from_command_line(int argc, char* argv[]){
+	if(argc <= 1){
+		return 0;	
+	}	
+	if(strcmp(argv[1] , "-o") == 0){
+		memset(editor_level_open_path,0,sizeof(editor_level_open_path));
+		strcpy(editor_level_open_path, argv[2]);			
+		LOG("Open level: %s \n",editor_level_open_path);
+		return 1;
+	}
+	return 1;
+}
+
 void parse_command(const char *in_command) {
 
 	char command[1000];
 	memset(command,0,sizeof(command));
 	strcpy(command,in_command);
 	//LOG("Command lenght: %i\n",strlen(command));
-	LOG("In Command result: %s\n",command);
+//	LOG("In Command result: %s\n",command);
 	first_char_command = command[1];
 
   //command_while_not_space(&command[1]);
@@ -277,61 +334,3 @@ void parse_command(const char *in_command) {
     break;
   }
 }
-
-
-void text_input_mode(){
-    if(key_released(&input.ENTER)){
-        parse_command(command_text_buffer);
-        command_character_count = 0;
-        save_commnad_history(command_text_buffer);
-        memset(command_text_buffer,0,sizeof(command_text_buffer));
-        
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
-        return;
-    }
-    if(key_released(&input.BACKSPACE)){
-        command_character_count--;
-        command_text_buffer[command_character_count] = '\0';
-    }
-    if(key_released(&input.KEY_UP)){
-       
-        FILE* file = fopen("/home/pavon/sources/PavonEngineC/Binaries/command_history.txt","r");
-        if(!file)
-            return;
-
-        fseek(file, 0, SEEK_END);
-     
-        static const long max_len = 55 + 1;
-
-        char buf[max_len + 1];
-
-        /* now read that many bytes from the end of the file */
-        fseek(file, -max_len, SEEK_END);
-        int len = fread(buf,1, 55, file);
-
-        buf[len] = '\0';
-
-        /* and find the last newline character (there must be one, right?) */
-        char *last_newline = strrchr(buf, '\n');
-        char *last_line = last_newline+1;
-
-        LOG("Last line: %s\n",last_line);
-        memcpy(&command_text_buffer[command_character_count],last_line,strlen(last_line));
-
-    }
-
-}
-
-
-int command_parse_from_command_line(int argc, char* argv[]){
-	if(argc <= 1){
-		return 0;	
-	}	
-	if(strcmp(argv[1] , "-o") == 0){
-		memset(editor_level_open_path,0,sizeof(editor_level_open_path));
-		strcpy(editor_level_open_path, argv[2]);			
-		LOG("Open level: %s \n",editor_level_open_path);
-		return 1;
-	}
-	return 1;
-}	

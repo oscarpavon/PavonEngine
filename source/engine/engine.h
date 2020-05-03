@@ -82,6 +82,8 @@ void select_last_element();
 int add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
+void pe_tex_loaded_to_model(int id);
+
 void load_model_to_array(Array* array, const char* path_model, const char* color_texture_path);
 
 int load_and_initialize_simple_model(const char* model_gltf_path);

@@ -35,6 +35,7 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
 
   for (u32 i = 1; i <= mesh_component->meshes.count - 1; i++) {
 
+		//Models ids
     u8 *id = array_get(&mesh_component->meshes, i);
 
     Model *original_model = array_get(&array_models_loaded, *id);
@@ -44,7 +45,8 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
     new_empty_model();
 
     duplicate_model_data(selected_model, original_model);
-   
+  
+	 //Shaders	
 		PEShaderCreation shader_creation;
 		ZERO(shader_creation);
 		shader_creation.model = selected_model;
@@ -55,7 +57,9 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
 
 		thread_main.wait = true;
 		pe_th_wait(&thread_main); 
+		
 
+		//Textures id
 		u8 *texture_id = NULL;
     if (mesh_component->textures.count > 0)
       texture_id = array_get(&mesh_component->textures, i);

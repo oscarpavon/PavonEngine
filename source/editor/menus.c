@@ -370,19 +370,18 @@ void menu_action_draw_gui_elements(PETextMenu* menu){
 }
 
 void pe_menu_loaded_tex_draw(PETextMenu* menu){
-//	for(int i = 0; i < pe_arr_tex_paths.count ; i++){
 	menu->text_size = 12;
 	menu->element_count = pe_arr_tex_paths.count;
 	FOR(pe_arr_tex_paths.count){
 			char* path = array_get(&pe_arr_tex_paths,i);
 			draw_element_text_list(menu,path,i);	
+			menu->actual_element_select = i;
 	}
 
 }
 
 void pe_menu_loaded_tex_exec(PETextMenu* menu){
-
-
+	pe_tex_loaded_to_model(menu->actual_element_select);	
 }
 
 void menus_init(){
@@ -447,6 +446,7 @@ void menus_init(){
 	loaded_textures.mods_key = GLFW_MOD_SHIFT;
 	loaded_textures.editor_mode = EDITOR_DEFAULT_MODE;			
 	loaded_textures.draw_text_funtion = &pe_menu_loaded_tex_draw;	
+	loaded_textures.execute_function = &pe_menu_loaded_tex_exec;
 	menu_new_from_data("LoadedTex",&loaded_textures);
 
 }
