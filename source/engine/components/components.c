@@ -324,21 +324,32 @@ void init_element_component(ComponentDefinition* element_component){
         break;
     }
 }
-void pe_mesh_fill_models_is(Array* meshes, Array* textures, u32 models_loaded){
+void pe_mesh_fill_models_ids(Array *meshes, Array *textures,
+                             u32 models_loaded) {
 
-    // the first element is the id of the model path in texts.array
-    array_init(meshes, sizeof(u8), models_loaded + 1);
-    array_init(textures, sizeof(u8), models_loaded + 1);
+  // the first element is the id of the model path in texts.array
+  array_init(meshes, sizeof(u8), models_loaded + 1);
+  array_init(textures, sizeof(u8), models_loaded + 1);
 
-    u8 model_path_id = pe_arr_models_paths.count - 1;
-    array_add(meshes, &model_path_id);
+  u8 model_path_id = pe_arr_models_paths.count - 1;
+  array_add(meshes, &model_path_id);
 
-    // add model loaded id
-    u8 id = array_models_loaded.count - models_loaded;
+  // add model loaded id
+  u8 id = 0;
+  if (models_loaded > 1) {
+    id = array_models_loaded.count - models_loaded;
     for (u8 i = 0; i < models_loaded; i++) {
       array_add(meshes, &id);
       id++;
     }
+  }
+  else{
+		id = array_models_loaded.count-1;
+		array_add(meshes,&id);
+		LOGW("one loaded model");
+		LOG("Id for new model is: %i\n",id);
+
+	}
 
 }
 
@@ -354,7 +365,7 @@ void pe_comp_add(u32 models_loaded){
         {
             SkinnedMeshComponent skin_mesh_component;
 	          ZERO(skin_mesh_component); 
-						pe_mesh_fill_models_is(&skin_mesh_component.meshes,&skin_mesh_component.textures,models_loaded);
+						pe_mesh_fill_models_ids(&skin_mesh_component.meshes,&skin_mesh_component.textures,models_loaded);
             add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
 
         }
@@ -364,7 +375,7 @@ void pe_comp_add(u32 models_loaded){
         {
             StaticMeshComponent mesh_component;
 						ZERO(mesh_component);
-						pe_mesh_fill_models_is(&mesh_component.meshes,&mesh_component.textures,models_loaded);
+						pe_mesh_fill_models_ids(&mesh_component.meshes,&mesh_component.textures,models_loaded);
             add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);           
             
         }

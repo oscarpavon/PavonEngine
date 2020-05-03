@@ -6,8 +6,6 @@
 
 Element* current_element = NULL;
 
-int previous_id_saved = 0;
-u8 previous_path_id = 0;
 StaticMeshComponent* previous_component = NULL;
 
 void pe_serialize_textures_ids(Array* textures, JSON_Array* array){
@@ -19,25 +17,12 @@ void pe_serialize_textures_ids(Array* textures, JSON_Array* array){
 				json_array_append_number(array,*texture_id);
    }
 }
+
 void pe_serialize_models_ids(StaticMeshComponent* mesh,JSON_Array* array){
    
-    u8* path_id = array_get(&mesh->meshes,0);
-    int count = 0;
-    int offset = 0;
-    if(previous_path_id != *path_id){
-        previous_path_id = *path_id;
-        if(previous_component){
-            offset = previous_component->meshes.count-1;
-            previous_id_saved += offset;
-        }
-    }
-		
-		json_array_append_number(array,*path_id);
-    
-    for(int o = 0; o < mesh->meshes.count-1 ; o++){
-        u8 id = previous_id_saved + o;
-				json_array_append_number(array,id);
-        count++;
+    for(int i = 0; i < mesh->meshes.count ; i++){
+        u8* id = array_get(&mesh->meshes,i);
+				json_array_append_number(array,*id);
     }
 
 }
@@ -248,32 +233,8 @@ void save_level_data(const char* level_name){
 		pe_serialize_level();	
     
     fclose(new_file);
-    previous_id_saved = 0;
     LOG("Saved to %s\n",level_name);
 }
-
-void serializer_serialize_data(const char* path, void(*function)(void)){
-    if(strcmp(path, "") == 0){
-        if( strcmp(opened_file_name,"") == 0)
-            return;
-        path = opened_file_name;
-    }      
-  
-    FILE* new_file = fopen(path,"w");
-    if(!new_file){
-        LOG("File not created: %s\n",path);
-        return;
-    }
-    actual_file = new_file;     
- 
-    function();    
-    
-    fclose(new_file);
-    previous_id_saved = 0;
-    LOG("Saved to %s\n",path);
-}
-
-
 
 
 //**********************
