@@ -184,7 +184,7 @@ Array array_skinned_mesh_for_distance_test;
 //Paths data
 //
 Array pe_arr_models_paths;
-Array textures_paths;
+Array pe_arr_tex_paths;
 
 //ThreadsCommads
 Array render_thread_commads;

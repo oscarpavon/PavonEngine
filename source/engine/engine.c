@@ -76,13 +76,13 @@ void new_empty_model(){
 void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture) {
 
   if (meshes->count >= 1) {
-    u8 id = textures_paths.count - 1;
+    u8 id = pe_arr_tex_paths.count - 1;
     array_add(textures, &id);
     for (u8 i = 1; i < meshes->count; i++) {
       u8 *model_id = array_get(meshes, i);
       Model *model = array_get(actual_model_array, *model_id);
       model->texture.id = texture->id;
-      u8 id = textures_paths.count - 1;
+      u8 id = pe_arr_tex_paths.count - 1;
       array_add(textures, &id);
     }
   }
@@ -101,7 +101,7 @@ void pe_mesh_tex_fill_ids(Texture* texture){
     SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
 		if(!skin_component)
 				return;
-    u8 id = textures_paths.count-1;
+    u8 id = pe_arr_tex_paths.count-1;
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 		
@@ -112,7 +112,7 @@ void pe_mesh_tex_fill_ids(Texture* texture){
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
 	Texture new_texture;
 	texture_load_from_memory(&new_texture,size,data);	
-  array_add(&textures_paths,"from_memory");
+  array_add(&pe_arr_tex_paths,"from_memory");
 	pe_mesh_tex_fill_ids(&new_texture);
 }
 
@@ -135,7 +135,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 		if(texture_load(image_path,texture_loaded) == -1)
 				return;
 
-    array_add(&textures_paths,image_path);
+    array_add(&pe_arr_tex_paths,image_path);
 
     pe_mesh_tex_fill_ids(texture_loaded);
 		
@@ -317,7 +317,7 @@ void duplicate_model_data(Model* destination , Model* source){
 
 void engine_init_data(){
     array_init(&pe_arr_models_paths,sizeof(char[100]),50);
-    array_init(&textures_paths,sizeof(char[20]),50);
+    array_init(&pe_arr_tex_paths,sizeof(char[20]),50);
     
 		
 		array_init(&array_models_loaded,sizeof(Model),100);

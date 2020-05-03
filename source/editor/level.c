@@ -29,8 +29,8 @@ void editor_level_open(const char *name) {
   }
   actual_model_array = &editor_models;
 
-  for (int i = 0; i < textures_paths.count; i++) {
-    load_simple_image(array_get(&textures_paths, i));
+  for (int i = 0; i < pe_arr_tex_paths.count; i++) {
+    load_simple_image(array_get(&pe_arr_tex_paths, i));
   }
 
   for_each_element_components(&init_element_component);

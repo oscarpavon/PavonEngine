@@ -218,8 +218,8 @@ void pe_serialize_level() {
 			json_array_append_string(models_paths_arr,path);	
 	}
 	
-	for(int i = 0; i < textures_paths.count ; i++){
-			char* path = (char*)array_get(&textures_paths,i);
+	for(int i = 0; i < pe_arr_tex_paths.count ; i++){
+			char* path = (char*)array_get(&pe_arr_tex_paths,i);
 			json_array_append_string(textures_paths_arr,path);	
 	}
 	

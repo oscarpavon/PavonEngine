@@ -163,7 +163,7 @@ int pe_parse_level(const char *json) {
 	for(int i = 0; i < textures_paths_count; i++){
 
 		const char* path = json_array_get_string(textures_paths_array,i);
-		array_add(&textures_paths,path);
+		array_add(&pe_arr_tex_paths,path);
 	}
 
 	for(int i = 0; i < models_paths_count ; i++){

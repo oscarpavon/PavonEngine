@@ -1,9 +1,18 @@
-#include "../engine/gui.h"
-
-#include "menus.h"
+#include <engine/gui.h>
 #include <string.h>
-#include <engine/components/components.h>
 #include "editor.h"
+#include <engine/components/components.h>
+#include "menus.h"
+#include <engine/macros.h>
+
+#define EDITOR_NATIVE_ELEMETN_COUNT 9
+const char* elements_names[] = { 
+    "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor",
+    "HLOD Cluster"
+   };
+
+const char* components_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
+
 void text_menu_update(PETextMenu *menu)
 {
 
@@ -12,11 +21,6 @@ void text_menu_update(PETextMenu *menu)
       menu->draw_text_funtion(menu);
     else
       LOG("Menu draw function not assigned\n");
-
-    /*         if (menu->type == MENU_TYPE_ADD_MODEL)
-                draw_directory_file_type(DIRECTORY_MODELS);
-            else if (menu->type == MENU_TYPE_ADD_TEXTURE)
-                draw_directory_file_type(DIRECTORY_TEXTURES); */
 
     if (menu->show) {
       if (key_released(&input.ESC)) {
@@ -75,7 +79,28 @@ void menu_can_open_with_key(PETextMenu* menu, Key* open_key, int mods){
     }    
 }
 
-//All menus need to assig elemnts count
+void menu_draw_menus(){
+  for (int i = 0; i < menus.count; i++) {
+    PETextMenu *menus_list = array_get(&menus, i);
+		if(menus_list->editor_mode != editor_mode)
+			continue;
+    if (menus_list->menu_in_editor == false)
+      continue;
+    menu_can_open_with_key(menus_list, menus_list->open_key,
+                           menus_list->mods_key);
+    text_menu_update(menus_list);
+  }
+}
+
+void pe_editor_menus_update() {
+
+	if(editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT){
+		menu_draw_menus();
+	}
+
+}
+
+//All menus need to assing elements count
 void menu_new_from_data(const char* name, PETextMenu* new_menu){
     PETextMenu menu;
     memset(&menu,0,sizeof(PETextMenu));
@@ -109,7 +134,6 @@ void menu_new(const char* name, Key* open_key, int mods_key,
     array_add(&menus,&menu);
 }
 
-const char* components_names[] = {"Camera Component", "Sphere Component", "Cube Component", "Transform Component", "SkinnedMesh"};
 
 void draw_available_components(PETextMenu* menu){
     float text_size = 12;
@@ -209,18 +233,6 @@ void menu_action_add_component_to_select_element(PETextMenu* menu){
 }
 
 
-void menu_draw_menus(){
-  for (int i = 0; i < menus.count; i++) {
-    PETextMenu *menus_list = array_get(&menus, i);
-		if(menus_list->editor_mode != editor_mode)
-			continue;
-    if (menus_list->menu_in_editor == false)
-      continue;
-    menu_can_open_with_key(menus_list, menus_list->open_key,
-                           menus_list->mods_key);
-    text_menu_update(menus_list);
-  }
-}
 
 void menu_action_add_element(PETextMenu* menu){
     int name_lenght = strlen(menu->text_for_action);
@@ -305,11 +317,6 @@ void menu_action_add_editor_native_element(PETextMenu* menu){
     LOG("Add editor native element: %s\n",menu->text_for_action);
 }
 
-#define EDITOR_NATIVE_ELEMETN_COUNT 9
-const char* elements_names[] = { 
-    "Empty Element" , "Camera" , "Player Start", "Collider" , "Sphere" , "Cube" , "Cyllinder" , "Floor",
-    "HLOD Cluster"
-    };
 
 void menu_action_draw_native_editor_elments(PETextMenu* menu){
     set_text_size(12);
@@ -361,11 +368,20 @@ void menu_action_draw_gui_elements(PETextMenu* menu){
         draw_element_text_list(menu,button->name,i);
     }
 }
-void pe_editor_menus_update() {
 
-	if(editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT){
-		menu_draw_menus();
+void pe_menu_loaded_tex_draw(PETextMenu* menu){
+//	for(int i = 0; i < pe_arr_tex_paths.count ; i++){
+	menu->text_size = 12;
+	menu->element_count = pe_arr_tex_paths.count;
+	FOR(pe_arr_tex_paths.count){
+			char* path = array_get(&pe_arr_tex_paths,i);
+			draw_element_text_list(menu,path,i);	
 	}
+
+}
+
+void pe_menu_loaded_tex_exec(PETextMenu* menu){
+
 
 }
 
@@ -424,5 +440,13 @@ void menus_init(){
 	gui_elements.execute_function = &menu_action_select_gui_element;
 	gui_elements.editor_mode = EDITOR_MODE_GUI_EDITOR;
   menu_new_from_data("GUIElements", &gui_elements);
+	
+	PETextMenu loaded_textures;
+	ZERO(loaded_textures);
+	loaded_textures.open_key = &input.T;
+	loaded_textures.mods_key = GLFW_MOD_SHIFT;
+	loaded_textures.editor_mode = EDITOR_DEFAULT_MODE;			
+	loaded_textures.draw_text_funtion = &pe_menu_loaded_tex_draw;	
+	menu_new_from_data("LoadedTex",&loaded_textures);
 
 }

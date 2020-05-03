@@ -293,7 +293,7 @@ void reload_editor(){
     array_clean(&editor_elements);   
     array_clean(&editor_models);
     array_clean(&pe_arr_models_paths);
-    array_clean(&textures_paths);
+    array_clean(&pe_arr_tex_paths);
     array_clean(actual_buttons_array);
     array_clean(&array_models_loaded);
 }
