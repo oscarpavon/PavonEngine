@@ -1,6 +1,6 @@
 #ifndef ENGINE_NETWORK
 #define ENGINE_NETWORK
-#if defined(LINUX) || defined (BSD)
+#if defined(LINUX) || defined (BSD) 
 	#include "engine/platforms/linux/network.h"
 #endif
 

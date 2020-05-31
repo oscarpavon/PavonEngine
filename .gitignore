@@ -75,3 +75,4 @@ tags
 *.swn
 bin/*
 lib/*
+*.core

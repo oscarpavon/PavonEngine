@@ -4,7 +4,6 @@
 #include <GLES2/gl2.h>
 #include "../engine/shader.h"
 
-#include <stdlib.h>
 #include "../engine/file_loader.h"
 #include "editor.h" 
 #include "../engine/gui.h"
@@ -17,6 +16,7 @@
 #include "ProjectManager/project_manager.h"
 #include <engine/text_renderer.h>
 #include "menus.h"
+#include <stdlib.h>
 unsigned short int directory_show_type = 50;
 
 void list_directory_files(PETextMenu *menu)
@@ -181,11 +181,11 @@ void draw_engine_memory()
   text_render_in_screen_space(12, "Memory:", 950, 0);
   char buf[5];
   float total_memory_in_kb = INIT_MEMORY / 1024;
-  gcvt(total_memory_in_kb, 6, buf);
+//gcvt(total_memory_in_kb, 6, buf);
   text_render_in_screen_space(12, buf, 1020, 0);
   
 	float free_memory = actual_free_memory / 1024;
-  gcvt(free_memory, 6, buf);
+ // gcvt(free_memory, 6, buf);
 	
   text_render_in_screen_space(12, "/", 1095, 0);
   text_render_in_screen_space(12, buf, 1110, 0);
@@ -197,7 +197,7 @@ void draw_frame_time()
   char buf[16];
   memset(buf,0,sizeof(buf));
 
-  gcvt(frame_time, 6, buf);
+  //gcvt(frame_time, 6, buf);
 	text_render_in_screen_space(12,buf,750,0);
 	text_render_in_screen_space(12,"ms",795,0);
 }
@@ -206,7 +206,7 @@ void draw_FPS(){
 	text_render_in_screen_space(12,"FPS",600,0);
   char buf[16];
   memset(buf,0,sizeof(buf));
-  gcvt(FPS, 6, buf);
+  //gcvt(FPS, 6, buf);
 	text_render_in_screen_space(12,buf,650,0);
 }
 
@@ -214,7 +214,7 @@ void draw_count_of_draw_call(){
 	text_render_in_screen_space(12,"Draw:",0,0);
   char buf[5]; 
   float count = editor_stats_draw_calls; 
-  gcvt(count, 6, buf);
+  //gcvt(count, 6, buf);
   if(count != 0)
 	text_render_in_screen_space(12,buf,100,0);
 }
@@ -222,7 +222,7 @@ void draw_stats_triangles(){
 	text_render_in_screen_space(12,"Tris",500,0); 
 	char buf[7]; 
   float count = editor_stats_triangles;
-  gcvt(count, 7, buf);
+  //gcvt(count, 7, buf);
   if(count != 0)
 	text_render_in_screen_space(12,buf,540,0); 
 

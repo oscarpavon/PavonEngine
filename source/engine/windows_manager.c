@@ -21,8 +21,12 @@ void pe_wm_glfw_init(){
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	LOG("Windows manager initialized in OPENGL");
+	
+
   } else if (pe_wm_renderer_type == PEWMVULKAN) {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	LOG("Window Manager in VULKAN");
   }
 	//MSAA
 	glfwWindowHint(GLFW_SAMPLES,4);
@@ -53,19 +57,26 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     if(share_window)
      share_glfw_window = share_window->window;
 
-		GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
-		if(!new_window){ 
-			LOG("Window can't be created\nPavon Engine was closed\n");
-			exit(-1);
-		}
-		win->window = new_window;
+  	if (pe_wm_renderer_type == PEWMVULKAN) {
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  	}
+	
+	GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
+	if(!new_window){ 
+		LOG("Window can't be created\nPavon Engine was closed\n");
+		exit(-1);
+	}
+	win->window = new_window;
+	
+	if (pe_wm_renderer_type == PEWMOPENGLES2) {
 		glfwMakeContextCurrent(win->window);
-    
+	}   
+
     glfwSetWindowUserPointer(win->window,win);
 
     camera_heigth_screen = INIT_WINDOW_SIZE_Y;
     camera_width_screen = INIT_WINDOW_SIZE_X;
-		window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
+	window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
     
     win->initialized = true;
 }

@@ -9,7 +9,7 @@ AAssetManager* assets_manager;
 #endif
 
 #include "numbers.h"
-
+#include <sys/types.h>
 struct ResourceDescriptor{
     int32_t descriptor;
     off_t start;

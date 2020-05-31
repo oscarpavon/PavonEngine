@@ -1,6 +1,6 @@
 #include "edit_server.h"
-#include "../editor.h"
-#include "../../engine/network/network.h"
+#include <editor/editor.h>
+#include <engine/network/network.h>
 
 int edit_server_socket;
 int edit_server_accept_socket;
