@@ -47,7 +47,8 @@ void render_thread_init(){
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
 
-  render_thread_definition.init();
+  if(render_thread_definition.init != NULL)
+    render_thread_definition.init();
 
   engine_initialized = true;
 
@@ -80,7 +81,8 @@ void engine_render_thread() {
 
 		pe_thread_control(&render_thread_commads);
 
-		render_thread_definition.draw();
+    if(render_thread_definition.draw != NULL)
+		  render_thread_definition.draw();
 		
 		//********* Timing **********
     time_end();

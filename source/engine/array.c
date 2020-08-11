@@ -33,7 +33,7 @@ void array_add(Array* array,const void* element){
         array->count++;
         return;
     }
-    if(array->bytes_capacity < array->actual_bytes_size + array->element_bytes_size){
+    if(array->bytes_capacity < (array->actual_bytes_size + array->element_bytes_size)){
         LOG("Array need reallocation\n");//TODO: reallocation engine memory
         debug_break();
     }

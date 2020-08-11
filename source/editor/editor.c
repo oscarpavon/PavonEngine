@@ -560,49 +560,50 @@ void editor_data_init(){
     camera_velocity = 0.10;  
 }
 
-void editor_init(){
-		pe_wm_renderer_type = PEWMOPENGLES2;
+void editor_init() {
+    pe_wm_renderer_type = PEWMOPENGLES2;
     pe_init();
 
-		editor_data_init();
+    editor_data_init();
 
     pe_input_init();
 
-    editor_command_queue_init();   
-    
-		edit_server_init();
+    editor_command_queue_init();
 
-		render_thread_definition.init = &editor_render_init;
-		render_thread_definition.draw = &editor_main_render_thread;
-		render_thread_definition.end = &editor_finish;	
+    edit_server_init();
+
+    render_thread_definition.init = &editor_render_init;
+    render_thread_definition.draw = &editor_main_render_thread;
+    render_thread_definition.end = &editor_finish;
 
 
-		//All window definition here
-		EngineWindow main_window;
-		memset(&main_window,0,sizeof(EngineWindow));
-		main_window.init = &editor_main_window_init;//window specific data
-		main_window.draw = &editor_draw;//Main loop draw in window
-		main_window.finish = &editor_render_finish;
-		main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
+    //All window definition here
+    EngineWindow main_window;
+    memset(&main_window, 0, sizeof(EngineWindow));
+    main_window.init = &editor_main_window_init;//window specific data
+    main_window.draw = &editor_draw;//Main loop draw in window
+    main_window.finish = &editor_render_finish;
+    main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
 
-		array_add(&engine_windows,&main_window);
-		window_editor_main = array_pop(&engine_windows);	
+    array_add(&engine_windows, &main_window);
+    window_editor_main = array_pop(&engine_windows);
 
-		//render thread initialization
-		//Send window initialization to the render thread
+    //render thread initialization
+    //Send window initialization to the render thread
 
-		PEThreadCommand thread_commad;	
-		thread_commad.command = &window_manager_init_window;
-		thread_commad.data = window_editor_main;
-		thread_commad.done = false;
-		thread_commad.type = POINTER;
-		array_add(&render_thread_commads,&thread_commad);
+    PEThreadCommand thread_commad;
+    thread_commad.command = &window_manager_init_window;
+    thread_commad.data = window_editor_main;
+    thread_commad.done = false;
+    thread_commad.type = POINTER;
+    array_add(&render_thread_commads, &thread_commad);
 
-		engine_init_render();			
-		
-		//wait for window initialization in the render thread	
-		while(!window_editor_main->initialized){};
-		
+    engine_init_render();
 
-		LOG("[OK]Editor initialized\n");
+    //wait for window initialization in the render thread	
+    while (!window_editor_main->initialized) {
+    };
+
+
+    LOG("[OK]Editor initialized\n");
 }

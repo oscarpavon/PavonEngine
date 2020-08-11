@@ -128,8 +128,11 @@ void pe_vk_create_instance(){
 
 int pe_vk_init() {
 	pe_vk_create_instance();
-  VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL,
-                                  &vk_surface),
+
+  if(!current_window){
+    LOGW("NO WINDOWS CREATED");
+  }
+  VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL, &vk_surface),
           "Can't create window surface");
 
   //****************
