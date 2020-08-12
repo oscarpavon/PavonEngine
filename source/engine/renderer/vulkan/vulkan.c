@@ -5,6 +5,7 @@
 #include <engine/macros.h>
 #include "debug.h"
 #include <engine/windows_manager.h>
+#include "pipeline.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
@@ -187,6 +188,7 @@ int pe_vk_init() {
   pe_vk_swch_create();
   pe_vk_create_images_views();
 
+  pe_vk_pipeline_init();
 
   return 0;
 }
