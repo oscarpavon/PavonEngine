@@ -1,36 +1,28 @@
 #include "vulkan.h"
 #include <engine/engine.h>
 
-void lala(){
+void lala() {
 
 }
 int main() {
-  pe_wm_renderer_type = PEWMVULKAN;
+    pe_wm_renderer_type = PEWMVULKAN;
 
-  pe_init();
-	
-  EngineWindow new_window;
-  array_add(&engine_windows, &new_window);
-  EngineWindow *main_window = array_pop(&engine_windows);
-  window_create(main_window, NULL, "Vulkan");
-		
-  current_window = main_window;
-  
-  int extention_count = 0;
-  char **extension;
-  extension = glfwGetRequiredInstanceExtensions(&extention_count);
-  LOG("Extension required count: %i\n", extention_count);
+    pe_init();
 
-  //LOG("%s\n", extension[0]);
-  //LOG("%s\n", extension[1]);
+    EngineWindow new_window;
+    array_add(&engine_windows, &new_window);
+    EngineWindow *main_window = array_pop(&engine_windows);
+    main_window->init = &pe_vk_init;
+    window_create(main_window, NULL, "Vulkan");
 
-// pe_vk_init();
-// pe_vk_end();
+    current_window = main_window;
 
-  main_window->init = &lala;
-  
-  
-   PEThreadCommand thread_commad;
+    int extention_count = 0;
+    char **extension;
+    extension = glfwGetRequiredInstanceExtensions(&extention_count);
+    LOG("Extension required count: %i\n", extention_count);
+
+    PEThreadCommand thread_commad;
     thread_commad.command = &window_manager_init_window;
     thread_commad.data = main_window;
     thread_commad.done = false;
@@ -39,14 +31,14 @@ int main() {
 
     engine_init_render();
 
-
-   while (1)
+    while (1)
     {
         window_update_envents();
-        
-        				  
-		}
-	LOGW("test warning");
 
-  return 0;
+
+    }
+    LOGW("test warning");
+    pe_vk_end();
+
+    return 0;
 }

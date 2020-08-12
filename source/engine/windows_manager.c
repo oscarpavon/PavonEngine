@@ -5,9 +5,6 @@
 #include "log.h"
 #include "text_renderer.h"
 
-#define INIT_WINDOW_SIZE_X 1280
-#define INIT_WINDOW_SIZE_Y 720
-
 void window_manager_error_callback(int error, const char* description)
 {
 	    fprintf(stderr, "PEglfw error: %s\n", description);

@@ -8,6 +8,7 @@
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 #define VKVALID(f,message) if(f != VK_SUCCESS){LOG("%s\n",message);}
 
@@ -42,6 +43,9 @@ int pe_vk_new_log_divice(){
 	info.ppEnabledLayerNames = validation_layers;
 	info.queueCreateInfoCount = 2;
 	info.pQueueCreateInfos = queues_creates_infos;
+
+  info.enabledExtensionCount = 1;
+  info.ppEnabledExtensionNames = devices_extensions;
 	
 	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
 }
@@ -63,6 +67,7 @@ void pe_vk_queue_families_support(){
     }else
 			LOGW("[X] NOgraphics queue found");
 
+  
     VkBool32 present_support = false;
     vkGetPhysicalDeviceSurfaceSupportKHR(vk_physical_device, i, vk_surface,
                                          &present_support);
@@ -152,6 +157,7 @@ int pe_vk_init() {
 
   vkGetDeviceQueue(vk_device, q_graphic_family, 0, &vk_queue);
 
+  pe_vk_swch_create();
 
   return 0;
 }

@@ -9,7 +9,8 @@
             ],
             "includePath": [
                 "/usr/include/cglm",
-                "/usr/include/freetype2"
+                "/usr/include/freetype2",
+                "/home/pavon/PavonEngine/source"
             ],
             "configurationProvider": "vector-of-bool.cmake-tools"
         }

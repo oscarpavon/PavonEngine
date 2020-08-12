@@ -13,6 +13,9 @@
 #include "../editor/windows/static_mesh_editor.h"
 #endif //EDITOR
 
+#define INIT_WINDOW_SIZE_X 1280
+#define INIT_WINDOW_SIZE_Y 720
+
 typedef struct EngineWindow{
 	Array tabs;
  	char name[20];
