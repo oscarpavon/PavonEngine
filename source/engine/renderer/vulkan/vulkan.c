@@ -131,6 +131,33 @@ void pe_vk_create_instance(){
   pe_vk_setup_debug_messenger();
 }
 
+void pe_vk_create_images_views(){
+
+  array_init(&pe_vk_images_views,sizeof(VkImageView),pe_vk_swch_images.count);
+
+  for(size_t i = 0; i < pe_vk_images_views.count; i++)
+  {
+    VkImageViewCreateInfo info;
+    info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    info.image = array_get(&pe_vk_swch_images,i);
+    info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    info.format = pe_vk_swch_format;
+
+    info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+    info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+    info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+    info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+    info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    info.subresourceRange.baseMipLevel = 0;
+    info.subresourceRange.levelCount = 1;
+    info.subresourceRange.baseArrayLayer = 0;
+    info.subresourceRange.layerCount = 1;
+
+    vkCreateImageView(vk_device,&info,NULL,array_get(&pe_vk_images_views,i));
+  }
+}
+
 int pe_vk_init() {
 	pe_vk_create_instance();
 
@@ -158,6 +185,8 @@ int pe_vk_init() {
   vkGetDeviceQueue(vk_device, q_graphic_family, 0, &vk_queue);
 
   pe_vk_swch_create();
+  pe_vk_create_images_views();
+
 
   return 0;
 }

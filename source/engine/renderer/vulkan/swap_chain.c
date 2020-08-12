@@ -99,6 +99,15 @@ void pe_vk_swch_create(){
   
   vkCreateSwapchainKHR(vk_device,&info,NULL,&pe_vk_swap_chain);
 
+  pe_vk_swch_extent = extent;
+  pe_vk_swch_format = format.format;
+  
+  vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,NULL);
+  array_init(&pe_vk_swch_images,sizeof(VkImage),image_count);
+  pe_vk_swch_images.count = image_count;
+  vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_swch_images.data);
+
+ 
 }
 
 void pe_vk_swap_chain_init(){
