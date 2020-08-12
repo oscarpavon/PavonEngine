@@ -76,3 +76,4 @@ tags
 bin/*
 lib/*
 *.core
+*.spv
