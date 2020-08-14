@@ -2,4 +2,7 @@
 
 VkPipelineLayout pipelineLayout;
 
+VkPipeline pe_vk_pipeline;
+
+
 void pe_vk_pipeline_init();

@@ -28,6 +28,8 @@ typedef struct file{
 
 
 int load_file(const char* path, File* output);
+int pe_file_openb(const char* path, File* output);
+
 void close_file(File* file);
 
 

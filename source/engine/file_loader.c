@@ -65,6 +65,33 @@ int load_file(const char* path, File* output){
 	return 0;
 }
 
+int pe_file_openb(const char* path, File* output){
+  output->path = path;
+  FILE* file = fopen(path,"rb");
+  if(file == NULL){
+      LOG("error to load: %s\n", path);
+      return -1;
+  }
+
+  output->resource_descriptor.descriptor = fileno(file);
+
+  fseek(file, 0, SEEK_END);
+  long file_size = ftell(file);
+  rewind (file);
+
+  void* file_buffer = malloc(file_size);
+
+  fread(file_buffer,1, file_size, file);
+  output->data = file_buffer;
+  output->size_in_bytes = file_size;
+
+
+  fclose(file);
+
+	output->opened = true;
+	return 0;
+}
+
 int file_read(File *file, char *buffer, int buffer_size) {
   memcpy(buffer, file->data + file->bytes_readed, buffer_size);
   file->bytes_readed += buffer_size;
