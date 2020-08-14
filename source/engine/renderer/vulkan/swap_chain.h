@@ -7,4 +7,6 @@ VkSwapchainKHR pe_vk_swap_chain;
 
 void pe_vk_swch_create();
 
+VkImage pe_vk_images[4];
+
 #endif

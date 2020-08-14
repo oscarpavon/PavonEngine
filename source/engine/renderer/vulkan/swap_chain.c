@@ -7,6 +7,7 @@
 #include <engine/windows_manager.h>
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/windows_manager.h>
+#include <engine/renderer/vulkan/images_view.h>
 
 typedef struct PE_VK_SWCH_SupportDetails{
   VkSurfaceCapabilitiesKHR capabilities;
@@ -97,15 +98,20 @@ void pe_vk_swch_create(){
   info.clipped = VK_TRUE;
   info.oldSwapchain = VK_NULL_HANDLE;
   
-  vkCreateSwapchainKHR(vk_device,&info,NULL,&pe_vk_swap_chain);
+  VKVALID(vkCreateSwapchainKHR(vk_device,&info,NULL,&pe_vk_swap_chain),"Cant create a swap schaing");
+
+
 
   pe_vk_swch_extent = extent;
   pe_vk_swch_format = format.format;
   
   vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,NULL);
   array_init(&pe_vk_swch_images,sizeof(VkImage),image_count);
-  pe_vk_swch_images.count = image_count;
-  vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_swch_images.data);
+  array_resize(&pe_vk_swch_images,image_count);
+
+
+  
+  vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_images);
 
  
 }

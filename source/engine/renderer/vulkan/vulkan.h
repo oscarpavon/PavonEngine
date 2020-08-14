@@ -4,6 +4,8 @@
 #include <vulkan/vulkan.h>
 #include <engine/array.h>
 
+#define VKVALID(f,message) if(f != VK_SUCCESS){LOG("%s\n",message);}
+
 int pe_vk_init();
 void pe_vk_end();
 
@@ -22,8 +24,7 @@ VkPipelineLayout pe_vk_pipeline_layout;
 
 
 
-Array pe_vk_images_views;
-Array pe_vk_swch_images;
+
 
 uint32_t q_graphic_family;
 uint32_t q_present_family;

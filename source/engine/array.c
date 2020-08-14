@@ -21,6 +21,11 @@ int array_init(Array * array, u32 element_bytes_size, int count){
     return 0;
 }
 
+void array_resize(Array* array, int count){
+    array->actual_bytes_size = count * array->element_bytes_size;
+    array->count = count;
+}
+
 void array_add(Array* array,const void* element){
     if(array->initialized == false){
         LOG("Array not initialized\n");
