@@ -1,7 +1,9 @@
 
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/macros.h>
-
+#include "framebuffer.h"
+#include "commands.h"
+#include "draw.h"
 void pe_vk_create_render_pass(){
 
     VkAttachmentDescription color;
@@ -40,4 +42,36 @@ void pe_vk_create_render_pass(){
 
     vkCreateRenderPass(vk_device,&info,NULL,&pe_vk_render_pass);
 
+}
+
+void pe_vk_start_render_pass(int i){
+
+    pe_vk_command_init();
+
+    VkRenderPassBeginInfo info;
+    ZERO(info);
+    info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    info.renderPass = pe_vk_render_pass;
+    VkFramebuffer* framebuffer = array_get(&pe_vk_framebuffers,i);
+    info.framebuffer = *(framebuffer);
+
+    VkOffset2D offset = {0,0};
+    info.renderArea.offset = offset;
+    info.renderArea.extent = pe_vk_swch_extent;
+
+    VkClearValue clear_color = {1.0f, 0.0f , 0.0f, 1.0f};
+    info.clearValueCount = 1;
+    info.pClearValues = &clear_color;
+
+    VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
+
+    vkCmdBeginRenderPass(*(cmd_buffer),&info,VK_SUBPASS_CONTENTS_INLINE);
+
+    
+    pe_vk_draw(i);
+
+
+    vkCmdEndRenderPass(*(cmd_buffer));
+
+    pe_vk_commands_end(i);
 }

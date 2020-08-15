@@ -169,11 +169,10 @@ int pe_vk_init() {
   
   pe_vk_framebuffer_create();
 
-  pe_vk_command_init();
-
-
+  
   return 0;
 }
+
 void pe_vk_end(){
 	pe_vk_debug_end();
 	vkDestroySurfaceKHR(vk_instance,vk_surface,NULL);

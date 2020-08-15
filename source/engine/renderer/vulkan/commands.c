@@ -39,3 +39,8 @@ void pe_vk_command_init(){
         vkBeginCommandBuffer(*(buffer),&begininfo);
     }
 }
+
+void pe_vk_commands_end(int i){
+    VkCommandBuffer* buffer = array_get(&pe_vk_command_buffers,i);
+    vkEndCommandBuffer(*(buffer));
+}
