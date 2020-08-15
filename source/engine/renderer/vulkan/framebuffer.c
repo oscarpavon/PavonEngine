@@ -15,6 +15,7 @@ void pe_vk_framebuffer_create(){
         VkImageView* attachment = array_get(&pe_vk_images_views,i);
 
         VkFramebufferCreateInfo info;
+        ZERO(info);
         info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         info.renderPass = pe_vk_render_pass;
         info.attachmentCount = 1;
@@ -23,7 +24,6 @@ void pe_vk_framebuffer_create(){
         info.height = pe_vk_swch_extent.height;
         info.layers = 1;
         VkCommandBuffer buffer;
-        ZERO(buffer);
         vkCreateFramebuffer(vk_device,&info,NULL,&buffer);
         array_add(&pe_vk_framebuffers,&buffer);
     }

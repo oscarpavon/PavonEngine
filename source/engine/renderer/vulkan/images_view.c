@@ -6,12 +6,13 @@
 
 void pe_vk_create_images_views(){
 
-  array_init(&pe_vk_images_views,sizeof(VkImageView),pe_vk_swch_images.count);
-  array_resize(&pe_vk_images_views,pe_vk_swch_images.count);
+  array_init(&pe_vk_images_views,sizeof(VkImageView),4);
   
-  for(size_t i = 0; i < pe_vk_images_views.count; i++)
+ //images view count equal to pe_vk_images array
+  for(size_t i = 0; i < 4; i++)
   {
     VkImageViewCreateInfo info;
+    ZERO(info);
     info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     
     info.image = pe_vk_images[i];
