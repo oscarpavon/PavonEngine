@@ -1,5 +1,6 @@
 #include "vulkan.h"
 #include <engine/engine.h>
+#include "draw.h"
 
 void lala() {
 
@@ -13,6 +14,8 @@ int main() {
     array_add(&engine_windows, &new_window);
     EngineWindow *main_window = array_pop(&engine_windows);
     main_window->init = &pe_vk_init;
+    main_window->draw = &pe_vk_draw_frame;
+    
     window_create(main_window, NULL, "Vulkan");
 
     current_window = main_window;
@@ -35,7 +38,7 @@ int main() {
     {
         window_update_envents();
 
-
+        
     }
     LOGW("test warning");
     pe_vk_end();

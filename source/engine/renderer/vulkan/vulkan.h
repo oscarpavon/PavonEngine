@@ -22,10 +22,6 @@ VkExtent2D pe_vk_swch_extent;
 VkRenderPass pe_vk_render_pass;
 VkPipelineLayout pe_vk_pipeline_layout;
 
-
-
-
-
 uint32_t q_graphic_family;
 uint32_t q_present_family;
 

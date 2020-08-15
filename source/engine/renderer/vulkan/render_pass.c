@@ -31,6 +31,17 @@ void pe_vk_create_render_pass(){
     subpass.pColorAttachments = &color_ref;
 
 
+    VkSubpassDependency dependency;
+    ZERO(dependency);
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+
 
     VkRenderPassCreateInfo info;
     ZERO(info);
@@ -39,6 +50,8 @@ void pe_vk_create_render_pass(){
     info.pAttachments = &color;
     info.subpassCount = 1;
     info.pSubpasses = &subpass;
+    info.dependencyCount = 1;
+    info.pDependencies = &dependency;
 
     vkCreateRenderPass(vk_device,&info,NULL,&pe_vk_render_pass);
 

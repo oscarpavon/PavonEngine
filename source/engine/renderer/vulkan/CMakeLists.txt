@@ -12,6 +12,7 @@ add_library(pe_vk vulkan.c debug.c swap_chain.c
 			shader_module.c pipeline.c 
 			render_pass.c framebuffer.c
 			commands.c images_view.c draw.c
+			sync.c
 			)
 
 target_link_libraries(pe_vk vulkan)
