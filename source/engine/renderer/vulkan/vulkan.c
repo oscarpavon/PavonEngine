@@ -10,6 +10,7 @@
 #include "framebuffer.h"
 #include "commands.h"
 #include "images_view.h"
+#include "sync.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
@@ -166,13 +167,18 @@ int pe_vk_init() {
   pe_vk_create_images_views();
 
   pe_vk_pipeline_init();
-  
+
   pe_vk_framebuffer_create();
 
+  pe_vk_command_init();
+  
+  
+
+  pe_vk_semaphores_create();
   
   return 0;
 }
-
+ 
 void pe_vk_end(){
 	pe_vk_debug_end();
 	vkDestroySurfaceKHR(vk_instance,vk_surface,NULL);

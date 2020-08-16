@@ -34,7 +34,8 @@ void pe_wm_glfw_init(){
 
 
 void window_manager_init_window(EngineWindow* window){
-	window->init();
+	if(window->init != NULL)
+		window->init();
 	window->initialized = true;
 }
 

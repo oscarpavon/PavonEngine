@@ -43,7 +43,7 @@ void pe_vk_draw_frame(){
     submit_info.signalSemaphoreCount = 1;
     submit_info.pSignalSemaphores = singal_semaphore;
 
-    vkQueueSubmit(q_graphic_family,1,&submit_info,VK_NULL_HANDLE);
+    vkQueueSubmit(vk_queue,1,&submit_info,VK_NULL_HANDLE);
 
 
     VkPresentInfoKHR present_info;
@@ -58,6 +58,6 @@ void pe_vk_draw_frame(){
     present_info.pSwapchains = swap_chains;
     present_info.pImageIndices = &image_index;
 
-    vkQueuePresentKHR(vk_present_queue,&present_info);
+    vkQueuePresentKHR(vk_queue,&present_info);
 
 }

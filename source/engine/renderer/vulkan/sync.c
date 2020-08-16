@@ -1,5 +1,6 @@
 
 #include "sync.h"
+#include <engine/macros.h>
 
 void pe_vk_semaphores_create(){
 

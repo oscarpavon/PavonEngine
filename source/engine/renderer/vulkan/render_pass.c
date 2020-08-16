@@ -59,8 +59,7 @@ void pe_vk_create_render_pass(){
 
 void pe_vk_start_render_pass(int i){
 
-    pe_vk_command_init();
-
+    
     VkRenderPassBeginInfo info;
     ZERO(info);
     info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

@@ -15,7 +15,7 @@ void pe_vk_command_init(){
 
 
     array_init(&pe_vk_command_buffers,sizeof(VkCommandBuffer),pe_vk_framebuffers.count);
-    pe_vk_command_buffers.count = pe_vk_framebuffers.count;
+    array_resize(&pe_vk_command_buffers,pe_vk_framebuffers.count);
 
 
     VkCommandBufferAllocateInfo bufferinfo;
@@ -37,6 +37,7 @@ void pe_vk_command_init(){
 
         VkCommandBuffer* buffer = array_get(&pe_vk_command_buffers,i);
         vkBeginCommandBuffer(*(buffer),&begininfo);
+        pe_vk_start_render_pass(i);
     }
 }
 

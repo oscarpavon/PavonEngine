@@ -13,7 +13,7 @@ VkInstance vk_instance;
 VkPhysicalDevice vk_physical_device;
 VkDevice vk_device;
 VkQueue vk_queue;
-VkQueue vk_present_queue;
+
 VkSurfaceKHR vk_surface;
 
 VkFormat pe_vk_swch_format;
