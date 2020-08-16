@@ -60,4 +60,6 @@ void pe_vk_draw_frame(){
 
     vkQueuePresentKHR(vk_queue,&present_info);
 
+    vkQueueWaitIdle(vk_queue);
+
 }
