@@ -2,6 +2,7 @@
 #include <engine/renderer/vulkan/vulkan.h>
 #include "shader_module.h"
 #include <engine/macros.h>
+#include "vk_vertex.h"
 
 VkDynamicState dynamicStates[] = {
     VK_DYNAMIC_STATE_VIEWPORT,
@@ -12,15 +13,16 @@ VkDynamicState dynamicStates[] = {
 
 void pe_vk_pipeline_init(){
 
-    
+    VkVertexInputBindingDescription binding = pe_vk_vertex_get_binding_description();
+    VkVertexInputAttributeDescription des = pe_vk_vertex_get_attribute();
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo;
     ZERO(vertexInputInfo);
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount = 0;
-    vertexInputInfo.pVertexBindingDescriptions = NULL;
-    vertexInputInfo.vertexAttributeDescriptionCount = 0;
-    vertexInputInfo.pVertexAttributeDescriptions = NULL;
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.pVertexBindingDescriptions = &binding;
+    vertexInputInfo.vertexAttributeDescriptionCount = 1;
+    vertexInputInfo.pVertexAttributeDescriptions = &des;
 
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly;
