@@ -157,8 +157,8 @@ int pe_vk_init() {
   vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
   vk_physical_device = phy_devices[0];
 
-
 	pe_vk_queue_families_support();
+
   pe_vk_new_log_divice();
 
   vkGetDeviceQueue(vk_device, q_graphic_family, 0, &vk_queue);
@@ -172,8 +172,6 @@ int pe_vk_init() {
 
   pe_vk_command_init();
   
-  
-
   pe_vk_semaphores_create();
   
   return 0;
