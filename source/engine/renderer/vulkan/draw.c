@@ -6,6 +6,14 @@
 #include <engine/macros.h>
 #include "vk_vertex.h"
 
+
+void pe_vk_uniform_buffer_update(uint32_t image_index){
+  
+
+  
+}
+
+
 void pe_vk_draw(int i){
     VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
 
@@ -32,7 +40,8 @@ void pe_vk_draw_frame(){
 
     vkAcquireNextImageKHR(vk_device,pe_vk_swap_chain,UINT64_MAX,pe_vk_semaphore_images_available, VK_NULL_HANDLE,&image_index);
 
-
+    pe_vk_uniform_buffer_update(image_index);
+    
     VkSubmitInfo submit_info;
     ZERO(submit_info);
     submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -72,3 +81,5 @@ void pe_vk_draw_frame(){
     vkQueueWaitIdle(vk_queue);
 
 }
+
+

@@ -3,6 +3,7 @@
 #include "shader_module.h"
 #include <engine/macros.h>
 #include "vk_vertex.h"
+#include "descriptor_set.h"
 
 VkDynamicState dynamicStates[] = {
     VK_DYNAMIC_STATE_VIEWPORT,
@@ -12,6 +13,8 @@ VkDynamicState dynamicStates[] = {
 
 
 void pe_vk_pipeline_init(){
+    
+    pe_vk_create_descriptor_set_layout();
 
     VkVertexInputBindingDescription binding = pe_vk_vertex_get_binding_description();
     VkVertexInputAttributeDescription des = pe_vk_vertex_get_attribute();
@@ -126,8 +129,8 @@ void pe_vk_pipeline_init(){
     VkPipelineLayoutCreateInfo pipelineLayoutInfo;
     ZERO(pipelineLayoutInfo);
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0; // Optional
-    pipelineLayoutInfo.pSetLayouts = NULL; // Optional
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pe_vk_descriptor_set_layout;
     pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
     pipelineLayoutInfo.pPushConstantRanges = NULL; // Optional
     pipelineLayoutInfo.pNext = NULL;
