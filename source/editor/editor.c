@@ -555,7 +555,7 @@ void editor_data_init(){
     
     editor_sub_mode_text = "";
 
-		strcpy(editor_mode_show_text,"Default");
+	strcpy(editor_mode_show_text,"Default");
 
     camera_velocity = 0.10;  
 }

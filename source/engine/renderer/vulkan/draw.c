@@ -4,14 +4,20 @@
 #include "swap_chain.h"
 #include "sync.h"
 #include <engine/macros.h>
-
+#include "vk_vertex.h"
 
 void pe_vk_draw(int i){
     VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
 
 
     vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
-    vkCmdDraw(*(cmd_buffer), 3, 1, 0, 0);
+
+    VkBuffer vertex_buffers[] = {vertex_buffer};
+    VkDeviceSize offsets[] = {0};
+
+    vkCmdBindVertexBuffers(*(cmd_buffer),0,1,vertex_buffers,offsets);
+
+    vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
     
 
 

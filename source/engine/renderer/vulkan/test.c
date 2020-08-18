@@ -2,9 +2,6 @@
 #include <engine/engine.h>
 #include "draw.h"
 
-void lala() {
-
-}
 int main() {
     pe_wm_renderer_type = PEWMVULKAN;
 
@@ -28,6 +25,7 @@ int main() {
 
     render_thread_definition.init = &pe_vk_init;
     render_thread_definition.draw = &pe_vk_draw_frame;
+    render_thread_definition.end = &pe_vk_end;
 
     PEThreadCommand thread_commad;
     thread_commad.command = &window_manager_init_window;
@@ -45,7 +43,7 @@ int main() {
         
     }
     LOGW("test warning");
-    pe_vk_end();
+    
 
     return 0;
 }

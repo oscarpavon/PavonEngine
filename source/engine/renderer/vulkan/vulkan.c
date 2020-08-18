@@ -168,11 +168,14 @@ int pe_vk_init() {
 
   pe_vk_pipeline_init();
 
+  pe_vk_model_create();
+
   pe_vk_framebuffer_create();
 
   pe_vk_command_init();
   
   pe_vk_semaphores_create();
+
   
   return 0;
 }
