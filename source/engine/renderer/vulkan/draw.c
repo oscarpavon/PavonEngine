@@ -17,8 +17,11 @@ void pe_vk_draw(int i){
 
     vkCmdBindVertexBuffers(*(cmd_buffer),0,1,vertex_buffers,offsets);
 
-    vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
+    vkCmdBindIndexBuffer(*(cmd_buffer),index_buffer,0,VK_INDEX_TYPE_UINT16);
+
+    //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
     
+    vkCmdDrawIndexed(*(cmd_buffer),indices.count,1,0,0,0);
 
 
 }

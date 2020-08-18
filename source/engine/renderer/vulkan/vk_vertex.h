@@ -2,6 +2,7 @@
 #include <engine/array.h>
 
 Array vertices;
+Array indices;
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description();
 VkVertexInputAttributeDescription pe_vk_vertex_get_attribute();
@@ -9,3 +10,4 @@ VkVertexInputAttributeDescription pe_vk_vertex_get_attribute();
 VkBuffer pe_vk_model_create();
 
 VkBuffer vertex_buffer;
+VkBuffer index_buffer;
