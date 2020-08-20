@@ -4,6 +4,8 @@
 #include <engine/macros.h>
 #include "vk_vertex.h"
 #include "descriptor_set.h"
+#include "vk_descriptor_pool.h"
+#include "uniform_buffer.h"
 
 VkDynamicState dynamicStates[] = {
     VK_DYNAMIC_STATE_VIEWPORT,
@@ -14,7 +16,7 @@ VkDynamicState dynamicStates[] = {
 
 void pe_vk_pipeline_init(){
     
-    pe_vk_create_descriptor_set_layout();
+
 
     VkVertexInputBindingDescription binding = pe_vk_vertex_get_binding_description();
     VkVertexInputAttributeDescription des = pe_vk_vertex_get_attribute();

@@ -15,7 +15,7 @@ void pe_vk_descriptor_pool_create(){
     info.maxSets = 4;
 
     
-    vkCreateDescriptorPool(vk_device,&info,NULL,&pool);
+    vkCreateDescriptorPool(vk_device,&info,NULL,&pe_vk_descriptor_pool);
 
 
 
