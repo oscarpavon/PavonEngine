@@ -57,34 +57,26 @@ VkBuffer pe_vk_vertex_create_buffer(Array* vertices){
 
 
 VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
-    VkDeviceSize buffer_size = indices->actual_bytes_size;
-    
     VkBuffer buffer;
 
-    VkBufferCreateInfo info;
+    PEVKBufferCreateInfo info;
     ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    info.size = indices->actual_bytes_size;
     info.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-    info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    info.size = indices->actual_bytes_size;
 
-    vkCreateBuffer(vk_device,&info,NULL,&buffer);
-
-    index_buffer = buffer;
-
-    VkMemoryRequirements requirement = pe_vk_memory_get_requirements(buffer);
-    VkDeviceMemory memory = pe_vk_memory_allocate(requirement);
-
-    vkBindBufferMemory(vk_device, buffer, memory, 0);
-
+    pe_vk_buffer_create(&info);
+ 
     void* data;
-    vkMapMemory(vk_device,memory,0,info.size,0,&data);
+    vkMapMemory(vk_device,info.buffer_memory,0,info.size,0,&data);
         memcpy(data,indices->data,indices->actual_bytes_size);
-    vkUnmapMemory(vk_device,memory);
+    vkUnmapMemory(vk_device,info.buffer_memory);
+
+    return info.buffer;
 }
 
 
-VkBuffer pe_vk_model_create(){
+void pe_vk_model_create(){
 
    array_init(&vertices, sizeof(Vertex), 4);
     array_init(&model_indices, sizeof(uint16_t), 6);
@@ -116,14 +108,10 @@ VkBuffer pe_vk_model_create(){
 
 
       
-    VkBuffer buffer =  pe_vk_vertex_create_buffer(&vertices);
+    vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
+   
 
-    vertex_buffer = buffer;
+    index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
 
-    pe_vk_vertex_create_index_buffer(&model_indices);
-
-
-
-    return buffer;
 
 }
