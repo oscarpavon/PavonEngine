@@ -2,8 +2,10 @@
 
 typedef struct PEVKBufferCreateInfo{
     VkDeviceSize size;
-    VkBufferUsageFlags flags;
+    VkBufferUsageFlags usage;
     VkMemoryPropertyFlags properties;
-    VkBuffer* buffer;
-    VkDeviceMemory* buffer_memory;
+    VkBuffer buffer;
+    VkDeviceMemory buffer_memory;
 }PEVKBufferCreateInfo;
+
+void pe_vk_buffer_create(PEVKBufferCreateInfo* buffer_info);

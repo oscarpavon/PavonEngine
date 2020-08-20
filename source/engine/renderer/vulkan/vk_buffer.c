@@ -6,7 +6,7 @@ void pe_vk_buffer_create(PEVKBufferCreateInfo* buffer_info){
     ZERO(info);
     info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     info.size = buffer_info->size;
-    info.usage = buffer_info->flags;
+    info.usage = buffer_info->usage;
     info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     VkBuffer buffer;
@@ -18,4 +18,7 @@ void pe_vk_buffer_create(PEVKBufferCreateInfo* buffer_info){
 
     vkBindBufferMemory(vk_device, buffer, memory, 0);
 
+    buffer_info->buffer_memory = memory;
+    buffer_info->buffer = buffer;
+    
 }

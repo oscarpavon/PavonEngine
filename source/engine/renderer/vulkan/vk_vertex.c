@@ -6,7 +6,7 @@
 #include "vk_memory.h"
 #include <engine/array.h>
 #include "vk_vertex.h"
-
+#include "vk_buffer.h"
 
 
 
@@ -36,28 +36,22 @@ VkVertexInputAttributeDescription pe_vk_vertex_get_attribute(){
 
 
 VkBuffer pe_vk_vertex_create_buffer(Array* vertices){
-    VkBuffer buffer;
-    VkBufferCreateInfo info;
+    PEVKBufferCreateInfo info;
     ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    info.size = vertices->count * sizeof(struct Vertex);
     info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-    vkCreateBuffer(vk_device,&info,NULL,&buffer);
+    info.size = vertices->actual_bytes_size;
+ 
+    pe_vk_buffer_create(&info);
 
-
-    VkMemoryRequirements requirement = pe_vk_memory_get_requirements(buffer);
-    VkDeviceMemory memory = pe_vk_memory_allocate(requirement);
-
-    vkBindBufferMemory(vk_device, buffer, memory, 0);
 
     void* data;
-    vkMapMemory(vk_device,memory,0,info.size,0,&data);
+    vkMapMemory(vk_device,info.buffer_memory,0,info.size,0,&data);
         memcpy(data,vertices->data,vertices->actual_bytes_size);
-    vkUnmapMemory(vk_device,memory);
+    vkUnmapMemory(vk_device,info.buffer_memory);
 
-    return buffer;
+    return info.buffer;
 
 }
 

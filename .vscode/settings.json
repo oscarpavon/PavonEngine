@@ -14,4 +14,13 @@
     ],
     "editor.fontSize": 12,
     "C_Cpp.configurationWarnings": "Disabled",
+    "files.associations": {
+        "array": "c",
+        "hash_map": "c",
+        "bitset": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ranges": "c",
+        "utility": "c"
+    },
 }
