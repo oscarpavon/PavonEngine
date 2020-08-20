@@ -2,6 +2,16 @@
 #include <engine/engine.h>
 #include "vk_buffer.h"
 
+PEUniformBufferObject ubo;
+
+void pe_vk_ubo_init(){
+    ZERO(ubo);
+    glm_mat4_identity(ubo.view);
+    glm_mat4_identity(ubo.projection);
+    glm_mat4_identity(ubo.model);
+}
+
+
 void pe_vk_uniform_buffer_create(){
     VkDeviceSize buffer_size = sizeof(PEUniformBufferObject);
 
@@ -25,17 +35,12 @@ void pe_vk_uniform_buffer_create(){
 
     }
 
+
+    pe_vk_ubo_init();
 }
 
 void pe_vk_uniform_buffer_update(uint32_t image_index){
   
-    PEUniformBufferObject ubo;
-    ZERO(ubo);
-
-    glm_mat4_identity(ubo.view);
-    glm_mat4_identity(ubo.projection);
-    glm_mat4_identity(ubo.model);
-
     vec3 up;
     vec3 front;
     vec3 position;
