@@ -1,6 +1,5 @@
 #include <engine/renderer/vulkan/vulkan.h>
 
-VkPipelineLayout pipelineLayout;
 
 VkPipeline pe_vk_pipeline;
 

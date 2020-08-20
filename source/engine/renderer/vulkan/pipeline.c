@@ -138,7 +138,7 @@ void pe_vk_pipeline_init(){
     pipelineLayoutInfo.pNext = NULL;
     pipelineLayoutInfo.flags = 0;
 
-    vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL, &pipelineLayout);
+    vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL, &pe_vk_pipeline_layout);
 
 
     pe_vk_create_render_pass();
@@ -160,7 +160,7 @@ void pe_vk_pipeline_init(){
     pipeline_info.pColorBlendState = &colorBlending;
     pipeline_info.pDynamicState = NULL;
 
-    pipeline_info.layout = pipelineLayout;
+    pipeline_info.layout = pe_vk_pipeline_layout;
 
     pipeline_info.renderPass = pe_vk_render_pass;
     pipeline_info.subpass = 0;

@@ -6,7 +6,7 @@
 #include <engine/macros.h>
 #include "vk_vertex.h"
 #include <engine/engine.h>
-
+#include "descriptor_set.h"
 
 
 void pe_vk_draw(int i){
@@ -14,6 +14,7 @@ void pe_vk_draw(int i){
 
 
     vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+
 
     VkBuffer vertex_buffers[] = {vertex_buffer};
     VkDeviceSize offsets[] = {0};
@@ -23,6 +24,10 @@ void pe_vk_draw(int i){
     vkCmdBindIndexBuffer(*(cmd_buffer),index_buffer,0,VK_INDEX_TYPE_UINT16);
 
     //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
+
+    VkDescriptorSet* set = array_get(&pe_vk_descriptor_sets,i);
+
+    vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
     
     vkCmdDrawIndexed(*(cmd_buffer),model_indices.count,1,0,0,0);
 
