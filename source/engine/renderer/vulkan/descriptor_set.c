@@ -22,13 +22,3 @@ void pe_vk_create_descriptor_set_layout(){
 
 }
 
-void pe_vk_uniform_buffer_create(){
-    VkDeviceSize buffer_size = sizeof(PEUniformBufferObject);
-
-    array_init(&pe_vk_uniform_buffers,sizeof(VkBuffer),4);
-    array_init(&pe_vk_uniform_buffers_memory,sizeof(VkDeviceMemory),4);
-
-    
-
-
-}

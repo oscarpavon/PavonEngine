@@ -93,7 +93,7 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 VkBuffer pe_vk_model_create(){
 
    array_init(&vertices, sizeof(Vertex), 4);
-    array_init(&indices, sizeof(uint16_t), 6);
+    array_init(&model_indices, sizeof(uint16_t), 6);
 
     Vertex vertex1;
     Vertex vertex2;
@@ -117,7 +117,7 @@ VkBuffer pe_vk_model_create(){
     uint16_t indices_ar[] = {0,1,2,2,3,0};
     
     for(int i = 0; i < 6; i++){
-        array_add(&indices,&indices_ar[i]);
+        array_add(&model_indices,&indices_ar[i]);
     }
 
 
@@ -126,7 +126,7 @@ VkBuffer pe_vk_model_create(){
 
     vertex_buffer = buffer;
 
-    pe_vk_vertex_create_index_buffer(&indices);
+    pe_vk_vertex_create_index_buffer(&model_indices);
 
 
 

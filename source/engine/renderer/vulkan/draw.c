@@ -5,11 +5,36 @@
 #include "sync.h"
 #include <engine/macros.h>
 #include "vk_vertex.h"
-
+#include <engine/engine.h>
 
 void pe_vk_uniform_buffer_update(uint32_t image_index){
   
+    PEUniformBufferObject ubo;
+    ZERO(ubo);
 
+    glm_mat4_identity(ubo.view);
+    glm_mat4_identity(ubo.projection);
+    glm_mat4_identity(ubo.model);
+
+    vec3 up;
+    vec3 front;
+    vec3 position;
+
+    init_vec3(1.0f, 0 ,  0.0f, up);
+    init_vec3(0.0f, 0.0f,  1.0f, front);
+    init_vec3(0,0,0, position);
+
+    vec3 look_pos;
+    glm_vec3_add(position, front, look_pos);
+
+    glm_lookat(position, look_pos, front , ubo.view);
+
+    glm_perspective(45.f, camera_width_screen / camera_heigth_screen, 0.001f,
+                    5000.f, ubo.projection);
+
+    
+    void* data;
+  
   
 }
 
@@ -29,7 +54,7 @@ void pe_vk_draw(int i){
 
     //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
     
-    vkCmdDrawIndexed(*(cmd_buffer),indices.count,1,0,0,0);
+    vkCmdDrawIndexed(*(cmd_buffer),model_indices.count,1,0,0,0);
 
 
 }
