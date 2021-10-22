@@ -7,6 +7,12 @@ Simple game engine in progress with it own level editor, key controller like VIM
 -- Entity Component System (ECS)
 -- C11 pure
 
+##Dependencies
+- GLFW3
+- make
+- cmake
+- gcc
+
 ## To Build
 - Create a directory "mkdir build"
 - Change to the created directory "cd build"
