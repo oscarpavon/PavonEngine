@@ -7,7 +7,7 @@ Simple game engine in progress with it own level editor, key controller like VIM
 -- Entity Component System (ECS)
 -- C11 pure
 
-##Dependencies
+## Dependencies
 - GLFW3
 - make
 - cmake
