@@ -390,7 +390,7 @@ void pe_init(){
     windows_manager_init();
 
     pe_init_arrays();
-  
+
 	pe_audio_init();
 
 	pe_th_main_id = pthread_self();

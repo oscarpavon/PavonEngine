@@ -424,13 +424,13 @@ void editor_main_window_init(){
 
     //draw_loading_screen();
     //glfwSwapBuffers(window_editor_main->window);    
-		//
 		
 		
-		//Load level form command line	
-		if(strcmp(editor_level_open_path,"") != 0){
-			editor_level_open(editor_level_open_path);
-		}	
+    //Load level form command line	
+	if(strcmp(editor_level_open_path,"") != 0){
+        editor_level_open(editor_level_open_path);
+    }	
+
 		
 		
 }
@@ -463,25 +463,6 @@ void pe_editor_load_native_model(){
                  &editor_texture_checker);
 }
 
-void editor_render_init(){
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    init_vec3(-6,0,2, main_camera.position);
-    
-	camera_update(&current_window->camera);
-
-    editor_standard_fragment_shader = compile_shader(
-                    editor_standard_fragment_shader_source, 
-                    GL_FRAGMENT_SHADER);
-
-    pe_editor_load_native_model();
-
-    editor_text_init();
-   
- 	gizmos_init();
-   
-   	editor_running = true;
-}
 
 void editor_render_finish(){
 	glfwTerminate();
@@ -512,7 +493,7 @@ void editor_draw() {
 
   editor_stats_calculates_triangles();
 
-  if (update_vertex_bones_gizmos)
+  if (update_vertex_bones_gizmos == true)
     update_joints_vertex();
 
     engine_draw_elements(&frame_draw_static_elements);
@@ -541,7 +522,7 @@ void editor_main_render_thread(){
 
 void editor_main_loop(){
 
-        editor_update();    
+    editor_update();    
 
 }
 
@@ -568,6 +549,28 @@ void editor_data_init(){
     camera_velocity = 0.10;  
 }
 
+void editor_render_init(){
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    
+    camera_init(&main_camera); 
+    init_vec3(-10,0,3, main_camera.position);
+    camera_update(&main_camera);
+
+
+    editor_standard_fragment_shader = compile_shader(
+                    editor_standard_fragment_shader_source, 
+                    GL_FRAGMENT_SHADER);
+
+    pe_editor_load_native_model();
+
+    editor_text_init();
+   
+ 	gizmos_init();
+   
+   	editor_running = true;
+}
+
 void editor_init() {
     pe_wm_renderer_type = PEWMOPENGLES2;
     //pe_wm_renderer_type = PEWMVULKAN;
@@ -580,11 +583,6 @@ void editor_init() {
     editor_command_queue_init();
 
     edit_server_init();
-
-    render_thread_definition.init = &editor_render_init;
-    render_thread_definition.draw = &editor_main_render_thread;
-    render_thread_definition.end = &editor_finish;
-
 
     //All window definition here
     EngineWindow main_window;
@@ -607,7 +605,11 @@ void editor_init() {
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
 
-    engine_init_render();
+    render_thread_definition.init = &editor_render_init;
+    render_thread_definition.draw = &editor_main_render_thread;
+    render_thread_definition.end = &editor_finish;
+
+    pe_render_thread_init();
 
     //wait for window initialization in the render thread	
     while (!window_editor_main->initialized) {

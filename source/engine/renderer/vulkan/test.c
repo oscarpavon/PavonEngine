@@ -34,7 +34,7 @@ int main() {
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
 
-    engine_init_render();
+    pe_render_thread_init(); 
 
     while (1)
     {

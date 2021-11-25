@@ -20,7 +20,6 @@ typedef struct FT_FaceRec_*  FT_Face;
 
 FT_Face face;
 
-
 void text_renderer_update_pixel_size();
 
 void pe_text_set_size(int size);
@@ -39,7 +38,6 @@ void text_render_in_screen_space( int text_size , const char* text, int x , int 
 static inline void set_text_size(float size){
 	pe_text_set_size(size);
 }
-
 
 PRenderThreadDefinition render_thread_definition;
 

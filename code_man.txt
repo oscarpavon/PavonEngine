@@ -1,0 +1,5 @@
+The engine create thread por Render, Audio, Collision
+
+Because in the window created is where the graphics shows, all code need to be executed in the Render thread
+
+

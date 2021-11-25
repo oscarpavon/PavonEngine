@@ -10,7 +10,7 @@ typedef struct RenderThread{
 	void(*finish)(void);
 }PERenderThread;
 
-void engine_init_render();
+void pe_render_thread_init();
 
 void pe_frame_clean();
 

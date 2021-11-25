@@ -23,7 +23,7 @@ typedef struct PEThreadCommand{
     void* data;
     char command_text[1000];
     void (*command)(void*);
-		PEThreadCommandType type;
+	PEThreadCommandType type;
 }PEThreadCommand;
 
 void thread_new_function(void*(*function)(void*),void* argument);

@@ -42,21 +42,21 @@ void render_thread_init(){
 
   pe_shader_compile_std();
 
-	glEnable(GL_MULTISAMPLE);
+  glEnable(GL_MULTISAMPLE);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
+
 
   if(render_thread_definition.init != NULL)
     render_thread_definition.init();
 
   engine_initialized = true;
 
-  camera_init(&main_camera);
   pe_gui_init();
   text_renderer_init();
+   
 
-  camera_update(&main_camera);
 }
 
 void engine_render_thread() {
@@ -101,7 +101,7 @@ void engine_render_thread() {
 }
 
 /*Init the render thread*/
-void engine_init_render(){
+void pe_render_thread_init(){
 	thread_new_detached(engine_render_thread,NULL,"Render",&pe_th_render_id);    
 }
 

@@ -341,7 +341,8 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
 
 }
 
-cgltf_result pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
+cgltf_result 
+pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   cgltf_options options = {0};
   cgltf_data* data = NULL;
 
