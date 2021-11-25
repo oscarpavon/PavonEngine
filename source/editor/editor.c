@@ -412,13 +412,15 @@ void editor_main_window_init(){
     window_create(window_editor_main, NULL, "editor"); 
 
     glfwSetKeyCallback(window_editor_main->window, &pe_input_key_callback);
-		glfwSetCursorPosCallback(window_editor_main->window, &pe_input_mouse_movement_callback);
-		glfwSetMouseButtonCallback(window_editor_main->window, &pe_input_mouse_button_callback);
+	glfwSetCursorPosCallback(window_editor_main->window,
+            &pe_input_mouse_movement_callback);
+	glfwSetMouseButtonCallback(window_editor_main->window,
+            &pe_input_mouse_button_callback);
     glfwSetCharCallback(window_editor_main->window, &pe_input_character_callback);
     glfwSetWindowFocusCallback(window_editor_main->window,&window_focus_callback);
     glfwSetFramebufferSizeCallback(window_editor_main->window, &window_resize_callback);
 
-		window_editor_main->char_parser = pe_editor_parse_cmd_char;
+	window_editor_main->char_parser = pe_editor_parse_cmd_char;
 
     //draw_loading_screen();
     //glfwSwapBuffers(window_editor_main->window);    
@@ -443,16 +445,7 @@ void editor_update(){
 
 }
 
-void editor_render_init(){
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    init_vec3(-6,0,2, main_camera.position);
-    
-		camera_update(&current_window->camera);
-
-    editor_standard_fragment_shader = compile_shader(
-        editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
-
+void pe_editor_load_native_model(){
 
     load_model_to_array(&engine_native_models,
                         "/home/pavon/PavonEngine/NativeContent/Editor/sphere.glb",
@@ -468,10 +461,24 @@ void editor_render_init(){
                         "/home/pavon/PavonEngine/NativeContent/Editor/floor.jpg");
     texture_load("/home/pavon/PavonEngine/NativeContent/Editor/checker_texture.png",
                  &editor_texture_checker);
+}
+
+void editor_render_init(){
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    init_vec3(-6,0,2, main_camera.position);
+    
+	camera_update(&current_window->camera);
+
+    editor_standard_fragment_shader = compile_shader(
+                    editor_standard_fragment_shader_source, 
+                    GL_FRAGMENT_SHADER);
+
+    pe_editor_load_native_model();
 
     editor_text_init();
    
-	 	gizmos_init();
+ 	gizmos_init();
    
    	editor_running = true;
 }
@@ -508,8 +515,9 @@ void editor_draw() {
   if (update_vertex_bones_gizmos)
     update_joints_vertex();
 
-  engine_draw_elements(&frame_draw_static_elements);
-	pe_render_skinned_elements(&array_skinned_mesh_pointers);
+    engine_draw_elements(&frame_draw_static_elements);
+
+    pe_render_skinned_elements(&array_skinned_mesh_pointers);
 
   pe_frame_clean();
 
@@ -520,8 +528,8 @@ void editor_draw() {
     draw_gui();
   }
 
-  text_renderer_loop();
-	pe_editor_menus_update();	
+    text_renderer_loop();
+    pe_editor_menus_update();	
   // editor_message("editor message");
 }
 
@@ -562,6 +570,7 @@ void editor_data_init(){
 
 void editor_init() {
     pe_wm_renderer_type = PEWMOPENGLES2;
+    //pe_wm_renderer_type = PEWMVULKAN;
     pe_init();
 
     editor_data_init();

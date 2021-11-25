@@ -47,7 +47,7 @@ void pe_vk_uniform_buffer_update(uint32_t image_index){
 
     init_vec3(0.0f, 1.0f ,  0.0f, up);
     init_vec3(0.0f, 0.0f,  1.0f, front);
-    init_vec3(2.0f, 2.0f, 2.0f, position);
+    init_vec3(2.f, 20.f, 2.f, position);
     
     glm_rotate(ubo.model,0.002f,VEC3(1,1,0));
 

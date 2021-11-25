@@ -11,7 +11,7 @@
 #include "commands.h"
 #include "images_view.h"
 #include "sync.h"
-
+#include <engine/renderer/vulkan/swap_chain.h>
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
@@ -158,7 +158,7 @@ int pe_vk_init() {
   vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
   vk_physical_device = phy_devices[0];
 
-	pe_vk_queue_families_support();
+    pe_vk_queue_families_support();
 
   pe_vk_new_log_divice();
 

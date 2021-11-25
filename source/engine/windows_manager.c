@@ -12,24 +12,22 @@ void window_manager_error_callback(int error, const char* description)
 
 void pe_wm_glfw_init(){
   
-	if (pe_wm_renderer_type == PEWMOPENGLES2) {
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	LOG("Windows manager initialized in OPENGL");
-	
-
-  } else if (pe_wm_renderer_type == PEWMVULKAN) {
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	LOG("Window Manager in VULKAN");
-  }
+    if (pe_wm_renderer_type == PEWMOPENGLES2) {
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	    LOG("Windows manager initialized in OPENGL");
+    } else if (pe_wm_renderer_type == PEWMVULKAN) {
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	    LOG("Window Manager in VULKAN");
+    }
 	//MSAA
 	glfwWindowHint(GLFW_SAMPLES,4);
 
-  glfwSetErrorCallback(window_manager_error_callback);
-  glfwInit();
+    glfwSetErrorCallback(window_manager_error_callback);
+    glfwInit();
 }
 
 

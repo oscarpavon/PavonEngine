@@ -5,6 +5,11 @@
 #include <string.h>
 
 int array_init(Array * array, u32 element_bytes_size, int count){
+    if(array == NULL){
+        LOG("Array is NULL");
+        return -1;
+    }
+
     if(array->initialized != true){
        
     }else{

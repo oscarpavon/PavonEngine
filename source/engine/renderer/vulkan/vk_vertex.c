@@ -8,7 +8,8 @@
 #include "vk_vertex.h"
 #include "vk_buffer.h"
 
-
+#include <engine/model.h>
+#include <engine/engine.h>
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description(){
     VkVertexInputBindingDescription binding;
@@ -78,7 +79,7 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 
 void pe_vk_model_create(){
 
-   array_init(&vertices, sizeof(Vertex), 4);
+    array_init(&vertices, sizeof(Vertex), 4);
     array_init(&model_indices, sizeof(uint16_t), 6);
 
     Vertex vertex1;
@@ -106,12 +107,16 @@ void pe_vk_model_create(){
         array_add(&model_indices,&indices_ar[i]);
     }
 
+    actual_model_array = &array_models_loaded;
+    pe_loader_model("/home/pavon/plane.glb");
+    
+     LOG("VK model loaded");
+    
 
-      
-    vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
-   
+    vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
-    index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
-
+    //vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
+    //index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
 
 }
