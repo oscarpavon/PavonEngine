@@ -139,6 +139,7 @@ void pe_serialize_elements(JSON_Array* array){
 			json_array_append_value(array,element_obj_val);	
 	}
 
+
 }
 
 void pe_serialize_level() {
@@ -230,7 +231,7 @@ void save_level_data(const char* level_name){
     }
     actual_file = new_file;
     
-		pe_serialize_level();	
+	pe_serialize_level();	
     
     fclose(new_file);
     LOG("Saved to %s\n",level_name);

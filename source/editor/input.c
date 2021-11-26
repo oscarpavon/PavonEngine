@@ -22,7 +22,9 @@
 
 #include "commands.h"
 #include "skeletal_editor.h"
+
 float rotate_value = 1;
+float camera_rotate_yaw = 1;
 
 vec3 rotate_direction = (vec3){0,0,1};
 
@@ -60,6 +62,7 @@ void input_change_mode(){
 bool editor_input_camera_rotate_control() {
   float rotate_velocity = 200;
   bool rotate_keys_pressed = false;
+  bool rotate_yaw_keys_pressed = false;
   if (input.J.pressed) {
     rotate_keys_pressed = true;
     rotate_value -= rotate_velocity * time_delta;
@@ -75,11 +78,38 @@ bool editor_input_camera_rotate_control() {
       rotate_value = 100;
     }
   }
+
+         
+  if (input.M.pressed) {
+    rotate_yaw_keys_pressed= true;
+    camera_rotate_yaw += rotate_velocity * time_delta;
+    if (rotate_value > 10000) {
+      camera_rotate_yaw = 100;
+    }
+    }
+  if (input.N.pressed) {
+    rotate_yaw_keys_pressed= true;
+    camera_rotate_yaw -= rotate_velocity * time_delta;
+    if (rotate_value < -10000) {
+      camera_rotate_yaw = -100;
+    }
+    }
+
+  if (rotate_yaw_keys_pressed== true) {
+
+    verticalAngle += 600 / 2 - camera_rotate_yaw;
+
+    verticalAngle *= 0.05;
+
+    camera_rotate_control(verticalAngle, 0);
+    return true;
+  }
+
   if (rotate_keys_pressed) {
 
     horizontalAngle += camera_width_screen / 2 - rotate_value;
 
-    verticalAngle += 600 / 2 - 100;
+    verticalAngle += 600 / 2 - camera_rotate_yaw;
 
     horizontalAngle *= 0.05;
     verticalAngle *= 0.05;

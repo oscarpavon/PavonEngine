@@ -110,13 +110,13 @@ void pe_vk_model_create(){
     actual_model_array = &array_models_loaded;
     pe_loader_model("/home/pavon/plane.glb");
     
-     LOG("VK model loaded");
+    LOG("VK model loaded");
     
 
-    vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
-    index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+    //vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    //index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
-    //vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
-    //index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
+    vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
+    index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
 
 }

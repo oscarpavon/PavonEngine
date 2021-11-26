@@ -13,7 +13,7 @@ int main() {
     EngineWindow *main_window = array_pop(&engine_windows);
     //main_window->init = &pe_vk_init;
     
-    window_create(main_window, NULL, "Vulkan");
+    window_create(main_window, NULL, "PavonEngine");
 
     current_window = main_window;
 

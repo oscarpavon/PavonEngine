@@ -29,8 +29,7 @@ int pe_vk_new_log_divice(){
 	ZERO(qinfo);
 	qinfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	qinfo.pQueuePriorities = &queue_priority;
-	qinfo.queueCount = 1;
-	qinfo.queueFamilyIndex = q_graphic_family;	
+	qinfo.queueCount = 1; qinfo.queueFamilyIndex = q_graphic_family;	
 	
 	VkDeviceQueueCreateInfo qinfo2;
 	ZERO(qinfo2);
@@ -50,9 +49,9 @@ int pe_vk_new_log_divice(){
 	info.queueCreateInfoCount = 2;
 	info.pQueueCreateInfos = queues_creates_infos;
 
-  info.enabledExtensionCount = 1;
-  info.ppEnabledExtensionNames = devices_extensions;
-	
+    info.enabledExtensionCount = 1;
+    info.ppEnabledExtensionNames = devices_extensions;
+    info.ppEnabledExtensionNames = devices_extensions;
 	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
 }
 
