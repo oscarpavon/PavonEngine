@@ -12,6 +12,9 @@
 #include "images_view.h"
 #include "sync.h"
 #include <engine/renderer/vulkan/swap_chain.h>
+#include "descriptor_set.h"
+#include "vk_vertex.h"
+#include "vk_buffer.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
@@ -99,7 +102,7 @@ void pe_vk_create_instance(){
 
   int instance_layer_properties_count = 0;
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count, NULL);
-  LOG("VK instance layer count: %i\n", instance_layer_properties_count);
+  //LOG("VK instance layer count: %i\n", instance_layer_properties_count);
 
   VkLayerProperties layers_properties[instance_layer_properties_count];
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count,
@@ -121,11 +124,19 @@ void pe_vk_create_instance(){
   memset(&instance_info, 0, sizeof(VkInstanceCreateInfo));
   instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   instance_info.pApplicationInfo = &app_info;
-  instance_info.enabledLayerCount = 1;
-  instance_info.ppEnabledLayerNames = validation_layers;
+  
+  if(pe_vk_validation_layer_enable == true){
+
+    instance_info.enabledLayerCount = 1;
+    instance_info.ppEnabledLayerNames = validation_layers;
+
+  }else {
+    instance_info.enabledLayerCount = 0;
+  }
 
   ZERO(g_messenger_info);
   pe_vk_populate_messeger_debug_info(&g_messenger_info);
+  
   instance_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&g_messenger_info;
 
   instance_info.enabledExtensionCount = 3;

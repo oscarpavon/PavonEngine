@@ -4,6 +4,7 @@
 
 PEUniformBufferObject ubo;
 
+
 void pe_vk_ubo_init(){
     ZERO(ubo);
     glm_mat4_identity(ubo.view);
@@ -40,25 +41,13 @@ void pe_vk_uniform_buffer_create(){
 }
 
 void pe_vk_uniform_buffer_update(uint32_t image_index){
-  
-    vec3 up;
-    vec3 front;
-    vec3 position;
 
-    init_vec3(0.0f, 1.0f ,  0.0f, up);
-    init_vec3(0.0f, 0.0f,  1.0f, front);
-    init_vec3(1.f, 10.f, 0.f, position);
-    
     glm_rotate(ubo.model,0.002f,VEC3(1,0,0));
-
-
-    glm_lookat(position, VEC3(0,0,0), up , ubo.view);
-
-    glm_perspective(45.f, 1260 / 720, 0.001f,
-                    5000.f, ubo.projection);
-
+    glm_mat4_copy(main_camera.projection,ubo.projection);
+    glm_mat4_copy(main_camera.view,ubo.view);
+     
     ubo.projection[1][1] *= -1;
-    
+
     VkDeviceMemory* memory = array_get(&pe_vk_uniform_buffers_memory,image_index);
 
     void* data;

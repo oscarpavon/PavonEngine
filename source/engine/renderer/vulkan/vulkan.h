@@ -27,4 +27,6 @@ VkRenderPass pe_vk_render_pass;
 uint32_t q_graphic_family;
 uint32_t q_present_family;
 
+
+bool pe_vk_validation_layer_enable;
 #endif

@@ -192,8 +192,8 @@ void add_editor_native_element(const char* native_element_name){
 
 void editor_finish(){
     editor_running = false;
-		pe_end(); 
-		edit_server_finish();
+	pe_end(); 
+	edit_server_finish();
 	
 }
 
@@ -498,9 +498,16 @@ void editor_draw() {
   if (update_vertex_bones_gizmos == true)
     update_joints_vertex();
 
+
+
     engine_draw_elements(&frame_draw_static_elements);
 
     pe_render_skinned_elements(&array_skinned_mesh_pointers);
+    
+    if(pe_renderer_type == PEWMVULKAN){
+
+        pe_vk_draw_frame(); 
+        } 
 
   pe_frame_clean();
 
@@ -552,6 +559,12 @@ void editor_data_init(){
 }
 
 void editor_render_init(){
+    
+
+    if(pe_renderer_type == PEWMVULKAN){
+        pe_vk_init();
+    }
+
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     
@@ -611,16 +624,13 @@ void editor_init() {
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
 
-    if(pe_renderer_type == PEWMOPENGLES2){
 
     render_thread_definition.init = &editor_render_init;
     render_thread_definition.draw = &editor_main_render_thread;
     render_thread_definition.end = &editor_finish;
 
-    }else if(pe_renderer_type == PEWMVULKAN){
+    if(pe_renderer_type == PEWMVULKAN){
 
-        render_thread_definition.init = &pe_vk_init;
-        render_thread_definition.draw = &pe_vk_draw_frame;
         render_thread_definition.end = &pe_vk_end;
 
     }

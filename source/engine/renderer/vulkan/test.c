@@ -16,13 +16,6 @@ int main() {
 
     current_window = main_window;
 
-    int extention_count = 0;
-    char **extension;
-    extension = glfwGetRequiredInstanceExtensions(&extention_count);
-    LOG("Extension required count: %i\n", extention_count);
-
-
-
     PEThreadCommand thread_commad;
     thread_commad.command = &window_manager_init_window;
     thread_commad.data = main_window;

@@ -10,7 +10,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL pe_vk_debug_callback(
 		const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
 		void* user_data) {
 	
-	printf("PEvk_validation: %s\n",callback_data->pMessage);
+	printf("Vulkan: %s\n",callback_data->pMessage);
 
 	return VK_FALSE;	
 }
@@ -39,9 +39,10 @@ VkResult pe_vk_create_debug_messeger(VkInstance instance, const VkDebugUtilsMess
 void pe_vk_populate_messeger_debug_info(VkDebugUtilsMessengerCreateInfoEXT* info_messeger){
 
 	info_messeger->sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	info_messeger->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
-													VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-													VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	//info_messeger->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
+	//												VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+	//												VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	info_messeger->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 	info_messeger->messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
 		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
 		VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;

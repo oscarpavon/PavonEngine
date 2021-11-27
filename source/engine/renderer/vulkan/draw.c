@@ -7,7 +7,7 @@
 #include "vk_vertex.h"
 #include <engine/engine.h>
 #include "descriptor_set.h"
-
+#include "uniform_buffer.h"
 
 void pe_vk_draw(int i){
     VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
@@ -34,6 +34,7 @@ void pe_vk_draw(int i){
 
 }
 
+
 void pe_vk_draw_frame(){
 
     uint32_t image_index;
@@ -42,22 +43,22 @@ void pe_vk_draw_frame(){
 
     pe_vk_uniform_buffer_update(image_index);
     
+    VkSemaphore singal_semaphore[] = {pe_vk_semaphore_render_finished};
+    VkSemaphore wait_semaphores[] = {pe_vk_semaphore_images_available};
+    VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,image_index);
+
+    VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+
+    VkSwapchainKHR swap_chains[] = {pe_vk_swap_chain};
+
     VkSubmitInfo submit_info;
     ZERO(submit_info);
     submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-    VkSemaphore wait_semaphores[] = {pe_vk_semaphore_images_available};
-    VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-
     submit_info.waitSemaphoreCount = 1;
     submit_info.pWaitSemaphores = wait_semaphores;
     submit_info.pWaitDstStageMask = wait_stages;
-
     submit_info.commandBufferCount = 1;
-    VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,image_index);
     submit_info.pCommandBuffers = cmd_buffer;
-
-    VkSemaphore singal_semaphore[] = {pe_vk_semaphore_render_finished};
     submit_info.signalSemaphoreCount = 1;
     submit_info.pSignalSemaphores = singal_semaphore;
 
@@ -69,9 +70,6 @@ void pe_vk_draw_frame(){
     present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     present_info.waitSemaphoreCount = 1;
     present_info.pWaitSemaphores = singal_semaphore;
-
-
-    VkSwapchainKHR swap_chains[] = {pe_vk_swap_chain};
     present_info.swapchainCount = 1;
     present_info.pSwapchains = swap_chains;
     present_info.pImageIndices = &image_index;

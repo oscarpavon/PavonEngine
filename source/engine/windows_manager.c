@@ -116,7 +116,8 @@ void window_manager_draw_windows(){
 	
 	for(u8 i = 0; i<engine_windows.count ; i++ ){
 		EngineWindow* window = array_get(&engine_windows,i);
-		glfwMakeContextCurrent(window->window);
+	    if (pe_renderer_type == PEWMOPENGLES2) 
+	    	glfwMakeContextCurrent(window->window);
 		if(!window->initialized)
 			   continue;
 		
@@ -127,8 +128,8 @@ void window_manager_draw_windows(){
 	}
 		
 		window->draw();
-		
-    glfwSwapBuffers(window->window);
+	if(pe_renderer_type == PEWMOPENGLES2)	
+        glfwSwapBuffers(window->window);
 
 	}
 }
