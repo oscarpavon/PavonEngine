@@ -3,7 +3,6 @@
 #include "draw.h"
 
 int main() {
-    pe_wm_renderer_type = PEWMVULKAN;
 
     pe_init();
 
@@ -23,9 +22,6 @@ int main() {
     LOG("Extension required count: %i\n", extention_count);
 
 
-    render_thread_definition.init = &pe_vk_init;
-    render_thread_definition.draw = &pe_vk_draw_frame;
-    render_thread_definition.end = &pe_vk_end;
 
     PEThreadCommand thread_commad;
     thread_commad.command = &window_manager_init_window;

@@ -25,12 +25,15 @@ set(third_party
 	../ThirdParty/parson.c
 	)	
 
-set(renderer
+set(opengl_es2_renderer
 	${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
 	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
   ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
+
+
+
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
@@ -58,7 +61,7 @@ set(engine_source
 				${audio}
 				${network}
 				${third_party}
-				${renderer}
+				${opengl_es2_renderer}
 )
 
 

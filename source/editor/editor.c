@@ -35,6 +35,8 @@
 
 #include "menus.h"
 
+#include <engine/renderer/vulkan/vulkan.h>
+
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
 }
@@ -572,8 +574,7 @@ void editor_render_init(){
 }
 
 void editor_init() {
-    pe_wm_renderer_type = PEWMOPENGLES2;
-    //pe_wm_renderer_type = PEWMVULKAN;
+
     pe_init();
 
     editor_data_init();
@@ -586,11 +587,16 @@ void editor_init() {
 
     //All window definition here
     EngineWindow main_window;
-    memset(&main_window, 0, sizeof(EngineWindow));
+    ZERO(main_window);
+    
+
     main_window.init = &editor_main_window_init;//window specific data
     main_window.draw = &editor_draw;//Main loop draw in window
     main_window.finish = &editor_render_finish;
+    
+    
     main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
+    
 
     array_add(&engine_windows, &main_window);
     window_editor_main = array_pop(&engine_windows);
@@ -605,9 +611,19 @@ void editor_init() {
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
 
+    if(pe_renderer_type == PEWMOPENGLES2){
+
     render_thread_definition.init = &editor_render_init;
     render_thread_definition.draw = &editor_main_render_thread;
     render_thread_definition.end = &editor_finish;
+
+    }else if(pe_renderer_type == PEWMVULKAN){
+
+        render_thread_definition.init = &pe_vk_init;
+        render_thread_definition.draw = &pe_vk_draw_frame;
+        render_thread_definition.end = &pe_vk_end;
+
+    }
 
     pe_render_thread_init();
 

@@ -12,14 +12,14 @@ void window_manager_error_callback(int error, const char* description)
 
 void pe_wm_glfw_init(){
   
-    if (pe_wm_renderer_type == PEWMOPENGLES2) {
+    if (pe_renderer_type == PEWMOPENGLES2) {
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	    LOG("Windows manager initialized in OPENGL");
-    } else if (pe_wm_renderer_type == PEWMVULKAN) {
+    } else if (pe_renderer_type == PEWMVULKAN) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	    LOG("Window Manager in VULKAN");
     }
@@ -53,10 +53,11 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     if(share_window)
      share_glfw_window = share_window->window;
 
-  	if (pe_wm_renderer_type == PEWMVULKAN) {
+	
+	if (pe_renderer_type == PEWMVULKAN) {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
   	}
-	
+
 	GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
 	if(!new_window){ 
 		LOG("Window can't be created\nPavon Engine was closed\n");
@@ -64,7 +65,7 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
 	}
 	win->window = new_window;
 	
-	if (pe_wm_renderer_type == PEWMOPENGLES2) {
+	if (pe_renderer_type == PEWMOPENGLES2) {
 		glfwMakeContextCurrent(win->window);
 	}   
 

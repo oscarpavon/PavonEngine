@@ -65,12 +65,12 @@ EngineWindow* current_window;
 
 Array engine_windows;
 
-typedef enum PEWindowManagerRendererType{
+typedef enum PERendererType{
 	PEWMVULKAN,
 	PEWMOPENGLES2
-}PEWindowManagerRendererType;
+}PERendererType;
 
-PEWindowManagerRendererType pe_wm_renderer_type;
+PERendererType pe_renderer_type;
 
 inline static void window_update_envents(){
        glfwPollEvents();

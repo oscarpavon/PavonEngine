@@ -55,6 +55,7 @@ set(lib
 	pthread
 	${FREETYPE_LIBRARIES}
 	${OPENGL_LIBRARIES}
+    pe_vk
 	)
 if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
 
