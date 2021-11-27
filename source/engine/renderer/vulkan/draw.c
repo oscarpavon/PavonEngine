@@ -29,7 +29,7 @@ void pe_vk_draw(int i){
 
     vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
     
-    vkCmdDrawIndexed(*(cmd_buffer),model_indices.count,1,0,0,0);
+    vkCmdDrawIndexed(*(cmd_buffer),selected_model->index_array.count,1,0,0,0);
 
 
 }

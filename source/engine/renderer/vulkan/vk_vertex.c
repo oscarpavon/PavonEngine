@@ -79,44 +79,17 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 
 void pe_vk_model_create(){
 
-    array_init(&vertices, sizeof(Vertex), 4);
-    array_init(&model_indices, sizeof(uint16_t), 6);
 
-    Vertex vertex1;
-    Vertex vertex2;
-    Vertex vertex3;
-    Vertex vertex4;
-
-
-    glm_vec3_copy((vec3){1.0f, 0.0f, 0.0f}, vertex1.postion);
-    glm_vec3_copy((vec3){0.0f, 1.0f, 0.0f}, vertex2.postion);
-
-    glm_vec3_copy((vec3){0.0f, 0.0f, 1.0f}, vertex3.postion);
-
-    glm_vec3_copy((vec3){1.0f, 1.0f, 1.0f}, vertex4.postion);
-
-
-    array_add(&vertices, &vertex1);
-    array_add(&vertices, &vertex2);
-    array_add(&vertices, &vertex3);
-    array_add(&vertices, &vertex4);
-
-    uint16_t indices_ar[] = {0,1,2,2,3,0};
+    //actual_model_array = &array_models_loaded;
+    pe_loader_model("/home/pavon/sphere.glb");
     
-    for(int i = 0; i < 6; i++){
-        array_add(&model_indices,&indices_ar[i]);
-    }
-
-    actual_model_array = &array_models_loaded;
-    pe_loader_model("/home/pavon/plane.glb");
+    LOG("VK model loaded\n");
     
-    LOG("VK model loaded");
+    LOG("Vertices count %d\n",selected_model->vertex_array.count);
+    LOG("Index count %d\n",selected_model->index_array.count);
     
+    vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
-    //vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
-    //index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
-
-    vertex_buffer =  pe_vk_vertex_create_buffer(&vertices);
-    index_buffer =  pe_vk_vertex_create_index_buffer(&model_indices);
 
 }

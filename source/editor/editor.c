@@ -461,6 +461,7 @@ void pe_editor_load_native_model(){
     load_model_to_array(&engine_native_models,
                         "/home/pavon/PavonEngine/NativeContent/Editor/floor.glb",
                         "/home/pavon/PavonEngine/NativeContent/Editor/floor.jpg");
+    
     texture_load("/home/pavon/PavonEngine/NativeContent/Editor/checker_texture.png",
                  &editor_texture_checker);
 }
