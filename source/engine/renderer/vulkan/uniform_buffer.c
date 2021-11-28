@@ -42,7 +42,7 @@ void pe_vk_uniform_buffer_create(){
 
 void pe_vk_uniform_buffer_update(uint32_t image_index){
 
-    glm_rotate(ubo.model,0.002f,VEC3(1,0,0));
+    glm_rotate(ubo.model,0.002f,VEC3(0,0,1));
     glm_mat4_copy(main_camera.projection,ubo.projection);
     glm_mat4_copy(main_camera.view,ubo.view);
      
