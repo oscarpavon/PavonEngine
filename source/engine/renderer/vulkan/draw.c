@@ -9,19 +9,20 @@
 #include "descriptor_set.h"
 #include "uniform_buffer.h"
 
-void pe_vk_draw(int i){
+void pe_vk_draw_model(int i , Model* model){
+
     VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
 
 
     vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
 
 
-    VkBuffer vertex_buffers[] = {vertex_buffer};
+    VkBuffer vertex_buffers[] = {model->vertex_buffer};
     VkDeviceSize offsets[] = {0};
 
     vkCmdBindVertexBuffers(*(cmd_buffer),0,1,vertex_buffers,offsets);
 
-    vkCmdBindIndexBuffer(*(cmd_buffer),index_buffer,0,VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(*(cmd_buffer),model->index_buffer,0,VK_INDEX_TYPE_UINT16);
 
     //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
 
@@ -29,9 +30,15 @@ void pe_vk_draw(int i){
 
     vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
     
-    vkCmdDrawIndexed(*(cmd_buffer),selected_model->index_array.count,1,0,0,0);
+    vkCmdDrawIndexed(*(cmd_buffer),model->index_array.count,1,0,0,0);
+
+}
 
 
+void pe_vk_draw(int i){
+
+    pe_vk_draw_model(i,test_model);
+    pe_vk_draw_model(i,test_model2);
 }
 
 

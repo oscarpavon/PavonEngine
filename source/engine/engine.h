@@ -211,5 +211,6 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 }
 
-
+Model* test_model;
+Model* test_model2;
 #endif //PAVON_ENGINE_H

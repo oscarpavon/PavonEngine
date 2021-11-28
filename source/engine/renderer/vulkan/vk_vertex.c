@@ -80,16 +80,19 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 void pe_vk_model_create(){
 
 
-    //actual_model_array = &array_models_loaded;
+    actual_model_array = &array_models_loaded;
     pe_loader_model("/home/pavon/chess/rook.glb");
     
-    LOG("VK model loaded\n");
-    
-    LOG("Vertices count %d\n",selected_model->vertex_array.count);
-    LOG("Index count %d\n",selected_model->index_array.count);
-    
-    vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
-    index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+    test_model = selected_model;
+   
+    test_model->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    test_model->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
+
+    pe_loader_model("/home/pavon/chess/pawn.glb");
+    test_model2 = selected_model;
+
+    test_model2->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    test_model2->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
 }

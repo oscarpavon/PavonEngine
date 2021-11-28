@@ -13,6 +13,8 @@
 
 #include "array.h"
 
+#include <engine/renderer/vulkan/vulkan.h>
+
 typedef struct SkinnedMeshComponent SkinnedMeshComponent;
 
 typedef struct Model{
@@ -29,7 +31,9 @@ typedef struct Model{
     GLuint shader;
 
     Texture texture;
-		bool gpu_ready;
+	bool gpu_ready;
+    VkBuffer vertex_buffer;
+    VkBuffer index_buffer;
 }Model;
 
 typedef struct DrawData{
