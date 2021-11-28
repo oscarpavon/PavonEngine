@@ -3,7 +3,7 @@
 #include "../ThirdParty/stb_image.h"
 
 #include "engine.h"
-#include <engine/renderer/vulkan/images.h>
+#include "renderer/vulkan/images.h"
 
 Texture* texture_current_to_load;
 int image_load_from_memory(Image* image,void* data, u32 size){	
@@ -41,7 +41,7 @@ void pe_gpu_load_texture(Texture* texture){
         
        VkImage image;
        ZERO(image);
-        pe_vk_image_create(texture->image.width,texture->image.heigth,texture->image.pixels_data,&image);
+        //pe_vk_image_create(texture->image.width,texture->image.heigth,texture->image.pixels_data,&image);
 
 
     }

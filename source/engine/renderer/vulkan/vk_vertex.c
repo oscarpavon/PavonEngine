@@ -81,7 +81,7 @@ void pe_vk_model_create(){
 
 
     //actual_model_array = &array_models_loaded;
-    pe_loader_model("/home/pavon/sphere.glb");
+    pe_loader_model("/home/pavon/chess/rook.glb");
     
     LOG("VK model loaded\n");
     
