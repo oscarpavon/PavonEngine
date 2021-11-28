@@ -1,3 +1,5 @@
+#ifndef VK_BUFFER
+#define VK_BUFFER
 #include "vulkan.h"
 
 typedef struct PEVKBufferCreateInfo{
@@ -8,4 +10,7 @@ typedef struct PEVKBufferCreateInfo{
     VkDeviceMemory buffer_memory;
 }PEVKBufferCreateInfo;
 
+
 void pe_vk_buffer_create(PEVKBufferCreateInfo* buffer_info);
+
+#endif

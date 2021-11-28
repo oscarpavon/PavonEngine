@@ -56,6 +56,12 @@ typedef struct PEUniformBufferObject{
     mat4 projection;
 }PEUniformBufferObject;
 
+typedef struct PEColorShader{
+    float x;
+    float y;
+    float z;
+}PEColorShader;
+
 void pe_init();
 void engine_loop();
 void init_game_engine();

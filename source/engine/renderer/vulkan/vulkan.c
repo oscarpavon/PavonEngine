@@ -25,8 +25,9 @@ VkDeviceQueueCreateInfo queues_creates_infos[2];
 
 const float queue_priority = 1.f;
 
-int pe_vk_new_log_divice(){
 
+
+int pe_vk_new_log_divice(){
 
 	VkDeviceQueueCreateInfo qinfo;
 	ZERO(qinfo);
@@ -149,7 +150,10 @@ void pe_vk_create_instance(){
 
 
 int pe_vk_init() {
-	pe_vk_create_instance();
+	
+    pe_vk_validation_layer_enable = true;
+
+    pe_vk_create_instance();
 
   if(!current_window){
     LOGW("NO WINDOWS CREATED");
