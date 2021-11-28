@@ -3,6 +3,7 @@
 #include "../ThirdParty/stb_image.h"
 
 #include "engine.h"
+#include <engine/renderer/vulkan/images.h>
 
 Texture* texture_current_to_load;
 int image_load_from_memory(Image* image,void* data, u32 size){	
@@ -31,17 +32,33 @@ int image_load(const char* path, Image* image){
   return 0;
 }
 
+void pe_gpu_load_texture(Texture* texture){
+
+    if(pe_renderer_type == PEWMOPENGLES2)
+        pe_gpu_load_texture(texture);
+
+    if(pe_renderer_type == PEWMVULKAN){
+        
+       VkImage image;
+       ZERO(image);
+        pe_vk_image_create(texture->image.width,texture->image.heigth,texture->image.pixels_data,&image);
+
+
+    }
+}
+
 int texture_load_from_memory(Texture* texture,u32 size,void* data){
 	memset(texture,0,sizeof(Texture));
 	texture_current_to_load = texture;
 	if(image_load_from_memory(&texture->image,data,size)== -1){
 		return -1;
 	}
-
-	pe_tex_to_gpu(texture_current_to_load);
+    
+    pe_gpu_load_texture(texture_current_to_load);
 		
 	return 0;
 }
+
 
 int texture_load(const char *path, Texture *new_texture) {
   texture_current_to_load = new_texture;
@@ -49,7 +66,9 @@ int texture_load(const char *path, Texture *new_texture) {
     new_texture->id = 0;
     return -1;
   }
-	pe_th_exec_in(pe_th_render_id,&pe_tex_to_gpu,new_texture);
+  
+    pe_th_exec_in(pe_th_render_id,&pe_gpu_load_texture,new_texture);
+
 }
 
 int load_image_with_format(const char* path, GLint format, Image* out_image){

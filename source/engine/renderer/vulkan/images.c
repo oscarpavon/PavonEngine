@@ -2,7 +2,13 @@
 #include "vulkan.h"
 #include <engine/macros.h>
 #include <engine/log.h>
-void pe_vk_image_create(uint32_t width, uint32_t height, VkImage* textureImage){
+#include "vk_memory.h"
+#include "vk_buffer.h"
+
+
+
+void pe_vk_image_create(uint32_t width, 
+        uint32_t height,void* pixels,  VkImage* textureImage){
 
 
 
@@ -31,7 +37,33 @@ imageInfo.flags = 0; // Optional
 if (vkCreateImage(vk_device, &imageInfo, NULL , textureImage) != VK_SUCCESS) {
     LOG("failed to create image!");
 }
+VkDeviceSize image_size = width * height * 4;
+
+VkMemoryRequirements image_memory_requirements;
+vkGetImageMemoryRequirements(vk_device,*(textureImage),&image_memory_requirements);
+
+PEVKBufferCreateInfo buffer_info;
+buffer_info.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+buffer_info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+pe_vk_buffer_create(&buffer_info);
+
+void* data;
+vkMapMemory(vk_device,buffer_info.buffer_memory,0,4,0,&data);
+memcpy(data,pixels,image_size);
+vkUnmapMemory(vk_device,buffer_info.buffer_memory);
 
 
+    VkMemoryAllocateInfo info;
+    ZERO(info);
+    info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    info.allocationSize = image_memory_requirements.size;
+    info.memoryTypeIndex = pe_vk_memory_find_type(image_memory_requirements.memoryTypeBits,
+    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    VkDeviceMemory memory;
+    vkAllocateMemory(vk_device,&info,NULL,&memory);
+
+    vkBindImageMemory(vk_device,*(textureImage),memory,0);
 
 }

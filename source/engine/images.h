@@ -29,4 +29,6 @@ int texture_load_from_memory(Texture* texture,u32 size,void* data);
 
 int image_load_from_memory(Image* image,void* data, u32 size);
 
+void pe_gpu_load_texture(Texture* texture);
+
 #endif

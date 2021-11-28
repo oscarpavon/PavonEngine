@@ -15,6 +15,7 @@ add_library(pe_vk vulkan.c debug.c swap_chain.c
 			sync.c vk_vertex.c vk_memory.c
 			descriptor_set.c uniform_buffer.c
 			vk_buffer.c vk_descriptor_pool.c
+            images.c
 			)
 
 target_link_libraries(pe_vk vulkan)
