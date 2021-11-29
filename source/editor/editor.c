@@ -496,19 +496,24 @@ void editor_draw() {
 
   editor_stats_calculates_triangles();
 
-  if (update_vertex_bones_gizmos == true)
+  if (update_vertex_bones_gizmos == true){
     update_joints_vertex();
+  }
 
 
+    
+    if(pe_renderer_type == PEWMVULKAN){
+        if(pe_vk_initialized == true){
 
-    engine_draw_elements(&frame_draw_static_elements);
+            pe_vk_draw_frame(); 
+        }
+    }else{
+
+        engine_draw_elements(&frame_draw_static_elements);
+    } 
 
     pe_render_skinned_elements(&array_skinned_mesh_pointers);
     
-    if(pe_renderer_type == PEWMVULKAN){
-
-        pe_vk_draw_frame(); 
-        } 
 
   pe_frame_clean();
 

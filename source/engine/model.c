@@ -11,6 +11,8 @@
 
 #include "vertex.h"
 
+#include <engine/renderer/vulkan/vk_vertex.h>
+
 cgltf_data* current_data;
 cgltf_animation* current_animation;
 cgltf_animation_channel* current_channel;
@@ -397,6 +399,17 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   current_data = NULL;
 
   return result;
+}
+
+Model* pe_vk_model_load(char* path){
+
+    actual_model_array = &array_models_loaded;
+    pe_loader_model(path);
+    Model* model = selected_model;
+    
+    model->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
+    model->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+    return model;
 }
 
 /*

@@ -4,7 +4,6 @@
 #include <engine/macros.h>
 #include "vk_vertex.h"
 #include "descriptor_set.h"
-#include "vk_descriptor_pool.h"
 #include "uniform_buffer.h"
 
 VkDynamicState dynamicStates[] = {

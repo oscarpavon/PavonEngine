@@ -184,7 +184,10 @@ int pe_vk_init() {
   pe_vk_create_descriptor_set_layout();
   pe_vk_pipeline_init();  
 
+
+  pe_vk_initialized = true;
   pe_vk_model_create();
+
 
   pe_vk_uniform_buffer_create();
 
@@ -199,7 +202,7 @@ int pe_vk_init() {
   
   pe_vk_semaphores_create();
 
-  
+
   return 0;
 }
  

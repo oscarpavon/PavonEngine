@@ -34,6 +34,10 @@ typedef struct Model{
 	bool gpu_ready;
     VkBuffer vertex_buffer;
     VkBuffer index_buffer;
+
+    vec3 position;
+
+    VkDescriptorSet descriptor_set;
 }Model;
 
 typedef struct DrawData{
@@ -42,6 +46,8 @@ typedef struct DrawData{
     u32 vertex;
     u32 index;
 }DrawData;
+
+Model* pe_vk_model_load(char* path);
 
 int pe_loader_model(const char* path);
 

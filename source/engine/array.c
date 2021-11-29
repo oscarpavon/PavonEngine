@@ -54,6 +54,13 @@ void array_add(Array* array,const void* element){
     memcpy(array->data+(offset),element,array->element_bytes_size);
 }
 
+void *array_get_last(Array* array){
+    if(array->count > 0){
+        return array_get(array, array->count-1);
+    }else
+        return NULL;
+}
+
 void *array_get(Array* array,int index){
     if(array->count == 0){
         //LOG("Array is empty\n");

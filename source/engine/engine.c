@@ -29,7 +29,7 @@ void pe_end(){
 void select_last_element(){
     if(selected_element != NULL)
         selected_element->selected = false;
-    selected_element = array_get(actual_elements_array,actual_elements_array->count-1);
+    selected_element = array_get_last(actual_elements_array);
     selected_element->selected = true;
 }
 
@@ -396,5 +396,7 @@ void pe_init(){
 	pe_th_main_id = pthread_self();
 
 	engine_running = true;
+
+    pe_vk_initialized = false;
 }
 

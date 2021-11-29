@@ -29,4 +29,6 @@ uint32_t q_present_family;
 
 
 bool pe_vk_validation_layer_enable;
+
+bool pe_vk_initialized;
 #endif

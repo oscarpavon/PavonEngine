@@ -28,14 +28,13 @@ PEVKBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size){
 void pe_vk_uniform_buffer_create(){
     VkDeviceSize buffer_size = sizeof(PEUniformBufferObject);
 
-    // The four (4) number in the count of swapchain images in flight
     array_init(&pe_vk_uniform_buffers,sizeof(VkBuffer),4);
     array_init(&pe_vk_uniform_buffers_memory,sizeof(VkDeviceMemory),4);
 
-    
-    for(int i = 0; i< 4 ; i++){
+
+    for(int i = 0; i < 4 ; i++){
         //create buffer
-        PEVKBufferCreateInfo info = pe_vk_uniform_buffer_create_buffer(sizeof(PEUniformBufferObject));
+        PEVKBufferCreateInfo info = pe_vk_uniform_buffer_create_buffer(sizeof(PEUniformBufferObject) * 100);
         array_add(&pe_vk_uniform_buffers,&info.buffer);
         array_add(&pe_vk_uniform_buffers_memory,&info.buffer_memory);
 
@@ -56,15 +55,33 @@ void pe_vk_memory_copy(size_t size, VkDeviceMemory* memory, void* in_data){
 
 void pe_vk_uniform_buffer_update(uint32_t image_index){
 
-    glm_rotate(ubo.model,0.002f,VEC3(0,0,1));
-    glm_mat4_copy(main_camera.projection,ubo.projection);
-    glm_mat4_copy(main_camera.view,ubo.view);
-     
-    ubo.projection[1][1] *= -1;
 
+    PEUniformBufferObject pawn_ubo;
+    PEUniformBufferObject rook_ubo;
+
+    ZERO(pawn_ubo);
+    ZERO(rook_ubo);
+
+    glm_mat4_identity(pawn_ubo.model);
+    glm_mat4_identity(rook_ubo.model);
+    
+    glm_rotate(pawn_ubo.model,0.002f,VEC3(0,1,0));
+    glm_rotate(rook_ubo.model,0.002f,VEC3(1,0,0));
+
+    glm_mat4_copy(main_camera.projection,pawn_ubo.projection);
+    glm_mat4_copy(main_camera.view,pawn_ubo.view);
+     
+    glm_mat4_copy(main_camera.projection,rook_ubo.projection);
+    glm_mat4_copy(main_camera.view,rook_ubo.view);
+
+    pawn_ubo.projection[1][1] *= -1;
+    rook_ubo.projection[1][1] *= -1;
+
+    PEUniformBufferObject buffers[2] = {pawn_ubo,rook_ubo};
+    
     VkDeviceMemory* memory = array_get(&pe_vk_uniform_buffers_memory,image_index);
     
-    pe_vk_memory_copy(sizeof(ubo),memory,&ubo);
+    pe_vk_memory_copy(sizeof(buffers),memory,buffers);
 
     PEColorShader sh;
     ZERO(sh);

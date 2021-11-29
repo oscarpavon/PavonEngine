@@ -11,6 +11,8 @@
 #include <engine/model.h>
 #include <engine/engine.h>
 
+#include <demo/chess/chess.h>
+
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description(){
     VkVertexInputBindingDescription binding;
     ZERO(binding);
@@ -77,8 +79,11 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 }
 
 
+
+
 void pe_vk_model_create(){
 
+    chess_create_pieces();
 
     actual_model_array = &array_models_loaded;
     pe_loader_model("/home/pavon/chess/rook.glb");
@@ -94,5 +99,6 @@ void pe_vk_model_create(){
 
     test_model2->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
     test_model2->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+
 
 }
