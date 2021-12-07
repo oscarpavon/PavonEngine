@@ -11,6 +11,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 		)
 endif()
 
+set(audio 
+		${CMAKE_CURRENT_LIST_DIR}/audio.c
+        )
+
 set(network 
 		${CMAKE_CURRENT_LIST_DIR}/network/network.c
 		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
