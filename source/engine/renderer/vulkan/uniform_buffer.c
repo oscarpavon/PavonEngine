@@ -38,11 +38,19 @@ void pe_vk_uniform_buffer_create(){
         array_add(&pe_vk_uniform_buffers,&info.buffer);
         array_add(&pe_vk_uniform_buffers_memory,&info.buffer_memory);
 
+
+        array_add(&test_model->ubo_buffer,&info.buffer);
+        array_add(&test_model->ubo_memoru,&info.buffer_memory);
+        
+        array_add(&test_model2->ubo_buffer,&info.buffer);
+        array_add(&test_model2->ubo_memoru,&info.buffer_memory);
+
     }
+
+     
 
     buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
 
-    pe_vk_ubo_init();
 }
 
 void pe_vk_memory_copy(size_t size, VkDeviceMemory* memory, void* in_data){
@@ -77,11 +85,28 @@ void pe_vk_uniform_buffer_update(uint32_t image_index){
     pawn_ubo.projection[1][1] *= -1;
     rook_ubo.projection[1][1] *= -1;
 
-    PEUniformBufferObject buffers[2] = {pawn_ubo,rook_ubo};
+    PEUniformBufferObject buffers[] = {pawn_ubo,rook_ubo};
     
     VkDeviceMemory* memory = array_get(&pe_vk_uniform_buffers_memory,image_index);
     
     pe_vk_memory_copy(sizeof(buffers),memory,buffers);
+
+
+
+
+
+    VkDeviceMemory* pawn_memory = array_get(&test_model->ubo_memoru,image_index);
+     
+    pe_vk_memory_copy(sizeof(PEUniformBufferObject),pawn_memory,&pawn_ubo);
+
+
+    
+    VkDeviceMemory* rook_memory = array_get(&test_model->ubo_memoru,image_index);
+     
+    pe_vk_memory_copy(sizeof(PEUniformBufferObject),rook_memory,&rook_ubo);
+
+
+
 
     PEColorShader sh;
     ZERO(sh);
