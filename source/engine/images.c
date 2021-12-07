@@ -35,7 +35,7 @@ int image_load(const char* path, Image* image){
 void pe_gpu_load_texture(Texture* texture){
 
     if(pe_renderer_type == PEWMOPENGLES2)
-        pe_gpu_load_texture(texture);
+        //pe_gpu_load_texture(texture);
 
     if(pe_renderer_type == PEWMVULKAN){
         
