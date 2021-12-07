@@ -1,3 +1,5 @@
+include(/home/pavon/PavonEngine/make_include.txt)
+
 set(windows 
 		windows/tabs.c
 		windows/content_browser.c
@@ -38,36 +40,12 @@ set (game_source
         ../engine/game.c
 )
 
-include(FindFreetype)
-include_directories(${FREETYPE_INCLUDE_DIRS})
-
-find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
 add_executable(peditor ${editor_sources} ${game_source})
 
 set(lib 
 	engine        
-	m
-	glfw
-	pthread
-	${FREETYPE_LIBRARIES}
-	${OPENGL_LIBRARIES}
-    pe_vk
-	)
-if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
-
-	
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-set(linux_libraries 
-	dl
-	asound
-)
-set(lib ${lib} ${linux_libraries})
-endif()
+    ${engine_link}
+    )
 
 target_link_libraries(peditor ${lib})
