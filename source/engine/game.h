@@ -8,6 +8,13 @@
 #include "model.h"
 #include "windows_manager.h"
 
+typedef struct PGame{
+    char* name;
+	void(*init)(void);
+	void(*loop)(void);
+	void(*end)(void);
+}PGame;
+
 int init_game();
 
 void update_game();
@@ -24,8 +31,9 @@ void pe_game_render_config();
 
 void pe_game_window_init();
 
-void pe_game_create();
+void pe_game_create(PGame*);
 
 EngineWindow* game_window;
+
 
 #endif //PAVON_MOBILE_GAME_H

@@ -14,21 +14,31 @@
 
 #include <dlfcn.h>
 
-
-void pe_game_create(){
-
-    LOG("game created\n");
-
-}
-
 void pe_game_render_init(){
- 
+//referenced from render_thread_definition 
     
 }
 
-void pe_game_window_init(){
+void pe_game_render_config(){
+	render_thread_definition.init = &pe_game_render_init;
+	render_thread_definition.draw = &window_manager_draw_windows; 
+	render_thread_definition.end = &glfwTerminate;
+}
 
-    window_create(game_window, NULL, "game"); 
+void pe_game_create(PGame * game){
+    
+    LOG("game created\n");
+
+    pe_init();
+
+    pe_game_render_config();
+   
+    EngineWindow win;
+    ZERO(win);
+
+    window_create(&win, NULL, game->name); 
+
+    game_window = &win;
 
     glfwSetKeyCallback(game_window->window, pe_input_key_callback);
 	glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
@@ -37,13 +47,12 @@ void pe_game_window_init(){
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
 
+    pe_program_main_loop(&game->loop, game_window);
+
 }
 
-void pe_game_render_config(){
-	render_thread_definition.init = &pe_game_render_init;
-	render_thread_definition.draw = &window_manager_draw_windows; 
-	render_thread_definition.end = &glfwTerminate;
-}
+
+
 
 int load_gamplay_code(){
     

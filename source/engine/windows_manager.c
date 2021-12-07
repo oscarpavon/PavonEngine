@@ -43,7 +43,10 @@ void windows_manager_init(){
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
-
+    if(win == NULL){
+        LOG("ERROR: Window not found\n");
+        return;
+    }
     if(win->initialized)
         return;
 
