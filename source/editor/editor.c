@@ -610,11 +610,9 @@ void editor_init() {
     
 
     main_window.init = &editor_main_window_init;//window specific data
+    main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
     main_window.draw = &editor_draw;//Main loop draw in window
     main_window.finish = &editor_render_finish;
-    
-    
-    main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
     
 
     array_add(&engine_windows, &main_window);

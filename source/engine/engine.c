@@ -375,10 +375,10 @@ void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_windo
         
         window_manager_update_windows_input();    
 				
-				program_loop();	
+		program_loop();	
 
         usleep(2*1000);    
-		}
+	}
 }
 
 void pe_init(){

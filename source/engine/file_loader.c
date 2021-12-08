@@ -93,7 +93,9 @@ int pe_file_openb(const char* path, File* output){
 }
 
 int file_read(File *file, char *buffer, int buffer_size) {
-  memcpy(buffer, file->data + file->bytes_readed, buffer_size);
-  file->bytes_readed += buffer_size;
-	return buffer_size;
+    if(file->bytes_readed < file->size_in_bytes){
+        memcpy(buffer, file->data + file->bytes_readed, buffer_size);
+        file->bytes_readed += buffer_size;
+	    return buffer_size;
+    }else return 0;
 }

@@ -17,12 +17,12 @@ struct ResourceDescriptor{
 };
 
 typedef struct file{
-  const char *path;
-  u32 size_in_bytes;
-	u32 bytes_readed; 
+    const char *path;
+    u32 size_in_bytes;
+    u32 bytes_readed; 
  	struct ResourceDescriptor resource_descriptor;
-  bool opened;
-  void *data;
+    bool opened;
+    void *data;
 }File;
 
 
