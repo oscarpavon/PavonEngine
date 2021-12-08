@@ -122,12 +122,12 @@ bool editor_input_camera_rotate_control() {
 
 void editor_input_navigate(){
     input_change_mode();
-
+    float camera_navigate_velocity = 0.05f;
     if(input.I.pressed){
-        camera_velocity += 0.02;
+        camera_velocity += camera_navigate_velocity;
     }
     if(input.O.pressed){
-        camera_velocity -= 0.02;
+        camera_velocity -= camera_navigate_velocity;
     }
 
 

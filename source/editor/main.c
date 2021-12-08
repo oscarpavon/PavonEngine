@@ -2,6 +2,8 @@
 
 int main(int argc , char* argv[]){
 
+  pe_renderer_type = PEWMOPENGLES2;
+
   command_parse_from_command_line(argc, argv);
 
   editor_init();

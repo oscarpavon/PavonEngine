@@ -172,12 +172,20 @@ int command_parse_from_command_line(int argc, char* argv[]){
 		return 1;
 	}
 	
+    
+    
+    pe_renderer_type = PEWMOPENGLES2;
+
     if(strcmp(argv[1] , "-vk") == 0){
        pe_renderer_type = PEWMVULKAN;
 
     }else if(strcmp(argv[1] , "-ogl") == 0){
         pe_renderer_type = PEWMOPENGLES2;
+    }else{
+        pe_renderer_type = PEWMOPENGLES2;
     }
+
+         
 
 	return 1;
 }

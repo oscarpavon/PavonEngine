@@ -533,6 +533,7 @@ void editor_main_render_thread(){
 
 	window_manager_draw_windows();
 
+
 }
 
 void editor_main_loop(){
@@ -561,7 +562,7 @@ void editor_data_init(){
 
 	strcpy(editor_mode_show_text,"Default");
 
-    camera_velocity = 0.10;  
+    camera_velocity = 0.60;  
 }
 
 void editor_render_init(){
@@ -590,19 +591,10 @@ void editor_render_init(){
  	gizmos_init();
    
    	editor_running = true;
+
+
 }
-
-void editor_init() {
-
-    pe_init();
-
-    editor_data_init();
-
-    pe_input_init();
-
-    editor_command_queue_init();
-
-    edit_server_init();
+void pe_editor_window_configure(){
 
     //All window definition here
     EngineWindow main_window;
@@ -618,7 +610,6 @@ void editor_init() {
     array_add(&engine_windows, &main_window);
     window_editor_main = array_pop(&engine_windows);
 
-    //render thread initialization
     //Send window initialization to the render thread
 
     PEThreadCommand thread_commad;
@@ -628,6 +619,9 @@ void editor_init() {
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
 
+}
+
+void pe_editor_render_thread_configure_and_start(){
 
     render_thread_definition.init = &editor_render_init;
     render_thread_definition.draw = &editor_main_render_thread;
@@ -639,12 +633,22 @@ void editor_init() {
 
     }
 
-    pe_render_thread_init();
+    pe_render_thread_start_and_draw();
+}
 
-    //wait for window initialization in the render thread	
-    while (!window_editor_main->initialized) {
-    };
+void editor_init() {//executed in main thread from main()
 
+    pe_init();
 
+    editor_data_init();
+
+    editor_command_queue_init();
+
+    edit_server_init();
+
+    pe_editor_window_configure();
+
+    pe_editor_render_thread_configure_and_start();
+   
     LOG("[OK]Editor initialized\n");
 }

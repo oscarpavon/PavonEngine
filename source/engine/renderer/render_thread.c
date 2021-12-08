@@ -59,41 +59,43 @@ void render_thread_init(){
 
 }
 
-void engine_render_thread() {
-	LOG("Render thread id= %ld\n",pthread_self());
+void engine_render_draw() {
 
-//*********  Timing ******
-  float render_frame_time = 0;
-  float disired_frame_time = 0.016f;
-
-  u8 frames = 0;
-  float frame_second = 0;
-//************************
-
-  render_thread_init();
+    render_thread_init();
+    
+    //*********  Timing ******
+    float render_frame_time = 0;
+    float disired_frame_time = 0.016f;
+   
+    u8 frames = 0;
+    float frame_second = 0;
+    //************************
+     
   
-	while (engine_running) {
+    while (engine_running) {
 
+        render_frame_time += time_delta;
 
-    render_frame_time += time_delta;
-
-    time_start();
+        time_start();
 
 		pe_thread_control(&render_thread_commads);
 
-    if(render_thread_definition.draw != NULL)
-		  render_thread_definition.draw();
+        if(render_thread_definition.draw != NULL)
+		    render_thread_definition.draw();
 		
 		//********* Timing **********
-    time_end();
-    frame_second += time_elapsed_time;
-    if (frame_second >= 1000) {
-      FPS = frames * (1000.f / frame_second);
-      frames = 0;
-      frame_second = 0;
-    } else
-      frames++;
-		//********* End timing ********
+        time_end();
+       
+        frame_second += time_elapsed_time;
+        
+        if (frame_second >= 1000) {
+            FPS = frames * (1000.f / frame_second);
+            frames = 0;
+            frame_second = 0;
+        }else{
+            frames++;
+        }
+    	//********* End timing ********
   
 	}
 	//end while
@@ -101,8 +103,8 @@ void engine_render_thread() {
 }
 
 /*Init the render thread*/
-void pe_render_thread_init(){
-	thread_new_detached(engine_render_thread,NULL,"Render",&pe_th_render_id);    
+void pe_render_thread_start_and_draw(){
+	thread_new_detached(engine_render_draw,NULL,"Render",&pe_th_render_id);    
 }
 
 void pe_frame_draw(){

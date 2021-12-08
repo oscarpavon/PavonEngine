@@ -365,9 +365,19 @@ void pe_init_arrays(){
 
 void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
 
-
     while(!engine_initialized){}//wait for initilization
 
+wait:
+    if(program_window == NULL) {
+        goto wait;
+    }
+
+    //wait for window initialization in the render thread	
+    while (!program_window->initialized) {};
+
+    if(program_window->window == NULL){
+        goto wait;
+    } 
     
     while (!glfwWindowShouldClose(program_window->window))
     {
@@ -386,7 +396,6 @@ void pe_init(){
 	// VERY IMPORTANT
     init_engine_memory();
 
-    // Window manager need not start cause Render need graphics context
     windows_manager_init();
 
     pe_init_arrays();
@@ -394,6 +403,8 @@ void pe_init(){
 	pe_audio_init();
 
 	pe_th_main_id = pthread_self();
+
+    pe_input_init();
 
 	engine_running = true;
 
