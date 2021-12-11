@@ -20,6 +20,7 @@ set(engine_link
     vulkan
     pulse
     pulse-simple
+    asound
     )
 if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
 

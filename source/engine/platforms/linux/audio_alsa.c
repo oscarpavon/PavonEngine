@@ -17,7 +17,8 @@ int buff_size, loops;
 int file_des;
 File new_audio_file;
 
-void audio_init(){
+void pe_audio_alsa_init(){
+    LOG("Alsa Audio Initializing\n");
 
 	rate 	 = 44100;
 	channels = 2;
@@ -98,7 +99,8 @@ void audio_play(const char* file_path){
 		}
 
 	}
-	close_file(&new_audio_file);
+	
+    close_file(&new_audio_file);
 	snd_pcm_drain(pcm_handle);
 	snd_pcm_close(pcm_handle);
 	free(buff);

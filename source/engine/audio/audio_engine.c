@@ -14,15 +14,13 @@
 #include <fcntl.h>
 #include <errno.h>
 
+
 /*Add audio type to audio thread sounds queue*/
 void pe_audio_play(PEAudio* audio){
 
 
 }
-
-void audio_engine_main_thread(void* argument){
-
-    LOG("Audio Engine [OK]\n");
+void pe_audio_pulse(){
 
     /* The Sample format to use */
     static const pa_sample_spec sample_specs = {
@@ -30,12 +28,7 @@ void audio_engine_main_thread(void* argument){
         .rate = 44100,
         .channels = 2
     };
-
-	#ifdef LINUX		
-	audio_init();
-	#endif
-
-
+    
     pa_simple *stream = NULL;
 
     int error;
@@ -64,6 +57,16 @@ void audio_engine_main_thread(void* argument){
         }
         //LOG("playing\n");
     }
+}
+
+void audio_engine_main_thread(void* argument){
+
+    LOG("Audio Engine [OK]\n");
+
+
+    pe_audio_alsa_init();
+
+    audio_play("/home/pavon/cat.wav");
 
 	while(1){
 		pe_thread_control(&thread_audio_commads);

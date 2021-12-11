@@ -6,15 +6,13 @@ include_directories(/home/pavon/sources/freetype2/include)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-	set(audio 
-		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
-		)
+
 endif()
 
-set(audio 
-		${CMAKE_CURRENT_LIST_DIR}/audio.c
-        )
 
+set(audio   ${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
+            ${CMAKE_CURRENT_LIST_DIR}/audio.c
+)
 set(network 
 		${CMAKE_CURRENT_LIST_DIR}/network/network.c
 		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
