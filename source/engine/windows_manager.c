@@ -18,7 +18,7 @@ void pe_wm_glfw_init(){
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	    LOG("Windows manager initialized in OPENGL");
+	    LOG("Windows manager initialized in OPENGL\n");
     } else if (pe_renderer_type == PEWMVULKAN) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	    LOG("Window Manager in VULKAN");
@@ -130,8 +130,9 @@ void window_manager_draw_windows(){
 		continue;
 	}
 		
-		window->draw();
-	if(pe_renderer_type == PEWMOPENGLES2)	
+	window->draw();
+	
+    if(pe_renderer_type == PEWMOPENGLES2)	
         glfwSwapBuffers(window->window);
 
 	}

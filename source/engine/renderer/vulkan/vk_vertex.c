@@ -83,7 +83,6 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array* indices){
 
 void pe_vk_model_create(){
 
-    chess_create_pieces();
 
     actual_model_array = &array_models_loaded;
     pe_loader_model("/home/pavon/chess/rook.glb");
