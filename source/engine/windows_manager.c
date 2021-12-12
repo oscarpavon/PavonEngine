@@ -21,7 +21,7 @@ void pe_wm_glfw_init(){
 	    LOG("Windows manager initialized in OPENGL\n");
     } else if (pe_renderer_type == PEWMVULKAN) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	    LOG("Window Manager in VULKAN");
+	    LOG("Window Manager in VULKAN\n");
     }
 	//MSAA
 	glfwWindowHint(GLFW_SAMPLES,4);

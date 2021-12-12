@@ -423,7 +423,6 @@ void default_mode(){
         audio2.finish = false;
         audio2.file.bytes_readed = sizeof(struct PWaveHeader);
        }
-        LOG("pressed\n") ;
     }
 
     //edit in blender
