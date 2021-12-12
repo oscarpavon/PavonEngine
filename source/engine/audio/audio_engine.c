@@ -103,50 +103,6 @@ void pe_audio_mix_two_file(char* out,char* in){
 
         }
 }
-void pe_audio_play_master(){
-	
-    buff_size = frames * channels * 2 /* 2 -> sample size */;
-   
-
-	
-
-        char * play_buffer = (char*) malloc(buff_size);
-
-        for (loops = (seconds * 1000000) / tmp; loops > 0; loops--) {
-
-            for(int i = 0; i < pe_audio_array_queue.count; i++){
-        
-                PAudio* audio = array_get(&pe_audio_array_queue,i);
-                if(pe_audio_array_queue.count == 1){
-                 
-                file_read(&audio->file,play_buffer,buff_size);
-                }else{
-                
-                if(i == 0){
-                    file_read(&audio->file,play_buffer,buff_size);
-                    continue;
-                   } 
-                char buffer1[buff_size];
-
-                file_read(&audio->file,buffer1,buff_size);
-
-                pe_audio_mix_two_file(play_buffer,buffer1);
-                }
-            }
-
-            int readed = snd_pcm_writei(pcm_handle, play_buffer, frames);
-            if (readed == -EPIPE) {
-		    	printf("XRUN.\n");
-		    	snd_pcm_prepare(pcm_handle);
-	    	} else if (pcm < 0) {
-			printf("ERROR. Can't write to PCM device. %s\n", snd_strerror(pcm));
-	    	}
-
-	    }
-
-    
-}
-
 void pe_audio_mix(){
     File audio1;
     File audio2;
@@ -202,20 +158,82 @@ void pe_audio_mix(){
 	free(buff);
 
 }
+void pe_audio_play_master(){
+	
+    buff_size = frames * channels * 2 /* 2 -> sample size */;
+    int count_play = 0;
+            if(pe_audio_array_queue.count < 1){
+                return;
+            }
+            count_play = 0;
+
+            for(int i = 0; i < pe_audio_array_queue.count; i++){
+        
+                PAudio* audio = array_get_pointer(&pe_audio_array_queue,i);
+
+                if(audio->finish == true) continue;
+               
+                count_play++;
+                
+                    if(count_play == 1 ){
+                        file_read(&audio->file,play_buffer,buff_size);
+                        continue;
+                    } 
+                    
+                    char buffer1[buff_size];
+
+                    int readed = file_read(&audio->file,buffer1,buff_size);
+                    if(readed == 0){
+                        audio->playing = false;
+                        audio->finish = true;
+                        LOG("end cat\n");
+                    }
+
+                    pe_audio_mix_two_file(play_buffer,buffer1);
+                
+            }
+
+            int readed = snd_pcm_writei(pcm_handle, play_buffer, frames);
+            if (readed == -EPIPE) {
+		    	printf("XRUN.\n");
+		    	snd_pcm_prepare(pcm_handle);
+	    	} else if (pcm < 0) {
+			    printf("ERROR. Can't write to PCM device. %s\n", snd_strerror(pcm));
+	    	}
+
+	    
+
+    
+}
+
+
+void pe_audio_load(PAudio* audio,char* path){
+    ZERO(*(audio));
+	load_file( path, &audio->file);
+    char buff[sizeof(struct PWaveHeader)];
+    file_read(&audio->file,buff,sizeof(struct PWaveHeader));
+    memcpy(&audio->header,buff,sizeof(struct PWaveHeader));
+    LOG("Frame ratei %u\n",audio->header.sample_rate);
+    double duration = audio->header.overall_size / audio->header.sample_rate;
+
+    LOG("Durarion %f\n",duration);
+
+
+}
+
 void audio_engine_main_thread(void* argument){
 
     LOG("Audio Engine [OK]\n");
 
 
     pe_audio_alsa_init();
-    array_init(&pe_audio_array_queue,sizeof(PAudio),100);
+    array_init(&pe_audio_array_queue,sizeof(void*),100);
 
-    PAudio audio1;
+	pe_audio_load(&audio1, "/home/pavon/test.wav");
+	pe_audio_load(&audio2, "/home/pavon/cat.wav");
 
-	load_file( "/home/pavon/test.wav", &audio1.file);
-	load_file( "/home/pavon/cat.wav", &audio2.file);
-
-    array_add(&pe_audio_array_queue,&audio1);
+     play_buffer = (char*) malloc(buff_size);
+    array_add_pointer(&pe_audio_array_queue,&audio1);
 
 
     //pe_audio_mix();
@@ -223,6 +241,7 @@ void audio_engine_main_thread(void* argument){
 	while(1){
 		pe_thread_control(&thread_audio_commads);
         pe_audio_play_master();
+        
 	}	
 }
 

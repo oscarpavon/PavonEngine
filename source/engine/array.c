@@ -54,12 +54,17 @@ void array_add(Array* array,const void* element){
     memcpy(array->data+(offset),element,array->element_bytes_size);
 }
 
+void array_add_pointer(Array* array, const void* element){
+    array_add(array,&element);
+}
+
 void *array_get_last(Array* array){
     if(array->count > 0){
         return array_get(array, array->count-1);
     }else
         return NULL;
 }
+
 
 void *array_get(Array* array,int index){
     if(array->count == 0){
@@ -91,6 +96,12 @@ void *array_get(Array* array,int index){
     if(index == 0)
         return array->data;
     return array->data + (index*offset);
+}
+
+void *array_get_pointer(Array* array,int index){
+    void** ppointer = array_get(array,index);
+    void* pointer = ppointer[0];
+    return pointer;
 }
 
 void array_clean(Array* array){

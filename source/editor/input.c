@@ -190,13 +190,6 @@ void editor_input_navigate(){
         camera_update(&main_camera);
 
 
-    if(input.B.pressed){
-       if(audio2.playing == false){
-        array_add(&pe_audio_array_queue,&audio2) ;
-       LOG("play cat\n") ;
-        audio2.playing = true;
-       }
-    }
 }
 
 
@@ -421,6 +414,18 @@ void default_mode(){
 			 change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
 		}
 	}
+    
+    if(input.B.pressed){
+       if(audio2.playing == false){
+        array_add_pointer(&pe_audio_array_queue,&audio2) ;
+        LOG("play cat\n") ;
+        audio2.playing = true;
+        audio2.finish = false;
+        audio2.file.bytes_readed = sizeof(struct PWaveHeader);
+       }
+        LOG("pressed\n") ;
+    }
+
     //edit in blender
     if(key_released(&input.TAB)){
         if(selected_element){

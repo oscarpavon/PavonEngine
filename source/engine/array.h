@@ -20,6 +20,10 @@ int array_init(Array * array, u32 element_bytes_size, int count);
 
 void array_add(Array* array, const void* element);
 
+void array_add_pointer(Array* array, const void* element);
+
+void *array_get_pointer(Array*,int index);
+
 void *array_get(Array*,int index);
 
 void array_clean(Array* array);
