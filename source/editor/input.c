@@ -23,6 +23,8 @@
 #include "commands.h"
 #include "skeletal_editor.h"
 
+#include <engine/audio/audio_engine.h>
+
 float rotate_value = 1;
 float camera_rotate_yaw = 1;
 
@@ -186,6 +188,15 @@ void editor_input_navigate(){
 		} 
 	if(update)
         camera_update(&main_camera);
+
+
+    if(input.B.pressed){
+       if(audio2.playing == false){
+        array_add(&pe_audio_array_queue,&audio2) ;
+       LOG("play cat\n") ;
+        audio2.playing = true;
+       }
+    }
 }
 
 

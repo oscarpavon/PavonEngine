@@ -16,7 +16,7 @@
 
 
 /*Add audio type to audio thread sounds queue*/
-void pe_audio_play(PEAudio* audio){
+void pe_audio_play(PAudio* audio){
 
 
 }
@@ -91,6 +91,61 @@ char pe_audio_byte_mix(char byte , char byte2){
             int mix = (int)added_byte - div;
             char mix_c = (char) mix;
 }
+void pe_audio_mix_two_file(char* out,char* in){
+        char tmp[buff_size];
+        ZERO(tmp);
+        memcpy(&tmp,out,buff_size);
+        for(int i = 0; i < buff_size; i++){
+            char byte = in[i];
+            char byte2 = tmp[i];
+            
+            out[i] = pe_audio_byte_mix(byte,byte2);
+
+        }
+}
+void pe_audio_play_master(){
+	
+    buff_size = frames * channels * 2 /* 2 -> sample size */;
+   
+
+	
+
+        char * play_buffer = (char*) malloc(buff_size);
+
+        for (loops = (seconds * 1000000) / tmp; loops > 0; loops--) {
+
+            for(int i = 0; i < pe_audio_array_queue.count; i++){
+        
+                PAudio* audio = array_get(&pe_audio_array_queue,i);
+                if(pe_audio_array_queue.count == 1){
+                 
+                file_read(&audio->file,play_buffer,buff_size);
+                }else{
+                
+                if(i == 0){
+                    file_read(&audio->file,play_buffer,buff_size);
+                    continue;
+                   } 
+                char buffer1[buff_size];
+
+                file_read(&audio->file,buffer1,buff_size);
+
+                pe_audio_mix_two_file(play_buffer,buffer1);
+                }
+            }
+
+            int readed = snd_pcm_writei(pcm_handle, play_buffer, frames);
+            if (readed == -EPIPE) {
+		    	printf("XRUN.\n");
+		    	snd_pcm_prepare(pcm_handle);
+	    	} else if (pcm < 0) {
+			printf("ERROR. Can't write to PCM device. %s\n", snd_strerror(pcm));
+	    	}
+
+	    }
+
+    
+}
 
 void pe_audio_mix(){
     File audio1;
@@ -153,13 +208,21 @@ void audio_engine_main_thread(void* argument){
 
 
     pe_audio_alsa_init();
+    array_init(&pe_audio_array_queue,sizeof(PAudio),100);
 
-//    audio_play("/home/pavon/cat.wav");
-    pe_audio_mix();
+    PAudio audio1;
+
+	load_file( "/home/pavon/test.wav", &audio1.file);
+	load_file( "/home/pavon/cat.wav", &audio2.file);
+
+    array_add(&pe_audio_array_queue,&audio1);
+
+
+    //pe_audio_mix();
 
 	while(1){
 		pe_thread_control(&thread_audio_commads);
-
+        pe_audio_play_master();
 	}	
 }
 
