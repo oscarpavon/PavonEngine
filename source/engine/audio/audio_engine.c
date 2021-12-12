@@ -59,6 +59,94 @@ void pe_audio_pulse(){
     }
 }
 
+char pe_byte_add(char byte, char byte2){
+
+            char byte_result;
+            ZERO(byte_result);
+            char high_byte;
+            char low_byte;
+            ZERO(low_byte);
+            ZERO(high_byte);
+
+            int result = memcmp(&byte,&byte2,1);
+            if(result > 0) {//byte is greater
+                high_byte = byte;
+                low_byte = byte2;
+            }else{  
+                high_byte = byte2;
+                low_byte = byte;
+            }
+            
+            byte_result = (high_byte << 8) | low_byte;
+
+            return byte_result;
+}
+
+char pe_audio_byte_mix(char byte , char byte2){
+
+            char added_byte = pe_byte_add(byte,byte2);
+
+            int mult = (int) byte * (int) byte2;
+            int div = mult / 256;
+            int mix = (int)added_byte - div;
+            char mix_c = (char) mix;
+}
+
+void pe_audio_mix(){
+    File audio1;
+    File audio2;
+    
+	load_file( "/home/pavon/test.wav", &audio1);
+	load_file( "/home/pavon/cat.wav", &audio2);
+
+
+	buff_size = frames * channels * 2 /* 2 -> sample size */;
+	buff = (char *) malloc(buff_size);
+    
+    char * buffer1 = (char*) malloc(buff_size);
+
+    char * buffer2 = (char*) malloc(buff_size);
+
+    int bytes_reader1 = 0;
+    int bytes_readed2 = 0;
+
+	for (loops = (seconds * 1000000) / tmp; loops > 0; loops--) {
+
+
+        bytes_reader1 = file_read(&audio1,buffer1,buff_size);
+        if(bytes_reader1 == 0){
+            LOG("end play\n");
+            break;
+        }
+
+        bytes_readed2 = file_read(&audio2,buffer2,buff_size);
+        
+        char mix_buffer[buff_size];
+        ZERO(mix_buffer);
+
+        for(int i = 0; i < buff_size; i++){
+            char byte = buffer1[i];
+            char byte2 = buffer2[i];
+            
+            mix_buffer[i] = pe_audio_byte_mix(byte,byte2);
+
+        }
+
+        if (pcm = snd_pcm_writei(pcm_handle, mix_buffer, frames) == -EPIPE) {
+			printf("XRUN.\n");
+			snd_pcm_prepare(pcm_handle);
+		} else if (pcm < 0) {
+			printf("ERROR. Can't write to PCM device. %s\n", snd_strerror(pcm));
+		}
+
+	}
+	
+    close_file(&new_audio_file);
+	snd_pcm_drain(pcm_handle);
+	snd_pcm_close(pcm_handle);
+	free(buff);
+
+}
 void audio_engine_main_thread(void* argument){
 
     LOG("Audio Engine [OK]\n");
@@ -66,7 +154,8 @@ void audio_engine_main_thread(void* argument){
 
     pe_audio_alsa_init();
 
-    audio_play("/home/pavon/cat.wav");
+//    audio_play("/home/pavon/cat.wav");
+    pe_audio_mix();
 
 	while(1){
 		pe_thread_control(&thread_audio_commads);
