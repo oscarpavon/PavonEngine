@@ -38,7 +38,7 @@ void pe_frame_clean(){
     //end clean frame
 }
 void render_thread_init(){
-  pe_thread_control(&render_thread_commads);
+  pe_thread_control(&render_thread_commads);//for execute program_ini() from application
 
   pe_shader_compile_std();
 
@@ -102,7 +102,7 @@ void engine_render_draw() {
 	render_thread_definition.end();
 }
 
-/*Init the render thread*/
+/*Start render thread and call engine_render_draw()*/
 void pe_render_thread_start_and_draw(){
 	thread_new_detached(engine_render_draw,NULL,"Render",&pe_th_render_id);    
 }

@@ -29,12 +29,14 @@ void pe_game_render_config(){
 }
 void pe_game_draw(){
 
-  glClearColor(COLOR(backcolor));
+  glClearColor(1,0,0,1);
   render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
+  pe_frame_draw();
+
 }
 void pe_game_init(){
 
-    window_create(game_window, NULL, "Game"); 
+    window_create(game_window, NULL, game->name); 
     
     glfwSetKeyCallback(game_window->window, pe_input_key_callback);
 	glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
@@ -42,9 +44,11 @@ void pe_game_init(){
     glfwSetCharCallback(game_window->window, pe_input_key_callback);
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
+
+    game->init();
 }
-void pe_game_create(PGame * game){
-    
+void pe_game_create(PGame * created_game){
+    game = created_game; 
 
     pe_renderer_type = PEWMOPENGLES2;
     pe_init();

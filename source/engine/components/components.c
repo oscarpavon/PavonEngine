@@ -301,29 +301,28 @@ void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(Compo
     }
 }
 
-void init_element_component(ComponentDefinition* element_component){
-    switch (element_component->type)
-    {
-    case STATIC_MESH_COMPONENT:
-        {
-					pe_comp_static_mesh_init(element_component);
-        }
-        break;
-     case TRASNFORM_COMPONENT:{
-        
-        TransformComponent* transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);
-        element_component->parent->transform = transform;       
-
-        break;
-    }
-    case COMPONENT_SKINNED_MESH:{
-			pe_comp_skinned_mesh_init(element_component);
-    }
+void init_element_component(ComponentDefinition *element_component) {
+  switch (element_component->type) {
+  case STATIC_MESH_COMPONENT: {
+    pe_comp_static_mesh_init(element_component);
     break;
-    default:
-        break;
-    }
+  }
+  case TRASNFORM_COMPONENT: {
+
+    TransformComponent *transform = get_component_from_element(
+        element_component->parent, TRASNFORM_COMPONENT);
+    element_component->parent->transform = transform;
+
+    break;
+  }
+  case COMPONENT_SKINNED_MESH: {
+    pe_comp_skinned_mesh_init(element_component);
+  } break;
+  default:
+    break;
+  }
 }
+
 void pe_mesh_fill_models_ids(Array *meshes, Array *textures,
                              u32 models_loaded) {
 
@@ -364,8 +363,8 @@ void pe_comp_add(u32 models_loaded){
     case COMPONENT_SKINNED_MESH:
         {
             SkinnedMeshComponent skin_mesh_component;
-	          ZERO(skin_mesh_component); 
-						pe_mesh_fill_models_ids(&skin_mesh_component.meshes,&skin_mesh_component.textures,models_loaded);
+	        ZERO(skin_mesh_component); 
+			pe_mesh_fill_models_ids(&skin_mesh_component.meshes,&skin_mesh_component.textures,models_loaded);
             add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
 
         }
@@ -374,8 +373,8 @@ void pe_comp_add(u32 models_loaded){
     case STATIC_MESH_COMPONENT:
         {
             StaticMeshComponent mesh_component;
-						ZERO(mesh_component);
-						pe_mesh_fill_models_ids(&mesh_component.meshes,&mesh_component.textures,models_loaded);
+			ZERO(mesh_component);
+		    pe_mesh_fill_models_ids(&mesh_component.meshes,&mesh_component.textures,models_loaded);
             add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);           
             
         }

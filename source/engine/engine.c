@@ -35,7 +35,7 @@ void select_last_element(){
 
 void new_empty_element(){
     Element new_element;
-    memset(&new_element,0,sizeof(struct Element));
+    ZERO(new_element);
         
     new_element.id = element_id_count;   
     new_element.proccess = true; 
@@ -175,7 +175,8 @@ int add_element_with_model_path(const char* model_gltf_path){
     if( models_loaded == -1){
         return -1;
     }
-    actual_model_array = prev_array;
+    if(prev_array != NULL) 
+      actual_model_array = prev_array;
     
     array_add(&pe_arr_models_paths,model_gltf_path);
     
@@ -325,7 +326,9 @@ void duplicate_model_data(Model* destination , Model* source){
 }
 
 void pe_init_arrays(){
+    actual_elements_array = &engine_elements;
 
+    array_init(&engine_elements,sizeof(Element),100);
     array_init(&pe_arr_models_paths,sizeof(char[100]),50);
     array_init(&pe_arr_tex_paths,sizeof(char[20]),50);
     

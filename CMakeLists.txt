@@ -8,7 +8,7 @@ add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
-#add_compile_definitions(PUBLIC LINUX)
+add_compile_definitions(PUBLIC LINUX)
 add_compile_definitions(PUBLIC OPENGL_ES2)
 add_compile_definitions(PUBLIC BSD)
 

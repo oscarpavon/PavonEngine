@@ -121,5 +121,7 @@ void for_each_element_components(void(*do_to)(ComponentDefinition*));
 
 void component_add_HLOD_to_select_element();
 
+void pe_mesh_fill_models_ids(Array *meshes, Array *textures,
+                             u32 models_loaded);
 void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(ComponentDefinition*));
 #endif

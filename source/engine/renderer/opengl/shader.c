@@ -70,15 +70,15 @@ void pe_shader_compile_std(){
       GL_VERTEX_SHADER);
 }
 
-GLuint create_engine_shader(GLuint vertex, GLuint fragment){
-    shader_count++;
-    GLuint new_shader = glCreateProgram();
-    glAttachShader(new_shader, vertex);
-    glAttachShader(new_shader, fragment);
-    glLinkProgram(new_shader);
-		pe_shader_get_error(new_shader,GL_LINK_STATUS,"Link status");
-		glUseProgram(new_shader);
-    return new_shader;
+GLuint create_engine_shader(GLuint vertex, GLuint fragment) {
+  shader_count++;
+  GLuint new_shader = glCreateProgram();
+  glAttachShader(new_shader, vertex);
+  glAttachShader(new_shader, fragment);
+  glLinkProgram(new_shader);
+  pe_shader_get_error(new_shader, GL_LINK_STATUS, "Link status");
+  glUseProgram(new_shader);
+  return new_shader;
 }
 
 void pe_shader_new(PEShaderCreation* creation){
@@ -89,7 +89,7 @@ void pe_shader_new(PEShaderCreation* creation){
 }
 
 void pe_shader_create(PEShaderCreation* creation){
-	thread_main.wait = true;
 	creation->model->shader = create_engine_shader(creation->vertex,creation->pixel);	
 	thread_main.wait = false;
+    LOG("shader created\n");
 }

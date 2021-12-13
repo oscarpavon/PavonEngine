@@ -414,11 +414,11 @@ Model* pe_vk_model_load(char* path){
 
 /*
  Load model from gltf and can used by "selected_model"
- pointer
+ pointer, return count of models loaded
 */
 
 int pe_loader_model(const char* path){
-	File new_file;
+    File new_file;
 
   if(load_file(path,&new_file) == -1)
     return -1;
