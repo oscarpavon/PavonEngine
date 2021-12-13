@@ -26,6 +26,12 @@ int array_init(Array * array, u32 element_bytes_size, int count){
     return 0;
 }
 
+
+int array_new_pointer(Array* array,int count){
+  array_init(array,sizeof(void*),count);
+}
+
+
 void array_resize(Array* array, int count){
     array->actual_bytes_size = count * array->element_bytes_size;
     array->count = count;

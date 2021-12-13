@@ -20,6 +20,7 @@ void pe_game_render_init(){
 //referenced from render_thread_definition 
     
   LOG("render game init\n");
+  game->init();
 }
 
 void pe_game_render_config(){
@@ -29,8 +30,6 @@ void pe_game_render_config(){
 }
 void pe_game_draw(){
 
-  glClearColor(1,0,0,1);
-  render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
   pe_frame_draw();
 
 }
@@ -45,8 +44,8 @@ void pe_game_init(){
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
 
-    game->init();
 }
+
 void pe_game_create(PGame * created_game){
     game = created_game; 
 

@@ -13,9 +13,16 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
   for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
     u8 *id = array_get(&mesh_component->meshes, i);
     Model *model = array_get(actual_model_array, *id);
+   
     glm_mat4_copy(element_component->parent->transform->model_matrix,
                   model->model_mat);
+
   }
+  
+    Model* modelf = array_get_pointer(&mesh_component->models_p,0);
+     
+    glm_mat4_copy(element_component->parent->transform->model_matrix,
+                  modelf->model_mat);
 
   u8 *id = array_get(&mesh_component->meshes, 1);
   Model *model = array_get(actual_model_array, *id);
@@ -29,12 +36,12 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
   glm_aabb_center(mesh_component->bounding_box, mesh_component->center);
 }
 
-void pe_comp_static_mesh_shader_init() {
+void pe_comp_static_mesh_shader_init(Model* model) {
 
   // Shaders
   PEShaderCreation shader_creation;
   ZERO(shader_creation);
-  shader_creation.model = selected_model;
+  shader_creation.model = model;
   shader_creation.vertex = standart_vertex_shader;
   shader_creation.pixel = standart_fragment_shader;
 
@@ -68,6 +75,17 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
 
   StaticMeshComponent *mesh_component = element_component->data;
 
+  for(int i = 0; i < mesh_component->models_p.count ; i++) {
+
+    Model* model = array_get_pointer(&mesh_component->models_p,i);
+
+    pe_comp_static_mesh_shader_init(model);
+
+    glm_mat4_copy(element_component->parent->transform->model_matrix,
+                  selected_model->model_mat);
+  }
+
+  //fill meshes of StaticMeshComponent
   for (u32 i = 1; i <= mesh_component->meshes.count - 1; i++) {
 
     // Models ids
@@ -77,11 +95,11 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
     if (!original_model)
       return;
 
-    new_empty_model();
+    //new_empty_model();
 
-    duplicate_model_data(selected_model, original_model);
+    //duplicate_model_data(selected_model, original_model);
 
-    pe_comp_static_mesh_shader_init();
+    //pe_comp_static_mesh_shader_init();
     
     pe_comp_static_mesh_texture_fill(mesh_component,i);
 

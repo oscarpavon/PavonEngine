@@ -107,6 +107,15 @@ void pe_render_thread_start_and_draw(){
 	thread_new_detached(engine_render_draw,NULL,"Render",&pe_th_render_id);    
 }
 
+void pe_frame_static_fill(ComponentDefinition* definition){
+  StaticMeshComponent* mesh_comp = definition->data;
+  if(mesh_comp->models_p.initialized == false)
+    return;
+  Model* model = array_get_pointer(&mesh_comp->models_p,0);
+  array_add_pointer(&frame_draw_static_elements,model) ;
+
+}
+
 void pe_frame_draw(){
 
   glClearColor(1,0,0,1);
@@ -114,8 +123,9 @@ void pe_frame_draw(){
 
   for_each_element_components(&update_per_frame_component);
 
-  test_elements_occlusion();
-  check_meshes_distance();
+  //test_elements_occlusion();
+  //check_meshes_distance();
+  for_each_element_components(&pe_frame_static_fill);
 
   engine_draw_elements(&frame_draw_static_elements);
 

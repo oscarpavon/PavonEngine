@@ -18,6 +18,8 @@ typedef struct Array{
 
 int array_init(Array * array, u32 element_bytes_size, int count);
 
+int array_new_pointer(Array* array,int count);
+
 void array_add(Array* array, const void* element);
 
 void array_add_pointer(Array* array, const void* element);

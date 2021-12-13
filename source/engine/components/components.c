@@ -147,7 +147,9 @@ void update_component(ComponentDefinition* element_component){
     }
 }
 
-
+/*Fill model for test occlusion*/
+/* Add to  array_static_meshes_pointers for test occlusion
+array_static_meshes_pointers it cleaned every frame*/    
 void update_per_frame_component(ComponentDefinition* element_component){
     switch (element_component->type)
     {
@@ -177,8 +179,6 @@ void update_per_frame_component(ComponentDefinition* element_component){
 
     case STATIC_MESH_COMPONENT:{
         StaticMeshComponent* static_mesh_component = element_component->data; 
-        /* Add to  array_static_meshes_pointers for test occlusion
-        array_static_meshes_pointers it cleaned every frame*/    
         array_add(&array_static_meshes_pointers,&static_mesh_component);
         break;
     }
@@ -364,7 +364,6 @@ void pe_comp_add(u32 models_loaded){
         {
             SkinnedMeshComponent skin_mesh_component;
 	        ZERO(skin_mesh_component); 
-			pe_mesh_fill_models_ids(&skin_mesh_component.meshes,&skin_mesh_component.textures,models_loaded);
             add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
 
         }
@@ -374,14 +373,26 @@ void pe_comp_add(u32 models_loaded){
         {
             StaticMeshComponent mesh_component;
 			ZERO(mesh_component);
-		    pe_mesh_fill_models_ids(&mesh_component.meshes,&mesh_component.textures,models_loaded);
-            add_component_to_selected_element(sizeof(StaticMeshComponent),&mesh_component,STATIC_MESH_COMPONENT);           
+		    pe_mesh_fill_models_ids(&mesh_component.meshes,
+                &mesh_component.textures,models_loaded);
+            
+            array_new_pointer(&mesh_component.models_p,models_loaded);
+            if(models_loaded == 1) {
+              Model* model = array_pop(&array_models_loaded);
+
+              array_add_pointer(&mesh_component.models_p,model);
+            }
+            
+            add_component_to_selected_element(sizeof(StaticMeshComponent),
+                &mesh_component,STATIC_MESH_COMPONENT);           
             
         }
     }
 
     for(int i = 0; i <selected_element->components.count ; i++){
-        ComponentDefinition* component_definition = array_get(&selected_element->components,i);
+        ComponentDefinition* component_definition = 
+          array_get(&selected_element->components,i);
+
         init_element_component(component_definition);
     }
 
