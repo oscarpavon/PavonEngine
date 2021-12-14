@@ -14,18 +14,17 @@ void chess_pieces_load(){
 
 }
 
-vec4 color1 = {0,0,0,1};
-vec4 color2 = {1,1,1,1};
+vec4 color1 = {0,0.2,0,1};
+vec4 color2 = {1,0.5,1,1};
 
 PMesh check_mesh;
 PMaterial check_board_mat2;
 PMaterial check_board_mat1;
 
 void chess_board_create() {
-  int x, y = 0;
-  int offset = 2;
-  for (int i = 0; i < 8; i++) {
-    for (int o = 0; o < 8; o++) {
+
+  for (int x = 0; x < 8; x++) {
+    for (int y = 0; y < 8; y++) {
       new_empty_element();
 
       add_transform_component_to_selected_element();
@@ -37,9 +36,9 @@ void chess_board_create() {
       StaticMeshComponent *mesh2 =
           get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
 
-        if ((i+o) % 2 == 0) {
-
+        if ((x+y) % 2 == 0) {
           mesh2->material = check_board_mat2;
+
         } else {
 
           mesh2->material = check_board_mat1;
@@ -47,7 +46,7 @@ void chess_board_create() {
 
       selected_model->mesh = check_mesh;
 
-      pe_element_set_position(selected_element, VEC3(i, o, 0));
+      pe_element_set_position(selected_element, VEC3(x, y, 0));
     }
   }
 }
@@ -55,7 +54,7 @@ void chess_board_create() {
 void chess_init(){
 
   camera_init(&main_camera); 
-  init_vec3(-17,0,3, main_camera.position);
+  init_vec3(-7,3.5,3.6, main_camera.position);
   camera_update(&main_camera);
   
   ZERO(check_board_mat1);
@@ -68,6 +67,7 @@ void chess_init(){
   glm_vec4_copy(color2,check_board_mat2.color) ;
 
   add_element_with_model_path("/home/pavon/chess/check.glb");
+  
 
   vec3 checkpos = {0,0,29};
   pe_element_set_position(selected_element,checkpos);
@@ -81,6 +81,12 @@ void chess_init(){
   
   chess_board_create();
 
+  add_element_with_model_path("/home/pavon/chess/rook.glb");
+  TransformComponent* transform = get_component_from_element(selected_element,TRASNFORM_COMPONENT); 
+   
+  pe_element_set_position(selected_element,VEC3(1,3,0.3));
+  float scale = -0.8f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
 }
 
 

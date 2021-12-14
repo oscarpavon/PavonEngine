@@ -227,21 +227,6 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     actual_model_array = prev_model_array;
 }
 
-void pe_element_set_position(Element* element,vec3 position){
-
-  TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
-  if (!transform)
-    return;
-  glm_translate(transform->model_matrix, position);
-  glm_vec3_copy(transform->model_matrix[3], transform->position);
-  
-  for (int i = 0; i < selected_element->components.count; i++) {
-    ComponentDefinition *component =
-        array_get(&selected_element->components, i);
-    update_component(component);
-  }
-
-}
 
 void update_translation(vec3 translation) {
   TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);

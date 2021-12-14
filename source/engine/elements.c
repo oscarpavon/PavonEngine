@@ -1,6 +1,40 @@
 #include "elements.h"
 #include "engine.h"
 
+void pe_element_set_scale(vec3 translation){
+    TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
+    if(!transform)
+        return;
+
+    glm_vec3_add(transform->scale,translation,transform->scale);
+    vec3 identity;
+    glm_vec3_copy(GLM_VEC3_ONE,identity);
+    glm_vec3_add(identity,translation,translation);
+
+    glm_scale(transform->model_matrix,translation);
+    
+    for(int i = 0; i<selected_element->components.count; i++){
+        ComponentDefinition* component = array_get(&selected_element->components,i);
+        update_component(component);
+    }
+}
+
+void pe_element_set_position(Element* element,vec3 position){
+
+  TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
+  if (!transform)
+    return;
+  glm_translate(transform->model_matrix, position);
+  glm_vec3_copy(transform->model_matrix[3], transform->position);
+  
+  for (int i = 0; i < selected_element->components.count; i++) {
+    ComponentDefinition *component =
+        array_get(&selected_element->components, i);
+    update_component(component);
+  }
+
+}
+
 void pe_element_duplicate(int current_count, Element *original) {
   Element *last_copy = selected_element;
   new_empty_element();

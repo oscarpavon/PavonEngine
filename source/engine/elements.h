@@ -15,6 +15,8 @@ typedef struct Element{
     #endif
 }Element;
 
+void pe_element_set_scale(vec3 translation);
+
 void pe_element_duplicate(int current_count, Element *original);
 
 void duplicate_selected_element(int current_count, Element* original);
