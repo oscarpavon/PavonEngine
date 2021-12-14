@@ -86,6 +86,9 @@ void set_element_position(Element* element, vec3 position);
 
 void new_empty_element();
 
+void pe_element_set_position(Element* element,vec3 position);
+
+
 /*Create new model in actual model array and you can use selected_model after */
 void new_empty_model();
 

@@ -3,16 +3,14 @@
 #include <engine/types.h>
 #include <engine/threads.h>
 
-
-void engine_draw_elements(Array *elements){
-    for(size_t i = 0; i < elements->count ; i++) { 
-        Model** model = array_get(elements,i);
-        Model* draw_model = model[0];  
-				if(!draw_model)
-					continue;			
-        draw_simgle_model(draw_model);
-    }
-    array_clean(elements);
+void engine_draw_elements(Array *elements) {
+  for (size_t i = 0; i < elements->count; i++) {
+    Model *draw_model = array_get_pointer(elements, i);
+    if (!draw_model)
+      continue;
+    draw_simgle_model(draw_model);
+  }
+  array_clean(elements);
 }
 
 void pe_render_skinned_elements(Array* elements){
@@ -37,6 +35,7 @@ void pe_frame_clean(){
     for_each_element_components(&clean_component_value);
     //end clean frame
 }
+
 void render_thread_init(){
   pe_thread_control(&render_thread_commads);//for execute program_ini() from application
 
@@ -111,7 +110,7 @@ void pe_frame_static_fill(ComponentDefinition* definition){
   StaticMeshComponent* mesh_comp = definition->data;
   if(mesh_comp->models_p.initialized == false)
     return;
-  Model* model = array_get_pointer(&mesh_comp->models_p,0);
+  Model* model = (Model*)array_get_pointer(&mesh_comp->models_p,0);
   array_add_pointer(&frame_draw_static_elements,model) ;
 
 }

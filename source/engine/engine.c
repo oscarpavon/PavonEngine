@@ -219,23 +219,41 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     actual_model_array = prev_model_array;
 }
 
-void update_translation(vec3 translation){
-    TransformComponent* transform = pe_comp_get(TRASNFORM_COMPONENT);
-    if(!transform)
-        return;
-    vec3 translation_per_frame;
-    glm_vec3_scale(translation,time_delta,translation_per_frame);
-    glm_translate(transform->model_matrix, translation_per_frame);
-    glm_vec3_copy(transform->model_matrix[3], transform->position);
-    for(int i = 0; i<selected_element->components.count; i++){
-        ComponentDefinition* component = array_get(&selected_element->components,i);
-        update_component(component);
-    }
-		SkinnedMeshComponent* skin = pe_comp_get(COMPONENT_SKINNED_MESH);
-		if(!skin)
-			return;
+void pe_element_set_position(Element* element,vec3 position){
 
-		pe_anim_nodes_update(skin);		
+  TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
+  if (!transform)
+    return;
+  glm_translate(transform->model_matrix, position);
+  glm_vec3_copy(transform->model_matrix[3], transform->position);
+  
+  for (int i = 0; i < selected_element->components.count; i++) {
+    ComponentDefinition *component =
+        array_get(&selected_element->components, i);
+    update_component(component);
+  }
+
+}
+
+void update_translation(vec3 translation) {
+  TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
+  if (!transform)
+    return;
+  vec3 translation_per_frame;
+  glm_vec3_scale(translation, time_delta, translation_per_frame);
+  glm_translate(transform->model_matrix, translation_per_frame);
+  glm_vec3_copy(transform->model_matrix[3], transform->position);
+  
+  for (int i = 0; i < selected_element->components.count; i++) {
+    ComponentDefinition *component =
+        array_get(&selected_element->components, i);
+    update_component(component);
+  }
+  SkinnedMeshComponent *skin = pe_comp_get(COMPONENT_SKINNED_MESH);
+  if (!skin)
+    return;
+
+  pe_anim_nodes_update(skin);
 }
 
 void update_scale(vec3 translation){

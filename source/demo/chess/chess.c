@@ -1,27 +1,27 @@
 #include "chess.h"
 
 
-void chess_loop(){
-
-  vec3 move2 = {0,0.01,0};
-  update_translation(move2);
-}
 
 void chess_init(){
     
   add_element_with_model_path("/home/pavon/chess/rook.glb");
-  vec3 move = {1,1,0};
-  update_translation(move);
+  vec3 move = {0,4,0};
+  pe_element_set_position(selected_element,move);
+
   add_element_with_model_path("/home/pavon/chess/pawn.glb");
-  vec3 move2 = {3,4,0};
-  update_translation(move2);
+
+  vec3 pawn = {0,0,0};
+  pe_element_set_position(selected_element,pawn);
 
   camera_init(&main_camera); 
   init_vec3(-10,0,3, main_camera.position);
   camera_update(&main_camera);
   
-  
- 
+
+}
+
+
+void chess_loop(){
 
 
 }

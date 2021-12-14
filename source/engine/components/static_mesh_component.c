@@ -19,9 +19,9 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
 
   }
   
-    Model* modelf = array_get_pointer(&mesh_component->models_p,0);
+  Model* modelf = array_get_pointer(&mesh_component->models_p,0);
      
-    glm_mat4_copy(element_component->parent->transform->model_matrix,
+  glm_mat4_copy(element_component->parent->transform->model_matrix,
                   modelf->model_mat);
 
   u8 *id = array_get(&mesh_component->meshes, 1);
