@@ -32,6 +32,10 @@ void camera_update(CameraComponent* camera){
     glm_lookat(camera->position, look_pos, camera->up , camera->view);
 }
 
+void pe_camera_look_at(CameraComponent* camera, vec3 position){
+  
+}
+
 void camera_rotate_control(float yaw, float pitch){
     vec3 front;
 

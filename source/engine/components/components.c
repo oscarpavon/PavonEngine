@@ -300,6 +300,16 @@ void for_each_element_components_in_array_of_pp(Array* array, void(*do_to)(Compo
         }
     }
 }
+void pe_element_comp_init(){
+
+    for(int i = 0; i <selected_element->components.count ; i++){
+        ComponentDefinition* component_definition = 
+          array_get(&selected_element->components,i);
+
+        init_element_component(component_definition);
+    }
+
+}
 
 void init_element_component(ComponentDefinition *element_component) {
   switch (element_component->type) {

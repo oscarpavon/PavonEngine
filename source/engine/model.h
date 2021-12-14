@@ -17,6 +17,15 @@
 #include <engine/renderer/material.h>
 typedef struct SkinnedMeshComponent SkinnedMeshComponent;
 
+typedef struct PMesh{
+  GLuint vertex_buffer_id;
+  GLuint index_buffer_id;
+  Array vertex_array;
+  Array index_array;
+  VkBuffer vertex_buffer;
+  VkBuffer index_buffer;
+}PMesh;
+
 typedef struct Model{
     int id;
     Array vertex_array;
@@ -39,6 +48,7 @@ typedef struct Model{
 
     VkDescriptorSet descriptor_set;
     PMaterial material;
+    PMesh mesh;
 }Model;
 
 typedef struct DrawData{

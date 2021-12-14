@@ -16,4 +16,6 @@ typedef struct StaticMeshComponent{
 void pe_comp_static_mesh_init(ComponentDefinition*);
 void pe_comp_static_mesh_update(ComponentDefinition*);
 
+void pe_comp_static_mesh_add_to_element();
+
 #endif

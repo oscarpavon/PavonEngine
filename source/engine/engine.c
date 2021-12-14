@@ -63,7 +63,7 @@ void new_empty_model_in_array(Array* array){
 
 void new_empty_model(){
     Model new_model;
-		ZERO(new_model);
+	ZERO(new_model);
     if(!actual_model_array)
         return;
     glm_mat4_identity(new_model.model_mat);
@@ -169,9 +169,10 @@ int add_element_with_model_path(const char* model_gltf_path){
         LOG("Error to load, null path (add_editor_element)\n");
         return -1;
     }
-
+    
     Array* prev_array = actual_model_array;
     actual_model_array = &array_models_loaded;
+    
 
     int models_loaded = pe_loader_model(model_gltf_path);
     if( models_loaded == -1){
@@ -183,6 +184,11 @@ int add_element_with_model_path(const char* model_gltf_path){
     array_add(&pe_arr_models_paths,model_gltf_path);
     
     pe_comp_add(models_loaded);
+
+    selected_model->mesh.index_array.count = selected_model->index_array.count;
+    selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
+    selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
+    
 }
 
 

@@ -1,6 +1,47 @@
 #include "elements.h"
 #include "engine.h"
 
+void pe_element_duplicate(int current_count, Element *original) {
+  Element *last_copy = selected_element;
+  new_empty_element();
+  for (int i = 0; i < last_copy->components.count; i++) {
+    ComponentDefinition *component_definition =
+        array_get(&last_copy->components, i);
+    switch (component_definition->type) {
+    case TRASNFORM_COMPONENT:
+      add_transform_component_to_selected_element();
+      TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
+      memcpy(transform, last_copy->transform, sizeof(TransformComponent));
+      break;
+    case CAMERA_COMPONENT:
+      add_camera_component_to_selected_element();
+      break;
+    case STATIC_MESH_COMPONENT: {
+      StaticMeshComponent *original_mesh =
+          get_component_from_element(last_copy, STATIC_MESH_COMPONENT);
+      
+      StaticMeshComponent new_mesh;
+      ZERO(new_mesh);
+
+      array_new_pointer(&new_mesh.models_p,original_mesh->models_p.count);
+
+      for (int i = 0; i < original_mesh->models_p.count; i++) {
+        new_empty_model();
+        Model*original_model = array_get_pointer(&original_mesh->models_p,i);
+        duplicate_model_data(selected_model, original_model);
+        selected_model->shader = create_engine_shader(standart_vertex_shader,
+                                                      standart_fragment_shader);
+        array_add(&new_mesh.models_p, selected_model);
+      }
+      add_component_to_selected_element(sizeof(StaticMeshComponent), &new_mesh,
+                                        STATIC_MESH_COMPONENT);
+    } break;
+
+    default:
+      break;
+    }
+  }
+}
 void duplicate_selected_element(int current_count, Element* original){
     Element* last_copy = selected_element;
     new_empty_element();

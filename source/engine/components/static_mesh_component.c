@@ -10,6 +10,7 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
 
   StaticMeshComponent *mesh_component = element_component->data;
 
+  if(mesh_component->meshes.initialized == true){
   for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
     u8 *id = array_get(&mesh_component->meshes, i);
     Model *model = array_get(actual_model_array, *id);
@@ -17,13 +18,7 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
     glm_mat4_copy(element_component->parent->transform->model_matrix,
                   model->model_mat);
 
-  }
-  
-  Model* modelf = array_get_pointer(&mesh_component->models_p,0);
-     
-  glm_mat4_copy(element_component->parent->transform->model_matrix,
-                  modelf->model_mat);
-
+    }
   u8 *id = array_get(&mesh_component->meshes, 1);
   Model *model = array_get(actual_model_array, *id);
   if (!model)
@@ -34,6 +29,13 @@ void pe_comp_static_mesh_update(ComponentDefinition* element_component){
                      element_component->parent->transform->model_matrix,
                      mesh_component->bounding_box);
   glm_aabb_center(mesh_component->bounding_box, mesh_component->center);
+  } 
+
+  Model* modelf = array_get_pointer(&mesh_component->models_p,0);
+     
+  glm_mat4_copy(element_component->parent->transform->model_matrix,
+                  modelf->model_mat);
+
 }
 
 void pe_comp_static_mesh_shader_init(Model* model) {
@@ -71,13 +73,28 @@ void pe_comp_static_mesh_texture_fill(StaticMeshComponent* mesh_component,int i)
     }
 }
 
-void pe_comp_static_mesh_init(ComponentDefinition* element_component){
+void pe_comp_static_mesh_add_to_element(){
+
+            actual_model_array = &array_models_loaded;
+            new_empty_model();
+
+            StaticMeshComponent mesh_component;
+			ZERO(mesh_component);
+            array_new_pointer(&mesh_component.models_p,1);
+            array_add_pointer(&mesh_component.models_p,selected_model);
+            
+            add_component_to_selected_element(sizeof(StaticMeshComponent),
+                &mesh_component,STATIC_MESH_COMPONENT);           
+
+}
+
+void pe_comp_static_mesh_init(ComponentDefinition *element_component) {
 
   StaticMeshComponent *mesh_component = element_component->data;
 
-  for(int i = 0; i < mesh_component->models_p.count ; i++) {
+  for (int i = 0; i < mesh_component->models_p.count; i++) {
 
-    Model* model = array_get_pointer(&mesh_component->models_p,i);
+    Model *model = array_get_pointer(&mesh_component->models_p, i);
 
     pe_comp_static_mesh_shader_init(model);
 
@@ -85,36 +102,37 @@ void pe_comp_static_mesh_init(ComponentDefinition* element_component){
                   selected_model->model_mat);
   }
 
-  //fill meshes of StaticMeshComponent
-  for (u32 i = 1; i <= mesh_component->meshes.count - 1; i++) {
+  if (mesh_component->meshes.initialized == true) {
+    // fill meshes of StaticMeshComponent
+    for (u32 i = 1; i <= mesh_component->meshes.count - 1; i++) {
 
-    // Models ids
-    u8 *id = array_get(&mesh_component->meshes, i);
+      // Models ids
+      u8 *id = array_get(&mesh_component->meshes, i);
 
-    Model *original_model = array_get(&array_models_loaded, *id);
-    if (!original_model)
-      return;
+      Model *original_model = array_get(&array_models_loaded, *id);
+      if (!original_model)
+        return;
 
-    //new_empty_model();
+      // new_empty_model();
 
-    //duplicate_model_data(selected_model, original_model);
+      // duplicate_model_data(selected_model, original_model);
 
-    //pe_comp_static_mesh_shader_init();
-    
-    pe_comp_static_mesh_texture_fill(mesh_component,i);
+      // pe_comp_static_mesh_shader_init();
 
-    glm_mat4_copy(element_component->parent->transform->model_matrix,
-                  selected_model->model_mat);
+      pe_comp_static_mesh_texture_fill(mesh_component, i);
 
-    selected_model = original_model;
+      glm_mat4_copy(element_component->parent->transform->model_matrix,
+                    selected_model->model_mat);
+
+      selected_model = original_model;
+    }
+
+    u8 id = actual_model_array->count - (mesh_component->meshes.count - 1);
+    for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
+      u8 *geted_id = array_get(&mesh_component->meshes, i);
+      memcpy(geted_id, &id, sizeof(u8));
+      id++;
+    }
   }
-
-  u8 id = actual_model_array->count - (mesh_component->meshes.count - 1);
-  for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
-    u8 *geted_id = array_get(&mesh_component->meshes, i);
-    memcpy(geted_id, &id, sizeof(u8));
-    id++;
-  }
-
   update_component(element_component);
 }
