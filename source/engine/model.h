@@ -14,7 +14,7 @@
 #include "array.h"
 
 #include <engine/renderer/vulkan/vulkan.h>
-
+#include <engine/renderer/material.h>
 typedef struct SkinnedMeshComponent SkinnedMeshComponent;
 
 typedef struct Model{
@@ -38,6 +38,7 @@ typedef struct Model{
     vec3 position;
 
     VkDescriptorSet descriptor_set;
+    PMaterial material;
 }Model;
 
 typedef struct DrawData{

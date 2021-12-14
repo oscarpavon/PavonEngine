@@ -17,6 +17,8 @@
 
 #include "windows_manager.h"
 
+#include "elements.h"
+
 Array engine_elements;
 Array engine_textures;
 

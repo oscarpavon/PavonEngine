@@ -18,17 +18,18 @@
 typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;
 
-typedef struct Element{
-    unsigned int id;
-    char name[20];
-    bool proccess;
-    bool selected;
-    Array components;
-    TransformComponent* transform;
-#ifdef EDITOR
-    ElementEditorData editor_data;
-#endif
-}Element;
+
+typedef struct PEUniformBufferObject{
+    mat4 model;
+    mat4 view;
+    mat4 projection;
+}PEUniformBufferObject;
+
+typedef struct PEColorShader{
+    float x;
+    float y;
+    float z;
+}PEColorShader;
 
 typedef struct PlayerStart{
     vec3 position;

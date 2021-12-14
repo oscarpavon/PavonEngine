@@ -62,7 +62,7 @@ GLuint load_shader_file(const char* path, GLenum shader_type){
 
 void pe_shader_compile_std(){
     standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    standart_fragment_shader = compile_shader(triFragShader, GL_FRAGMENT_SHADER);
+    standart_fragment_shader = compile_shader(fragment_shader_colorized, GL_FRAGMENT_SHADER);
     shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
 
 		shader_skin_vertex = load_shader_file(

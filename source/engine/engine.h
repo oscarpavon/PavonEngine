@@ -46,21 +46,13 @@
 #include "game.h"
 
 #include "threads.h"
+#include "elements.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
-typedef struct PEUniformBufferObject{
-    mat4 model;
-    mat4 view;
-    mat4 projection;
-}PEUniformBufferObject;
-
-typedef struct PEColorShader{
-    float x;
-    float y;
-    float z;
-}PEColorShader;
+static const char* const level_folder = "../assets/Game/levels/";
+static const char* const gui_folder = "../assets/gui/";
 
 void pe_init();
 void engine_loop();
@@ -79,22 +71,10 @@ void draw_simgle_model(struct Model * new_model);
 
 void draw_editor_viewport(); 
 
-void set_selected_element_transform(vec3 position, versor rotation);
-void rotate_element(Element* element, versor quaternion);
-
-void set_element_position(Element* element, vec3 position);
-
-void new_empty_element();
-
-void pe_element_set_position(Element* element,vec3 position);
-
 
 /*Create new model in actual model array and you can use selected_model after */
 void new_empty_model();
 
-void select_last_element();
-
-int add_element_with_model_path(const char* model_gltf_path);
 void add_texture_to_selected_element_with_image_path(const char* image_path);
 
 void pe_tex_loaded_to_model(int id);
@@ -126,8 +106,6 @@ void pe_frame_clean();
 
 void pe_frame_draw();
 
-static const char* const level_folder = "../assets/Game/levels/";
-static const char* const gui_folder = "../assets/gui/";
 
 //
 // Global variables

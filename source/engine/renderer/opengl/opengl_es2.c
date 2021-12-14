@@ -199,10 +199,12 @@ void draw_simgle_model(Model * new_model){
     mat4 mvp;      
     update_mvp(new_model->model_mat, mvp);  
     
-		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
    
-	 	update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,mvp);
+	update_draw_vertices(new_model->shader,new_model->vertex_buffer_id,mvp);
 
+    send_color_to_shader(new_model->shader,new_model->material.color);
+    	
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
 

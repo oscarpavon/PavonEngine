@@ -111,6 +111,9 @@ void pe_frame_static_fill(ComponentDefinition* definition){
   if(mesh_comp->models_p.initialized == false)
     return;
   Model* model = (Model*)array_get_pointer(&mesh_comp->models_p,0);
+  //model->shader = mesh_comp->material.shader;
+  model->material = mesh_comp->material;
+
   array_add_pointer(&frame_draw_static_elements,model) ;
 
 }

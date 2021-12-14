@@ -34,7 +34,10 @@ set(opengl_es2_renderer
   ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
 
-
+  set(renderer
+	 ${opengl_es2_renderer}
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
+    )
 
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
@@ -55,15 +58,17 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/animation/animation.c
         ${CMAKE_CURRENT_LIST_DIR}/Collision/collision.c
         ${CMAKE_CURRENT_LIST_DIR}/content_manager.c
-				${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
-				${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
-				${CMAKE_CURRENT_LIST_DIR}/game.c
-				${CMAKE_CURRENT_LIST_DIR}/input.c
+		${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
+		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
+		${CMAKE_CURRENT_LIST_DIR}/game.c
+		${CMAKE_CURRENT_LIST_DIR}/input.c
+		${CMAKE_CURRENT_LIST_DIR}/elements.c
+
         ${components}
 				${audio}
 				${network}
 				${third_party}
-				${opengl_es2_renderer}
+                ${renderer}
 )
 
 

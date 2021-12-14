@@ -10,5 +10,6 @@
 #endif
 
 #include "render_thread.h"
+#include "material.h"
 
 #endif

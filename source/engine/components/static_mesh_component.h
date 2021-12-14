@@ -1,7 +1,7 @@
 #ifndef COMPONENT_STATIC_MESH
 #define COMPONENT_STATIC_MESH
 #include "components.h"
-
+#include <engine/renderer/material.h>
 typedef struct StaticMeshComponent{
     Array meshes;
     Array distances;
@@ -9,6 +9,7 @@ typedef struct StaticMeshComponent{
     Array models_p;
     vec3 center;
     vec3 bounding_box[2];
+    PMaterial material;
     
 }StaticMeshComponent;
 
