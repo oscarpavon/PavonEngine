@@ -1,25 +1,59 @@
 #include "chess.h"
 
-
-void chess_pieces_load(){
-
-  add_element_with_model_path("/home/pavon/chess/rook.glb");
-  vec3 move = {0,4,0};
-  pe_element_set_position(selected_element,move);
-
-  add_element_with_model_path("/home/pavon/chess/pawn.glb");
-
-  vec3 pawn = {0,0,0};
-  pe_element_set_position(selected_element,pawn);
-
-}
-
 vec4 color1 = {0,0.2,0,1};
 vec4 color2 = {1,0.5,1,1};
+
+vec4 piece_color1 = {0.2,0.2,0,1};
+vec4 piece_color2 = {0.5,0.5,1,1};
 
 PMesh check_mesh;
 PMaterial check_board_mat2;
 PMaterial check_board_mat1;
+
+
+PMaterial piece_mat2;
+PMaterial piece_mat1;
+
+void chess_piece_set_pos(vec2 pos){
+  
+  pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0.3));
+
+}
+
+void chess_piece_init_scale(){
+  float scale = -0.8f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+}
+
+void chess_pieces_create(){
+
+  add_element_with_model_path("/home/pavon/chess/rook.glb");
+  chess_piece_set_pos(VEC2(4,6)) ;
+
+  chess_piece_init_scale();
+
+  add_element_with_model_path("/home/pavon/chess/pawn.glb");
+  chess_piece_set_pos(VEC2(2,0)) ;
+  chess_piece_init_scale();
+
+  add_element_with_model_path("/home/pavon/chess/king.glb");
+  chess_piece_set_pos(VEC2(3,7)) ;
+  chess_piece_init_scale();
+
+
+  add_element_with_model_path("/home/pavon/chess/queen.glb");
+  chess_piece_set_pos(VEC2(5,3)) ;
+  chess_piece_init_scale();
+
+}
+void chess_move_piece(vec2 pos){
+  
+  float scale = 0.8f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+  chess_piece_set_pos(pos);
+  chess_piece_init_scale();
+
+}
 
 void chess_board_create() {
 
@@ -49,6 +83,13 @@ void chess_board_create() {
       pe_element_set_position(selected_element, VEC3(x, y, 0));
     }
   }
+}
+void chess_input(){
+  if(key_released(&input.A)){
+    LOG("a pressed\n");
+    chess_move_piece(VEC2(7,7))  ;
+   }    
+  
 }
 
 void chess_init(){
@@ -80,15 +121,9 @@ void chess_init(){
   check_mesh = m->mesh;
   
   chess_board_create();
-
-  add_element_with_model_path("/home/pavon/chess/rook.glb");
-  TransformComponent* transform = get_component_from_element(selected_element,TRASNFORM_COMPONENT); 
-   
-  pe_element_set_position(selected_element,VEC3(1,3,0.3));
-  float scale = -0.8f;
-  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+  
+  chess_pieces_create();
 }
-
 
 void chess_loop(){
 
@@ -102,5 +137,6 @@ int main(){
     chess.name = "Chess";
     chess.loop = &chess_loop;
     chess.init = &chess_init;
+    chess.input = &chess_input;
     pe_game_create(&chess);
 }

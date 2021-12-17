@@ -45,6 +45,10 @@ void pe_game_init(){
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
 
 }
+void pe_game_input(){
+  game->input();
+
+}
 
 void pe_game_create(PGame * created_game){
     game = created_game; 
@@ -58,7 +62,7 @@ void pe_game_create(PGame * created_game){
 
     win.init = &pe_game_init;//window specific data
     win.draw = &pe_game_draw;//Main loop draw in window
-    
+    win.input = &pe_game_input; 
 
     array_add(&engine_windows, &win);
     game_window = array_pop(&engine_windows);

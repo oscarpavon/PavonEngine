@@ -13,6 +13,7 @@ typedef struct PGame{
 	void(*init)(void);
 	void(*loop)(void);
 	void(*end)(void);
+	void(*input)(void);
 }PGame;
 
 int init_game();

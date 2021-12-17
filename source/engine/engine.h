@@ -49,6 +49,9 @@
 #include "elements.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}
+
+#define VEC2(p1,p2) (vec2){p1,p2}
+
 #define COLOR(color) color[0],color[1],color[2],color[3]
 
 static const char* const level_folder = "../assets/Game/levels/";
