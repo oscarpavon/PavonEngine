@@ -6,6 +6,8 @@
 #include <engine/file_loader.h>
 #include <engine/threads.h>
 #include <string.h>
+#include <engine/interruptions.h>
+
 void pe_shader_get_error(GLuint shader, GLenum info_type,
                          const char *path_for_error_debug) {
 
@@ -15,23 +17,24 @@ void pe_shader_get_error(GLuint shader, GLenum info_type,
   if (info_type == GL_COMPILE_STATUS) {
     glGetShaderiv(shader, info_type, &passed);
     if (passed == GL_FALSE) {
-			status_description = "Compile fail";
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
-			GLchar error[lenght];
-			glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
+      status_description = "Compile fail";
+      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
+      GLchar error[lenght];
+      glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
       LOG("%s shader: %s\n", status_description, path_for_error_debug);
-			LOG("Error Compiling: %s\n", error);
+      LOG("Error Compiling: %s\n", error);
+      debug_break();     
     }
   }
   if (info_type == GL_LINK_STATUS) {
     glGetProgramiv(shader, info_type, &passed);
     if (passed == GL_FALSE) {
-			status_description = "Link fail";
-			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &lenght);
-			GLchar error[lenght];
-			glGetProgramInfoLog(shader, lenght, &lenght, error);
+      status_description = "Link fail";
+      glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &lenght);
+      GLchar error[lenght];
+      glGetProgramInfoLog(shader, lenght, &lenght, error);
       LOG("%s shader: %s\n", status_description, path_for_error_debug);
-			LOG("Error Linking: %s\n", error);
+      LOG("Error Linking: %s\n", error);
     }
   }
 }
@@ -53,19 +56,23 @@ GLuint compile_shader(const char* src , GLenum type){
     return shader;
 }
 
-GLuint load_shader_file(const char* path, GLenum shader_type){
+GLuint pe_shader_load_src_and_create(const char* path, GLenum shader_type){
     File new_file;
     load_file(path,&new_file);
     GLuint shader = compile_shader(new_file.data,shader_type);
     return shader;
 }
 
-void pe_shader_compile_std(){
-    standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-    standart_fragment_shader = compile_shader(fragment_shader_colorized, GL_FRAGMENT_SHADER);
-    shader_source_color_fragment_shader = compile_shader(color_shader_src,GL_FRAGMENT_SHADER);
+void pe_shader_compile_std() {
+  // standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
+  //standart_fragment_shader = compile_shader(pe_shader_src_std_frag, GL_FRAGMENT_SHADER);
+  standart_vertex_shader = pe_shader_load_src_and_create("/home/pavon/PavonEngine/NativeContent/shaders/std.vert",GL_VERTEX_SHADER);
+  standart_fragment_shader = pe_shader_load_src_and_create("/home/pavon/PavonEngine/NativeContent/shaders/diffuse.frag",GL_FRAGMENT_SHADER);
 
-		shader_skin_vertex = load_shader_file(
+  shader_source_color_fragment_shader =
+      compile_shader(pe_shader_src_color, GL_FRAGMENT_SHADER);
+
+  shader_skin_vertex = pe_shader_load_src_and_create(
       "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
       GL_VERTEX_SHADER);
 }

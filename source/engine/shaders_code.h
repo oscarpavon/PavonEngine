@@ -2,7 +2,7 @@
 #define ENGINE_SHADERS_CODE
 	
 
-static const char* triVertShader = "#version 100 \n \
+static const char* pe_shader_src_std_vert= "#version 100 \n \
 attribute vec3 vPosition;\
 attribute vec2 inUV;\
 varying vec2 v_TexCoord; \
@@ -15,7 +15,8 @@ void main()\
 }\
 //end";
 
-static const char*  triFragShader = "#version 100 \n\
+
+static const char*  pe_shader_src_std_frag_texture= "#version 100 \n\
 precision mediump float; \
    uniform sampler2D texture_sampler;\
    varying vec2 v_TexCoord;                     \
@@ -26,7 +27,7 @@ precision mediump float; \
 //end";
 
 
-static const char*  fragment_shader_colorized = "#version 100 \n\
+static const char*  pe_shader_src_std_frag = "#version 100 \n\
     precision mediump float;                    \
    uniform sampler2D texture_sampler;           \
    varying vec2 v_TexCoord;                     \
@@ -37,7 +38,7 @@ static const char*  fragment_shader_colorized = "#version 100 \n\
     }\
 //end";
 
-static const char*  color_shader_src = "#version 100 \n\
+static const char*  pe_shader_src_color = "#version 100 \n\
     precision mediump float;                    \
    uniform vec4 color;                     \
     void main()\

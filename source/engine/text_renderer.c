@@ -159,7 +159,7 @@ void text_shaders_init()
     GLuint text_fragment_shader;
     GLuint text_vertex_shader;
 
-    text_fragment_shader = compile_shader(fragment_shader_colorized, GL_FRAGMENT_SHADER);
+    text_fragment_shader = compile_shader(pe_shader_src_std_frag, GL_FRAGMENT_SHADER);
     text_vertex_shader = compile_shader(text_vertex_shader_source, GL_VERTEX_SHADER);
 
     text_draw_data.shader = create_engine_shader(text_vertex_shader, text_fragment_shader);       
