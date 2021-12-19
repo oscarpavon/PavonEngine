@@ -24,6 +24,9 @@ void pe_element_set_position(Element* element,vec3 position){
   TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
   if (!transform)
     return;
+  transform->model_matrix[3][0] = 0; 
+  transform->model_matrix[3][1] = 0; 
+  transform->model_matrix[3][2] = 0; 
   glm_translate(transform->model_matrix, position);
   glm_vec3_copy(transform->model_matrix[3], transform->position);
   

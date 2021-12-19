@@ -48,10 +48,7 @@ void chess_pieces_create(){
 }
 void chess_move_piece(vec2 pos){
   
-  float scale = 0.8f;
-  pe_element_set_scale(VEC3(scale,scale,scale)) ;
   chess_piece_set_pos(pos);
-  chess_piece_init_scale();
 
 }
 
@@ -87,7 +84,7 @@ void chess_board_create() {
 void chess_input(){
   if(key_released(&input.A)){
     LOG("a pressed\n");
-    chess_move_piece(VEC2(7,7))  ;
+    chess_move_piece(VEC2(1,2))  ;
    }    
   
 }
@@ -122,7 +119,11 @@ void chess_init(){
   
   chess_board_create();
   
-  chess_pieces_create();
+  //chess_pieces_create();
+  
+  add_element_with_model_path("/home/pavon/chess/queen.glb");
+  chess_piece_set_pos(VEC2(5,3)) ;
+  //chess_piece_init_scale();
 }
 
 void chess_loop(){
