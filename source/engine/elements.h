@@ -2,6 +2,7 @@
 #define PELEMENT
 
 #include "engine/types.h"
+#include <engine/renderer/material.h>
 
 typedef struct Element{
     unsigned int id;
@@ -14,6 +15,8 @@ typedef struct Element{
     ElementEditorData editor_data;
     #endif
 }Element;
+
+void pe_element_set_material(PMaterial material);
 
 void pe_element_set_scale(vec3 translation);
 

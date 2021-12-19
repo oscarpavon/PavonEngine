@@ -19,6 +19,11 @@ void pe_element_set_scale(vec3 translation){
     }
 }
 
+void pe_element_set_material(PMaterial material){
+  StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
+  mesh->material = material;
+}
+
 void pe_element_set_position(Element* element,vec3 position){
 
   TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);

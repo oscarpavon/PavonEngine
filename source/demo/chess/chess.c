@@ -3,8 +3,8 @@
 vec4 color1 = {0,0.2,0,1};
 vec4 color2 = {1,0.5,1,1};
 
-vec4 piece_color1 = {0.2,0.2,0,1};
-vec4 piece_color2 = {0.5,0.5,1,1};
+vec4 piece_color1 = {0.2,0.2,0.5,1};
+vec4 piece_color2 = {0.8,0.5,1,1};
 
 PMesh check_mesh;
 PMaterial check_board_mat2;
@@ -16,7 +16,7 @@ PMaterial piece_mat1;
 
 void chess_piece_set_pos(vec2 pos){
   
-  pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0.3));
+  pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0));
 
 }
 
@@ -88,13 +88,8 @@ void chess_input(){
    }    
   
 }
+void chess_init_materials(){
 
-void chess_init(){
-
-  camera_init(&main_camera); 
-  init_vec3(-7,3.5,3.6, main_camera.position);
-  camera_update(&main_camera);
-  
   ZERO(check_board_mat1);
   check_board_mat1.shader = shader_standard_color;
   glm_vec4_copy(color1,check_board_mat1.color) ;
@@ -104,26 +99,104 @@ void chess_init(){
   check_board_mat2.shader = shader_standard_color;
   glm_vec4_copy(color2,check_board_mat2.color) ;
 
-  add_element_with_model_path("/home/pavon/chess/check.glb");
+  ZERO(piece_mat1);
+  piece_mat1.shader = shader_standard_color;
+  glm_vec4_copy(piece_color1,piece_mat1.color);
   
+  ZERO(piece_mat2);
+  piece_mat2.shader = shader_standard_color;
+  glm_vec4_copy(piece_color2,piece_mat2.color);
+}
+void chess_init(){
+
+  camera_init(&main_camera); 
+  init_vec3(-7,3.5,3.4, main_camera.position);
+  camera_update(&main_camera);
+  
+
+  add_element_with_model_path("/home/pavon/chess/check.glb");
+ 
+  chess_init_materials();
 
   vec3 checkpos = {0,0,29};
   pe_element_set_position(selected_element,checkpos);
 
   StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
   mesh->material = check_board_mat1;
+  
   ZERO(check_mesh);
 
-  Model* m = array_get_pointer(&mesh->models_p,0);
-  check_mesh = m->mesh;
+  Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
+  check_mesh = original_check_mesh->mesh;
   
   chess_board_create();
   
   //chess_pieces_create();
-  
+
   add_element_with_model_path("/home/pavon/chess/queen.glb");
   chess_piece_set_pos(VEC2(5,3)) ;
-  //chess_piece_init_scale();
+  
+  pe_element_set_material(piece_mat1);
+
+
+  add_element_with_model_path("/home/pavon/chess/pawn.glb");
+
+  chess_piece_set_pos(VEC2(1,0)) ;
+
+  StaticMeshComponent* pawn_mesh_comp = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
+  
+  Model* model = array_get_pointer(&pawn_mesh_comp->models_p,0);
+  PMesh pawn_mesh = model->mesh;
+
+  for(int i = 0; i < 8 ; i++){
+
+      new_empty_element();
+
+      add_transform_component_to_selected_element();
+
+      pe_comp_static_mesh_add_to_element();
+
+      pe_element_comp_init();
+
+      StaticMeshComponent *mesh_comp =
+          get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
+
+       
+      selected_model->mesh = pawn_mesh;
+
+      
+      pe_element_set_material(piece_mat1);
+      
+     chess_move_piece(VEC2(1,i)) ;
+
+  }
+
+
+  for(int i = 0; i < 8 ; i++){
+
+      new_empty_element();
+
+      add_transform_component_to_selected_element();
+
+      pe_comp_static_mesh_add_to_element();
+
+      pe_element_comp_init();
+
+      StaticMeshComponent *mesh_comp =
+          get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
+
+       
+      selected_model->mesh = pawn_mesh;
+
+      
+      pe_element_set_material(piece_mat2);
+
+      
+     chess_move_piece(VEC2(6,i)) ;
+
+  }
+
+
 }
 
 void chess_loop(){
