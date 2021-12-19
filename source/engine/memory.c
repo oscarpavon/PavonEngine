@@ -6,21 +6,13 @@
 
 bool memory_lock;
 
+// VERY IMPORTANT
 void init_engine_memory(){
     engine_memory = malloc(INIT_MEMORY);
     memset(engine_memory,0,INIT_MEMORY);
     actual_free_memory = INIT_MEMORY;
     memory_marker = 0;
 
-    indices.memory = allocate_memory(10000);
-    indices.available = 10000;
-    indices.used = 0;
-    indices.marker = 0;
-
-    created_components.memory = allocate_memory(6000);
-    created_components.available = 6000;
-    created_components.used = 0;
-    created_components.marker = 0;
 }
 
 

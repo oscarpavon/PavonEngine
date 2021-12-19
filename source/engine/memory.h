@@ -44,10 +44,7 @@ int actual_free_memory;
 
 
 StackMemory vertex_memory;
-StackMemory indices;
 StackMemory engine_stack_memory;
-
-StackMemory created_components;
 
 PoolMemory arrays_memory;
 

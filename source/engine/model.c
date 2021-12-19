@@ -35,10 +35,29 @@ Node* pe_node_by_name(Array* array, const char* name){
   }
 }
 
-void read_accessor_indices(cgltf_accessor *accessor) {
-  array_init(actual_index_array, sizeof(u8), accessor->count);
-  for (u8 i = 0; i < accessor->count; i++) {
-    u8 index = cgltf_accessor_read_index(accessor, i);
+void pe_loader_mesh_read_accessor_indices(cgltf_accessor *accessor) {
+  switch(accessor->component_type){
+    case cgltf_component_type_r_8:
+      break;
+    case cgltf_component_type_r_16:
+      break;
+    case cgltf_component_type_r_8u:
+
+        array_init(actual_index_array, sizeof(u8), accessor->count);
+      break;
+    case cgltf_component_type_r_16u:
+        
+        array_init(actual_index_array, sizeof(unsigned short), accessor->count);
+      break;
+    case cgltf_component_type_r_32f:
+      break;
+    case cgltf_component_type_r_32u:
+        array_init(actual_index_array, sizeof(unsigned int), accessor->count);
+      break;
+
+  }
+  for (size_t i = 0; i < accessor->count; i++) {
+    size_t index = cgltf_accessor_read_index(accessor, i);
     array_add(actual_index_array, &index);
   }
 }
@@ -176,13 +195,13 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
   }
 }
 
-void load_primitive(cgltf_primitive* primitive){
+void pe_loader_mesh_load_primitive(cgltf_primitive* primitive){
   
-  for(u8 i = 0; i < primitive->attributes_count; i++){
+  for(int i = 0; i < primitive->attributes_count; i++){
     pe_loader_attribute(&primitive->attributes[i]);
   }
   
-  read_accessor_indices(primitive->indices);
+  pe_loader_mesh_read_accessor_indices(primitive->indices);
 }
 
 void pe_loader_mesh(cgltf_mesh *mesh) {
@@ -191,7 +210,7 @@ void pe_loader_mesh(cgltf_mesh *mesh) {
     new_empty_model();
     actual_vertex_array = &selected_model->vertex_array;
     actual_index_array = &selected_model->index_array;
-    load_primitive(&mesh->primitives[i]);
+    pe_loader_mesh_load_primitive(&mesh->primitives[i]);
     pe_th_exec_in(pe_th_render_id, &GPU_buffers_create_for_model,
                   selected_model);
     while (!selected_model->gpu_ready) {
