@@ -24,7 +24,11 @@ void pe_wm_glfw_init(){
 	    LOG("Window Manager in VULKAN\n");
     }
 	//MSAA
-	glfwWindowHint(GLFW_SAMPLES,4);
+	glfwWindowHint(GLFW_SAMPLES,16);
+
+    if (pe_renderer_type == PEWMOPENGLES2) {
+
+    }
 
     glfwSetErrorCallback(window_manager_error_callback);
     glfwInit();

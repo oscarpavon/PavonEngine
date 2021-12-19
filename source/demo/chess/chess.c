@@ -14,6 +14,14 @@ PMaterial check_board_mat1;
 PMaterial piece_mat2;
 PMaterial piece_mat1;
 
+PMesh chess_get_mesh(){
+  StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
+  
+
+  Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
+  return original_check_mesh->mesh;
+}
+
 void chess_piece_set_pos(vec2 pos){
   
   pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0));
@@ -125,21 +133,122 @@ void chess_piece_set_mesh(PMesh mesh){
        
       selected_model->mesh = mesh;
 }
-void chess_pawn_creation(){
+void chess_create_leaders(){
+
+  add_element_with_model_path("/home/pavon/chess/queen.glb");
+  chess_piece_set_pos(VEC2(7,4)) ;
+  
+  pe_element_set_material(piece_mat1);
+
+
+  PMesh queen= chess_get_mesh() ;
+
+  chess_new_empty();
+  chess_piece_set_mesh(queen); 
+  pe_element_set_material(piece_mat2);
+  chess_move_piece(VEC2(0,4)) ;
+
+
+  add_element_with_model_path("/home/pavon/chess/king.glb");
+  PMesh king = chess_get_mesh() ;
+
+  chess_move_piece(VEC2(7,3)) ;
+  pe_element_set_material(piece_mat1);
+  
+
+  chess_new_empty();
+  chess_piece_set_mesh(king); 
+  pe_element_set_material(piece_mat2);
+  chess_move_piece(VEC2(0,3)) ;
+}
+
+void chess_create_knight(){
+
+  add_element_with_model_path("/home/pavon/chess/knight.glb");
+
+  chess_piece_set_pos(VEC2(0,1)) ;
+
+  pe_element_set_material(piece_mat2);
+
+  PMesh knight = chess_get_mesh() ;
+
+
+  chess_new_empty();
+  chess_piece_set_mesh(knight); 
+  pe_element_set_material(piece_mat2);
+  chess_move_piece(VEC2(0,6)) ;
+  
+
+  chess_new_empty();
+  chess_piece_set_mesh(knight); 
+  pe_element_set_material(piece_mat1);
+  chess_move_piece(VEC2(7,6)) ;
+  
+  chess_new_empty();
+  chess_piece_set_mesh(knight); 
+  pe_element_set_material(piece_mat1);
+  chess_move_piece(VEC2(7,1)) ;
+}
+
+void chess_create_bishop(){
+
+  add_element_with_model_path("/home/pavon/chess/bishop.glb");
+
+  chess_piece_set_pos(VEC2(0,2)) ;
+
+  pe_element_set_material(piece_mat2);
+
+  PMesh bishop = chess_get_mesh() ;
+  
+
+      chess_new_empty();
+
+      chess_piece_set_mesh(bishop); 
+
+      
+      pe_element_set_material(piece_mat2);
+
+      
+     chess_move_piece(VEC2(0,5)) ;
+
+
+      chess_new_empty();
+
+      chess_piece_set_mesh(bishop); 
+
+      
+      pe_element_set_material(piece_mat1);
+
+      
+     chess_move_piece(VEC2(7,5)) ;
+      
+     chess_new_empty();
+
+      chess_piece_set_mesh(bishop); 
+
+      
+      pe_element_set_material(piece_mat1);
+
+      
+     chess_move_piece(VEC2(7,2)) ;
+}
+
+void chess_create_pawn(){
 
   add_element_with_model_path("/home/pavon/chess/pawn.glb");
 
   chess_piece_set_pos(VEC2(1,0)) ;
 
+  pe_element_set_material(piece_mat2);
   StaticMeshComponent* pawn_mesh_comp = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
   
   Model* model = array_get_pointer(&pawn_mesh_comp->models_p,0);
   PMesh pawn_mesh = model->mesh;
   
-  for(int i = 0; i < 8 ; i++){
+  for(int i = 1; i < 8 ; i++){
       chess_new_empty();
       chess_piece_set_mesh(pawn_mesh); 
-      pe_element_set_material(piece_mat1);
+      pe_element_set_material(piece_mat2);
       
      chess_move_piece(VEC2(1,i)) ;
 
@@ -152,7 +261,7 @@ void chess_pawn_creation(){
       chess_piece_set_mesh(pawn_mesh); 
 
       
-      pe_element_set_material(piece_mat2);
+      pe_element_set_material(piece_mat1);
 
       
      chess_move_piece(VEC2(6,i)) ;
@@ -160,23 +269,35 @@ void chess_pawn_creation(){
   }
 }
 
-PMesh chess_get_mesh(){
-  StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
-  
 
-  Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
-  return original_check_mesh->mesh;
-}
+
 void chess_create_rooks(){
 
-  PMesh rook_mesh = chess_get_mesh() ;
+  add_element_with_model_path("/home/pavon/chess/rook.glb");
+  chess_piece_set_pos(VEC2(7,7)) ;
+  
+  pe_element_set_material(piece_mat1);
 
-  chess_piece_set_pos(VEC2(0,0)) ;
+  PMesh rook_mesh = chess_get_mesh() ;
 
   chess_new_empty();
   chess_piece_set_mesh(rook_mesh);
   
   pe_element_set_material(piece_mat1);
+
+  chess_piece_set_pos(VEC2(7,0)) ;
+  
+  chess_new_empty();
+  chess_piece_set_mesh(rook_mesh);
+  
+  pe_element_set_material(piece_mat2);
+
+  chess_piece_set_pos(VEC2(0,0)) ;
+  
+  chess_new_empty();
+  chess_piece_set_mesh(rook_mesh);
+  
+  pe_element_set_material(piece_mat2);
 
   chess_piece_set_pos(VEC2(0,7)) ;
 }
@@ -207,18 +328,12 @@ void chess_init(){
   
   //chess_pieces_create();
 
-  add_element_with_model_path("/home/pavon/chess/queen.glb");
-  chess_piece_set_pos(VEC2(5,3)) ;
-  
-  pe_element_set_material(piece_mat1);
 
-
-  add_element_with_model_path("/home/pavon/chess/rook.glb");
-  chess_piece_set_pos(VEC2(7,7)) ;
-  
-  pe_element_set_material(piece_mat1);
-
-
+  chess_create_pawn();
+  chess_create_rooks();
+  chess_create_bishop();
+  chess_create_knight();
+  chess_create_leaders();
 }
 
 void chess_loop(){
