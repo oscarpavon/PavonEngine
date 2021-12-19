@@ -42,10 +42,12 @@ set (game_source
 
 
 add_executable(peditor ${editor_sources} ${game_source})
-
+FIND_LIBRARY(bullet libBulletDynamics.so )
+FIND_LIBRARY(bullet1 libBulletCollision.so)
+FIND_LIBRARY(bullet2 libBullet3Common.so)
 set(lib 
 	engine        
     ${engine_link}
     )
 
-target_link_libraries(peditor ${lib})
+target_link_libraries(peditor ${lib} ${bullet} ${bullet1} ${bullet2})

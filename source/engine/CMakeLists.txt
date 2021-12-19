@@ -39,6 +39,12 @@ set(opengl_es2_renderer
       ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
     )
 
+
+set(physics 
+        ${CMAKE_CURRENT_LIST_DIR}/physics.c
+    )
+
+
 set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
@@ -69,6 +75,7 @@ set(engine_source
 				${network}
 				${third_party}
                 ${renderer}
+                #${physics}
 )
 
 

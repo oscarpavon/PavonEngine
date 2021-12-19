@@ -18,6 +18,8 @@
 #include "windows_manager.h"
 
 #include "elements.h"
+#include "physics.h"
+
 
 Array engine_elements;
 Array engine_textures;
@@ -414,11 +416,13 @@ void pe_init(){
 
     pe_init_arrays();
 
-	pe_audio_init();
-
 	pe_th_main_id = pthread_self();
 
     pe_input_init();
+  
+	
+    //pe_audio_init();
+///    pe_phy_init();
 
 	engine_running = true;
 
