@@ -50,4 +50,4 @@ set(lib
     ${engine_link}
     )
 
-target_link_libraries(peditor ${lib} ${bullet} ${bullet1} ${bullet2})
+target_link_libraries(peditor ${lib})
