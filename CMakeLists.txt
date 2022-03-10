@@ -7,16 +7,18 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wno-switch -Wno-return-type -fcommon -Wn
 
 add_compile_options (-fdiagnostics-color=always)
 
-add_compile_definitions(PUBLIC EDITOR)
+#add_compile_definitions(PUBLIC EDITOR)
 
-add_compile_definitions(PUBLIC LINUX)
+#add_compile_definitions(PUBLIC LINUX)
 add_compile_definitions(PUBLIC OPENGL_ES2)
-add_compile_definitions(PUBLIC BSD)
+#add_compile_definitions(PUBLIC BSD)
+
+#add_compile_definitions(PUBLIC ANDROID)
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
 add_subdirectory(source/engine)
-add_subdirectory(source/editor)
-add_subdirectory(source/engine/renderer/vulkan)
+#add_subdirectory(source/editor)
+#add_subdirectory(source/engine/renderer/vulkan)
 #add_subdirectory(source/editor/utils/pcmd)
-add_subdirectory(demos/)
+#add_subdirectory(demos/)

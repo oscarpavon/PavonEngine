@@ -1,4 +1,4 @@
-include(/home/pavon/PavonEngine/make_include.txt)
+include(../../make_include.txt)
 
 set(windows 
 		windows/tabs.c

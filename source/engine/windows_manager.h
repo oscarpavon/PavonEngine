@@ -1,11 +1,17 @@
-#ifndef ENGINE_WINDOWS_MANAGER_H
-#define ENGINE_WINDOWS_MANAGER_H
+#ifndef PE_WINDOWS_MANAGER_H
+#define PE_WINDOWS_MANAGER_H
 
 #define GLFW_INCLUDE_ES2
 #define GLFW_INCLUDE_GLEXT
 
+
+#ifdef LINUX
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#endif
+
 
 #include "../engine/camera.h"
 #ifdef EDITOR
@@ -21,7 +27,9 @@ typedef struct EngineWindow{
  	char name[20];
  	bool focus;
  	bool initialized; 
+#ifdef LINUX
  	GLFWwindow* window;
+#endif
 	void(*draw)(void);
 	void(*init)(void);
 	void(*finish)(void);
@@ -34,8 +42,11 @@ typedef struct EngineWindow{
 	CameraComponent camera;
 }EngineWindow;
 
+#ifdef LINUX
 void window_resize_callback(GLFWwindow* window, int width, int height);
 void window_focus_callback(GLFWwindow*,int);
+#endif
+
 void window_create(EngineWindow *win,EngineWindow* share_window,const char* name);
 
 void window_manager_init_window(EngineWindow* window);
@@ -72,7 +83,11 @@ typedef enum PERendererType{
 
 PERendererType pe_renderer_type;
 
+bool pe_wm_should_close(EngineWindow*);
+
 inline static void window_update_envents(){
+#ifdef LINUX
        glfwPollEvents();
+#endif
 }
 #endif // !ENGINE_WINDOWS_MANAGER_H

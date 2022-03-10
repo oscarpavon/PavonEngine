@@ -26,7 +26,9 @@ void pe_game_render_init(){
 void pe_game_render_config(){
 	render_thread_definition.init = &pe_game_render_init;
 	render_thread_definition.draw = &window_manager_draw_windows; 
+#ifdef LINUX
 	render_thread_definition.end = &glfwTerminate;
+#endif
 }
 void pe_game_draw(){
 
@@ -36,14 +38,14 @@ void pe_game_draw(){
 void pe_game_init(){
 
     window_create(game_window, NULL, game->name); 
-    
+#ifdef LINUX
     glfwSetKeyCallback(game_window->window, pe_input_key_callback);
 	glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
 	glfwSetMouseButtonCallback(game_window->window, pe_input_mouse_button_callback);
     glfwSetCharCallback(game_window->window, pe_input_key_callback);
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
-
+#endif
 }
 void pe_game_input(){
   game->input();

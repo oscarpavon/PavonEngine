@@ -2,6 +2,7 @@
 #include <engine/engine.h>
 #include <engine/types.h>
 #include <engine/threads.h>
+#include <engine/renderer/renderer.h>
 
 void engine_draw_elements(Array *elements) {
   for (size_t i = 0; i < elements->count; i++) {
@@ -41,7 +42,9 @@ void render_thread_init(){
 
   pe_shader_compile_std();
 
+#ifdef LINUX
   glEnable(GL_MULTISAMPLE);
+#endif
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);

@@ -2,15 +2,22 @@
 #define ENGINE_INPUT
 
 #ifdef ANDROID
-    #include "../Platforms/Android/input.h"
+    	#include "../Platforms/Android/input.h"
 #else
     
-	#ifdef EDITOR
-		#include "../editor/input.h"
-	#endif
+#ifdef EDITOR
+	#include "../editor/input.h"
+#endif
 
+#ifdef LINUX
+	#include <GLFW/glfw3.h>
+void pe_input_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void pe_input_mouse_movement_callback(GLFWwindow* window, double xpos, double ypos);
+void pe_input_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-#include <GLFW/glfw3.h>
+void pe_input_character_callback(GLFWwindow*,unsigned int); 
+#endif
+
 #include <stdbool.h>
 
 typedef struct Key{
@@ -98,11 +105,6 @@ float verticalAngle;
 bool mouse_navigate_control;
 
 void pe_input_init();
-void pe_input_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void pe_input_mouse_movement_callback(GLFWwindow* window, double xpos, double ypos);
-void pe_input_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-
-void pe_input_character_callback(GLFWwindow*,unsigned int); 
 
 void mouse_movement_control(float xpos, float ypos);
 #endif//NOT ANDROID

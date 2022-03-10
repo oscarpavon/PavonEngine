@@ -7,16 +7,20 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
+set(audio   
+	${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
+	${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
+        ${CMAKE_CURRENT_LIST_DIR}/audio.c
+)
+
+set(network 
+	${CMAKE_CURRENT_LIST_DIR}/network/network.c
+	${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
+)
+
 endif()
 
 
-set(audio   ${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
-            ${CMAKE_CURRENT_LIST_DIR}/audio.c
-)
-set(network 
-		${CMAKE_CURRENT_LIST_DIR}/network/network.c
-		${CMAKE_CURRENT_LIST_DIR}/platforms/linux/network.c
-)
 
 set(components
         ${CMAKE_CURRENT_LIST_DIR}/components/components.c
@@ -31,10 +35,10 @@ set(opengl_es2_renderer
 	${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
 	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
-  ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
+	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
 
-  set(renderer
+set(renderer
 	 ${opengl_es2_renderer}
       ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
     )
@@ -64,20 +68,24 @@ set(engine_source
         ${CMAKE_CURRENT_LIST_DIR}/animation/animation.c
         ${CMAKE_CURRENT_LIST_DIR}/Collision/collision.c
         ${CMAKE_CURRENT_LIST_DIR}/content_manager.c
-		${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
-		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
-		${CMAKE_CURRENT_LIST_DIR}/game.c
-		${CMAKE_CURRENT_LIST_DIR}/input.c
-		${CMAKE_CURRENT_LIST_DIR}/elements.c
+	${CMAKE_CURRENT_LIST_DIR}/game.c
+	${CMAKE_CURRENT_LIST_DIR}/elements.c
 
         ${components}
-				${audio}
-				${network}
-				${third_party}
-                ${renderer}
-                #${physics}
+	${network}
+	${third_party}
+        ${renderer}
+	#${audio}
+	#${physics}
 )
 
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+	set(platform_pc 	
+		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
+		${CMAKE_CURRENT_LIST_DIR}/input.c
+		)
+	set(engine_source ${engine_source} ${window_manager})	
+endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 

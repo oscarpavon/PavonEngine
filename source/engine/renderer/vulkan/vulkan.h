@@ -1,5 +1,5 @@
-#ifndef VULKAN
-#define VULKAN
+#ifndef PEVULKAN_H
+#define PEVULKAN_H
 
 #include <vulkan/vulkan.h>
 #include <engine/array.h>

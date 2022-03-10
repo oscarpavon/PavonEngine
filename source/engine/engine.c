@@ -391,11 +391,14 @@ wait:
     //wait for window initialization in the render thread	
     while (!program_window->initialized) {};
 
+#ifdef LINUX
     if(program_window->window == NULL){
         goto wait;
     } 
-    
-    while (!glfwWindowShouldClose(program_window->window))
+#endif
+
+//while (!glfwWindowShouldClose(program_window->window))
+    while (!pe_wm_should_close(program_window))
     {
         window_update_envents();
         
