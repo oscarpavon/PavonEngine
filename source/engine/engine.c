@@ -396,15 +396,14 @@ wait:
         goto wait;
     } 
 #endif
-
-//while (!glfwWindowShouldClose(program_window->window))
+  //while (!glfwWindowShouldClose(program_window->window))
     while (!pe_wm_should_close(program_window))
     {
         window_update_envents();
         
         window_manager_update_windows_input();    
-				
-		program_loop();	
+
+		    program_loop();	
 
         usleep(2*1000);    
 	}
@@ -418,8 +417,8 @@ void pe_init(){
     windows_manager_init();
 
     pe_init_arrays();
-
-	pe_th_main_id = pthread_self();
+	 
+    pe_th_main_id = pthread_self();
 
     pe_input_init();
   

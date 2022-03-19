@@ -23,6 +23,8 @@ void update_gpu_vertex_data(Array* array, GLuint id);
 
 void pe_render_skinned_model(SkinnedMeshComponent * new_model);
 
+void pe_change_background_color();
+
 static inline void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
   //  debug_break();

@@ -433,9 +433,10 @@ Model* pe_vk_model_load(char* path){
     actual_model_array = &array_models_loaded;
     pe_loader_model(path);
     Model* model = selected_model;
-    
+#ifdef LINUX 
     model->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
     model->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+#endif
     return model;
 }
 

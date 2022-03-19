@@ -9,11 +9,14 @@
 #include "windows_manager.h"
 
 typedef struct PGame{
-    char* name;
+	char* name;
 	void(*init)(void);
 	void(*loop)(void);
 	void(*end)(void);
 	void(*input)(void);
+#ifdef ANDROID
+	struct android_app* app; 
+#endif
 }PGame;
 
 int init_game();

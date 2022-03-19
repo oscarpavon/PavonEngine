@@ -126,6 +126,14 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     check_send_matrix_error("MVP");
 }
 
+void pe_change_background_color(){
+  
+	//glClearColor(0,1,0, 1);
+  
+	//glClear(GL_COLOR_BUFFER_BIT);
+  printf("chcek\n");
+}
+
 void draw_vertices_like(GLenum mode, Model* model, vec4 color){
     update_draw_vertices(model->shader,model->vertex_buffer_id,model->model_mat);
     //send_color_to_shader(model->shader,color);
@@ -199,9 +207,9 @@ void draw_simgle_model(Model * new_model){
     mat4 mvp;      
     update_mvp(new_model->model_mat, mvp);  
     
-	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
+  	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
    
-	update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
+  	update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
     
 
     GLint mvp_uniform =  get_uniform_location(new_model->shader,"model");

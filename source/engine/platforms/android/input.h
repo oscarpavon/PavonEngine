@@ -5,7 +5,7 @@
 #ifndef PAVONTHEGAME_INPUT_H
 #define PAVONTHEGAME_INPUT_H
 
-#include "../../Engine/utils.h"
+#include <engine/utils.h>
 typedef struct android_app android_app;
 
 #include <android/input.h>

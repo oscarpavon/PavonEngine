@@ -2,7 +2,7 @@
 #define ENGINE_INPUT
 
 #ifdef ANDROID
-    	#include "../Platforms/Android/input.h"
+			#include <engine/platforms/android/input.h>
 #else
     
 #ifdef EDITOR

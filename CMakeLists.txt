@@ -3,7 +3,7 @@ project(PavonEngine)
 set(CMAKE_BUILD_TYPE=Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wno-switch -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source")
 
 add_compile_options (-fdiagnostics-color=always)
 

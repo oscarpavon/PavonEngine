@@ -142,21 +142,6 @@ void window_manager_draw_windows(){
 	}
 }
 
-void window_manager_update_windows_input(){
-	
-  	//Draw tab bar 	& draw current tabb 
-	for(u8 i = 0; i<engine_windows.count ; i++ ){
-		EngineWindow* window = array_get(&engine_windows,i);
-		if(!window->initialized)
-			   continue;
-		
-        //The mouse need to stay in the window for window->input call	
-		if(window->focus){
-			if(window->input)
-				window->input();
-		}
-	}
-}
 
 void window_initialize_windows(){
 	for(u8 i = 0; i<engine_windows.count ; i++ ){

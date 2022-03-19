@@ -40,8 +40,8 @@ void pe_game_init(){
     window_create(game_window, NULL, game->name); 
 #ifdef LINUX
     glfwSetKeyCallback(game_window->window, pe_input_key_callback);
-	glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
-	glfwSetMouseButtonCallback(game_window->window, pe_input_mouse_button_callback);
+	  glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
+	  glfwSetMouseButtonCallback(game_window->window, pe_input_mouse_button_callback);
     glfwSetCharCallback(game_window->window, pe_input_key_callback);
     glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
     glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);

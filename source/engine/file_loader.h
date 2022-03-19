@@ -4,7 +4,7 @@
 #include "utils.h"
 
 #ifdef ANDROID
-#include "../../../../../SDK/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/android/asset_manager.h"
+#include <android/asset_manager.h>
 AAssetManager* assets_manager;
 #endif
 
@@ -20,7 +20,7 @@ typedef struct file{
     const char *path;
     u32 size_in_bytes;
     u32 bytes_readed; 
- 	struct ResourceDescriptor resource_descriptor;
+    struct ResourceDescriptor resource_descriptor;
     bool opened;
     void *data;
 }File;

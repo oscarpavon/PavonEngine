@@ -6,20 +6,27 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
 find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
+if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
+
+	
+endif()
 
 
-set(engine_link 
-	m
-	glfw
-	pthread
-	${FREETYPE_LIBRARIES}
-	${OPENGL_LIBRARIES}
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+find_package(glfw3 REQUIRED)
+
+set(linux_libraries 
+	asound
+)
+
+
+set(pc_link 
+	  glfw
     pe_vk
-	dl
     vulkan
     pulse
     pulse-simple
@@ -28,15 +35,18 @@ set(engine_link
     #BulletCollision
     #BulletSoftBody
     #LinearMath
-    )
-if(CMAKE_SYSTEM_NAME MATCHES "OpenBSD|FreeBSD")
-
-	
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-set(linux_libraries 
-	asound
+	  ${OPENGL_LIBRARIES}
+	  dl
+	  m
+	  pthread
 )
+
 set(lib ${lib} ${linux_libraries})
+
 endif()
+
+set(engine_link 
+	${FREETYPE_LIBRARIES}
+    )
+
+

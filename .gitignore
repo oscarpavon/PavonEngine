@@ -78,3 +78,5 @@ lib/*
 *.core
 *.spv
 source/demo/chess/bin/chess
+.cache
+*.apk
