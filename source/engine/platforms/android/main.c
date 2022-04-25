@@ -9,9 +9,9 @@
 #include <android_native_app_glue.h>
 
 #define APP_NAME "PavonEngine"
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_NAME, __VA_ARGS__))
-#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
+#define ALOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
+#define ALOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_NAME, __VA_ARGS__))
+#define ALOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
 
 //#include <engine/renderer/opengl/opengl_es2.h>
 //#include<engine/renderer/opengl/opengl_es2.h>
@@ -96,7 +96,7 @@ int init_display(struct engine_t* engine) {
 	context = eglCreateContext(display, config, NULL, attribList);
 
 	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
-		LOGW("Unable to eglMakeCurrent");
+		ALOGW("Unable to eglMakeCurrent");
 		return -1;
 	}
 
@@ -158,7 +158,7 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
 		engine->touchX = AMotionEvent_getX(event, 0);
 		engine->touchY = AMotionEvent_getY(event, 0);
-		LOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
+		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
 		return 1;
 	}
 	return 0;
@@ -175,26 +175,8 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
 		// The window is being shown, get it ready.
 		if (engine->app->window != NULL) {
 			init_display(engine);
-
-			pe_log("pavon engine will initialiazed\n");
-
-			pe_log("ENGINE initialiazed\n");
-
-			//init_engine_memory();pe_log("pavon engine memory inititliated\n");
-			
-			//Array a;
-			//array_init(&a,32,4);
-
-			//pe_init();
-
-	    //pe_init_arrays();
-			//pe_end(); 
-
-			//pe_input_init();
-
-			pe_log("WIIIIII\n");
-
 			draw_frame(engine);
+			pe_init();
 		}
 		break;
 	case APP_CMD_TERM_WINDOW:
@@ -212,11 +194,6 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
  * Main entry point, handles events
  */
 void android_main(struct android_app* state) {
-	
-		pe_log("##########      INIT         #############\n");
-		__android_log_print(ANDROID_LOG_WARN,"PavonEngine","Test from pavon android log");
-		LOGE("PAVON ENGINE");
-		//LOGW("PAVON ENGINE");
 	
 
 	struct engine_t engine;
@@ -246,43 +223,15 @@ void android_main(struct android_app* state) {
 				return;
 			}
 		}
+		glClearColor(1,0,0,1);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Draw the current frame
-		glClearColor(1,0,0, 1);
-  
-		glClear(GL_COLOR_BUFFER_BIT);
-	
-
-
-		//pe_change_background_color2();
-		//pe_change_background_color();
-		//pe_test();
-
-		//show_this_fuck();
-
-		//pe_change_background_color();
+		pe_change_background_color();
 
 		draw_frame(&engine);
 	}
 }
 
-int main(){
-
-	//pe_change_background_color();
-
-	return 0;
-}
 
 
-void android_main3(struct android_app* state) {
-
-	pe_log("hello\n");
-	pe_log("another\n");
-
-	while(1){
-
-	}
-
-	
-
-}

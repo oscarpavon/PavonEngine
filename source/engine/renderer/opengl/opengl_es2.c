@@ -6,27 +6,34 @@
 #include <engine/camera.h>
 #include <engine/engine.h>
 
-static inline void mvp_error(const char* uniform_name){
+#ifdef LINUX
+#define PEINLINE static inline
+#else
+#define PEINLINE 
+
+#endif
+
+PEINLINE void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
   //  debug_break();
 }
 
 
-static inline void check_send_matrix_error(const char* message){
+PEINLINE void check_send_matrix_error(const char* message){
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
         LOG("[X] Send %s matrix error, Error %08x \n", message, error);
     }
 }
 
-static inline void check_error(const char* message){
+PEINLINE void check_error(const char* message){
     GLenum error = glGetError();
     if(error != GL_NO_ERROR){
         LOG("%s, Error %08x \n", message, error);
     }
 }
 
-static inline GLint get_uniform_location(GLuint shader, const char* name){
+PEINLINE GLint get_uniform_location(GLuint shader, const char* name){
     GLint uniform = glGetUniformLocation(shader,name);
     if(uniform == -1){
         mvp_error(name);
@@ -34,13 +41,13 @@ static inline GLint get_uniform_location(GLuint shader, const char* name){
     return uniform;
 }
 
-static inline void send_color_to_shader(u32 shader_id, vec4 color){
+PEINLINE void send_color_to_shader(u32 shader_id, vec4 color){
     GLint uniform_color = get_uniform_location(shader_id,"color");
     
     glUniform4fv(uniform_color, 1, color);
 }
 
-inline static void render_clear_buffer(int buffer_bits){	
+PEINLINE void render_clear_buffer(int buffer_bits){	
     glClear(buffer_bits);
 }
 

@@ -33,15 +33,15 @@ set(third_party
 	)	
 
 set(opengl_es2_renderer
-	${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
 	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
 
 set(renderer
-	 ${opengl_es2_renderer}
-      ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
+	      ${opengl_es2_renderer}
+	      ${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
+        ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
     )
 
 
@@ -59,6 +59,13 @@ set(pe_base
 
 set(engine_source
         ${pe_base} 
+        ${renderer}
+
+        ${components}
+	      ${network}
+	      ${third_party}
+	      #${audio}
+	      #${physics}
 
         ${CMAKE_CURRENT_LIST_DIR}/LOD_system.c
         ${CMAKE_CURRENT_LIST_DIR}/model.c
@@ -78,12 +85,6 @@ set(engine_source
 	      ${CMAKE_CURRENT_LIST_DIR}/elements.c
 	      ${CMAKE_CURRENT_LIST_DIR}/window_manager.c
 
-        ${components}
-	      ${network}
-	      ${third_party}
-        ${renderer}
-	      #${audio}
-	      #${physics}
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")

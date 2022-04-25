@@ -50,6 +50,8 @@ set(link
     GLESv2
     tengine
     #pe_android
+    pavon_engine
+    m
     )
 
 target_link_directories(tengine PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
