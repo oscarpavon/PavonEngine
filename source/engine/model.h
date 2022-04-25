@@ -9,23 +9,25 @@
 
 #include "images.h"
 
-#include "skeletal.h"
-
 #include "array.h"
 
+#ifdef LINUX
 #include <engine/renderer/vulkan/vulkan.h>
+#endif
+
 #include <engine/renderer/material.h>
 
-
-typedef struct SkinnedMeshComponent SkinnedMeshComponent;
 
 typedef struct PMesh{
   GLuint vertex_buffer_id;
   GLuint index_buffer_id;
   Array vertex_array;
   Array index_array;
+
+#ifdef LINUX
   VkBuffer vertex_buffer;
   VkBuffer index_buffer;
+#endif
 }PMesh;
 
 typedef struct Model{
@@ -43,13 +45,13 @@ typedef struct Model{
 
     Texture texture;
 	bool gpu_ready;
+    PMaterial material;
+
+#ifdef LINUX
     VkBuffer vertex_buffer;
     VkBuffer index_buffer;
-
+#endif
     vec3 position;
-
-    VkDescriptorSet descriptor_set;
-    PMaterial material;
     PMesh mesh;
 }Model;
 
@@ -64,6 +66,5 @@ Model* pe_vk_model_load(char* path);
 
 int pe_loader_model(const char* path);
 
-SkinnedMeshComponent* pe_curr_skin_loading;
 
 #endif // !MODEL_H

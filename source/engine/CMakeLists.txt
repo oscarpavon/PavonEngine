@@ -1,6 +1,7 @@
 
 if(ANDROID)
-        #include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
+        set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
+        include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 #include_directories(/home/pavon/sources/freetype2/include)
 
 endif()
@@ -8,9 +9,9 @@ endif()
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
 set(audio   
-	${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
-	${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
-        ${CMAKE_CURRENT_LIST_DIR}/audio.c
+${CMAKE_CURRENT_LIST_DIR}/platforms/linux/audio_alsa.c
+${CMAKE_CURRENT_LIST_DIR}/audio/audio_engine.c
+${CMAKE_CURRENT_LIST_DIR}/audio.c
 )
 
 set(network 
@@ -48,19 +49,24 @@ set(physics
         ${CMAKE_CURRENT_LIST_DIR}/physics.c
     )
 
-
-set(engine_source
+set(pe_base
+        ${CMAKE_CURRENT_LIST_DIR}/base.c
+        ${CMAKE_CURRENT_LIST_DIR}/engine.c
+        ${CMAKE_CURRENT_LIST_DIR}/memory.c
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
+        )
+
+set(engine_source
+        ${pe_base} 
+
         ${CMAKE_CURRENT_LIST_DIR}/LOD_system.c
-        ${CMAKE_CURRENT_LIST_DIR}/memory.c
         ${CMAKE_CURRENT_LIST_DIR}/model.c
         ${CMAKE_CURRENT_LIST_DIR}/file_loader.c
         ${CMAKE_CURRENT_LIST_DIR}/camera.c
         ${CMAKE_CURRENT_LIST_DIR}/images.c       
         ${CMAKE_CURRENT_LIST_DIR}/gui.c
         ${CMAKE_CURRENT_LIST_DIR}/object_select.c
-        ${CMAKE_CURRENT_LIST_DIR}/engine.c
         ${CMAKE_CURRENT_LIST_DIR}/skeletal.c
         ${CMAKE_CURRENT_LIST_DIR}/level.c
         ${CMAKE_CURRENT_LIST_DIR}/files_parser.c        
@@ -74,10 +80,10 @@ set(engine_source
 
         ${components}
 	      ${network}
-	${third_party}
+	      ${third_party}
         ${renderer}
-	#${audio}
-	#${physics}
+	      #${audio}
+	      #${physics}
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -92,7 +98,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
-add_library(engine
+add_library(pavon_engine
 STATIC
 ${engine_source}
 )

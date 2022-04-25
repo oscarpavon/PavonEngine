@@ -1,7 +1,6 @@
 #include <jni.h>
 #include <errno.h>
 #include <math.h>
-
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
@@ -9,14 +8,31 @@
 #include <android/log.h>
 #include <android_native_app_glue.h>
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#define APP_NAME "PavonEngine"
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_NAME, __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
 
-
-
+//#include <engine/renderer/opengl/opengl_es2.h>
 //#include<engine/renderer/opengl/opengl_es2.h>
+#include <engine/engine.h>
+#include <engine/base.h>
+#include <engine/array.h>
 
-struct engine {
+#include "/data/data/com.termux/files/home/newlib/show.h"
+
+#include <android/asset_manager.h>
+#include <stdio.h>
+
+
+void pe_log(const char* text){
+
+	FILE* new_file = fopen("/storage/emulated/0/Download/test.txt","a");
+	fputs(text,new_file);
+	fclose(new_file);
+}
+
+struct engine_t {
 	struct android_app* app;
 
 	EGLDisplay display;
@@ -33,7 +49,7 @@ struct engine {
  * Initialize an EGL context for the current display.
  * TODO tidy this up, currently it's mostly Google example code
  */
-int init_display(struct engine* engine) {
+int init_display(struct engine_t* engine) {
 
 	// Setup OpenGL ES 2
 	// http://stackoverflow.com/questions/11478957/how-do-i-create-an-opengl-es-2-context-in-a-native-activity
@@ -106,7 +122,7 @@ int init_display(struct engine* engine) {
 /**
  * Just the current frame in the display.
  */
-void draw_frame(struct engine* engine) {
+void draw_frame(struct engine_t* engine) {
 	// No display.
 	if (engine->display == NULL) {
 		return;
@@ -118,7 +134,7 @@ void draw_frame(struct engine* engine) {
 /**
  * Tear down the EGL context currently associated with the display.
  */
-void terminate_display(struct engine* engine) {
+void terminate_display(struct engine_t* engine) {
 	if (engine->display != EGL_NO_DISPLAY) {
 		eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		if (engine->context != EGL_NO_CONTEXT) {
@@ -138,7 +154,7 @@ void terminate_display(struct engine* engine) {
  * Process the next input event.
  */
 int32_t handle_input(struct android_app* app, AInputEvent* event) {
-	struct engine* engine = (struct engine*)app->userData;
+	struct engine_t* engine = (struct engine_t*)app->userData;
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
 		engine->touchX = AMotionEvent_getX(event, 0);
 		engine->touchY = AMotionEvent_getY(event, 0);
@@ -147,12 +163,11 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
 	}
 	return 0;
 }
-
 /**
  * Process the next main command.
  */
 void handle_cmd(struct android_app* app, int32_t cmd) {
-	struct engine* engine = (struct engine*)app->userData;
+	struct engine_t* engine = (struct engine_t*)app->userData;
 	switch (cmd) {
 	case APP_CMD_SAVE_STATE:
 		break;
@@ -160,6 +175,25 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
 		// The window is being shown, get it ready.
 		if (engine->app->window != NULL) {
 			init_display(engine);
+
+			pe_log("pavon engine will initialiazed\n");
+
+			pe_log("ENGINE initialiazed\n");
+
+			//init_engine_memory();pe_log("pavon engine memory inititliated\n");
+			
+			//Array a;
+			//array_init(&a,32,4);
+
+			//pe_init();
+
+	    //pe_init_arrays();
+			//pe_end(); 
+
+			//pe_input_init();
+
+			pe_log("WIIIIII\n");
+
 			draw_frame(engine);
 		}
 		break;
@@ -178,8 +212,14 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
  * Main entry point, handles events
  */
 void android_main(struct android_app* state) {
+	
+		pe_log("##########      INIT         #############\n");
+		__android_log_print(ANDROID_LOG_WARN,"PavonEngine","Test from pavon android log");
+		LOGE("PAVON ENGINE");
+		//LOGW("PAVON ENGINE");
+	
 
-	struct engine engine;
+	struct engine_t engine;
 
 	memset(&engine, 0, sizeof(engine));
 	state->userData = &engine;
@@ -188,11 +228,7 @@ void android_main(struct android_app* state) {
 	engine.app = state;
 
 	// Read all pending events.
-  int i = 0;
 	while (1) {
-      i = i + 0.001;
-      if(i > 1)
-          i=0;
 		int ident;
 		int events;
 		struct android_poll_source* source;
@@ -215,6 +251,14 @@ void android_main(struct android_app* state) {
 		glClearColor(1,0,0, 1);
   
 		glClear(GL_COLOR_BUFFER_BIT);
+	
+
+
+		//pe_change_background_color2();
+		//pe_change_background_color();
+		//pe_test();
+
+		//show_this_fuck();
 
 		//pe_change_background_color();
 
@@ -224,8 +268,21 @@ void android_main(struct android_app* state) {
 
 int main(){
 
-	pe_change_background_color();
+	//pe_change_background_color();
 
 	return 0;
 }
 
+
+void android_main3(struct android_app* state) {
+
+	pe_log("hello\n");
+	pe_log("another\n");
+
+	while(1){
+
+	}
+
+	
+
+}

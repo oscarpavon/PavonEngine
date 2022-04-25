@@ -8,6 +8,7 @@
 
 #include "../skeletal.h"
 #include "../components/components.h"
+#include <engine/components/skinned_mesh_component.h>
 #include "../array.h"
 typedef struct AnimationSampler{
     Array inputs;//int

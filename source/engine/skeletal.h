@@ -7,6 +7,7 @@
 #include "array.h"
 #include "model.h"
 
+
 struct Node;
 typedef struct Node{
     int id;

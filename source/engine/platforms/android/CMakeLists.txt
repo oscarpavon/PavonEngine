@@ -10,6 +10,8 @@ set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
+
+
 #add_library(game STATIC game.c)
 #include(/data/data/com.termux/files/home/PavonEngine/make_include.txt)
 
@@ -19,9 +21,10 @@ set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
 add_library(native-activity SHARED main.c)
-add_library(test STATIC main.c)
+add_library(tengine STATIC tengine.c)
 
-add_executable(sl main.c)
+
+#add_executable(sl main.c)
 
 target_include_directories(native-activity PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
@@ -45,11 +48,14 @@ set(link
     EGL
     log
     GLESv2
-    engine
+    tengine
+    #pe_android
     )
-target_link_directories(native-activity /data/data/com.termux/files/home/PavonEngine/lib)
 
-target_link_libraries(sl ${link})
+target_link_directories(tengine PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
+target_link_directories(native-activity PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
+
+target_link_libraries(tengine pavon_engine)
 #target_link_libraries(an ${link})
 
 target_link_libraries(native-activity

@@ -1,7 +1,8 @@
 #ifndef PE_COMPONENT_SKINNED
 #define PE_COMPONENT_SKINNED
 #include "components.h"
-
+#include <engine/model.h>
+#include <engine/skeletal.h>
 typedef struct SkinnedMeshComponent{    
     Array meshes;
     Array distances;
@@ -16,5 +17,7 @@ typedef struct SkinnedMeshComponent{
 }SkinnedMeshComponent;
 
 void pe_comp_skinned_mesh_init(ComponentDefinition*);
+
+SkinnedMeshComponent* pe_curr_skin_loading;
 
 #endif

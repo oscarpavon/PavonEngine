@@ -57,7 +57,6 @@
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
-void pe_init();
 void engine_loop();
 void init_game_engine();
 
@@ -103,12 +102,12 @@ void check_meshes_distance();
 
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size);
 
-void pe_end();
 
 void pe_frame_clean();
 
 void pe_frame_draw();
 
+void pe_init_arrays();
 
 //
 // Global variables

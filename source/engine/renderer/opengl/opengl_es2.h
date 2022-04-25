@@ -3,6 +3,7 @@
 
 #include <engine/model.h>
 #include <engine/log.h>
+#include <engine/components/skinned_mesh_component.h>
 
 #define RENDER_COLOR_BUFFER GL_COLOR_BUFFER_BIT
 #define RENDER_DEPTH_BUFFER GL_DEPTH_BUFFER_BIT
@@ -25,41 +26,4 @@ void pe_render_skinned_model(SkinnedMeshComponent * new_model);
 
 void pe_change_background_color();
 
-static inline void mvp_error(const char* uniform_name){
-    LOG("Uniform not found: %s\n",uniform_name);
-  //  debug_break();
-}
-
-
-static inline void check_send_matrix_error(const char* message){
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("[X] Send %s matrix error, Error %08x \n", message, error);
-    }
-}
-
-static inline void check_error(const char* message){
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR){
-        LOG("%s, Error %08x \n", message, error);
-    }
-}
-
-static inline GLint get_uniform_location(GLuint shader, const char* name){
-    GLint uniform = glGetUniformLocation(shader,name);
-    if(uniform == -1){
-        mvp_error(name);
-    }
-    return uniform;
-}
-
-static inline void send_color_to_shader(u32 shader_id, vec4 color){
-    GLint uniform_color = get_uniform_location(shader_id,"color");
-    
-    glUniform4fv(uniform_color, 1, color);
-}
-
-inline static void render_clear_buffer(int buffer_bits){	
-    glClear(buffer_bits);
-}
 #endif // !OPENGL_ES_2_RENDERER_H

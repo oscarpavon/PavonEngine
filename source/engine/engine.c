@@ -25,10 +25,6 @@ Array engine_elements;
 Array engine_textures;
 
 
-void pe_end(){
-    engine_running = false;   
-    clear_engine_memory();
-}
 
 void select_last_element(){
     if(selected_element != NULL)
@@ -65,7 +61,7 @@ void new_empty_model_in_array(Array* array){
 
 void new_empty_model(){
     Model new_model;
-	ZERO(new_model);
+	  ZERO(new_model);
     if(!actual_model_array)
         return;
     glm_mat4_identity(new_model.model_mat);
@@ -347,7 +343,7 @@ void pe_init_arrays(){
     
 		
     array_init(&array_models_loaded,sizeof(Model),100);
-	array_init(&pe_arr_skin_loaded,sizeof(SkinnedMeshComponent),100);
+	  array_init(&pe_arr_skin_loaded,sizeof(SkinnedMeshComponent),100);
 
     array_init(&engine_native_models,sizeof(Model),100);   
 
@@ -376,7 +372,7 @@ void pe_init_arrays(){
     array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
     array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
 
-	array_init(&render_thread_commads,sizeof(PEThreadCommand),100);
+	  array_init(&render_thread_commads,sizeof(PEThreadCommand),100);
 }
 
 void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
@@ -409,25 +405,4 @@ wait:
 	}
 }
 
-void pe_init(){
-	
-	// VERY IMPORTANT
-    init_engine_memory();
-
-    windows_manager_init();
-
-    pe_init_arrays();
-	 
-    pe_th_main_id = pthread_self();
-
-    pe_input_init();
-  
-	
-    //pe_audio_init();
-///    pe_phy_init();
-
-	engine_running = true;
-
-    pe_vk_initialized = false;
-}
 
