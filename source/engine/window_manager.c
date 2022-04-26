@@ -1,6 +1,108 @@
 #include "windows_manager.h"
 #include <engine/log.h>
 
+#include <EGL/egl.h>
+#include <engine/game.h>
+
+#include <GLES/gl.h>
+
+EGLDisplay display;
+EGLSurface surface;
+EGLContext context;
+
+/**
+ * Tear down the EGL context currently associated with the display.
+ */
+void pe_wm_egl_end() {
+	if (display != EGL_NO_DISPLAY) {
+		eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+		if (context != EGL_NO_CONTEXT) {
+			eglDestroyContext(display, context);
+		}
+		if (surface != EGL_NO_SURFACE) {
+			eglDestroySurface(display, surface);
+		}
+		eglTerminate(display);
+	}
+	display = EGL_NO_DISPLAY;
+	context = EGL_NO_CONTEXT;
+	surface = EGL_NO_SURFACE;
+}
+
+void pe_wm_swap_buffers(){
+
+	eglSwapBuffers(display, surface);
+}
+
+void pe_wm_egl_init(){
+
+	// Setup OpenGL ES 2
+	// http://stackoverflow.com/questions/11478957/how-do-i-create-an-opengl-es-2-context-in-a-native-activity
+
+	const EGLint attribs[] = {
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, //important
+			EGL_BLUE_SIZE, 8,
+			EGL_GREEN_SIZE, 8,
+			EGL_RED_SIZE, 8,
+			EGL_NONE
+	};
+
+	EGLint attribList[] =
+	{
+			EGL_CONTEXT_CLIENT_VERSION, 2,
+			EGL_NONE
+	};
+
+	EGLint w, h, dummy, format;
+	EGLint numConfigs;
+	EGLConfig config;
+
+	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+	eglInitialize(display, 0, 0);
+
+	/* Here, the application chooses the configuration it desires. In this
+	 * sample, we have a very simplified selection process, where we pick
+	 * the first EGLConfig that matches our criteria */
+	eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+
+	/* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
+	 * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
+	 * As soon as we picked a EGLConfig, we can safely reconfigure the
+	 * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
+	eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+
+	ANativeWindow_setBuffersGeometry(game->app->window, 0, 0, format);
+
+	surface = eglCreateWindowSurface(display, config, game->app->window, NULL);
+
+	context = eglCreateContext(display, config, NULL, attribList);
+
+	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+	//	ALOGW("Unable to eglMakeCurrent");
+		return -1;
+	}
+
+	// Grab the width and height of the surface
+	eglQuerySurface(display, surface, EGL_WIDTH, &w);
+	eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+	
+	//engine->display = display;
+	//engine->context = context;
+	//engine->surface = surface;
+	//engine->width = w;
+	//engine->height = h;
+
+	// Initialize GL state.
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
+	glViewport(0, 0, w, h);
+
+	return 0;
+
+}
+
 void window_manager_update_windows_input(){
 	
   	//Draw tab bar 	& draw current tabb 

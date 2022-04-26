@@ -95,6 +95,15 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(engine_source ${engine_source} ${window_manager})	
 endif()
 
+if(ANDROID)
+        
+	set(engine_source ${engine_source}
+        ${CMAKE_CURRENT_LIST_DIR}/platforms/android/android.c
+
+        ) 
+
+endif()
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)

@@ -39,6 +39,7 @@ set(pc_link
 	  dl
 	  m
 	  pthread
+    EGL 
 )
 
 set(lib ${lib} ${linux_libraries})

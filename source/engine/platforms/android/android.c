@@ -1,0 +1,42 @@
+#include "android.h"
+#include <engine/windows_manager.h>
+#include <engine/game.h>
+
+void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
+
+  switch (cmd) {
+  case APP_CMD_SAVE_STATE:
+    break;
+  case APP_CMD_INIT_WINDOW:
+    pe_wm_egl_init();
+    pe_wm_swap_buffers();
+    break;
+  case APP_CMD_TERM_WINDOW:
+    pe_wm_egl_end();
+    break;
+  case APP_CMD_LOST_FOCUS:
+    pe_wm_swap_buffers();
+    break;
+  }
+}
+
+void pe_android_poll_envents(){
+    struct android_app* state = game->app;
+    int ident;
+    int events;
+    struct android_poll_source *source;
+
+    while ((ident = ALooper_pollAll(0, NULL, &events, (void **)&source)) >= 0) {
+
+      // Process this event.
+      if (source != NULL) {
+        source->process(state, source);
+      }
+
+      // Check if we are exiting.
+      if (state->destroyRequested != 0) {
+				pe_wm_egl_end();	
+        return;
+      }
+    }
+}

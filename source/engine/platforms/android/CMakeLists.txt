@@ -27,6 +27,7 @@ add_library(native-activity SHARED main.c)
 add_library(tengine STATIC tengine.c)
 
 
+add_compile_definitions(PUBLIC ANDROID)
 #add_executable(sl main.c)
 
 target_include_directories(native-activity PRIVATE

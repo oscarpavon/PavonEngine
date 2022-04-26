@@ -85,6 +85,14 @@ PERendererType pe_renderer_type;
 
 bool pe_wm_should_close(EngineWindow*);
 
+#ifdef ANDROID
+void pe_wm_egl_init();
+
+void pe_wm_egl_end();
+#endif
+
+void pe_wm_swap_buffers();
+
 inline static void window_update_envents(){
 #ifdef LINUX
        glfwPollEvents();
