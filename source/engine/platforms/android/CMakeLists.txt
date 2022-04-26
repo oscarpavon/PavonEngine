@@ -5,6 +5,9 @@ project(PavonEngineAndroid)
 # build native_app_glue as a static lib
 #set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 
+include(FindFreetype)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+
 set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
 
 add_library(native_app_glue STATIC
@@ -52,6 +55,7 @@ set(link
     #pe_android
     pavon_engine
     m
+    #${FREETYPE_LIBRARIES}
     )
 
 target_link_directories(tengine PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)

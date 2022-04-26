@@ -13,6 +13,7 @@
 #include "engine.h"
 
 #include <dlfcn.h>
+#include <engine/base.h>
 
 static vec4 backcolor= {0.1,0.2,0.4,1};
 

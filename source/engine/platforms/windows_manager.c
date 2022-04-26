@@ -35,11 +35,6 @@ void pe_wm_glfw_init(){
 }
 
 
-void window_manager_init_window(EngineWindow* window){
-	if(window->init != NULL)
-		window->init();
-	window->initialized = true;
-}
 
 void windows_manager_init(){
 	pe_wm_glfw_init();		
@@ -85,11 +80,6 @@ void window_create(EngineWindow *win, EngineWindow* share_window, const char* na
     win->initialized = true;
 }
 
-void window_update_viewport(int width, int height){
-		glViewport(0,0,width,height);
-    text_renderer_update_pixel_size();
-		camera_update_aspect_ratio(&current_window->camera);
-}
 
 void window_resize_callback(GLFWwindow* window, int width, int height){
     camera_heigth_screen = height;
@@ -119,28 +109,6 @@ void window_set_focus(EngineWindow* window){
     //LOG("Focus windows change\n");
 }
 
-void window_manager_draw_windows(){
-	
-	for(u8 i = 0; i<engine_windows.count ; i++ ){
-		EngineWindow* window = array_get(&engine_windows,i);
-	    if (pe_renderer_type == PEWMOPENGLES2) 
-	    	glfwMakeContextCurrent(window->window);
-		if(!window->initialized)
-			   continue;
-		
-	if(glfwWindowShouldClose(window->window)){
-		window->finish();	
-		LOG("Window close\n");
-		continue;
-	}
-		
-	window->draw();
-	
-    if(pe_renderer_type == PEWMOPENGLES2)	
-        glfwSwapBuffers(window->window);
-
-	}
-}
 
 
 void window_initialize_windows(){

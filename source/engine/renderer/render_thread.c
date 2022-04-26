@@ -56,7 +56,9 @@ void render_thread_init(){
   engine_initialized = true;
 
   pe_gui_init();
+#ifdef LINUX
   text_renderer_init();
+#endif
    
 
 }

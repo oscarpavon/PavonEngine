@@ -34,7 +34,6 @@ set(third_party
 
 set(opengl_es2_renderer
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/opengl_es2.c
-	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
 
@@ -91,6 +90,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(platform_pc 	
 		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
 		${CMAKE_CURRENT_LIST_DIR}/input.c
+	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 		)
 	set(engine_source ${engine_source} ${window_manager})	
 endif()

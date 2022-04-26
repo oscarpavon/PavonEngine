@@ -25,6 +25,7 @@
 #include <stdio.h>
 
 
+
 void pe_log(const char* text){
 
 	FILE* new_file = fopen("/storage/emulated/0/Download/test.txt","a");
@@ -190,46 +191,69 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
 }
 
 
+void ainit(){
+
+}
+
+
+void aloop(){
+
+
+}
+
+void ainput(){
+
+
+}
+
 /**
  * Main entry point, handles events
  */
 void android_main(struct android_app* state) {
-	
 
-	struct engine_t engine;
+  PGame chess;
+  ZERO(chess);
 
-	memset(&engine, 0, sizeof(engine));
-	state->userData = &engine;
-	state->onAppCmd = handle_cmd;
-	state->onInputEvent = handle_input;
-	engine.app = state;
+  chess.name = "Chess";
+  chess.loop = &aloop;
+  chess.init = &ainit;
+  chess.input = &ainput;
+  pe_game_create(&chess);
 
-	// Read all pending events.
-	while (1) {
-		int ident;
-		int events;
-		struct android_poll_source* source;
+  struct engine_t engine;
 
-		while ((ident=ALooper_pollAll(0, NULL, &events,(void**)&source)) >= 0) {
+  memset(&engine, 0, sizeof(engine));
+  state->userData = &engine;
+  state->onAppCmd = handle_cmd;
+  state->onInputEvent = handle_input;
+  engine.app = state;
 
-			// Process this event.
-			if (source != NULL) {
-				source->process(state, source);
-			}
+  // Read all pending events.
+  while (1) {
+    int ident;
+    int events;
+    struct android_poll_source *source;
 
-			// Check if we are exiting.
-			if (state->destroyRequested != 0) {
-				terminate_display(&engine);
-				return;
-			}
-		}
-		glClearColor(1,0,0,1);
-		glClear(GL_COLOR_BUFFER_BIT);
+    while ((ident = ALooper_pollAll(0, NULL, &events, (void **)&source)) >= 0) {
 
-		// Draw the current frame
-		pe_change_background_color();
+      // Process this event.
+      if (source != NULL) {
+        source->process(state, source);
+      }
 
-		draw_frame(&engine);
+      // Check if we are exiting.
+      if (state->destroyRequested != 0) {
+        terminate_display(&engine);
+        return;
+      }
+    }
+    glClearColor(1, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw the current frame
+    pe_change_background_color();
+
+    draw_frame(&engine);
 	}
 }
 

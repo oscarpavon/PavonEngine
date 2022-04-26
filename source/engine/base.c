@@ -10,7 +10,7 @@ void pe_end(){
 void pe_init(){
   init_engine_memory();//VERY IMPORTANT
 
-  //pe_init_arrays();
+  pe_init_arrays();
 
 	engine_running = true;
 
