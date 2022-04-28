@@ -125,23 +125,21 @@ void pe_wm_events_update() {
 #endif
 }
 
-void pe_wm_input_update(){
-	
-  	//Draw tab bar 	& draw current tabb 
-	for(u8 i = 0; i<engine_windows.count ; i++ ){
-		EngineWindow* window = array_get(&engine_windows,i);
-		if(!window->initialized)
-			   continue;
-		
-        //The mouse need to stay in the window for window->input call	
-		if(window->focus){
-			if(window->input)
-				window->input();
-		}
-	}
+void pe_wm_input_update() {
+
+  // Draw tab bar 	& draw current tabb
+  for (u8 i = 0; i < engine_windows.count; i++) {
+    EngineWindow *window = array_get(&engine_windows, i);
+    if (!window->initialized)
+      continue;
+
+    // The mouse need to stay in the window for window->input call
+    if (window->focus) {
+      if (window->input)
+        window->input();
+    }
+  }
 }
-
-
 
 bool pe_wm_should_close(EngineWindow* window){
 
@@ -169,7 +167,7 @@ void window_update_viewport(int width, int height){
 void pe_wm_create_window(EngineWindow* win){
 	
   if (win == NULL) {
-    // LOG("ERROR: Window not found\n");
+    LOG("ERROR: Window not found\n");
     return;
   }
   if (win->initialized)
@@ -228,27 +226,34 @@ void pe_wm_window_init(EngineWindow* window){
 	window->initialized = true;
 }
 
-void window_manager_draw_windows() {
 
-  for (u8 i = 0; i < engine_windows.count; i++) {
-    EngineWindow *window = array_get(&engine_windows, i);
-    if (pe_renderer_type == PEWMOPENGLES2) {
+void pe_wm_context_current(){
+
 #ifdef LINUX
       glfwMakeContextCurrent(window->window);
 #endif
 #ifdef ANDROID
-		pe_wm_egl_context_make_current();
+      pe_wm_egl_context_make_current();
 #endif
+
+}
+
+
+void pe_wm_windows_draw() {
+
+  for (u8 i = 0; i < engine_windows.count; i++) {
+    EngineWindow *window = array_get(&engine_windows, i);
+    if (pe_renderer_type == PEWMOPENGLES2) {
+      pe_wm_context_current();
     }
     if (!window->initialized)
       continue;
-#ifdef LINUX
-    if (glfwWindowShouldClose(window->window)) {
+    if (pe_wm_should_close(window)) {
       window->finish();
-      // LOG("Window close\n");
+      LOG("Window close\n");
       continue;
     }
-#endif
+
     window->draw();
 
     if (pe_renderer_type == PEWMOPENGLES2) {

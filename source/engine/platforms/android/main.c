@@ -51,20 +51,6 @@ struct engine_t {
 
 
 
-/**
- * Process the next input event.
- */
-int32_t handle_input(struct android_app* app, AInputEvent* event) {
-	struct engine_t* engine = (struct engine_t*)app->userData;
-	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-		engine->touchX = AMotionEvent_getX(event, 0);
-		engine->touchY = AMotionEvent_getY(event, 0);
-		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
-		return 1;
-	}
-	return 0;
-}
-
 
 void ainit(){
 
@@ -73,7 +59,8 @@ void ainit(){
   camera_update(&main_camera);
   
 	add_element_with_model_path("/sdcard/Download/sphere.glb");
-	//pe_change_background_color();
+	
+	pe_change_background_color(0,1,0,1);
 
 	LOG("################### GAMEEEEE INTTT   ###########");
 }
@@ -81,8 +68,9 @@ void ainit(){
 
 void aloop(){
 
-
+	pe_change_background_color(0,0.3,0,1);
 }
+
 
 void ainput(){
 
@@ -92,8 +80,8 @@ void ainput(){
 void android_main(struct android_app* state) {
 
   //state->userData = &engine;
-  state->onAppCmd = pe_android_handle_cmd;
-  state->onInputEvent = handle_input;
+  state->onAppCmd = &pe_android_handle_cmd;
+  state->onInputEvent = &pe_android_input_handle;
 
   PGame chess;
   ZERO(chess);

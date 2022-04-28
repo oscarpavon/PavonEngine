@@ -13,6 +13,8 @@ void pe_init(){
   pe_init_arrays();
 
 	engine_running = true;
+ 
+  pe_change_background_color(0,0,0.2,1);
 
 #ifdef LINUX
   pe_th_main_id = pthread_self();

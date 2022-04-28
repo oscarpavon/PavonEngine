@@ -24,6 +24,5 @@ void update_gpu_vertex_data(Array* array, GLuint id);
 
 void pe_render_skinned_model(SkinnedMeshComponent * new_model);
 
-void pe_change_background_color();
 
 #endif // !OPENGL_ES_2_RENDERER_H

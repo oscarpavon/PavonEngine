@@ -5,10 +5,12 @@ Because in the window created is where the graphics shows, all code need to be e
 All models are loaded in "array_models_loaded"
 
 ##Adding new model to scene
-For adding new model you need to call "add_element_with_model_path"
+For adding new model you need to call "add_element_with_model_path()"
 this is necesesary for show model in the editor o game
 
 Filling the model for test occullion happend in "update_per_frame_component" function
 For render object in scene the engine fill "models_for_test_occlusion" array
 After that a function "test occlusion" is called and fill "frame_draw_static_elements" array
 
+
+Engine Init --> render thread definition --> draw windows --> pe_frame_draw()

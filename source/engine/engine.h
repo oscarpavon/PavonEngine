@@ -57,7 +57,10 @@
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
+void pe_change_background_color(float r, float g, float b, float a);
+
 void engine_loop();
+
 void init_game_engine();
 
 void pe_program_main_loop(void(*program_loop)(void),EngineWindow* program_window);
@@ -66,7 +69,7 @@ void add_action_function(void(*f)(void));
 
 /* Draw array of engine elements, 
 if in editor the shader need color multiplication uniform otherwise 
-it not show it becouse color is multiplied per 0 ! */
+it not show it because color is multiplied per 0 ! */
 void engine_draw_elements(Array* elements);
 void pe_render_skinned(Array* elements);
 void draw_simgle_model(struct Model * new_model);
@@ -194,6 +197,12 @@ static inline void update_mvp(mat4 model, mat4 mvp_out){
     glm_mul(projection_view , model , mvp_out);
 }
 
+
+
+vec4 pe_background_color;
+
 Model* test_model;
 Model* test_model2;
+
+
 #endif //PAVON_ENGINE_H

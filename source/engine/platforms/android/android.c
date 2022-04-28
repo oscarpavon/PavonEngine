@@ -3,8 +3,22 @@
 #include <engine/game.h>
 #include <engine/log.h>
 
-void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
+int32_t pe_android_input_handle(struct android_app* app, AInputEvent* event) {
+	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
+//		engine->touchX = AMotionEvent_getX(event, 0);
+//		engine->touchY = AMotionEvent_getY(event, 0);
+//		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
+    LOG("KEY PRESSED");
+		return 1;
+	}
 
+
+    LOG("################ Input handle ####################");
+	return 0;
+}
+
+void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
+  LOG("##### Android CMD ######");
   switch (cmd) {
   case APP_CMD_SAVE_STATE:
     break;
@@ -17,9 +31,13 @@ void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
     pe_is_window_init = true;
     break;
   case APP_CMD_TERM_WINDOW:
+
+    LOG("##### Android TERM WINDOW ######");
     pe_wm_egl_end();
     break;
   case APP_CMD_LOST_FOCUS:
+    
+    LOG("##### Android LOST FOCUS ######");
     pe_wm_swap_buffers();
     break;
   }
@@ -40,7 +58,7 @@ void pe_android_poll_envents(){
 
       // Check if we are exiting.
       if (state->destroyRequested != 0) {
-		//		pe_wm_egl_end();	
+				pe_wm_egl_end();	
         return;
       }
     }

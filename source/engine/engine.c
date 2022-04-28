@@ -25,6 +25,12 @@ Array engine_elements;
 Array engine_textures;
 
 
+void pe_change_background_color(float r, float g, float b, float a){
+  
+	vec4 color = {r,g,b,a};
+	glm_vec4_copy(color,pe_background_color);
+
+}
 
 void select_last_element(){
     if(selected_element != NULL)
@@ -380,10 +386,7 @@ void pe_init_arrays() {
 
   pe_is_window_init = false;
 }
-
-void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
-
-    while(!engine_initialized){}//wait for initilization
+void pe_wm_check(EngineWindow* program_window){
 
 wait:
     if(program_window == NULL) {
@@ -398,7 +401,15 @@ wait:
         goto wait;
     } 
 #endif
-  //while (!glfwWindowShouldClose(program_window->window))
+
+}
+void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
+
+    while(!engine_initialized){}//wait for initilization
+
+    //pe_wm_check(program_window);
+
+    LOG("######## Program LOOP go");
     while (!pe_wm_should_close(program_window))
     {
         pe_wm_events_update();

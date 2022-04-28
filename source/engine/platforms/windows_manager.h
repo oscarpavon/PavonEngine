@@ -80,6 +80,8 @@ void pe_wm_events_update();
 
 void pe_wm_input_update();
 
+void pe_wm_windows_draw();
+
 float actual_window_width;
 float actual_window_height;
 

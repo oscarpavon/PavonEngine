@@ -26,7 +26,7 @@ void pe_game_render_init(){
 
 void pe_game_render_config(){
 	render_thread_definition.init = &pe_game_render_init;
-	render_thread_definition.draw = &window_manager_draw_windows; 
+	render_thread_definition.draw = &pe_wm_windows_draw; 
 #ifdef LINUX
 	render_thread_definition.end = &glfwTerminate;
 #endif

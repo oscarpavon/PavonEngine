@@ -65,45 +65,45 @@ void render_thread_init(){
 
 void engine_render_draw() {
 
-    render_thread_init();
-    
-    //*********  Timing ******
-    float render_frame_time = 0;
-    float disired_frame_time = 0.016f;
-   
-    u8 frames = 0;
-    float frame_second = 0;
-    //************************
-     
-  
-    while (engine_running) {
+  render_thread_init();
 
-        render_frame_time += time_delta;
+  //*********  Timing ******
+  float render_frame_time = 0;
+  float disired_frame_time = 0.016f;
 
-        time_start();
+  u8 frames = 0;
+  float frame_second = 0;
+  //************************
 
-		pe_thread_control(&render_thread_commads);
+  LOG("########## PE renderizer GO");
 
-        if(render_thread_definition.draw != NULL)
-		    render_thread_definition.draw();
-		
-		//********* Timing **********
-        time_end();
-       
-        frame_second += time_elapsed_time;
-        
-        if (frame_second >= 1000) {
-            FPS = frames * (1000.f / frame_second);
-            frames = 0;
-            frame_second = 0;
-        }else{
-            frames++;
-        }
-    	//********* End timing ********
-  
-	}
-	//end while
-	render_thread_definition.end();
+  while (engine_running) {
+
+    render_frame_time += time_delta;
+
+    time_start();
+
+    pe_thread_control(&render_thread_commads);
+
+    if (render_thread_definition.draw != NULL)
+      render_thread_definition.draw();
+
+    //********* Timing **********
+    time_end();
+
+    frame_second += time_elapsed_time;
+
+    if (frame_second >= 1000) {
+      FPS = frames * (1000.f / frame_second);
+      frames = 0;
+      frame_second = 0;
+    } else {
+      frames++;
+    }
+    //********* End timing ********
+  }
+  // end while
+  render_thread_definition.end();
 }
 
 /*Start render thread and call engine_render_draw()*/
@@ -123,9 +123,13 @@ void pe_frame_static_fill(ComponentDefinition* definition){
 
 }
 
+
+//IMPORTAND
 void pe_frame_draw(){
 
-  glClearColor(1,0,0,1);
+  glClearColor(pe_background_color[0], pe_background_color[1],
+               pe_background_color[2], pe_background_color[3]);
+
   render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
 
   for_each_element_components(&update_per_frame_component);
