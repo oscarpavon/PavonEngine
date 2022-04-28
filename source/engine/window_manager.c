@@ -110,8 +110,10 @@ void pe_wm_egl_init(){
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
-	glViewport(0, 0, w, h);
 
+  camera_heigth_screen = h;
+  camera_width_screen = w;
+  window_update_viewport(w, h);
 	return 0;
 
 }
@@ -212,7 +214,7 @@ void window_create(EngineWindow *win, EngineWindow *share_window,
   if (pe_renderer_type == PEWMOPENGLES2) {
     // glfwMakeContextCurrent(win->window);
   }
-
+	
   camera_heigth_screen = INIT_WINDOW_SIZE_Y;
   camera_width_screen = INIT_WINDOW_SIZE_X;
   window_update_viewport(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);

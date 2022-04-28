@@ -1,0 +1,16 @@
+The editor have three mode
+Navigate Mode
+For enter in this mode you need to press the "v" key
+In the top right position you can see the text indicating the mode
+
+Moving the camera to the front the "w" key
+For rotating left/right you need to press "j" or "k"
+
+Grab Mode
+This is the mode for moving element in the scene or level
+
+
+For add editor elemente the combination key "shift" + "e"
+Editor native elementes can show in the right side of the window
+
+For navigate in the menu "j" for up and "k" for down

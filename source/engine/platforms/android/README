@@ -1,0 +1,9 @@
+This is for developmnet on android devices with termux
+First activate wifi debug mode
+Get the ip to pair devices
+Get the pair code
+# adb pair IP:PORT
+the PORT is for pair code
+Then connect with
+# adb connect IP:PORT 
+
