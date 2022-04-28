@@ -21,9 +21,19 @@
 
 void pe_log(const char* text){
 
-	FILE* new_file = fopen("/storage/emulated/0/Download/test.txt","a");
+	const char* path = "/storage/emulated/0/Download/test.txt";
+	const char* path2 = "/sdcard/Download/cube.gltf";
+
+	FILE* new_file = fopen(path,"a");
 	fputs(text,new_file);
 	fclose(new_file);
+
+    FILE* file = fopen(path2,"r");
+    if(file == NULL){
+        LOG("error to load: %s\n", path2);
+     //   return -1;
+    }
+	
 }
 
 struct engine_t {
@@ -62,9 +72,10 @@ void ainit(){
   init_vec3(-7,3.5,3.4, main_camera.position);
   camera_update(&main_camera);
   
-	//add_element_with_model_path("/sdcard/Download/model.glb");
-	pe_change_background_color();
+	add_element_with_model_path("/sdcard/Download/sphere.glb");
+	//pe_change_background_color();
 
+	LOG("################### GAMEEEEE INTTT   ###########");
 }
 
 
@@ -82,7 +93,7 @@ void android_main(struct android_app* state) {
 
   //state->userData = &engine;
   state->onAppCmd = pe_android_handle_cmd;
-  //state->onInputEvent = handle_input;
+  state->onInputEvent = handle_input;
 
   PGame chess;
   ZERO(chess);
@@ -97,7 +108,7 @@ void android_main(struct android_app* state) {
 
 	LOG("################### where the fuck ###########");
 
-
+	pe_log("hello world, from android read file");
   pe_game_create(&chess);
 
 }

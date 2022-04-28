@@ -19,7 +19,7 @@ void close_file(File* file){
 
 
 int load_file(const char* path, File* output){
-#ifdef ANDROID
+#ifdef ANDROID_ASSET
     AAsset* file =  AAssetManager_open(assets_manager,path,AASSET_MODE_BUFFER);
     if(!file){
         LOG("Error in loading file: %s",path);

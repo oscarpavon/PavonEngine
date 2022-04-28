@@ -172,7 +172,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
 void pe_change_background_color(){
   
-	glClearColor(1,0,0, 1);
+	glClearColor(0,1,0, 1);
   
 	glClear(GL_COLOR_BUFFER_BIT);
  // printf("chcek\n");
@@ -256,10 +256,10 @@ void draw_simgle_model(Model * new_model){
   	update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
     
 
-    GLint mvp_uniform =  get_uniform_location(new_model->shader,"model");
+    //GLint mvp_uniform =  get_uniform_location(new_model->shader,"model");
 
-    glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
-    check_send_matrix_error("model");
+    //glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
+    //check_send_matrix_error("model");
 
     send_color_to_shader(new_model->shader,new_model->material.color);
     	
