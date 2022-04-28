@@ -334,45 +334,51 @@ void duplicate_model_data(Model* destination , Model* source){
     memcpy(destination,source,sizeof(Model));
 }
 
-void pe_init_arrays(){
-    actual_elements_array = &engine_elements;
+void pe_init_arrays() {
+  actual_elements_array = &engine_elements;
 
-    array_init(&engine_elements,sizeof(Element),100);
-    array_init(&pe_arr_models_paths,sizeof(char[100]),50);
-    array_init(&pe_arr_tex_paths,sizeof(char[20]),50);
-    
-		
-    array_init(&array_models_loaded,sizeof(Model),100);
-	  array_init(&pe_arr_skin_loaded,sizeof(SkinnedMeshComponent),100);
+  array_init(&engine_elements, sizeof(Element), 100);
+  array_init(&pe_arr_models_paths, sizeof(char[100]), 50);
+  array_init(&pe_arr_tex_paths, sizeof(char[20]), 50);
 
-    array_init(&engine_native_models,sizeof(Model),100);   
+  array_init(&array_models_loaded, sizeof(Model), 100);
+  array_init(&pe_arr_skin_loaded, sizeof(SkinnedMeshComponent), 100);
 
-    array_init(&array_hirarchical_level_of_detail,sizeof(HierarchicalLevelOfDetail),5);
-        
-    array_init(&actions_pointers,sizeof(ActionPointer),20);
+  array_init(&engine_native_models, sizeof(Model), 100);
 
-    array_init(&frame_draw_static_elements,sizeof(void*),100);
-    array_init(&frame_draw_skinned_elements,sizeof(void*),100);
+  array_init(&array_hirarchical_level_of_detail,
+             sizeof(HierarchicalLevelOfDetail), 5);
 
-    array_init(&models_for_test_occlusion,sizeof(void*),300);
-    array_init(&array_static_meshes_pointers,sizeof(void*),300);
-    array_init(&array_static_meshes_pointers_for_test_distance,sizeof(void*),100);
-    array_init(&array_skinned_mesh_for_distance_test,sizeof(void*),100);
-    array_init(&array_skinned_mesh_pointers,sizeof(void*),100);
+  array_init(&actions_pointers, sizeof(ActionPointer), 20);
 
-    array_init(&array_animation_play_list,sizeof(PEAnimationPlay),100);
-    
-    touch_position_x = -1;
-    touch_position_x = -1;
+  array_init(&frame_draw_static_elements, sizeof(void *), 100);
+  array_init(&frame_draw_skinned_elements, sizeof(void *), 100);
 
-    action_pointer_id_count = 0;    
+  array_init(&models_for_test_occlusion, sizeof(void *), 300);
+  array_init(&array_static_meshes_pointers, sizeof(void *), 300);
+  array_init(&array_static_meshes_pointers_for_test_distance, sizeof(void *),
+             100);
+  array_init(&array_skinned_mesh_for_distance_test, sizeof(void *), 100);
+  array_init(&array_skinned_mesh_pointers, sizeof(void *), 100);
 
-    actual_standard_fragment_shader = standart_fragment_shader;  
-    
-    array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
-    array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
+  array_init(&array_animation_play_list, sizeof(PEAnimationPlay), 100);
 
-	  array_init(&render_thread_commads,sizeof(PEThreadCommand),100);
+  array_init(&array_render_thread_init_commmands, sizeof(ExecuteCommand), 5);
+
+  array_init(&array_render_thread_commands, sizeof(ExecuteCommand), 100);
+
+  array_init(&render_thread_commads, sizeof(PEThreadCommand), 100);
+
+  array_init(&engine_windows, sizeof(EngineWindow), 40);
+
+  touch_position_x = -1;
+  touch_position_x = -1;
+
+  action_pointer_id_count = 0;
+
+  actual_standard_fragment_shader = standart_fragment_shader;
+
+  pe_is_window_init = false;
 }
 
 void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_window){
@@ -395,9 +401,9 @@ wait:
   //while (!glfwWindowShouldClose(program_window->window))
     while (!pe_wm_should_close(program_window))
     {
-        window_update_envents();
+        pe_wm_events_update();
         
-        window_manager_update_windows_input();    
+        pe_wm_input_update();
 
 		    program_loop();	
 

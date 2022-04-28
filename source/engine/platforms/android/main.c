@@ -8,11 +8,6 @@
 #include <android/log.h>
 #include <android_native_app_glue.h>
 
-#define APP_NAME "PavonEngine"
-#define ALOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
-#define ALOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_NAME, __VA_ARGS__))
-#define ALOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
-
 #include <engine/engine.h>
 #include <engine/base.h>
 #include <engine/array.h>
@@ -63,6 +58,13 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
 
 void ainit(){
 
+  camera_init(&main_camera); 
+  init_vec3(-7,3.5,3.4, main_camera.position);
+  camera_update(&main_camera);
+  
+	//add_element_with_model_path("/sdcard/Download/model.glb");
+	pe_change_background_color();
+
 }
 
 
@@ -76,7 +78,11 @@ void ainput(){
 
 }
 
-void create_game(struct android_app* state){
+void android_main(struct android_app* state) {
+
+  //state->userData = &engine;
+  state->onAppCmd = pe_android_handle_cmd;
+  //state->onInputEvent = handle_input;
 
   PGame chess;
   ZERO(chess);
@@ -86,34 +92,14 @@ void create_game(struct android_app* state){
   chess.init = &ainit;
   chess.input = &ainput;
 	chess.app = state;
-	
+	game = &chess;	//need for egl context creation
+
+
+	LOG("################### where the fuck ###########");
+
+
   pe_game_create(&chess);
-}
 
-void android_main(struct android_app* state) {
-
-    PGame n;
-    ZERO(n);
-    game = &n;
-
-	//create_game(state);
-
-
-	game->app = state;	
-  //state->userData = &engine;
-  state->onAppCmd = pe_android_handle_cmd;
-  //state->onInputEvent = handle_input;
-
-  while (1) {
-		pe_android_poll_envents();		
-    glClearColor(1, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Draw the current frame
-    pe_change_background_color();
-		pe_wm_swap_buffers();
-    //draw_frame(&engine);
-	}
 }
 
 

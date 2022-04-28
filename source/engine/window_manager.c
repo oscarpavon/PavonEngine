@@ -1,14 +1,18 @@
 #include "windows_manager.h"
 #include <engine/log.h>
 
+#ifdef ANDROID
+#include <engine/platforms/android/android.h>
 #include <EGL/egl.h>
+EGLDisplay display;
+EGLSurface surface;
+EGLContext context;
+#endif
+
 #include <engine/game.h>
 
 #include <GLES/gl.h>
 
-EGLDisplay display;
-EGLSurface surface;
-EGLContext context;
 
 /**
  * Tear down the EGL context currently associated with the display.
@@ -29,9 +33,18 @@ void pe_wm_egl_end() {
 	surface = EGL_NO_SURFACE;
 }
 
-void pe_wm_swap_buffers(){
+void pe_wm_swap_buffers() {
+#ifdef ANDROID
+  eglSwapBuffers(display, surface);
+#endif
 
-	eglSwapBuffers(display, surface);
+#ifdef LINUX
+  glfwSwapBuffers(window->window);
+
+#endif
+}
+void pe_wm_egl_context_make_current(){
+	eglMakeCurrent(display, surface, surface, context);
 }
 
 void pe_wm_egl_init(){
@@ -103,7 +116,16 @@ void pe_wm_egl_init(){
 
 }
 
-void window_manager_update_windows_input(){
+void pe_wm_events_update() {
+#ifdef LINUX
+  glfwPollEvents();
+#endif
+#ifdef ANDROID
+  pe_android_poll_envents();
+#endif
+}
+
+void pe_wm_input_update(){
 	
   	//Draw tab bar 	& draw current tabb 
 	for(u8 i = 0; i<engine_windows.count ; i++ ){
@@ -144,78 +166,94 @@ void window_update_viewport(int width, int height){
 		camera_update_aspect_ratio(&current_window->camera);
 }
 
-void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
-    if(win == NULL){
-        //LOG("ERROR: Window not found\n");
-        return;
-    }
-    if(win->initialized)
-        return;
-
-    current_window = win;
-    
-   //// GLFWwindow* share_glfw_window = NULL;
-    //if(share_window)
-     //share_glfw_window = share_window->window;
-
+void pe_wm_create_window(EngineWindow* win){
 	
-	if (pe_renderer_type == PEWMVULKAN) {
-		//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  	}
+  if (win == NULL) {
+    // LOG("ERROR: Window not found\n");
+    return;
+  }
+  if (win->initialized)
+    return;
 
-	//GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
-	//if(!new_window){ 
-	//	LOG("Window can't be created\nPavon Engine was closed\n");
-	//	exit(-1);
-	//}
-	//win->window = new_window;
-	
-	if (pe_renderer_type == PEWMOPENGLES2) {
-		//glfwMakeContextCurrent(win->window);
-	}   
+  current_window = win;
 
-    //glfwSetWindowUserPointer(win->window,win);
+	pe_wm_egl_init();	
 
-    camera_heigth_screen = INIT_WINDOW_SIZE_Y;
-    camera_width_screen = INIT_WINDOW_SIZE_X;
-		window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
-    
-    win->initialized = true;
+  win->initialized = true;
 }
 
-void window_manager_init_window(EngineWindow* window){
+void window_create(EngineWindow *win, EngineWindow *share_window,
+                   const char *name) {
+  if (win == NULL) {
+    // LOG("ERROR: Window not found\n");
+    return;
+  }
+  if (win->initialized)
+    return;
+
+  current_window = win;
+
+  //// GLFWwindow* share_glfw_window = NULL;
+  // if(share_window)
+  // share_glfw_window = share_window->window;
+
+  if (pe_renderer_type == PEWMVULKAN) {
+    // glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  }
+
+  // GLFWwindow* new_window = glfwCreateWindow(
+  // INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
+  // if(!new_window){
+  //	LOG("Window can't be created\nPavon Engine was closed\n");
+  //	exit(-1);
+  // }
+  // win->window = new_window;
+
+  // glfwSetWindowUserPointer(win->window,win);
+
+  if (pe_renderer_type == PEWMOPENGLES2) {
+    // glfwMakeContextCurrent(win->window);
+  }
+
+  camera_heigth_screen = INIT_WINDOW_SIZE_Y;
+  camera_width_screen = INIT_WINDOW_SIZE_X;
+  window_update_viewport(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);
+
+  win->initialized = true;
+}
+
+void pe_wm_window_init(EngineWindow* window){
 	if(window->init != NULL)
 		window->init();
 	window->initialized = true;
 }
 
-void window_manager_draw_windows(){
-	
-	for(u8 i = 0; i<engine_windows.count ; i++ ){
-		EngineWindow* window = array_get(&engine_windows,i);
-		if (pe_renderer_type == PEWMOPENGLES2) {
+void window_manager_draw_windows() {
+
+  for (u8 i = 0; i < engine_windows.count; i++) {
+    EngineWindow *window = array_get(&engine_windows, i);
+    if (pe_renderer_type == PEWMOPENGLES2) {
 #ifdef LINUX
-	    	glfwMakeContextCurrent(window->window);
+      glfwMakeContextCurrent(window->window);
 #endif
-		}
-		if(!window->initialized)
-			   continue;
-#ifdef LINUX
-	if(glfwWindowShouldClose(window->window)){
-		window->finish();	
-		//LOG("Window close\n");
-		continue;
-	}
-#endif		
-	window->draw();
-	
-	if(pe_renderer_type == PEWMOPENGLES2)	{
-
-#ifdef LINUX
-        glfwSwapBuffers(window->window);
-
+#ifdef ANDROID
+		pe_wm_egl_context_make_current();
 #endif
-	}
+    }
+    if (!window->initialized)
+      continue;
+#ifdef LINUX
+    if (glfwWindowShouldClose(window->window)) {
+      window->finish();
+      // LOG("Window close\n");
+      continue;
+    }
+#endif
+    window->draw();
 
-	}
+    if (pe_renderer_type == PEWMOPENGLES2) {
+
+      pe_wm_swap_buffers();
+    }
+  }
 }

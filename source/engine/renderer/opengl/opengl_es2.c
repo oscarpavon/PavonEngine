@@ -172,7 +172,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
 void pe_change_background_color(){
   
-	glClearColor(0,0,2, 1);
+	glClearColor(1,0,0, 1);
   
 	glClear(GL_COLOR_BUFFER_BIT);
  // printf("chcek\n");

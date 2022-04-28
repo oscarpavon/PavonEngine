@@ -1,6 +1,7 @@
 #include "android.h"
 #include <engine/windows_manager.h>
 #include <engine/game.h>
+#include <engine/log.h>
 
 void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
 
@@ -8,8 +9,12 @@ void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
   case APP_CMD_SAVE_STATE:
     break;
   case APP_CMD_INIT_WINDOW:
-    pe_wm_egl_init();
-    pe_wm_swap_buffers();
+    //pe_wm_egl_init();
+    //pe_wm_swap_buffers();
+
+    //pe_game_create(game);
+    LOG("############## android windows init  #############");
+    pe_is_window_init = true;
     break;
   case APP_CMD_TERM_WINDOW:
     pe_wm_egl_end();
@@ -35,7 +40,7 @@ void pe_android_poll_envents(){
 
       // Check if we are exiting.
       if (state->destroyRequested != 0) {
-				pe_wm_egl_end();	
+		//		pe_wm_egl_end();	
         return;
       }
     }

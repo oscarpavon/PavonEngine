@@ -38,7 +38,6 @@ void pe_wm_glfw_init(){
 
 void windows_manager_init(){
 	pe_wm_glfw_init();		
-	array_init(&engine_windows,sizeof(EngineWindow),40);
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){

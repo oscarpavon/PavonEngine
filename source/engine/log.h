@@ -5,10 +5,14 @@
     #include <android_native_app_glue.h>
     #include <android/log.h>
 
-    #define LOG(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+    #define APP_NAME "pavonstudios"
+    #define LOG(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
+    #define ALOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
+    #define ALOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_NAME, __VA_ARGS__))
+    #define ALOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
 #else
     #include <stdio.h>
-    #define LOG printf
+    #define OG printf
 #endif//DEF ANDROID
 
 #define LOGW(t) printf(t); printf("\n")
