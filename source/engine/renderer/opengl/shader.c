@@ -64,17 +64,23 @@ GLuint pe_shader_load_src_and_create(const char* path, GLenum shader_type){
 }
 
 void pe_shader_compile_std() {
-  // standart_vertex_shader = compile_shader(triVertShader, GL_VERTEX_SHADER);
-  //standart_fragment_shader = compile_shader(pe_shader_src_std_frag, GL_FRAGMENT_SHADER);
+#ifdef LINUX 
+  
   standart_vertex_shader = pe_shader_load_src_and_create("/home/pavon/PavonEngine/NativeContent/shaders/std.vert",GL_VERTEX_SHADER);
   standart_fragment_shader = pe_shader_load_src_and_create("/home/pavon/PavonEngine/NativeContent/shaders/diffuse.frag",GL_FRAGMENT_SHADER);
-
-  shader_source_color_fragment_shader =
-      compile_shader(pe_shader_src_color, GL_FRAGMENT_SHADER);
-
+  
   shader_skin_vertex = pe_shader_load_src_and_create(
       "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
       GL_VERTEX_SHADER);
+#else
+  //on android files are not in the same location
+  standart_vertex_shader = compile_shader(pe_shader_src_std_vert, GL_VERTEX_SHADER);
+  standart_fragment_shader = compile_shader(pe_shader_src_std_frag, GL_FRAGMENT_SHADER);
+#endif
+ 
+  shader_source_color_fragment_shader =
+      compile_shader(pe_shader_src_color, GL_FRAGMENT_SHADER);
+
 }
 
 GLuint create_engine_shader(GLuint vertex, GLuint fragment) {
