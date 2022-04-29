@@ -112,6 +112,8 @@ void pe_frame_draw();
 
 void pe_init_arrays();
 
+void update_mvp(mat4 model, mat4 mvp_out);
+
 //
 // Global variables
 //
@@ -189,14 +191,6 @@ Array pe_arr_tex_paths;
 //ThreadsCommads
 Array render_thread_commads;
 Array main_thread_commads;
-
-
-static inline void update_mvp(mat4 model, mat4 mvp_out){
-    mat4 projection_view;
-    glm_mul(main_camera.projection , main_camera.view, projection_view);
-    glm_mul(projection_view , model , mvp_out);
-}
-
 
 
 vec4 pe_background_color;

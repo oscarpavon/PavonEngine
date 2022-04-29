@@ -14,6 +14,7 @@ typedef struct PGame{
 	void(*loop)(void);
 	void(*end)(void);
 	void(*input)(void);
+	void(*draw)(void);
 #ifdef ANDROID
 	struct android_app* app; 
 #endif

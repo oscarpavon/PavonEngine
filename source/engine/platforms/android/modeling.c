@@ -5,28 +5,24 @@
 
 #include <engine/renderer/renderer.h>
 #include <engine/renderer/opengl/opengl_es2.h>
+#include <engine/engine.h>
 
 GLuint new_mesh_vertex_buffer; 
 
-Array first_model;
 
-
-void init_modeling(){
-
-
-}
+Model model;
 
 void draw_vertices(){
 	
-    mat4 model;
-    glm_mat4_identity(model);
+    mat4 model_mat;
+    glm_mat4_identity(model_mat);
 		mat4 mvp;
-    update_mvp(model, mvp);  
+    update_mvp(model_mat, mvp);  
 
 
-   // update_draw_vertices(shader,new_mesh_vertex_buffer,mvp);  
+    update_draw_vertices(model.shader,new_mesh_vertex_buffer,mvp);  
 
-		glDrawArrays(GL_POINTS, 0, first_model.count);
+		glDrawArrays(GL_POINTS, 0, model.vertex_array.count);
 
 
 }
@@ -49,19 +45,28 @@ void vertex_create(){
   
     
 
-  vertex_new_on_array(&first_model,(vec3){0,0,0});
 
 
 
 }
 
 
-void geometry_create_vertex_buffer(){
+void init_modeling(){
+  ZERO(model);
 
-    GLuint buffer; 
-    glGenBuffers(1,&buffer);
-    glBindBuffer(GL_ARRAY_BUFFER,buffer);
-//    glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex) , vertex_array->data, GL_STATIC_DRAW);
+  array_init(&model.vertex_array,
+      sizeof(Vertex),100);
+
+
+  vertex_new_on_array(&model.vertex_array,(vec3){0,0,0});
+
+    glGenBuffers(1,&new_mesh_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER,new_mesh_vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, model.vertex_array.count * sizeof(struct Vertex) , model.vertex_array.data, GL_DYNAMIC_DRAW);
+
+  
+  pe_comp_static_mesh_shader_init(&model);
 }
+
 
 

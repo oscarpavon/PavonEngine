@@ -34,7 +34,8 @@ void pe_game_render_config(){
 void pe_game_draw(){
 
   pe_frame_draw();
-
+    if(game->draw)
+        game->draw();
 }
 void pe_game_init(){
 

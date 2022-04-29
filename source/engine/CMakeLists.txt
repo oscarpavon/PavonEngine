@@ -100,6 +100,7 @@ if(ANDROID)
         
 	set(engine_source ${engine_source}
         ${CMAKE_CURRENT_LIST_DIR}/platforms/android/android.c
+        ${CMAKE_CURRENT_LIST_DIR}/platforms/android/modeling.c
 
         ) 
 

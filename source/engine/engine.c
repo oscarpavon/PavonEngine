@@ -25,6 +25,12 @@ Array engine_elements;
 Array engine_textures;
 
 
+void update_mvp(mat4 model, mat4 mvp_out){
+    mat4 projection_view;
+    glm_mul(main_camera.projection , main_camera.view, projection_view);
+    glm_mul(projection_view , model , mvp_out);
+}
+
 void pe_change_background_color(float r, float g, float b, float a){
   
 	vec4 color = {r,g,b,a};
