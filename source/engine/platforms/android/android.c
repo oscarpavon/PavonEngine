@@ -16,14 +16,11 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
 
       int32_t key_code = AKeyEvent_getKeyCode(event);
       switch (key_code) {
-      case AKEYCODE_K: {
-        LOG("The 'K' key was pressed");
-        input.K.Released = true;
-      }
-      case AKEYCODE_A: input.A.Released = true;
-      case AKEYCODE_S: input.S.Released = true;
-      case AKEYCODE_D: input.D.Released = true;
-      case AKEYCODE_W: input.W.Released = true;
+      case AKEYCODE_K: input.K.Released = true;break;
+      case AKEYCODE_A: input.A.Released = true;break;
+      case AKEYCODE_S: input.S.Released = true;break;
+      case AKEYCODE_D: input.D.Released = true;break;
+      case AKEYCODE_W: input.W.Released = true;break;
       }
     }
     return 1;

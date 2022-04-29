@@ -21,6 +21,7 @@ void ainit(){
   sphere = array_get_last(actual_model_array);
    
 	init_modeling();
+		pe_element_set_position(selected_element,VEC3(0,0,-2));
 }
 
 void draw(){
@@ -38,28 +39,25 @@ void ainput(){
 	
 
 	if(key_released(&input.K)){
-		LOG("$$$$$$$$$$    WORK");
+		vertex_new(0,0,0)	;
 	}
 
   
 	if(key_released(&input.A)){
-		LOG("A");
-		pe_element_set_position(selected_element,VEC3(0,0,-2));
+		vertex_new(0,0,0.001)	;
 	}
 	
   if(key_released(&input.D)){
-		LOG("D");
-		pe_element_set_position(selected_element,VEC3(0,0,2));
+		vertex_new(1,1,1)	;
 	}
 
 	if(key_released(&input.W)){
-		LOG("W");
-		pe_element_set_position(selected_element,VEC3(0,2,0));
+	
+		vertex_new(0.01,0,0)	;
 	}
 
 	if(key_released(&input.S)){
-		LOG("S");
-		pe_element_set_position(selected_element,VEC3(0,-2,0));
+	
 	}
 
 }
