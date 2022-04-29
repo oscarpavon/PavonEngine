@@ -14,3 +14,8 @@ After that a function "test occlusion" is called and fill "frame_draw_static_ele
 
 
 Engine Init --> render thread definition --> draw windows --> pe_frame_draw()
+
+
+##Creating geometry
+Create a "Vertex" struct with vertex data, then add to the vertex_array and finily create the graphics buffer of that geometry.
+

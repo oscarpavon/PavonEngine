@@ -1,56 +1,8 @@
-#include <jni.h>
-#include <errno.h>
-#include <math.h>
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-
-#include <android/sensor.h>
-#include <android/log.h>
-#include <android_native_app_glue.h>
-
 #include <engine/engine.h>
-#include <engine/base.h>
-#include <engine/array.h>
-
-#include "/data/data/com.termux/files/home/newlib/show.h"
-
-#include <android/asset_manager.h>
-#include <stdio.h>
 
 #include <engine/platforms/android/android.h>
 
-void pe_log(const char* text){
-
-	const char* path = "/storage/emulated/0/Download/test.txt";
-	const char* path2 = "/sdcard/Download/cube.gltf";
-
-	FILE* new_file = fopen(path,"a");
-	fputs(text,new_file);
-	fclose(new_file);
-
-    FILE* file = fopen(path2,"r");
-    if(file == NULL){
-        LOG("error to load: %s\n", path2);
-     //   return -1;
-    }
-	
-}
-
-struct engine_t {
-	struct android_app* app;
-
-	EGLDisplay display;
-	EGLSurface surface;
-	EGLContext context;
-	int32_t width;
-	int32_t height;
-
-	int32_t touchX;
-	int32_t touchY;
-};
-
-
-
+Model* sphere;
 
 void ainit(){
 
@@ -63,25 +15,53 @@ void ainit(){
 	pe_change_background_color(0,1,0,1);
 
 	LOG("################### GAMEEEEE INTTT   ###########");
+
+  sphere = array_get_last(actual_model_array);
+   
+
 }
 
 
 void aloop(){
 
 	pe_change_background_color(0,0.3,0,1);
+
+
 }
 
 
 void ainput(){
+	
 
+	if(key_released(&input.K)){
+		LOG("$$$$$$$$$$    WORK");
+	}
+
+  
+	if(key_released(&input.A)){
+		LOG("A");
+		pe_element_set_position(selected_element,VEC3(-1,0,0));
+	}
+	
+  if(key_released(&input.D)){
+		LOG("D");
+		pe_element_set_position(selected_element,VEC3(1,0,0));
+	}
+
+	if(key_released(&input.W)){
+		LOG("W");
+		pe_element_set_position(selected_element,VEC3(0,0,0));
+	}
+
+	if(key_released(&input.S)){
+		LOG("S");
+		pe_element_set_position(selected_element,VEC3(0,1,0));
+	}
 
 }
 
 void android_main(struct android_app* state) {
 
-  //state->userData = &engine;
-  state->onAppCmd = &pe_android_handle_cmd;
-  state->onInputEvent = &pe_android_input_handle;
 
   PGame chess;
   ZERO(chess);
@@ -93,10 +73,13 @@ void android_main(struct android_app* state) {
 	chess.app = state;
 	game = &chess;	//need for egl context creation
 
+  //state->userData = &engine;
+	game->app->onAppCmd = &pe_android_handle_cmd;
+  game->app->onInputEvent = &pe_android_input_handle;
 
 	LOG("################### where the fuck ###########");
 
-	pe_log("hello world, from android read file");
+	//pe_log("hello world, from android read file");
   pe_game_create(&chess);
 
 }

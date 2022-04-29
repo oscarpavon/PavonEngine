@@ -66,6 +66,7 @@ set(engine_source
 	      #${audio}
 	      #${physics}
 
+        ${CMAKE_CURRENT_LIST_DIR}/log.c
         ${CMAKE_CURRENT_LIST_DIR}/LOD_system.c
         ${CMAKE_CURRENT_LIST_DIR}/model.c
         ${CMAKE_CURRENT_LIST_DIR}/file_loader.c

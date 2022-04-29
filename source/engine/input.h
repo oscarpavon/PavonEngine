@@ -1,9 +1,8 @@
 #ifndef ENGINE_INPUT
 #define ENGINE_INPUT
 
-#ifdef ANDROID
-			#include <engine/platforms/android/input.h>
-#else
+#include <engine/platforms/android/input.h>
+
     
 #ifdef EDITOR
 	#include "../editor/input.h"
@@ -107,5 +106,4 @@ bool mouse_navigate_control;
 void pe_input_init();
 
 void mouse_movement_control(float xpos, float ypos);
-#endif//NOT ANDROID
 #endif

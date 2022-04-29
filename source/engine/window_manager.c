@@ -135,11 +135,19 @@ void pe_wm_input_update() {
     if (!window->initialized)
       continue;
 
+#ifdef LINUX
     // The mouse need to stay in the window for window->input call
     if (window->focus) {
       if (window->input)
         window->input();
     }
+#endif
+
+#ifdef ANDROID
+
+    if (window->input)
+      window->input();
+#endif
   }
 }
 
@@ -176,6 +184,7 @@ void pe_wm_create_window(EngineWindow* win){
     return;
 
   current_window = win;
+
 
 	pe_wm_egl_init();	
 

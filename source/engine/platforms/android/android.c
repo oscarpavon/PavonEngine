@@ -1,20 +1,36 @@
 #include "android.h"
+#include <android/input.h>
 #include <engine/windows_manager.h>
 #include <engine/game.h>
 #include <engine/log.h>
+#include <engine/input.h>
 
-int32_t pe_android_input_handle(struct android_app* app, AInputEvent* event) {
-	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-//		engine->touchX = AMotionEvent_getX(event, 0);
-//		engine->touchY = AMotionEvent_getY(event, 0);
-//		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
+int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
+  if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
+    //		engine->touchX = AMotionEvent_getX(event, 0);
+    //		engine->touchY = AMotionEvent_getY(event, 0);
+    //		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
     LOG("KEY PRESSED");
-		return 1;
-	}
+    int32_t action = AKeyEvent_getAction(event);
+    if (action == AKEY_EVENT_ACTION_DOWN) {
 
+      int32_t key_code = AKeyEvent_getKeyCode(event);
+      switch (key_code) {
+      case AKEYCODE_K: {
+        LOG("The 'K' key was pressed");
+        input.K.Released = true;
+      }
+      case AKEYCODE_A: input.A.Released = true;
+      case AKEYCODE_S: input.S.Released = true;
+      case AKEYCODE_D: input.D.Released = true;
+      case AKEYCODE_W: input.W.Released = true;
+      }
+    }
+    return 1;
+  }
 
-    LOG("################ Input handle ####################");
-	return 0;
+  LOG("################ Input handle ####################");
+  return 0;
 }
 
 void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
