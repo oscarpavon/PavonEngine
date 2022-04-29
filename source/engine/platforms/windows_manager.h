@@ -97,4 +97,6 @@ PERendererType pe_renderer_type;
 
 bool pe_is_window_init;
 
+bool pe_is_window_terminate;
+
 #endif // !ENGINE_WINDOWS_MANAGER_H

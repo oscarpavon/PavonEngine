@@ -26,6 +26,7 @@ void aloop(){
 
 	pe_change_background_color(0,0.3,0,1);
 
+	LOG("loop");
 
 }
 

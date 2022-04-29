@@ -152,7 +152,9 @@ void pe_wm_input_update() {
 }
 
 bool pe_wm_should_close(EngineWindow* window){
-
+	if(pe_is_window_terminate)	
+		return true;
+	else
     return false;
 }
 

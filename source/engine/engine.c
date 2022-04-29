@@ -385,6 +385,10 @@ void pe_init_arrays() {
   actual_standard_fragment_shader = standart_fragment_shader;
 
   pe_is_window_init = false;
+
+  pe_is_window_terminate = false;
+
+
 }
 void pe_wm_check(EngineWindow* program_window){
 

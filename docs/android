@@ -1,0 +1,5 @@
+For APK creation you need the "aapt" utility
+aapt package -f -M AndroidManifest.xml -S ./res -F pavon.apk
+
+
+

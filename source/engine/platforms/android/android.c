@@ -50,6 +50,7 @@ void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
 
     LOG("##### Android TERM WINDOW ######");
     pe_wm_egl_end();
+    pe_is_window_terminate = true; 
     break;
   case APP_CMD_LOST_FOCUS:
     
