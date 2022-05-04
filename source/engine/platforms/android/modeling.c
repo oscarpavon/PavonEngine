@@ -24,8 +24,8 @@ void draw_vertices(){
 
     update_draw_vertices(model.shader,new_mesh_vertex_buffer,mvp);  
 
-		glDrawArrays(GL_POINTS, 0, model.vertex_array.count);
-
+		glDrawArrays(GL_POINTS, 0, vertex_count);
+    
 
 }
 
@@ -42,12 +42,31 @@ void vertex_new_on_array(Array* array, vec3 pos){
   glBindBuffer(GL_ARRAY_BUFFER,new_mesh_vertex_buffer);
 
 
+  glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertex_count, sizeof(Vertex) ,&new_vertex);
   vertex_count++;
-  glBufferSubData(GL_ARRAY_BUFFER, model.vertex_array.count , sizeof(Vertex) ,&new_vertex);
 }
 
 void vertex_new(float x , float y , float z){
-  vertex_new_on_array(&model.vertex_array,VEC3(x,y,z));
+  //vertex_new_on_array(&model.vertex_array,VEC3(x,y,z));
+
+  Vertex new_vertex;
+ 
+  ZERO(new_vertex);
+
+  new_vertex.postion[0] = -30;
+  new_vertex.postion[1] = -30;
+  new_vertex.postion[2] = -30;
+
+  
+
+   
+  glBindBuffer(GL_ARRAY_BUFFER, new_mesh_vertex_buffer);
+
+
+  glBufferSubData(GL_ARRAY_BUFFER, 0 , sizeof(Vertex) ,&new_vertex);
+  vertex_count++;
+
+
 }
 
 void vertex_create(){
@@ -56,19 +75,36 @@ void vertex_create(){
 
 }
 
-
-void init_modeling(){
+void init_modeling() {
   vertex_count = 0;
   ZERO(model);
 
-  array_init(&model.vertex_array,
-      sizeof(Vertex),100);
+  array_init(&model.vertex_array, sizeof(Vertex), 100);
 
   //  vertex_new_on_array(&model.vertex_array,(vec3){0,0,0});
 
-    glGenBuffers(1,&new_mesh_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER,new_mesh_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, 100 * sizeof(struct Vertex) , NULL , GL_DYNAMIC_DRAW);
+  glGenBuffers(1, &new_mesh_vertex_buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, new_mesh_vertex_buffer);
 
-    pe_comp_static_mesh_shader_init(&model);
+  Vertex v[3];
+  //ZERO(v);
+
+  v[0].postion[0] = 0;
+  v[0].postion[1] = 0;
+  v[0].postion[2] = 0;
+
+
+  v[1].postion[0] = -20;
+  v[1].postion[1] = -1;
+  v[1].postion[2] = -1;
+
+
+  v[2].postion[0] = -1;
+  v[2].postion[1] = 0;
+  v[2].postion[2] = 1;
+
+  glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex), v,
+               GL_STATIC_DRAW);
+
+  pe_comp_static_mesh_shader_init(&model);
 }

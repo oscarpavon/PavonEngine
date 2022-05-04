@@ -8,23 +8,22 @@
 
 Model* sphere;
 
-void ainit(){
+void ainit() {
 
-  camera_init(&main_camera); 
-  init_vec3(-30,0,0, main_camera.position);
+  camera_init(&main_camera);
+  init_vec3(-30, 0, 0, main_camera.position);
   camera_update(&main_camera);
-  
-	//add_element_with_model_path("/sdcard/Download/Bishop_Keyring.glb");
-	add_element_with_model_path("/sdcard/Download/chess/peon.glb");
-	
-	pe_change_background_color(0,1,0,1);
 
-	LOG("################### GAMEEEEE INTTT   ###########");
+  add_element_with_model_path("/sdcard/Download/chess/peon.glb");
+
+  pe_change_background_color(0, 1, 0, 1);
+
+  LOG("################### GAMEEEEE INTTT   ###########");
 
   sphere = array_get_last(actual_model_array);
-   
-	init_modeling();
-		pe_element_set_position(selected_element,VEC3(0,0,0));
+
+  init_modeling();
+  pe_element_set_position(selected_element, VEC3(0, 0, 0));
 }
 
 void draw(){
@@ -42,7 +41,9 @@ void ainput(){
 	
 
 	if(key_released(&input.K)){
-		vertex_new(0,0,0)	;
+
+		vertex_new(1,1,1)	;
+
 	}
 
   
