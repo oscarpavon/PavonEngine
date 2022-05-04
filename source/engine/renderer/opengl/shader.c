@@ -72,10 +72,11 @@ void pe_shader_compile_std() {
   shader_skin_vertex = pe_shader_load_src_and_create(
       "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
       GL_VERTEX_SHADER);
-#else
+#endif
+#ifdef ANDROID
   //on android files are not in the same location
   standart_vertex_shader = compile_shader(pe_shader_src_std_vert, GL_VERTEX_SHADER);
-  standart_fragment_shader = compile_shader(pe_shader_src_std_frag, GL_FRAGMENT_SHADER);
+  standart_fragment_shader = pe_shader_load_src_and_create("/sdcard/Download/chess/diffuse.frag",GL_FRAGMENT_SHADER);
 #endif
  
   shader_source_color_fragment_shader =

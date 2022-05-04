@@ -4,15 +4,18 @@
 
 #include "modeling.h"
 
+#include <engine/../../demos/chess/chess.h>
+
 Model* sphere;
 
 void ainit(){
 
   camera_init(&main_camera); 
-  init_vec3(-7,0,0, main_camera.position);
+  init_vec3(-30,0,0, main_camera.position);
   camera_update(&main_camera);
   
-	add_element_with_model_path("/sdcard/Download/sphere.glb");
+	//add_element_with_model_path("/sdcard/Download/Bishop_Keyring.glb");
+	add_element_with_model_path("/sdcard/Download/chess/peon.glb");
 	
 	pe_change_background_color(0,1,0,1);
 
@@ -21,7 +24,7 @@ void ainit(){
   sphere = array_get_last(actual_model_array);
    
 	init_modeling();
-		pe_element_set_position(selected_element,VEC3(0,0,-2));
+		pe_element_set_position(selected_element,VEC3(0,0,0));
 }
 
 void draw(){

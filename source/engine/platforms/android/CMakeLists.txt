@@ -42,7 +42,8 @@ set(link
 
 
 
-add_library(native-activity SHARED main.c)
+add_library(native-activity SHARED main.c )
+    
 
 target_include_directories(native-activity PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)

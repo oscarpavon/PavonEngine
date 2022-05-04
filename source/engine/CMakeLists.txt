@@ -41,6 +41,7 @@ set(renderer
 	      ${opengl_es2_renderer}
 	      ${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
         ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
+        ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/rasterizer.c
     )
 
 
@@ -55,6 +56,7 @@ set(pe_base
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
         )
+set(demos ${CMAKE_CURRENT_LIST_DIR}/../../demos/chess/chess.c)
 
 set(engine_source
         ${pe_base} 
@@ -84,6 +86,8 @@ set(engine_source
 	      ${CMAKE_CURRENT_LIST_DIR}/game.c
 	      ${CMAKE_CURRENT_LIST_DIR}/elements.c
 	      ${CMAKE_CURRENT_LIST_DIR}/window_manager.c
+
+        ${demos}
 
 )
 
