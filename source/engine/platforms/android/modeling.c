@@ -54,8 +54,8 @@ void vertex_new(float x , float y , float z){
   ZERO(new_vertex);
 
   new_vertex.postion[0] = -30;
-  new_vertex.postion[1] = -30;
-  new_vertex.postion[2] = -30;
+  new_vertex.postion[1] = -4;
+  new_vertex.postion[2] = -10;
 
   
 

@@ -16,7 +16,7 @@ void ainit() {
 
   add_element_with_model_path("/sdcard/Download/chess/peon.glb");
 
-  pe_change_background_color(0, 1, 0, 1);
+  pe_change_background_color(1, 0, 0, 1);
 
   LOG("################### GAMEEEEE INTTT   ###########");
 

@@ -52,10 +52,12 @@ int load_file(const char* path, File* output){
     rewind (file);
 
     void* file_buffer = malloc(file_size);
+    memset(file_buffer,0,file_size);
 
     fread(file_buffer,1, file_size, file);
     output->data = file_buffer;
     output->size_in_bytes = file_size;
+
 
 
     fclose(file);
