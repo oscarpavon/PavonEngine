@@ -4,21 +4,22 @@
 #define GLFW_INCLUDE_ES2
 #define GLFW_INCLUDE_GLEXT
 
-#ifdef LINUX
+#ifdef DESKTOP
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #endif
 
-#include <engine/camera.h>
 #ifdef EDITOR
-#include "../../../editor/windows/static_mesh_editor.h"
-#include "../../../editor/windows/tabs.h"
+  #include <editor/windows/static_mesh_editor.h>
+  #include <editor/windows/tabs.h>
 #endif // EDITOR
 
 #define INIT_WINDOW_SIZE_X 1280
 #define INIT_WINDOW_SIZE_Y 720
+
+#include <engine/camera.h>
 
 typedef enum PERendererType { PEWMVULKAN, PEWMOPENGLES2 } PERendererType;
 
@@ -37,7 +38,7 @@ typedef struct EngineWindow {
   u8 tab_current_id;
   EditorTab *tab_current;
 #endif
-#ifdef LINUX
+#ifdef DESKTOP
   GLFWwindow *window;
 #endif
 } EngineWindow;

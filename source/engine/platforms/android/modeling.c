@@ -53,9 +53,9 @@ void vertex_new(float x , float y , float z){
  
   ZERO(new_vertex);
 
-  new_vertex.postion[0] = -30;
-  new_vertex.postion[1] = -4;
-  new_vertex.postion[2] = -10;
+  new_vertex.postion[0] = -20;
+  new_vertex.postion[1] = -20;
+  new_vertex.postion[2] = -20;
 
   
 
@@ -63,7 +63,7 @@ void vertex_new(float x , float y , float z){
   glBindBuffer(GL_ARRAY_BUFFER, new_mesh_vertex_buffer);
 
 
-  glBufferSubData(GL_ARRAY_BUFFER, 0 , sizeof(Vertex) ,&new_vertex);
+  glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex) , sizeof(Vertex) ,&new_vertex);
   vertex_count++;
 
 
@@ -87,14 +87,14 @@ void init_modeling() {
   glBindBuffer(GL_ARRAY_BUFFER, new_mesh_vertex_buffer);
 
   Vertex v[3];
-  //ZERO(v);
+  ZERO(v);
 
   v[0].postion[0] = 0;
-  v[0].postion[1] = 0;
+  v[0].postion[1] =0; 
   v[0].postion[2] = 0;
 
 
-  v[1].postion[0] = -20;
+  v[1].postion[0] = -1;
   v[1].postion[1] = -1;
   v[1].postion[2] = -1;
 
@@ -104,7 +104,7 @@ void init_modeling() {
   v[2].postion[2] = 1;
 
   glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex), v,
-               GL_STATIC_DRAW);
+               GL_DYNAMIC_DRAW);
 
   pe_comp_static_mesh_shader_init(&model);
 }

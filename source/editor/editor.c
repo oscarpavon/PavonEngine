@@ -362,32 +362,31 @@ void collision_test(){
 
 }
 
+void editor_main_window_init() {
+  window_create(window_editor_main, NULL, "PavonEngine");
 
-void editor_main_window_init(){
-    window_create(window_editor_main, NULL, "PavonEngine"); 
+#ifdef DESKTOP
+  glfwSetKeyCallback(window_editor_main->window, &pe_input_key_callback);
+  glfwSetCursorPosCallback(window_editor_main->window,
+                           &pe_input_mouse_movement_callback);
+  glfwSetMouseButtonCallback(window_editor_main->window,
+                             &pe_input_mouse_button_callback);
+  glfwSetCharCallback(window_editor_main->window, &pe_input_character_callback);
+  glfwSetWindowFocusCallback(window_editor_main->window,
+                             &window_focus_callback);
+  glfwSetFramebufferSizeCallback(window_editor_main->window,
+                                 &window_resize_callback);
+#endif
 
-    glfwSetKeyCallback(window_editor_main->window, &pe_input_key_callback);
-	glfwSetCursorPosCallback(window_editor_main->window,
-            &pe_input_mouse_movement_callback);
-	glfwSetMouseButtonCallback(window_editor_main->window,
-            &pe_input_mouse_button_callback);
-    glfwSetCharCallback(window_editor_main->window, &pe_input_character_callback);
-    glfwSetWindowFocusCallback(window_editor_main->window,&window_focus_callback);
-    glfwSetFramebufferSizeCallback(window_editor_main->window, &window_resize_callback);
+  window_editor_main->char_parser = pe_editor_parse_cmd_char;
 
-	window_editor_main->char_parser = pe_editor_parse_cmd_char;
+  // draw_loading_screen();
+  // glfwSwapBuffers(window_editor_main->window);
 
-    //draw_loading_screen();
-    //glfwSwapBuffers(window_editor_main->window);    
-		
-		
-    //Load level form command line	
-	if(strcmp(editor_level_open_path,"") != 0){
-        editor_level_open(editor_level_open_path);
-    }	
-
-		
-		
+  // Load level form command line
+  if (strcmp(editor_level_open_path, "") != 0) {
+    editor_level_open(editor_level_open_path);
+  }
 }
 
 void editor_update(){
@@ -525,8 +524,9 @@ void editor_render_init(){
         pe_vk_init();
     }
 
+#ifdef DESKTOP
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
+#endif
     
     camera_init(&main_camera); 
     init_vec3(-10,0,3, main_camera.position);
@@ -566,7 +566,10 @@ void pe_editor_window_configure(){
     //Send window initialization to the render thread
 
     PEThreadCommand thread_commad;
+#ifdef DESKTOP
     thread_commad.command = &window_manager_init_window;
+
+#endif
     thread_commad.data = window_editor_main;
     thread_commad.done = false;
     thread_commad.type = POINTER;

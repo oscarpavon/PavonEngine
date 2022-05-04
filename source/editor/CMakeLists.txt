@@ -7,7 +7,6 @@ set(windows
 		windows/windows.c
 		)
 
-
 set(editor_sources 
 main.c
 input.c
@@ -24,7 +23,6 @@ Textures/texture_factory.c
 HLOD/HLOD_factory.c
 menus.c
 content_manager.c
-EditServer/edit_server.c
 editor_command_queue.c
 file_explorer.c
 level.c
@@ -35,12 +33,24 @@ network/network.c
 directories.c
 ../ThirdParty/parson.c
 )
+	if(DESKTOP)
+		set(editor_sources ${editor_sources}
+ 
+		EditServer/edit_server.c
+
+		)
+	endif()
 
 set (game_source
         ../engine/game.c
 )
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+
+
+if(DESKTOP)
 add_executable(peditor ${editor_sources} ${game_source})
 FIND_LIBRARY(bullet libBulletDynamics.so )
 FIND_LIBRARY(bullet1 libBulletCollision.so)
@@ -49,5 +59,15 @@ set(lib
 	engine        
     ${engine_link}
     )
-
 target_link_libraries(peditor ${lib})
+endif()
+
+if(ANDROID)
+
+add_library(peditor
+STATIC
+${editor_sources} 
+)
+
+endif()
+

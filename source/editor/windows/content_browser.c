@@ -150,7 +150,7 @@ void editor_window_content_browser_input_update(){
     }
     return;
   }
-
+#ifdef DESKTOP
   if (key__released(&input.ENTER, GLFW_MOD_SHIFT)) {
     LOG("Import\n");
     memset(command_text_buffer, 0, sizeof(command_text_buffer));
@@ -167,7 +167,7 @@ void editor_window_content_browser_input_update(){
       LOG("No content selected\n");
     }
   }
-
+#endif
   if (key_released(&input.ENTER)) { // select content
     change_to_editor_sub_mode(EDITOR_SUB_MODE_NULL);
     memset(command_text_buffer, 0, sizeof(command_text_buffer));
@@ -304,20 +304,22 @@ void editor_window_content_browser_draw() {
 ContentView first;
 
 void content_view_create_model_view(int image_size){
+#ifdef DESKTOP
     glfwMakeContextCurrent(window_content_browser->window);
 
     glClearColor(1,0.2,0.4,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     draw_simgle_model(selected_model);
-
+#endif
 }
 
 const char* content_manager_current_content_path;
 ContentType content_manager_current_content_type;
 void content_create_draw_image_thumbnail(int size){
+#ifdef DESKTOP
     glfwMakeContextCurrent(window_content_browser->window);
-
+#endif
     glClearColor(1,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -574,19 +576,20 @@ void editor_window_content_browser_close_window(){
 }
 
 void editor_window_content_browser_update(){
-
+#ifdef DESKTOP
 if(window_content_browser->initialized) return;
 	if(glfwWindowShouldClose(window_content_browser->window)){
 		LOG("Content window close\n");
 		glfwDestroyWindow(window_content_browser->window);
 		editor_window_content_browser_close_window();
 	}
-
+#endif
 }
+
 
 void editor_window_content_init(){
   window_create(window_content_browser, window_editor_main, "Engine");
-
+#ifdef DESKTOP
   glfwMakeContextCurrent(window_content_browser->window);
 
   glfwSetKeyCallback(window_content_browser->window, pe_input_key_callback);
@@ -598,7 +601,7 @@ void editor_window_content_init(){
   glfwSetCharCallback(window_content_browser->window, pe_input_character_callback);
   glfwSetWindowFocusCallback(window_content_browser->window,
                              window_focus_callback);
-
+#endif
   // glEnable(GL_DEPTH_TEST);
   // glEnable(GL_CULL_FACE);
 

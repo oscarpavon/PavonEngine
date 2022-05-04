@@ -1,10 +1,4 @@
 
-if(ANDROID)
-        set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
-        include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
-#include_directories(/home/pavon/sources/freetype2/include)
-
-endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
@@ -95,7 +89,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(platform_pc 	
 		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
 		${CMAKE_CURRENT_LIST_DIR}/input.c
-	${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
+    ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 		)
 	set(engine_source ${engine_source} ${window_manager})	
 endif()

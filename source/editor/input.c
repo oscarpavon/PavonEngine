@@ -2,8 +2,12 @@
 
 #include "../engine/utils.h"
 
+#ifdef DESKTOP
 #include <GLFW/glfw3.h>
+#endif 
+
 #include <stdlib.h>
+
 #include "../engine/engine.h"
 
 #include "../ThirdParty/cglm/cglm.h"
@@ -441,6 +445,7 @@ void default_mode(){
         }
     }
 
+#ifdef DESKTOP
     if(key__released(&input.D,GLFW_MOD_SHIFT)){
        duplicate_selected_element(1,selected_element);
        LOG("duplicated \n");
@@ -464,7 +469,7 @@ void default_mode(){
         play_game_standalone();
         return; 
     }
-
+#endif
     if(key_released(&input.X)){
         remove_selected_element();            
         return; 
@@ -602,11 +607,11 @@ void input_gui_editor(){
         //array_clean(actual_buttons_array);
     }
         
-        
+#ifdef DESKTOP 
     if(key__released(&input.A,GLFW_MOD_SHIFT)){
         new_empty_button();
     }
-
+#endif
     if(key_released(&input.G)){
         change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
     }
