@@ -1,11 +1,13 @@
 #include "project_manager.h"
-#include "../editor.h"
+
 #include "../text.h"
 #include "../menus.h"
 #include "../file_explorer.h"
-#include "../content_manager.h"
+
 #include <sys/stat.h>
 #include <editor/directories.h>
+#include <editor/content_manager.h>
+
 PETextMenuType project_manager_menu;
 
 PETextMenu project_select_menu;

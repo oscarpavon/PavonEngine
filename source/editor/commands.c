@@ -2,11 +2,14 @@
 #include "editor.h"
 
 #include "windows/content_browser.h"
-#include "ProjectManager/project_manager.h"
+
+#include <editor/ProjectManager/project_manager.h>
+
 #include "../engine/utils.h"
 #include "../editor/editor_mode.h"
 #include "HLOD/HLOD_factory.h"
 #include <unistd.h>
+
 int log_command_offset = 0;
 bool activate_text_input_mode = false;
 
@@ -59,7 +62,7 @@ void system_command(const char* command, const char* argument){
 void command_parse_parameter(const char* command, const char*  parameter){
   if (strcmp(command, "project_new") == 0) {
     //		LOG("Parameter: %s\n",parameter);
-    project_manager_new(parameter);
+//    project_manager_new(parameter);
   }
   if (strcmp(command, "project_open") == 0) {
     project_manager_open(parameter);
@@ -157,9 +160,7 @@ void text_input_mode(){
         memcpy(&command_text_buffer[command_character_count],last_line,strlen(last_line));
 
     }
-
 }
-
 
 int command_parse_from_command_line(int argc, char* argv[]){
 	if(argc <= 1){

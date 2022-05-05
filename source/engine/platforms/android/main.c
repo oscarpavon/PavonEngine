@@ -6,6 +6,8 @@
 
 #include <engine/../../demos/chess/chess.h>
 
+#include <editor/editor.h>
+
 Model* sphere;
 
 void ainit() {
@@ -88,6 +90,16 @@ void android_main(struct android_app* state) {
 
 	//pe_log("hello world, from android read file");
   pe_game_create(&chess);
+ 
+
+
+pe_renderer_type = PEWMOPENGLES2;
+
+
+  //pe_editor_init();
+
+ // pe_program_main_loop(&editor_main_loop, window_editor_main);
+
 
 }
 

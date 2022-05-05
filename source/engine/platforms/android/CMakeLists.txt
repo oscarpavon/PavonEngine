@@ -38,6 +38,7 @@ set(link
     pavon_engine
     m
     #${FREETYPE_LIBRARIES}
+    peditor
     )
 
 
@@ -45,15 +46,15 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/arm64-v8a)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/arm64-v8a)
 
-add_library(native-activity SHARED main.c )
+add_library(pavon_engine_android SHARED main.c )
     
 
 
 
-target_include_directories(native-activity PRIVATE
+target_include_directories(pavon_engine_android PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-target_link_directories(native-activity PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
-target_link_libraries(native-activity
+target_link_directories(pavon_engine_android PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
+target_link_libraries(pavon_engine_android
     ${link})
 

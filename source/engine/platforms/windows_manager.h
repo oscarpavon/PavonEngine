@@ -52,7 +52,7 @@ void window_create(EngineWindow *, EngineWindow *share_window,
                    const char *name);
 
 void pe_wm_window_init(EngineWindow *window);
-void window_manager_draw_windows();
+
 void window_initialize_windows();
 
 void window_update_viewport();

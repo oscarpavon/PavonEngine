@@ -4,11 +4,6 @@
 #include <stdbool.h>
 #include "../engine/types.h"
 
-typedef struct PRenderThreadDefinition{
-	void(*init)(void);
-	void(*draw)(void);
-	void(*end)(void);
-}PRenderThreadDefinition;
 
 typedef struct {
 	u8 size;
@@ -35,10 +30,7 @@ void text_render(const char *text, float x, float y, float sx, float sy , bool m
 
 void text_render_in_screen_space( int text_size , const char* text, int x , int y);
 
-static inline void set_text_size(float size){
-	pe_text_set_size(size);
-}
+void set_text_size(float size);
 
-PRenderThreadDefinition render_thread_definition;
 
 #endif

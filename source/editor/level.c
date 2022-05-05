@@ -7,8 +7,9 @@ void editor_level_new(const char * name){
 }
 
 void editor_level_save(const char* path){
-	
+#ifdef DESKTOP	
 	content_manager_create_engine_binary(path,CONTENT_TYPE_LEVEL);
+#endif
 }
 
 void editor_level_open(const char *name) {

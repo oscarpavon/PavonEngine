@@ -14,11 +14,13 @@
 
 #include "export_model.h"
 
-#include "Blender/blender.h"
 
-#include "ProjectManager/project_manager.h"
+#ifdef DESKTOP
+
 
 #include "content_manager.h"
+
+#endif
 
 #include "../engine/windows_manager.h"
 
@@ -35,7 +37,7 @@
 
 typedef struct HLODCluster HLODCluster;
 
-void editor_init();
+void pe_editor_init();
 
 void editor_main_loop();
 

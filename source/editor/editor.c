@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <string.h> 
 
+#include <engine/base.h>
+
 #include "engine/engine.h"
 
-#include "text.h"
 
 #include "engine/camera.h"
 
@@ -22,20 +23,27 @@
 
 #include "HLOD/HLOD_factory.h"
 
-#include "EditServer/edit_server.h"
+#include "ProjectManager/project_manager.h"
 
-#include "file_explorer.h"
+
+#ifdef DESKTOP
 #include "windows/content_browser.h"
 
-#include "ProjectManager/project_manager.h"
+#include "EditServer/edit_server.h"
+#include "text.h"
+
+#include "file_explorer.h"
+#include "menus.h"
+#include <engine/renderer/vulkan/vulkan.h>
+#include <engine/text_renderer.h>
+
+#endif
 
 #include "windows/windows.h"
 #include "commands.h"
-#include <engine/text_renderer.h>
 
-#include "menus.h"
 
-#include <engine/renderer/vulkan/vulkan.h>
+
 
 void play_game_standalone(){
     int exit_status = system("st sh ../level_editor/compile_game.sh");
@@ -50,8 +58,10 @@ void deselect_all(){
 }
 
 void editor_message(const char* message){
+#ifdef DESKTOP
     set_text_size(12);
     text_render(message , 0 + (-(camera_width_screen/2)) * pixel_size_x , 0 + (-(camera_heigth_screen/2)+12) * pixel_size_y  , pixel_size_x, pixel_size_y, false);   
+#endif
 }
 
 void editor_add_HLOD_element(HLODCluster* cluster){
@@ -189,14 +199,13 @@ void add_editor_native_element(const char* native_element_name){
     }
 }
 
-
-void editor_finish(){
-    editor_running = false;
-	pe_end(); 
-	edit_server_finish();
-	
+void editor_finish() {
+  editor_running = false;
+  pe_end();
+#ifdef DESKTOP
+  edit_server_finish();
+#endif
 }
-
 
 void rotate_editor_element(Element* element, float angle, vec3 axis){
    TransformComponent* transform = get_component_from_element(element, TRASNFORM_COMPONENT);
@@ -420,7 +429,9 @@ void pe_editor_load_native_model(){
 
 
 void editor_render_finish(){
+#ifdef DESKTOP 
 	glfwTerminate();
+#endif
 }
 
 void editor_draw() {
@@ -428,14 +439,15 @@ void editor_draw() {
   glClearColor(COLOR(editor_background_color));
   render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
 
+#ifdef DESKTOP
   text_draw_commands();
+#endif
 
   if (isDrawUV)
     draw_UV();
 
   if (controlling_camera_component) {
-    CameraComponent *camera =
-        pe_comp_get(CAMERA_COMPONENT);
+    CameraComponent *camera = pe_comp_get(CAMERA_COMPONENT);
     update_main_camera_with_camera_component_values(camera);
   }
 
@@ -444,46 +456,49 @@ void editor_draw() {
   test_elements_occlusion();
   check_meshes_distance();
 
-  editor_stats_draw_calls = frame_draw_static_elements.count + frame_draw_skinned_elements.count;
+  editor_stats_draw_calls =
+      frame_draw_static_elements.count + frame_draw_skinned_elements.count;
 
   editor_stats_calculates_triangles();
 
-  if (update_vertex_bones_gizmos == true){
+  if (update_vertex_bones_gizmos == true) {
     update_joints_vertex();
   }
 
+  if (pe_renderer_type == PEWMVULKAN) {
+#ifdef DESKTOP
+    if (pe_vk_initialized == true) {
 
-    
-    if(pe_renderer_type == PEWMVULKAN){
-        if(pe_vk_initialized == true){
+     pe_vk_draw_frame();
+    }
+#endif
+  } else {
 
-            pe_vk_draw_frame(); 
-        }
-    }else{
+    engine_draw_elements(&frame_draw_static_elements);
+  }
 
-        engine_draw_elements(&frame_draw_static_elements);
-    } 
-
-    pe_render_skinned_elements(&array_skinned_mesh_pointers);
-    
+  pe_render_skinned_elements(&array_skinned_mesh_pointers);
 
   pe_frame_clean();
 
   draw_gizmos();
 
+
+#ifdef DESKTOP 
   if (editor_mode == EDITOR_MODE_GUI_EDITOR ||
       editor_mode == EDITOR_PLAY_MODE) {
     draw_gui();
   }
-
-    text_renderer_loop();
-    pe_editor_menus_update();	
+  text_renderer_loop();
+  pe_editor_menus_update();
+#endif
   // editor_message("editor message");
 }
 
 void editor_main_render_thread(){
 
-	window_manager_draw_windows();
+	//window_manager_draw_windows();
+  pe_wm_windows_draw();
 
 
 }
@@ -494,78 +509,72 @@ void editor_main_loop(){
 
 }
 
-void editor_data_init(){
+void editor_data_init() {
 
-    actual_model_array = &editor_models;
-    actual_elements_array = &editor_elements;
-    current_textures_array = &editor_textures;
+  actual_model_array = &editor_models;
+  actual_elements_array = &editor_elements;
+  current_textures_array = &editor_textures;
 
-    array_init(&selected_elements_id,sizeof(unsigned short int),100);
-    array_init(&LOD_models,sizeof(Model),10);
-    array_init(&editor_elements,sizeof(Element),100);
-    array_init(&editor_models, sizeof(Model),100);
-    array_init(&editor_textures, sizeof(Texture),100);    
-    
-    element_id_count = 0;    
-    editor_mode = EDITOR_DEFAULT_MODE;
-    editor_sub_mode = EDITOR_SUB_MODE_NULL;
-    
-    editor_sub_mode_text = "";
+  array_init(&selected_elements_id, sizeof(unsigned short int), 100);
+  array_init(&LOD_models, sizeof(Model), 10);
+  array_init(&editor_elements, sizeof(Element), 100);
+  array_init(&editor_models, sizeof(Model), 100);
+  array_init(&editor_textures, sizeof(Texture), 100);
 
-	strcpy(editor_mode_show_text,"Default");
+  element_id_count = 0;
+  editor_mode = EDITOR_DEFAULT_MODE;
+  editor_sub_mode = EDITOR_SUB_MODE_NULL;
 
-    camera_velocity = 0.60;  
+  editor_sub_mode_text = "";
+
+  strcpy(editor_mode_show_text, "Default");
+
+  camera_velocity = 0.60;
 }
 
-void editor_render_init(){
-    
-
-    if(pe_renderer_type == PEWMVULKAN){
-        pe_vk_init();
-    }
+void editor_render_init() {
 
 #ifdef DESKTOP
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+  if (pe_renderer_type == PEWMVULKAN) {
+    pe_vk_init();
+  }
+
+  glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+  editor_text_init();
 #endif
-    
-    camera_init(&main_camera); 
-    init_vec3(-10,0,3, main_camera.position);
-    camera_update(&main_camera);
 
+  camera_init(&main_camera);
+  init_vec3(-10, 0, 3, main_camera.position);
+  camera_update(&main_camera);
 
-    editor_standard_fragment_shader = compile_shader(
-                    editor_standard_fragment_shader_source, 
-                    GL_FRAGMENT_SHADER);
+  editor_standard_fragment_shader = compile_shader(
+      editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-    pe_editor_load_native_model();
+  // pe_editor_load_native_model();
 
-    editor_text_init();
-   
- 	gizmos_init();
-   
-   	editor_running = true;
+  gizmos_init();
 
-
+  editor_running = true;
 }
-void pe_editor_window_configure(){
 
-    //All window definition here
-    EngineWindow main_window;
-    ZERO(main_window);
-    
+void pe_editor_window_configure() {
 
-    main_window.init = &editor_main_window_init;//window specific data
-    main_window.input = &editor_window_level_editor_input_update;//handle editor modes 
-    main_window.draw = &editor_draw;//Main loop draw in window
-    main_window.finish = &editor_render_finish;
-    
+  // All window definition here
+  EngineWindow main_window;
+  ZERO(main_window);
 
-    array_add(&engine_windows, &main_window);
-    window_editor_main = array_pop(&engine_windows);
+  main_window.init = &editor_main_window_init; // window specific data
+  main_window.input =
+      &editor_window_level_editor_input_update; // handle editor modes
+  main_window.draw = &editor_draw;              // Main loop draw in window
+  main_window.finish = &editor_render_finish;
 
-    //Send window initialization to the render thread
+  array_add(&engine_windows, &main_window);
+  window_editor_main = array_pop(&engine_windows);
 
-    PEThreadCommand thread_commad;
+  // Send window initialization to the render thread
+
+  PEThreadCommand thread_commad;
 #ifdef DESKTOP
     thread_commad.command = &window_manager_init_window;
 
@@ -574,25 +583,24 @@ void pe_editor_window_configure(){
     thread_commad.done = false;
     thread_commad.type = POINTER;
     array_add(&render_thread_commads, &thread_commad);
-
 }
 
-void pe_editor_render_thread_configure_and_start(){
+void pe_editor_render_thread_configure_and_start() {
 
-    render_thread_definition.init = &editor_render_init;
-    render_thread_definition.draw = &editor_main_render_thread;
-    render_thread_definition.end = &editor_finish;
+  render_thread_definition.init = &editor_render_init;
+  render_thread_definition.draw = &editor_main_render_thread;
+  render_thread_definition.end = &editor_finish;
 
-    if(pe_renderer_type == PEWMVULKAN){
+#ifdef DESKTOP
+  if (pe_renderer_type == PEWMVULKAN) {
 
-        render_thread_definition.end = &pe_vk_end;
-
-    }
-
-    pe_render_thread_start_and_draw();
+    render_thread_definition.end = &pe_vk_end;
+  }
+#endif
+  pe_render_thread_start_and_draw();
 }
 
-void editor_init() {//executed in main thread from main()
+void pe_editor_init() {//executed in main thread from main()
 
     pe_init();
 
@@ -600,7 +608,9 @@ void editor_init() {//executed in main thread from main()
 
     editor_command_queue_init();
 
+#ifdef DESKTOP
     edit_server_init();
+#endif
 
     pe_editor_window_configure();
 

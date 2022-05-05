@@ -28,6 +28,7 @@
 #include "shader.h"
 
 #include "components/components.h"
+
 #include "animation/animation.h"
 
 #include "camera.h"
@@ -35,17 +36,22 @@
 #include "renderer/renderer.h"
 
 #include "Collision/collision.h"
+
+#ifdef DESKTOP
 #include "content_manager.h"
 
 #include "text_renderer.h"
 
 #include "audio/audio_engine.h"
+#endif
+
 
 #include "windows_manager.h"
 
 #include "game.h"
 
 #include "threads.h"
+
 #include "elements.h"
 
 #define VEC3(p1,p2,p3) (vec3){p1,p2,p3}

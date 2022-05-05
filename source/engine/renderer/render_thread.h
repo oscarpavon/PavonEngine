@@ -3,6 +3,11 @@
 #include <engine/array.h>
 #include <engine/threads.h>
 
+typedef struct PRenderThreadDefinition{
+	void(*init)(void);
+	void(*draw)(void);
+	void(*end)(void);
+}PRenderThreadDefinition;
 
 typedef struct RenderThread{
 	void(*draw)(void);
@@ -23,5 +28,6 @@ PEThread thread_render;
 Array array_render_thread_init_commmands;
 Array array_render_thread_commands;
 
+PRenderThreadDefinition render_thread_definition;
 
 #endif

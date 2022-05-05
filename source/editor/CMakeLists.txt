@@ -8,10 +8,11 @@ set(windows
 		)
 
 set(editor_sources 
-main.c
 input.c
 editor.c
 text.c
+content_manager.c
+menus.c
 skeletal_editor.c
 data.c
 gizmos.c
@@ -21,22 +22,22 @@ geometry.c
 commands.c
 Textures/texture_factory.c
 HLOD/HLOD_factory.c
-menus.c
-content_manager.c
 editor_command_queue.c
-file_explorer.c
 level.c
 path.c
-${windows}
-ProjectManager/project_manager.c
 network/network.c
 directories.c
 ../ThirdParty/parson.c
+		${windows}
+		file_explorer.c
+ProjectManager/project_manager.c
 )
+
 	if(DESKTOP)
 		set(editor_sources ${editor_sources}
  
 		EditServer/edit_server.c
+		main.c
 
 		)
 	endif()

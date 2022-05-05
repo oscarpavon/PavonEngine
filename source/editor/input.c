@@ -29,6 +29,9 @@
 
 #include <engine/audio/audio_engine.h>
 
+
+#include "Blender/blender.h"
+
 float rotate_value = 1;
 float camera_rotate_yaw = 1;
 

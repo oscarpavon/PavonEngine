@@ -9,6 +9,10 @@ FT_GlyphSlot glyph;
 
 DrawData text_draw_data;
 
+void set_text_size(float size){
+	pe_text_set_size(size);
+}
+
 void pe_text_set_size(int size){
 #ifdef LINUX
     FT_Set_Pixel_Sizes(face, 0, size);  
