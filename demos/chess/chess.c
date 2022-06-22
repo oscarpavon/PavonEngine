@@ -135,8 +135,10 @@ void chess_piece_set_mesh(PMesh mesh){
 }
 void chess_create_leaders(){
 
-  add_element_with_model_path("/home/pavon/chess/queen.glb");
+  add_element_with_model_path("/sdcard/Download/chess/reina.glb");
   chess_piece_set_pos(VEC2(7,4)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
   pe_element_set_material(piece_mat1);
 
@@ -147,12 +149,16 @@ void chess_create_leaders(){
   chess_piece_set_mesh(queen); 
   pe_element_set_material(piece_mat2);
   chess_move_piece(VEC2(0,4)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 
 
-  add_element_with_model_path("/home/pavon/chess/king.glb");
+  add_element_with_model_path("/sdcard/Download/chess/rey.glb");
   PMesh king = chess_get_mesh() ;
 
   chess_move_piece(VEC2(7,3)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   pe_element_set_material(piece_mat1);
   
 
@@ -160,13 +166,17 @@ void chess_create_leaders(){
   chess_piece_set_mesh(king); 
   pe_element_set_material(piece_mat2);
   chess_move_piece(VEC2(0,3)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
 void chess_create_knight(){
 
-  add_element_with_model_path("/home/pavon/chess/knight.glb");
+  add_element_with_model_path("/sdcard/Download/chess/caballo.glb");
 
   chess_piece_set_pos(VEC2(0,1)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 
   pe_element_set_material(piece_mat2);
 
@@ -177,24 +187,32 @@ void chess_create_knight(){
   chess_piece_set_mesh(knight); 
   pe_element_set_material(piece_mat2);
   chess_move_piece(VEC2(0,6)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
 
   chess_new_empty();
   chess_piece_set_mesh(knight); 
   pe_element_set_material(piece_mat1);
   chess_move_piece(VEC2(7,6)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
   chess_new_empty();
   chess_piece_set_mesh(knight); 
   pe_element_set_material(piece_mat1);
   chess_move_piece(VEC2(7,1)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
 void chess_create_bishop(){
 
-  add_element_with_model_path("/home/pavon/chess/bishop.glb");
+  add_element_with_model_path("/sdcard/Download/chess/alfil.glb");
 
   chess_piece_set_pos(VEC2(0,2)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 
   pe_element_set_material(piece_mat2);
 
@@ -210,6 +228,8 @@ void chess_create_bishop(){
 
       
      chess_move_piece(VEC2(0,5)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 
 
       chess_new_empty();
@@ -221,6 +241,8 @@ void chess_create_bishop(){
 
       
      chess_move_piece(VEC2(7,5)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
       
      chess_new_empty();
 
@@ -231,50 +253,51 @@ void chess_create_bishop(){
 
       
      chess_move_piece(VEC2(7,2)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
-void chess_create_pawn(){
+void chess_create_pawn() {
 
-  add_element_with_model_path("/home/pavon/chess/pawn.glb");
+  add_element_with_model_path("/sdcard/Download/chess/peon.glb");
 
-  chess_piece_set_pos(VEC2(1,0)) ;
-
+  chess_piece_set_pos(VEC2(1, 0));
+  chess_piece_init_scale();
   pe_element_set_material(piece_mat2);
-  StaticMeshComponent* pawn_mesh_comp = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
-  
-  Model* model = array_get_pointer(&pawn_mesh_comp->models_p,0);
-  PMesh pawn_mesh = model->mesh;
-  
-  for(int i = 1; i < 8 ; i++){
-      chess_new_empty();
-      chess_piece_set_mesh(pawn_mesh); 
-      pe_element_set_material(piece_mat2);
-      
-     chess_move_piece(VEC2(1,i)) ;
+  StaticMeshComponent *pawn_mesh_comp =
+      get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
 
+  Model *model = array_get_pointer(&pawn_mesh_comp->models_p, 0);
+  PMesh pawn_mesh = model->mesh;
+
+  for (int i = 1; i < 8; i++) {
+    chess_new_empty();
+    chess_piece_set_mesh(pawn_mesh);
+
+    chess_move_piece(VEC2(1, i));
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+    pe_element_set_material(piece_mat2);
   }
 
+  for (int i = 0; i < 8; i++) {
+    chess_new_empty();
 
-  for(int i = 0; i < 8 ; i++){
-      chess_new_empty();
+    chess_piece_set_mesh(pawn_mesh);
 
-      chess_piece_set_mesh(pawn_mesh); 
-
-      
-      pe_element_set_material(piece_mat1);
-
-      
-     chess_move_piece(VEC2(6,i)) ;
-
+    chess_move_piece(VEC2(6, i));
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+    pe_element_set_material(piece_mat1);
   }
 }
-
-
 
 void chess_create_rooks(){
 
-  add_element_with_model_path("/home/pavon/chess/rook.glb");
+  add_element_with_model_path("/sdcard/Download/chess/torre.glb");
   chess_piece_set_pos(VEC2(7,7)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
   pe_element_set_material(piece_mat1);
 
@@ -286,6 +309,8 @@ void chess_create_rooks(){
   pe_element_set_material(piece_mat1);
 
   chess_piece_set_pos(VEC2(7,0)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
   chess_new_empty();
   chess_piece_set_mesh(rook_mesh);
@@ -293,6 +318,8 @@ void chess_create_rooks(){
   pe_element_set_material(piece_mat2);
 
   chess_piece_set_pos(VEC2(0,0)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
   
   chess_new_empty();
   chess_piece_set_mesh(rook_mesh);
@@ -300,6 +327,8 @@ void chess_create_rooks(){
   pe_element_set_material(piece_mat2);
 
   chess_piece_set_pos(VEC2(0,7)) ;
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
 void chess_init(){
@@ -308,10 +337,10 @@ void chess_init(){
   init_vec3(-7,3.5,3.4, main_camera.position);
   camera_update(&main_camera);
   
-
+  chess_init_materials();
+/*
   add_element_with_model_path("/home/pavon/chess/check.glb");
  
-  chess_init_materials();
 
   vec3 checkpos = {0,0,29};
   pe_element_set_position(selected_element,checkpos);
@@ -325,7 +354,9 @@ void chess_init(){
   check_mesh = original_check_mesh->mesh;
   
   chess_board_create();
-  
+ 
+*/
+
   //chess_pieces_create();
 
 

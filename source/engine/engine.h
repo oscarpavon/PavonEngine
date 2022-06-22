@@ -63,6 +63,8 @@
 static const char* const level_folder = "../assets/Game/levels/";
 static const char* const gui_folder = "../assets/gui/";
 
+void pe_element_rotate(Element* element, float angle, vec3 axis);
+
 void pe_change_background_color(float r, float g, float b, float a);
 
 void engine_loop();

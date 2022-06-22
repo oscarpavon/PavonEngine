@@ -76,7 +76,7 @@ void android_main(struct android_app* state) {
 
   chess.name = "Chess";
   chess.loop = &aloop;
-  chess.init = &ainit;
+  chess.init = &chess_init;
 	chess.draw = &draw; 
 	chess.input = &ainput;
 	chess.app = state;
@@ -102,6 +102,29 @@ pe_renderer_type = PEWMOPENGLES2;
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

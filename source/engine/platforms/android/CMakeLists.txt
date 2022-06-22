@@ -38,7 +38,7 @@ set(link
     pavon_engine
     m
     #${FREETYPE_LIBRARIES}
-    peditor
+    #    peditor
     )
 
 

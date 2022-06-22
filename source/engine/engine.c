@@ -287,6 +287,31 @@ void rotate_element(Element* element, versor quaternion){
 
 }
 
+void pe_element_rotate(Element* element, float angle, vec3 axis){
+   TransformComponent* transform = get_component_from_element(element, TRASNFORM_COMPONENT);
+   if(transform == NULL){
+       LOG("No transfrom pointer in element\n");
+       return;
+   }
+    versor new_rot_quat;
+    glm_quatv(new_rot_quat, glm_rad(angle), axis);
+
+    versor result_quat;
+    glm_quat_mul(transform->rotation, new_rot_quat, result_quat);
+
+    glm_quat_copy(result_quat, transform->rotation);
+
+    mat4 model_rot_mat;
+    glm_quat_mat4(new_rot_quat,model_rot_mat);
+
+    glm_mul(transform->model_matrix,model_rot_mat, transform->model_matrix);
+
+    for(int i = 0; i<selected_element->components.count; i++){
+        ComponentDefinition* component = array_get(&selected_element->components,i);
+        update_component(component);
+    }
+    
+}
 
 void check_meshes_distance(){
     for(int i = 0; i < array_static_meshes_pointers_for_test_distance.count ; i++) { 
