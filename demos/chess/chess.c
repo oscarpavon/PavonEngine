@@ -3,8 +3,8 @@
 vec4 color1 = {0,0.2,0,1};
 vec4 color2 = {1,0.5,1,1};
 
-vec4 piece_color1 = {0.2,0.2,0.5,1};
-vec4 piece_color2 = {0.8,0.5,1,1};
+vec4 piece_color1 = {0.5,1,0.5,1};
+vec4 piece_color2 = {0,0,1,1};
 
 PMesh check_mesh;
 PMaterial check_board_mat2;
@@ -170,40 +170,38 @@ void chess_create_leaders(){
     pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
-void chess_create_knight(){
+void chess_create_knight() {
 
   add_element_with_model_path("/sdcard/Download/chess/caballo.glb");
 
-  chess_piece_set_pos(VEC2(0,1)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+  chess_piece_set_pos(VEC2(0, 1));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+
+  PMesh knight = chess_get_mesh();
 
   pe_element_set_material(piece_mat2);
 
-  PMesh knight = chess_get_mesh() ;
-
-
   chess_new_empty();
-  chess_piece_set_mesh(knight); 
+  chess_piece_set_mesh(knight);
   pe_element_set_material(piece_mat2);
-  chess_move_piece(VEC2(0,6)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-  
+  chess_move_piece(VEC2(0, 6));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
 
   chess_new_empty();
-  chess_piece_set_mesh(knight); 
+  chess_piece_set_mesh(knight);
   pe_element_set_material(piece_mat1);
-  chess_move_piece(VEC2(7,6)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-  
+  chess_move_piece(VEC2(7, 6));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+
   chess_new_empty();
-  chess_piece_set_mesh(knight); 
+  chess_piece_set_mesh(knight);
   pe_element_set_material(piece_mat1);
-  chess_move_piece(VEC2(7,1)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+  chess_move_piece(VEC2(7, 1));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
 }
 
 void chess_create_bishop(){
@@ -291,44 +289,40 @@ void chess_create_pawn() {
     pe_element_set_material(piece_mat1);
   }
 }
+void chess_piece_new(float x,float y, PMaterial material, PMesh mesh){
 
-void chess_create_rooks(){
+  chess_new_empty();
+  chess_piece_set_mesh(mesh);
+
+  pe_element_set_material(material);
+
+  chess_piece_set_pos(VEC2(x, y));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+}
+void chess_create_rooks() {
 
   add_element_with_model_path("/sdcard/Download/chess/torre.glb");
-  chess_piece_set_pos(VEC2(7,7)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-  
+  chess_piece_set_pos(VEC2(7, 7));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+
   pe_element_set_material(piece_mat1);
 
-  PMesh rook_mesh = chess_get_mesh() ;
+  PMesh rook_mesh = chess_get_mesh();
 
   chess_new_empty();
   chess_piece_set_mesh(rook_mesh);
-  
+
   pe_element_set_material(piece_mat1);
 
-  chess_piece_set_pos(VEC2(7,0)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-  
-  chess_new_empty();
-  chess_piece_set_mesh(rook_mesh);
-  
-  pe_element_set_material(piece_mat2);
+  chess_piece_set_pos(VEC2(7, 0));
+  chess_piece_init_scale();
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
 
-  chess_piece_set_pos(VEC2(0,0)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-  
-  chess_new_empty();
-  chess_piece_set_mesh(rook_mesh);
-  
-  pe_element_set_material(piece_mat2);
+  chess_piece_new(0,0,piece_mat2,rook_mesh);
+  chess_piece_new(0,7,piece_mat2,rook_mesh);
 
-  chess_piece_set_pos(VEC2(0,7)) ;
-    chess_piece_init_scale();
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
 }
 
 void chess_init(){

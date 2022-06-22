@@ -22,8 +22,8 @@ void pe_element_set_scale(vec3 translation){
 void pe_element_set_material(PMaterial material){
   StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
   mesh->material = material;
-  Model* model = array_get_last(&mesh->models_p);
-  model->material = material;
+  //Model* model = array_get_last(&mesh->models_p);
+  //model->material = material;
 
 }
 

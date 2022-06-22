@@ -14,7 +14,7 @@ void pe_init(){
 
 	engine_running = true;
  
-  pe_change_background_color(0,1,0,1);
+  pe_change_background_color(1,0,0,1);
 
 #ifdef LINUX
   pe_th_main_id = pthread_self();
