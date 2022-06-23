@@ -1,6 +1,10 @@
 cd ~/PavonEngine/build
 make -j4
 
+cd ~/PavonEngine/source/engine/platforms/android/
+
+echo // >> main.c
+
 cd ~/PavonEngine/source/engine/platforms/android/build
 
 make -j4

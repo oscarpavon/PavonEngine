@@ -202,6 +202,27 @@ void chess_create_knight() {
   chess_move_piece(VEC2(7, 1));
   chess_piece_init_scale();
   pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+
+
+
+///human here
+
+  chess_new_empty();
+  chess_piece_set_mesh(knight);
+
+  PMaterial human_mat;
+  ZERO(human_mat);
+
+  glm_vec4_copy(VEC4(1,1,1,1),human_mat.color) ;
+  
+  pe_element_set_material(human_mat);
+
+  chess_move_piece(VEC2(10, 5));
+  float scale = 0.5f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+  pe_element_rotate(selected_element, 90, VEC3(0, 1, 0));
+
 }
 
 void chess_create_bishop(){
@@ -355,10 +376,14 @@ void chess_init(){
 
 
   chess_create_pawn();
-  chess_create_rooks();
+ chess_create_rooks();
   chess_create_bishop();
   chess_create_knight();
   chess_create_leaders();
+  
+  //add_element_with_model_path("/sdcard/Download/chess/male.glb");
+  //pe_element_set_material(piece_mat1);
+  //chess_piece_set_pos(VEC2(4,4)) ;
 }
 
 void chess_loop(){

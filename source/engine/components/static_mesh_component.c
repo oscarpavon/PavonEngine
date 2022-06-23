@@ -6,36 +6,34 @@
 #include "../../editor/editor.h"
 #endif
 
-void pe_comp_static_mesh_update(ComponentDefinition* element_component){
+void pe_comp_static_mesh_update(ComponentDefinition *element_component) {
 
   StaticMeshComponent *mesh_component = element_component->data;
 
-  if(mesh_component->meshes.initialized == true){
-  for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
-    u8 *id = array_get(&mesh_component->meshes, i);
-    Model *model = array_get(actual_model_array, *id);
-   
-    glm_mat4_copy(element_component->parent->transform->model_matrix,
-                  model->model_mat);
+  if (mesh_component->meshes.initialized == true) {
+    for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
+      u8 *id = array_get(&mesh_component->meshes, i);
+      Model *model = array_get(actual_model_array, *id);
 
+      glm_mat4_copy(element_component->parent->transform->model_matrix,
+                    model->model_mat);
     }
-  u8 *id = array_get(&mesh_component->meshes, 1);
-  Model *model = array_get(actual_model_array, *id);
-  if (!model)
-    return;
-  glm_vec3_copy(model->min, mesh_component->bounding_box[0]);
-  glm_vec3_copy(model->max, mesh_component->bounding_box[1]);
-  glm_aabb_transform(mesh_component->bounding_box,
-                     element_component->parent->transform->model_matrix,
-                     mesh_component->bounding_box);
-  glm_aabb_center(mesh_component->bounding_box, mesh_component->center);
-  } 
+    u8 *id = array_get(&mesh_component->meshes, 1);
+    Model *model = array_get(actual_model_array, *id);
+    if (!model)
+      return;
+    glm_vec3_copy(model->min, mesh_component->bounding_box[0]);
+    glm_vec3_copy(model->max, mesh_component->bounding_box[1]);
+    glm_aabb_transform(mesh_component->bounding_box,
+                       element_component->parent->transform->model_matrix,
+                       mesh_component->bounding_box);
+    glm_aabb_center(mesh_component->bounding_box, mesh_component->center);
+  }
 
-  Model* modelf = array_get_pointer(&mesh_component->models_p,0);
-     
+  Model *modelf = array_get_pointer(&mesh_component->models_p, 0);
+
   glm_mat4_copy(element_component->parent->transform->model_matrix,
-                  modelf->model_mat);
-
+                modelf->model_mat);
 }
 
 void pe_comp_static_mesh_shader_init(Model* model) {

@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#define INIT_MEMORY 75000000
+#define INIT_MEMORY 750000000
 
 
 typedef struct StackMemory{

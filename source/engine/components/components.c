@@ -362,48 +362,65 @@ void pe_mesh_fill_models_ids(Array *meshes, Array *textures,
 
 }
 
+void pe_comp_add(u32 models_loaded) {
+  new_empty_element();
 
-void pe_comp_add(u32 models_loaded){
-    new_empty_element();   
+  add_transform_component_to_selected_element();
 
-    add_transform_component_to_selected_element();
+  switch (current_loaded_component_type) {
+  case COMPONENT_SKINNED_MESH: {
+    LOG("*********Skinned mesh component adding... ");
+    SkinnedMeshComponent skin_mesh_component;
+    ZERO(skin_mesh_component);
+    add_component_to_selected_element(sizeof(SkinnedMeshComponent),
+                                      &skin_mesh_component,
+                                      COMPONENT_SKINNED_MESH);
 
-    switch (current_loaded_component_type)
-    {
-    case COMPONENT_SKINNED_MESH:
-        {
-            SkinnedMeshComponent skin_mesh_component;
-	        ZERO(skin_mesh_component); 
-            add_component_to_selected_element(sizeof(SkinnedMeshComponent),&skin_mesh_component,COMPONENT_SKINNED_MESH);
+  } break;
 
-        }
-        break;
-    
-    case STATIC_MESH_COMPONENT:
-        {
-            StaticMeshComponent mesh_component;
-			ZERO(mesh_component);
-		    pe_mesh_fill_models_ids(&mesh_component.meshes,
-                &mesh_component.textures,models_loaded);
-            
-            array_new_pointer(&mesh_component.models_p,models_loaded);
-            if(models_loaded == 1) {
-              Model* model = array_pop(&array_models_loaded);
+  case STATIC_MESH_COMPONENT: {
+    StaticMeshComponent mesh_component;
+    ZERO(mesh_component);
+    pe_mesh_fill_models_ids(&mesh_component.meshes, &mesh_component.textures,
+                            models_loaded);
 
-              array_add_pointer(&mesh_component.models_p,model);
-            }
-            
-            add_component_to_selected_element(sizeof(StaticMeshComponent),
-                &mesh_component,STATIC_MESH_COMPONENT);           
-            
-        }
+    array_new_pointer(&mesh_component.models_p, models_loaded);
+
+    if (models_loaded == 1) {
+      Model *model = array_pop(&array_models_loaded);
+
+      selected_model->mesh.index_array.count =
+          selected_model->index_array.count;
+      selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
+      selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
+
+      array_add_pointer(&mesh_component.models_p, model);
+    } else {
+
+      for (int i = 0; i < models_loaded; i++) {
+        int id = pe_data_loader_models_loaded_count + i;
+        Model *model = array_get(&array_models_loaded, id);
+
+        array_add_pointer(&mesh_component.models_p, model);
+        Model *model_from_models_p = array_pop(&mesh_component.models_p);
+        model_from_models_p->mesh.index_array.count = model->index_array.count;
+        model_from_models_p->index_buffer_id = model->index_buffer_id;
+
+        model_from_models_p->vertex_buffer_id = model->vertex_buffer_id;
+      }
+      pe_data_loader_models_loaded_count =
+          pe_data_loader_models_loaded_count + models_loaded;
     }
 
-    for(int i = 0; i <selected_element->components.count ; i++){
-        ComponentDefinition* component_definition = 
-          array_get(&selected_element->components,i);
+    add_component_to_selected_element(sizeof(StaticMeshComponent),
+                                      &mesh_component, STATIC_MESH_COMPONENT);
+  }
+  }
 
-        init_element_component(component_definition);
-    }
+  for (int i = 0; i < selected_element->components.count; i++) {
+    ComponentDefinition *component_definition =
+        array_get(&selected_element->components, i);
 
+    init_element_component(component_definition);
+  }
 }

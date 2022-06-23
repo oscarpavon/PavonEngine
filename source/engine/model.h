@@ -66,5 +66,6 @@ Model* pe_vk_model_load(char* path);
 
 int pe_loader_model(const char* path);
 
+int pe_data_loader_models_loaded_count;
 
 #endif // !MODEL_H

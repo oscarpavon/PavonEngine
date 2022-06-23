@@ -186,18 +186,18 @@ int add_element_with_model_path(const char* model_gltf_path){
 
     int models_loaded = pe_loader_model(model_gltf_path);
     if( models_loaded == -1){
+      LOG("No model loaded from pe_loader_model()");
         return -1;
+    }else{
+      LOG("********* %i Models loaded", models_loaded);
     }
     if(prev_array != NULL) 
       actual_model_array = prev_array;
     
-    array_add(&pe_arr_models_paths,model_gltf_path);
+    array_add(&pe_arr_models_paths,model_gltf_path);//needed for saved level
     
     pe_comp_add(models_loaded);
 
-    selected_model->mesh.index_array.count = selected_model->index_array.count;
-    selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
-    selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
     
 }
 

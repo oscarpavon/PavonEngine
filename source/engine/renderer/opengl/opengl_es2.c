@@ -264,8 +264,11 @@ void draw_simgle_model(Model * new_model){
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->mesh.index_buffer_id);
 
-    if(new_model->mesh.index_array.count == 0)
-        LOG("Index is equal to 0, model not render\n");
+    if(new_model->mesh.index_array.count == 0){
+        LOG("Draw ""simgle_model()"" error: Index is equal to 0, model not render\n");
+        return;
+    }
+
     glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
     check_error("sigle model error");

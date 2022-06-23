@@ -12,6 +12,8 @@ void pe_init(){
 
   pe_init_arrays();
 
+  pe_data_loader_models_loaded_count = 0;
+
 	engine_running = true;
  
   pe_change_background_color(1,0,0,1);
