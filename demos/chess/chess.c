@@ -33,27 +33,6 @@ void chess_piece_init_scale(){
   pe_element_set_scale(VEC3(scale,scale,scale)) ;
 }
 
-void chess_pieces_create(){
-
-  add_element_with_model_path("/home/pavon/chess/rook.glb");
-  chess_piece_set_pos(VEC2(4,6)) ;
-
-  chess_piece_init_scale();
-
-  add_element_with_model_path("/home/pavon/chess/pawn.glb");
-  chess_piece_set_pos(VEC2(2,0)) ;
-  chess_piece_init_scale();
-
-  add_element_with_model_path("/home/pavon/chess/king.glb");
-  chess_piece_set_pos(VEC2(3,7)) ;
-  chess_piece_init_scale();
-
-
-  add_element_with_model_path("/home/pavon/chess/queen.glb");
-  chess_piece_set_pos(VEC2(5,3)) ;
-  chess_piece_init_scale();
-
-}
 void chess_move_piece(vec2 pos){
   
   chess_piece_set_pos(pos);
@@ -207,8 +186,17 @@ void chess_create_knight() {
 
 ///human here
 
+
   chess_new_empty();
   chess_piece_set_mesh(knight);
+
+  for(int i = 0; i < knight.vertex_array.count; i++){
+    Vertex* vertex = array_get(&selected_model->mesh.vertex_array,i);
+    LOG("************Vertex normal %f %f %f", vertex->normal[0],vertex->normal[1], vertex->normal[2]);
+
+
+
+  }
 
   PMaterial human_mat;
   ZERO(human_mat);
@@ -222,6 +210,11 @@ void chess_create_knight() {
   pe_element_set_scale(VEC3(scale,scale,scale)) ;
   pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
   pe_element_rotate(selected_element, 90, VEC3(0, 1, 0));
+
+ 
+
+
+  
 
 }
 
@@ -346,6 +339,15 @@ void chess_create_rooks() {
 
 }
 
+void chess_pieces_create(){
+
+  chess_create_pawn();
+  chess_create_rooks();
+  chess_create_bishop();
+  chess_create_leaders();
+  chess_create_knight();
+
+}
 void chess_init(){
 
   camera_init(&main_camera); 
@@ -372,18 +374,11 @@ void chess_init(){
  
 */
 
-  //chess_pieces_create();
+  chess_pieces_create();
 
 
-  chess_create_pawn();
- chess_create_rooks();
-  chess_create_bishop();
-  chess_create_knight();
-  chess_create_leaders();
   
-  //add_element_with_model_path("/sdcard/Download/chess/male.glb");
-  //pe_element_set_material(piece_mat1);
-  //chess_piece_set_pos(VEC2(4,4)) ;
+  add_element_with_model_path("/sdcard/Download/chess/chess_human.glb");
 }
 
 void chess_loop(){

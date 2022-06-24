@@ -36,7 +36,7 @@ PEINLINE void check_error(const char* message){
 PEINLINE GLint get_uniform_location(GLuint shader, const char* name){
     GLint uniform = glGetUniformLocation(shader,name);
     if(uniform == -1){
-        mvp_error(name);
+       // mvp_error(name);
     }
     return uniform;
 }
@@ -162,12 +162,19 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+//    glEnableVertexAttribArray(2);
+    
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+    
+//    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+
+    glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, normal));
 
     GLint mvp_uniform =  get_uniform_location(shader,"MVP");
 
     glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &matrix[0][0]);
-    check_send_matrix_error("MVP");
+    //check_send_matrix_error("MVP");
 }
 
 
@@ -243,32 +250,37 @@ void pe_render_skinned_model(SkinnedMeshComponent* skin){
 void draw_simgle_model(Model * new_model){
     mat4 mvp;      
     update_mvp(new_model->model_mat, mvp);  
-    
-  	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
    
-  	update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
-    
+    update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
 
-    //GLint mvp_uniform =  get_uniform_location(new_model->shader,"model");
 
-    //glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
-    //check_send_matrix_error("model");
 
-    send_color_to_shader(new_model->shader,new_model->material.color);
-    	
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2,3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, normal));
-
+    glBindBuffer(GL_ARRAY_BUFFER, new_model->mesh.vertex_buffer_id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->mesh.index_buffer_id);
+    
+    GLint model_mat_uniform =  get_uniform_location(new_model->shader,"uModel");
+
+    check_send_matrix_error("Model Matrix");
+
+    glUniformMatrix4fv(model_mat_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
+ 
+
+    
+    send_color_to_shader(new_model->shader,new_model->material.color);
+
+
+
+    	
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->mesh.index_buffer_id);
+
+
 
     if(new_model->mesh.index_array.count == 0){
         LOG("Draw ""simgle_model()"" error: Index is equal to 0, model not render\n");
         return;
     }
 
+  	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
     glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
     check_error("sigle model error");

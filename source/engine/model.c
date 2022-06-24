@@ -140,7 +140,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
   case cgltf_attribute_type_texcoord:
     pe_loader_read_accessor(attribute->data, NULL);
     break;
-/*
+
   case cgltf_attribute_type_joints: {
     vec4 joints[attribute->data->count];
     ZERO(joints);
@@ -166,13 +166,15 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
 
     break;
   }
-  */
+
   case cgltf_attribute_type_normal: {
-              
+             
+                                    LOG("******** Normal loaded");
     vec3 normals[attribute->data->count];
+    ZERO(normals);
     
-    vec3 normal[attribute->data->count];
-    ZERO(normal);
+//    vec3 normal[attribute->data->count];
+ //   ZERO(normal);
   
     
     pe_loader_read_accessor(attribute->data, normals);
@@ -329,7 +331,7 @@ void load_current_animation(){
 }
 
 int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
-/*
+
   if (copy_nodes) {
     if (nodes_counter > 1) {
 
@@ -348,18 +350,18 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
     }
     nodes_counter++;
   }
-*/
+
   if(in_cgltf_node->mesh == NULL){
 
-    LOG("********* No mesh in node");
+    //LOG("********* No mesh in node");
    }
 
   if(in_cgltf_node->mesh != NULL){
     LOG("Loading GLTF mesh");
-    check_LOD_names(in_cgltf_node);
+    //check_LOD_names(in_cgltf_node);
     pe_loader_mesh(in_cgltf_node->mesh);   
   }
-/*
+
   if (in_cgltf_node->skin != NULL) {
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
 
@@ -367,15 +369,17 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
                             pe_curr_skin_loading->inverse_bind_matrices);
                             
   }
-*/
+
   Node *loaded_parent = NULL;
-/* 
-  if (pe_curr_skin_loading)
-    loaded_parent = array_pop(&pe_curr_skin_loading->joints);
-*/
  
-  if (in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL)
+  if (pe_curr_skin_loading){
+    loaded_parent = array_pop(&pe_curr_skin_loading->joints);
+  }
+
+ 
+  if (in_cgltf_node->children_count == 0 && in_cgltf_node->mesh == NULL){
     return 1;
+  }
 
   for (int i = 0; i < in_cgltf_node->children_count; i++) {
    pe_node_load(loaded_parent, in_cgltf_node->children[i]);
@@ -403,7 +407,7 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   }
 
   current_loaded_component_type = STATIC_MESH_COMPONENT;
-/*
+
   if(data->skins_count >= 1){
 		SkinnedMeshComponent skin;
 		ZERO(skin);
@@ -419,7 +423,7 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
 
   }
 
-*/
+
   LOG("******************Loading nodes");
   
   for(int i = 0; i < data->scene->nodes_count ; i++){
@@ -431,7 +435,7 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   actual_vertex_array = NULL;
   actual_index_array = NULL;
 
-  /*
+
   if(data->animations_count >= 1){
 	LOG("Loding animation\n");
     array_init(&pe_curr_skin_loading->animations,sizeof(Animation),data->animations_count);
@@ -440,7 +444,7 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
       load_current_animation();
     }
   }
-*/
+
   cgltf_free(data);
   current_data = NULL;
 

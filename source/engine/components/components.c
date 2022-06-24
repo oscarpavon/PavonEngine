@@ -317,6 +317,10 @@ void init_element_component(ComponentDefinition *element_component) {
     pe_comp_static_mesh_init(element_component);
     break;
   }
+  case COMPONENT_SKINNED_MESH: {
+    pe_comp_skinned_mesh_init(element_component);
+    break;
+  }
   case TRASNFORM_COMPONENT: {
 
     TransformComponent *transform = get_component_from_element(
@@ -325,9 +329,6 @@ void init_element_component(ComponentDefinition *element_component) {
 
     break;
   }
-  case COMPONENT_SKINNED_MESH: {
-    pe_comp_skinned_mesh_init(element_component);
-  } break;
   default:
     break;
   }
@@ -369,7 +370,7 @@ void pe_comp_add(u32 models_loaded) {
 
   switch (current_loaded_component_type) {
   case COMPONENT_SKINNED_MESH: {
-    LOG("*********Skinned mesh component adding... ");
+    LOG("********* SkinnedMesh component adding... ");
     SkinnedMeshComponent skin_mesh_component;
     ZERO(skin_mesh_component);
     add_component_to_selected_element(sizeof(SkinnedMeshComponent),
@@ -379,6 +380,7 @@ void pe_comp_add(u32 models_loaded) {
   } break;
 
   case STATIC_MESH_COMPONENT: {
+    LOG("********* StaticMesh component adding... ");
     StaticMeshComponent mesh_component;
     ZERO(mesh_component);
     pe_mesh_fill_models_ids(&mesh_component.meshes, &mesh_component.textures,
@@ -393,6 +395,7 @@ void pe_comp_add(u32 models_loaded) {
           selected_model->index_array.count;
       selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
       selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
+      selected_model->mesh.vertex_array = selected_model->vertex_array;
 
       array_add_pointer(&mesh_component.models_p, model);
     } else {

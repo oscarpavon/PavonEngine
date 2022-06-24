@@ -4,6 +4,9 @@ Because in the window created is where the graphics shows, all code need to be e
 
 All models are loaded in "array_models_loaded"
 
+##Shaders
+Shader need to use all varing, othercase they will show Uniform Not found
+
 ##Adding new model to scene
 For adding new model you need to call "add_element_with_model_path()"
 this is necesesary for show model in the editor o game
@@ -19,3 +22,10 @@ Engine Init --> render thread definition --> draw windows --> pe_frame_draw()
 ##Creating geometry
 Create a "Vertex" struct with vertex data, then add to the vertex_array and finily create the graphics buffer of that geometry.
 
+
+## Elements
+In PavonEngine the gameobjects are called Elements
+Every elements can have componenets
+TransformComponent have the transformation values of the elements like Scale , Position and Rotation
+StaticMeshComponent have the mesh for rendering
+SkinnedMeshComponent have the mesh and bones for animations purposes

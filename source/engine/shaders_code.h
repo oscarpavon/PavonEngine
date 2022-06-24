@@ -5,17 +5,19 @@
 static const char* pe_shader_src_std_vert= "#version 100 \n \
 attribute vec3 vPosition;\
 attribute vec2 inUV;\
-varying vec2 v_TexCoord; \
+attribute vec3 vNormal;\
 uniform mat4 MVP;   \
 uniform mat4 model; \
-varying vec3 Normal;\
 varying vec3 FragPosition;\
+varying vec2 v_TexCoord; \
+varying vec3 Normal;\
 void main()\
 {\
-    gl_Position = MVP * vec4(vPosition,1);\
-    FragPosition = vec3(model * vec4(vPosition,1));\
     gl_PointSize = 10.0;\
+    Normal = vNormal;\
     v_TexCoord = inUV;\
+    FragPosition = vec3(model * vec4(vPosition,1));\
+    gl_Position = MVP * vec4(vPosition,1);\
 }\
 //end";
 

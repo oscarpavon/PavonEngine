@@ -71,19 +71,18 @@ void pe_comp_static_mesh_texture_fill(StaticMeshComponent* mesh_component,int i)
     }
 }
 
-void pe_comp_static_mesh_add_to_element(){
+void pe_comp_static_mesh_add_to_element() {
 
-            actual_model_array = &array_models_loaded;
-            new_empty_model();
+  actual_model_array = &array_models_loaded;
+  new_empty_model();
 
-            StaticMeshComponent mesh_component;
-			ZERO(mesh_component);
-            array_new_pointer(&mesh_component.models_p,1);
-            array_add_pointer(&mesh_component.models_p,selected_model);
-            
-            add_component_to_selected_element(sizeof(StaticMeshComponent),
-                &mesh_component,STATIC_MESH_COMPONENT);           
+  StaticMeshComponent mesh_component;
+  ZERO(mesh_component);
+  array_new_pointer(&mesh_component.models_p, 1);
+  array_add_pointer(&mesh_component.models_p, selected_model);
 
+  add_component_to_selected_element(sizeof(StaticMeshComponent),
+                                    &mesh_component, STATIC_MESH_COMPONENT);
 }
 
 void pe_comp_static_mesh_init(ComponentDefinition *element_component) {
