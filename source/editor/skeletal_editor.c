@@ -80,8 +80,25 @@ void create_skeletal_vertices(){
 
 }
 
+void pe_debug_skeletal_draw(Element* element){
+    selected_element = element;
+    draw_skeletal_bones();
+}
 
 void draw_skeletal_bones(){
+    if(update_vertex_bones_gizmos){
+       update_joints_vertex(); 
+       update_vertex_bones_gizmos = false;
+    }
+
+    if(pe_bool_can_draw_skeletal == false){
+        return;
+    }
+   
+    
+    render_clear_buffer(RENDER_DEPTH_BUFFER);
+ //   LOG("********Drawing skeletal gizmo");
+
     mat4 model;
     glm_mat4_identity(model);
 		mat4 mvp;
@@ -97,6 +114,18 @@ void draw_skeletal_bones(){
 
 }
 
+void pe_debug_skeletal_show_bones(Element* element){      
+		LOG("Skeletal editor\n");
+    selected_element = element; 
+    create_skeletal_vertices();
+    init_static_gpu_vertex_buffer(&skeletal_gizmo.vertex_array,&skeletal_gizmo.vertex_buffer_id);
+    init_static_gpu_index_buffer(&skeletal_gizmo.index_array,&skeletal_gizmo.index_buffer_id);  
+
+    skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
+
+    skeletal_gizmo.shader= create_engine_shader(standart_vertex_shader,skeletal_blue_shader); 
+    
+}
 
 void init_skeletal_editor(){      
 		LOG("Skeletal editor\n");
@@ -107,6 +136,8 @@ void init_skeletal_editor(){
     skeletal_blue_shader = compile_shader(skeletal_blue_joint_source,GL_FRAGMENT_SHADER);
 
     skeletal_gizmo.shader= create_engine_shader(standart_vertex_shader,skeletal_blue_shader); 
+   
     
+    pe_bool_can_draw_skeletal = true;
 }
 

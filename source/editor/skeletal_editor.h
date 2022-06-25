@@ -2,6 +2,11 @@
 #define SKELETAL_EDITOR_H
 
 #include "../engine/skeletal.h"
+#include <engine/elements.h>
+
+void pe_debug_skeletal_show_bones(Element* element);
+
+bool pe_bool_can_draw_skeletal;
 
 void draw_skeletal_bones();
 void init_skeletal_editor();

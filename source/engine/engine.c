@@ -20,6 +20,9 @@
 #include "elements.h"
 #include "physics.h"
 
+#include <engine/animation/animation.h>
+
+#include <editor/skeletal_editor.h>
 
 Array engine_elements;
 Array engine_textures;
@@ -420,6 +423,17 @@ void pe_init_arrays() {
   pe_is_window_terminate = false;
 
 
+}
+void pe_init_global_variables(){
+
+  pe_data_loader_models_loaded_count = 0;
+
+	engine_running = true;
+ 
+#ifdef DEBUG
+  pe_bool_can_draw_skeletal = false;
+  update_vertex_bones_gizmos = false;
+#endif
 }
 void pe_wm_check(EngineWindow* program_window){
 

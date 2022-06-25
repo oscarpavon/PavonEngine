@@ -22,6 +22,7 @@ set(CMAKE_SHARED_LINKER_FLAGS
 
 
 add_compile_definitions(PUBLIC ANDROID)
+add_compile_definitions(PUBLIC DEBUG)
 
 
 include_directories(/data/data/com.termux/files/home/PavonEngine/source/)

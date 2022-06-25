@@ -1,5 +1,5 @@
 #include "chess.h"
-
+#include <editor/skeletal_editor.h>
 vec4 color1 = {0,0.2,0,1};
 vec4 color2 = {1,0.5,1,1};
 
@@ -183,39 +183,6 @@ void chess_create_knight() {
   pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
 
 
-
-///human here
-
-
-  chess_new_empty();
-  chess_piece_set_mesh(knight);
-
-  for(int i = 0; i < knight.vertex_array.count; i++){
-    Vertex* vertex = array_get(&selected_model->mesh.vertex_array,i);
-    LOG("************Vertex normal %f %f %f", vertex->normal[0],vertex->normal[1], vertex->normal[2]);
-
-
-
-  }
-
-  PMaterial human_mat;
-  ZERO(human_mat);
-
-  glm_vec4_copy(VEC4(1,1,1,1),human_mat.color) ;
-  
-  pe_element_set_material(human_mat);
-
-  chess_move_piece(VEC2(10, 5));
-  float scale = 0.5f;
-  pe_element_set_scale(VEC3(scale,scale,scale)) ;
-  pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
-  pe_element_rotate(selected_element, 90, VEC3(0, 1, 0));
-
- 
-
-
-  
-
 }
 
 void chess_create_bishop(){
@@ -379,6 +346,18 @@ void chess_init(){
 
   
   add_element_with_model_path("/sdcard/Download/chess/chess_human.glb");
+  SkinnedMeshComponent* human_comp = get_component_from_element(selected_element,COMPONENT_SKINNED_MESH);
+  if(!human_comp){
+    LOG("********Human component not found");
+
+  }
+  human_comp->mesh->material = piece_mat2;
+  chess_piece_set_pos(VEC2(10,4));
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+    pe_element_rotate(selected_element, 90, VEC3(0,1,0));
+
+    init_skeletal_editor();
+
 }
 
 void chess_loop(){

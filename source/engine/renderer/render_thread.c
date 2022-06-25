@@ -4,6 +4,8 @@
 #include <engine/threads.h>
 #include <engine/renderer/renderer.h>
 
+#include <editor/skeletal_editor.h>
+
 void engine_draw_elements(Array *elements) {
   for (size_t i = 0; i < elements->count; i++) {
     Model *draw_model = array_get_pointer(elements, i);
@@ -112,15 +114,27 @@ void pe_render_thread_start_and_draw(){
 }
 
 void pe_frame_static_fill(ComponentDefinition* definition){
-  StaticMeshComponent* mesh_comp = definition->data;
-  if(mesh_comp->models_p.initialized == false)
-    return;
-  Model* model = (Model*)array_get_pointer(&mesh_comp->models_p,0);
-  //model->shader = mesh_comp->material.shader;
-  model->material = mesh_comp->material;
+  if (definition->type == STATIC_MESH_COMPONENT) {
 
-  array_add_pointer(&frame_draw_static_elements,model) ;
+    StaticMeshComponent *mesh_comp = definition->data;
+    if (mesh_comp->models_p.initialized == false)
+      return;
+    Model *model = (Model *)array_get_pointer(&mesh_comp->models_p, 0);
+    // model->shader = mesh_comp->material.shader;
+    model->material = mesh_comp->material;
 
+    array_add_pointer(&frame_draw_static_elements, model);
+  }
+  if(definition->type == COMPONENT_SKINNED_MESH){
+    
+    SkinnedMeshComponent *skin_comp = definition->data;
+    if(!skin_comp){
+      LOG("No skin component");
+    }
+    
+    pe_render_skinned_model(skin_comp);
+
+  }
 }
 
 
@@ -137,9 +151,16 @@ void pe_frame_draw(){
   //test_elements_occlusion();
   //check_meshes_distance();
   for_each_element_components(&pe_frame_static_fill);
-
+  
+  for(int i = 0; i < actual_elements_array->count; i++)   {
+    Element* element = array_get(actual_elements_array,i);
+    
+  }
   engine_draw_elements(&frame_draw_static_elements);
 
+  
   pe_frame_clean();
+  
+  draw_skeletal_bones();   
 
 }

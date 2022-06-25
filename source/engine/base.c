@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+
 void pe_end(){
     engine_running = false;   
     clear_engine_memory();
@@ -12,11 +13,11 @@ void pe_init(){
 
   pe_init_arrays();
 
-  pe_data_loader_models_loaded_count = 0;
+  pe_init_global_variables();
 
-	engine_running = true;
- 
+
   pe_change_background_color(1,0,0,1);
+ 
 
 #ifdef LINUX
   pe_th_main_id = pthread_self();

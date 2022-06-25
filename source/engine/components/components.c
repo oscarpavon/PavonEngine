@@ -121,8 +121,8 @@ void update_component(ComponentDefinition* element_component){
 		case COMPONENT_SKINNED_MESH:
         {
 					SkinnedMeshComponent* skin = element_component->data;
-					//glm_mat4_copy(element_component->parent->transform->model_matrix,
-           //       skin->mesh->model_mat);
+					glm_mat4_copy(element_component->parent->transform->model_matrix,
+                  skin->mesh->model_mat);
 
         }
         break;
@@ -376,6 +376,7 @@ void pe_comp_add(u32 models_loaded) {
     add_component_to_selected_element(sizeof(SkinnedMeshComponent),
                                       &skin_mesh_component,
                                       COMPONENT_SKINNED_MESH);
+
 
   } break;
 

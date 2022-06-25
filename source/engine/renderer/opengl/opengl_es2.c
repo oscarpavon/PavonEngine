@@ -125,9 +125,13 @@ void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, m
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
   glEnableVertexAttribArray(0);
-//  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(1);
+
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
                         (void *)0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                        (void *)offsetof(struct Vertex, normal));
 
   GLint model_uniform = get_uniform_location(shader, "model");
 
@@ -138,14 +142,11 @@ void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, m
   glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
   glUniformMatrix4fv(projection_uniform, 1, GL_FALSE,
                      &main_camera.projection[0][0]);
+  
   glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
   check_send_matrix_error("view");
 
-  SkinnedMeshComponent *skin_component = skin;
-  glUniformMatrix4fv(joints_matrices_uniform,
-                     skin_component->node_uniform.joint_count, GL_FALSE,
-                     skin_component->node_uniform.joints_matrix);
-  check_send_matrix_error("Skin");
+
 
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex),
@@ -154,6 +155,12 @@ void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, m
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex),
                         (void *)offsetof(Vertex, weight));
+  
+  SkinnedMeshComponent *skin_component = skin;
+  glUniformMatrix4fv(joints_matrices_uniform,
+                     skin_component->node_uniform.joint_count, GL_FALSE,
+                     skin_component->node_uniform.joints_matrix);
+
 }
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
@@ -163,11 +170,8 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-//    glEnableVertexAttribArray(2);
     
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
-    
-//    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
 
     glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, normal));
 
@@ -228,60 +232,62 @@ void draw_model_like(Model* model, GLenum mode){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
-void pe_render_skinned_model(SkinnedMeshComponent* skin){
-		Model* new_model = skin->mesh;	
-		if(!new_model)
-			return;
+void pe_render_skinned_model(SkinnedMeshComponent *skin) {
+  Model *new_model = skin->mesh;
+  if (!new_model) {
+    LOG("Not model");
+    return;
+  }
 
-		glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
-   
-	 	pe_mat_skinned(skin, new_model->shader,new_model->vertex_buffer_id,new_model->model_mat);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
+  glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->index_buffer_id);
+  pe_mat_skinned(skin, new_model->shader, new_model->mesh.vertex_buffer_id,
+                 new_model->model_mat);
 
-    if(new_model->index_array.count == 0)
-        LOG("Index is equal to 0, model not render\n");
-    glDrawElements(GL_TRIANGLES, new_model->index_array.count , GL_UNSIGNED_SHORT, (void*)0);
 
-    check_error("sigle model error");
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
+
+  send_color_to_shader(new_model->shader, new_model->material.color);
+
+  if (new_model->mesh.index_array.count == 0) {
+    LOG("Index is equal to 0, skinned model not render\n");
+  }
+  glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count,
+                 GL_UNSIGNED_SHORT, (void *)0);
+
+  check_error("sigle model error");
 }
-void draw_simgle_model(Model * new_model){
-    mat4 mvp;      
-    update_mvp(new_model->model_mat, mvp);  
-   
-    update_draw_vertices(new_model->shader,new_model->mesh.vertex_buffer_id,mvp);
+void draw_simgle_model(Model *new_model) {
+  mat4 mvp;
+  update_mvp(new_model->model_mat, mvp);
 
+  update_draw_vertices(new_model->shader, new_model->mesh.vertex_buffer_id,
+                       mvp);
 
+  glBindBuffer(GL_ARRAY_BUFFER, new_model->mesh.vertex_buffer_id);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
 
-    glBindBuffer(GL_ARRAY_BUFFER, new_model->mesh.vertex_buffer_id);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->mesh.index_buffer_id);
-    
-    GLint model_mat_uniform =  get_uniform_location(new_model->shader,"uModel");
+  GLint model_mat_uniform = get_uniform_location(new_model->shader, "uModel");
 
-    check_send_matrix_error("Model Matrix");
+  check_send_matrix_error("Model Matrix");
 
-    glUniformMatrix4fv(model_mat_uniform, 1, GL_FALSE, &new_model->model_mat[0][0]);
- 
+  glUniformMatrix4fv(model_mat_uniform, 1, GL_FALSE,
+                     &new_model->model_mat[0][0]);
 
-    
-    send_color_to_shader(new_model->shader,new_model->material.color);
+  send_color_to_shader(new_model->shader, new_model->material.color);
 
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
 
+  if (new_model->mesh.index_array.count == 0) {
+    LOG("Draw "
+        "simgle_model()"
+        " error: Index is equal to 0, model not render\n");
+    return;
+  }
 
-    	
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,new_model->mesh.index_buffer_id);
+  glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+  glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count,
+                 GL_UNSIGNED_SHORT, (void *)0);
 
-
-
-    if(new_model->mesh.index_array.count == 0){
-        LOG("Draw ""simgle_model()"" error: Index is equal to 0, model not render\n");
-        return;
-    }
-
-  	glBindTexture(GL_TEXTURE_2D,new_model->texture.id);
-    glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count , GL_UNSIGNED_SHORT, (void*)0);
-
-    check_error("sigle model error");
+  check_error("sigle model error");
 }

@@ -43,7 +43,7 @@ void play_animation_list();
 
 void pe_anim_nodes_update(SkinnedMeshComponent*);
 
-#ifdef EDITOR
+#ifdef DEBUG
 bool update_vertex_bones_gizmos;
 #endif
 

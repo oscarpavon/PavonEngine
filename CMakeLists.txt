@@ -23,6 +23,7 @@ add_compile_definitions(PUBLIC OPENGL_ES2)
 #add_compile_definitions(PUBLIC BSD)
 
 add_compile_definitions(PUBLIC ANDROID)
+add_compile_definitions(PUBLIC DEBUG)
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
