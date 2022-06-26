@@ -133,8 +133,9 @@ void pe_wm_input_update() {
   // Draw tab bar 	& draw current tabb
   for (u8 i = 0; i < engine_windows.count; i++) {
     EngineWindow *window = array_get(&engine_windows, i);
-    if (!window->initialized)
+		if (!window->initialized){
       continue;
+		}
 
 #ifdef LINUX
     // The mouse need to stay in the window for window->input call
@@ -146,8 +147,10 @@ void pe_wm_input_update() {
 
 #ifdef ANDROID
 
-    if (window->input)
+		if (window->input){
+
       window->input();
+		}
 #endif
   }
 }

@@ -81,6 +81,8 @@ void pe_shader_compile_std() {
 
   shader_skin_vertex = pe_shader_load_src_and_create("/sdcard/Download/chess/skin.vert",GL_VERTEX_SHADER);
 
+
+
 #endif
  
   shader_source_color_fragment_shader =

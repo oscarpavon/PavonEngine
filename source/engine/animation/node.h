@@ -1,0 +1,19 @@
+#ifndef PE_NODE
+
+#define PE_NODE
+
+#include <engine/types.h>
+
+typedef struct Node{
+    int id;
+    char name[50];
+    struct Node* parent;
+    vec3 translation;
+    versor rotation;
+}Node;
+
+Node* pe_node_by_name(Array* array, const char* name);
+void pe_node_rotate(Node* node, float angle, vec3 axis);
+
+#endif
+

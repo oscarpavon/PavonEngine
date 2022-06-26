@@ -160,6 +160,8 @@ Array array_models_loaded;
 Array pe_arr_skin_loaded;
 Array array_hirarchical_level_of_detail;
 
+Array pe_array_textures;
+
 
 
 Array actions_pointers;;

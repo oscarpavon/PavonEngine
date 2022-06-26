@@ -98,6 +98,7 @@ void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture,
       array_add(textures, &path_id);
     }
   }
+  LOG("###### pe_mesh_data_fill_tex_ids");
 }
 
 void pe_mesh_tex_fill_ids(Texture* texture){
@@ -105,22 +106,37 @@ void pe_mesh_tex_fill_ids(Texture* texture){
 
 		}
 
-    u8 path_id = pe_arr_tex_paths.count - 1;
+    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
+    if(!skin_component){
+        LOG("######## Not skin_componenet getted from pe_mesh_tex_fill_ids");
+				return;
+    }
+    skin_component->mesh->texture.id = texture->id;
+    skin_component->mesh->texture.format = texture->format;
+    skin_component->mesh->texture.image = texture->image;
+
+
+    LOG("texture %i",skin_component->mesh->texture.image.heigth);
+
+    LOG("********** Texture added to skincomponent");
+
+    return;
 
     StaticMeshComponent* mesh = pe_comp_get(STATIC_MESH_COMPONENT);
-		if(mesh){
-				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture,path_id);
+		if(!mesh){
+//				pe_mesh_data_fill_tex_ids(&mesh->meshes,&mesh->textures,texture,path_id);
+        LOG("******* Texture added to StaticMeshComponent");
         return;
     }   
     
-    SkinnedMeshComponent* skin_component = pe_comp_get(COMPONENT_SKINNED_MESH);
-		if(!skin_component)
-				return;
+   
+/*
     u8 id = pe_arr_tex_paths.count-1;
     Texture* last_texturer = array_get(current_textures_array,current_textures_array->count-1);
     skin_component->mesh->texture.id = last_texturer->id;
 		
 		pe_mesh_data_fill_tex_ids(&skin_component->meshes,&skin_component->textures,texture,path_id);	
+*/
 
 }
 void pe_tex_loaded_to_model(int id){
@@ -143,25 +159,38 @@ void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
 void add_texture_to_selected_element_with_image_path(const char* image_path){
 
     if(selected_element == NULL){
-        LOG("No element selected\n"); 
+        LOG("********No element selected\n"); 
         return;
     }
     if(image_path == NULL){
-        LOG("Error to load, null path (add_editor_texture - 154\n");
+        LOG("*****Error to load, null path (add_editor_texture - 154\n");
         return;
     }
     
     Texture new_texture;
 		ZERO(new_texture);
+
+    if(!current_textures_array){
+        LOG("******* Not texture array");
+        return;
+    }
     array_add(current_textures_array,&new_texture);
 
     Texture* texture_loaded = array_pop(current_textures_array); 
-		if(texture_load(image_path,texture_loaded) == -1)
+    if(!texture_loaded){
+        LOG("******* texture_loaded is NULL from current_textures_array");
+    }
+    texture_loaded->gpu_loaded = false;
+    if(texture_load(image_path,texture_loaded) == -1){
+        
+        LOG("******* texture_load() error");
 				return;
-
+    }
+    
     array_add(&pe_arr_tex_paths,image_path);
 
     pe_mesh_tex_fill_ids(texture_loaded);
+    
 		
 		LOG("Texture loaded and assigned to Mesh Component: %s\n",image_path);
 }
@@ -201,6 +230,8 @@ int add_element_with_model_path(const char* model_gltf_path){
     
     pe_comp_add(models_loaded);
 
+    
+     
     
 }
 
@@ -410,6 +441,10 @@ void pe_init_arrays() {
   array_init(&render_thread_commads, sizeof(PEThreadCommand), 100);
 
   array_init(&engine_windows, sizeof(EngineWindow), 40);
+
+  array_init(&pe_array_textures,sizeof(Texture),100);
+
+  current_textures_array = &pe_array_textures;
 
   touch_position_x = -1;
   touch_position_x = -1;

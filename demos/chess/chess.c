@@ -1,5 +1,7 @@
 #include "chess.h"
 #include <editor/skeletal_editor.h>
+#include <engine/animation/node.h>
+
 vec4 color1 = {0,0.2,0,1};
 vec4 color2 = {1,0.5,1,1};
 
@@ -13,6 +15,9 @@ PMaterial check_board_mat1;
 
 PMaterial piece_mat2;
 PMaterial piece_mat1;
+
+SkinnedMeshComponent* human_skin_component;
+
 
 PMesh chess_get_mesh(){
   StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
@@ -69,10 +74,14 @@ void chess_board_create() {
   }
 }
 void chess_input(){
-  if(key_released(&input.A)){
+  if(key_released(&input.M)){
     LOG("a pressed\n");
     chess_move_piece(VEC2(1,2))  ;
-   }    
+   } 
+  if(key_released(&input.A)){
+    LOG("###### pressed");
+    exit(0);
+  }
   
 }
 void chess_init_materials(){
@@ -345,27 +354,61 @@ void chess_init(){
 
 
   
-  add_element_with_model_path("/sdcard/Download/chess/chess_human.glb");
+  add_element_with_model_path("/sdcard/Download/chess_human2.glb");
+
+  pe_element_set_position(selected_element,VEC3(10,4,-10));
+  pe_element_rotate(selected_element, -90, VEC3(0,0,1));
+  
+  float scale = 2.f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+
+
   SkinnedMeshComponent* human_comp = get_component_from_element(selected_element,COMPONENT_SKINNED_MESH);
   if(!human_comp){
     LOG("********Human component not found");
 
   }
-  human_comp->mesh->material = piece_mat2;
-  chess_piece_set_pos(VEC2(10,4));
-    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
-    pe_element_rotate(selected_element, 90, VEC3(0,1,0));
+  human_comp->mesh->material = piece_mat1;
+  human_skin_component = human_comp;
 
-    init_skeletal_editor();
+  for(int i = 0; i < human_skin_component->mesh->vertex_array.count; i++){
+    Vertex* v = array_get(&human_skin_component->mesh->vertex_array,i);
+   // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
+  }
+  add_texture_to_selected_element_with_image_path(
+      "/sdcard/Download/ImageConverter/Muro_head_dm.png");
 
+  init_skeletal_editor();
+  
 }
 
 void chess_loop(){
 
-
 }
 
+void chess_draw(){
 
+  if(!human_skin_component) {
+    LOG("######### human skin component is NULL");
+    return;
+  }
+  if(human_skin_component->joints.count == 0){
+    LOG("######### human skin component joints ZERO");
+  }
+  Node* node1 = pe_node_by_name(&human_skin_component->joints,"Bone.004");
+
+  if(!node1)
+    return;
+
+
+  //pe_node_rotate(node1,0.0005f,VEC3(0,1,0));
+
+ // pe_anim_nodes_update(human_skin_component);
+
+  //LOG("############### Node rotation");
+
+
+}
 int main(){
     PGame chess;
     ZERO(chess);

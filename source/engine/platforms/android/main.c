@@ -62,9 +62,6 @@ void ainput(){
 		vertex_new(0.01,0,0)	;
 	}
 
-	if(key_released(&input.S)){
-	
-	}
 
 }
 
@@ -75,10 +72,10 @@ void android_main(struct android_app* state) {
   ZERO(chess);
 
   chess.name = "Chess";
-  chess.loop = &aloop;
+  chess.loop = &chess_loop;
   chess.init = &chess_init;
-	chess.draw = &draw; 
-	chess.input = &ainput;
+	chess.draw = &chess_draw; 
+	chess.input = &chess_input;
 	chess.app = state;
 	game = &chess;	//need for egl context creation
 
@@ -134,6 +131,106 @@ pe_renderer_type = PEWMOPENGLES2;
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

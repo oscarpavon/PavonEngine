@@ -7,15 +7,9 @@
 #include "array.h"
 #include "model.h"
 
+#include <engine/animation/node.h>
 
 struct Node;
-typedef struct Node{
-    int id;
-    char name[50];
-    struct Node* parent;
-    vec3 translation;
-    versor rotation;
-}Node;
 
 typedef struct Skeletal{
     Node* joints;

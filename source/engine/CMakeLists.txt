@@ -80,6 +80,7 @@ set(engine_source
 	      ${CMAKE_CURRENT_LIST_DIR}/game.c
 	      ${CMAKE_CURRENT_LIST_DIR}/elements.c
 	      ${CMAKE_CURRENT_LIST_DIR}/window_manager.c
+	      ${CMAKE_CURRENT_LIST_DIR}/animation/node.c
 
         ${demos}
 

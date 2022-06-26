@@ -35,6 +35,7 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
 	mesh_component->transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);  
   mesh_component->mesh = selected_model;
+  
  
   if(original_model->vertex_array.count == 0){
     LOG("***********SkinnedMesh initialization, orignal model vertex array equal 0");
@@ -44,7 +45,10 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   mesh_component->mesh->mesh.vertex_buffer_id = original_model->vertex_buffer_id;
   mesh_component->mesh->mesh.index_buffer_id= original_model->index_buffer_id;
 
-	mesh_component->node_uniform.joint_count = mesh_component->joints.count;
+  mesh_component->mesh->index_array = original_model->index_array;
+  mesh_component->mesh->vertex_array= original_model->vertex_array;
+  mesh_component->mesh->vertex_buffer_id = original_model->vertex_buffer_id;
+  mesh_component->mesh->index_buffer_id= original_model->index_buffer_id;
 
 	pe_curr_skin_loading = NULL;//for new skin loading
 

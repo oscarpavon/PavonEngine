@@ -26,14 +26,6 @@ Array* current_array;
 
 int models_parsed = 0;
 
-Node* pe_node_by_name(Array* array, const char* name){
-  for( int i = 0; i < array->count ; i++ ){
-    Node* node = array_get(array,i);
-    if( strcmp( node->name , name ) == 0){
-      return node;
-    }
-  }
-}
 
 void pe_loader_mesh_read_accessor_indices(cgltf_accessor *accessor) {
   switch(accessor->component_type){
@@ -65,12 +57,13 @@ void pe_loader_mesh_read_accessor_indices(cgltf_accessor *accessor) {
 /*Read accessor and allocate data in current_array or actual_vertex_array */
 void pe_loader_read_accessor(cgltf_accessor *accessor, float *out) {
   switch (accessor->type) {
-  case cgltf_type_vec2:
-    for (size_t i = 0; i < accessor->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
-      cgltf_accessor_read_float(accessor, i, &vertex->uv[0], 2);
+  case cgltf_type_vec2: {
+
+    for (int i = 0; i < accessor->count; i++) {
+      cgltf_accessor_read_float(accessor, i, &out[i * 2], 2);
     }
     break;
+  }
   case cgltf_type_vec3: {
 
     for (int i = 0; i < accessor->count; i++) {
@@ -137,9 +130,36 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     }
     break;
   }
-  case cgltf_attribute_type_texcoord:
-    pe_loader_read_accessor(attribute->data, NULL);
+  case cgltf_attribute_type_texcoord: {
+
+    vec2 uvs[attribute->data->count];
+    ZERO(uvs);
+
+    pe_loader_read_accessor(attribute->data, uvs);
+
+    for (int i = 0; i < attribute->data->count; i++) {
+      Vertex *vertex = array_get(actual_vertex_array, i);
+      vertex->uv[0] = uvs[i][0];
+      vertex->uv[1] = uvs[i][1];
+    }
+    
+    
     break;
+  }
+  case cgltf_attribute_type_normal: {
+
+    vec3 normals[attribute->data->count];
+    ZERO(normals);
+
+    pe_loader_read_accessor(attribute->data, normals);
+
+    for (int i = 0; i < attribute->data->count; i++) {
+      Vertex *vertex = array_get(actual_vertex_array, i);
+      glm_vec3_copy(normals[i], vertex->normal);
+    }
+
+    break;
+  }
 
   case cgltf_attribute_type_joints: {
     vec4 joints[attribute->data->count];
@@ -167,25 +187,6 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     break;
   }
 
-  case cgltf_attribute_type_normal: {
-             
-                                    LOG("******** Normal loaded");
-    vec3 normals[attribute->data->count];
-    ZERO(normals);
-    
-//    vec3 normal[attribute->data->count];
- //   ZERO(normal);
-  
-    
-    pe_loader_read_accessor(attribute->data, normals);
-
-    for (int i = 0; i < attribute->data->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
-      glm_vec3_copy(normals[i], vertex->normal);
-    }
-
-  }
-    break;
   } // end switch
 
   if (attribute->data->has_min) {
@@ -204,8 +205,6 @@ void pe_loader_mesh_load_primitive(cgltf_primitive* primitive){
     pe_loader_attribute(&primitive->attributes[i]);
   }
  
-  LOG("************Primitives attributes loaded******************") ;
-
   pe_loader_mesh_read_accessor_indices(primitive->indices);
 }
 
@@ -221,6 +220,7 @@ void pe_loader_mesh(cgltf_mesh *mesh) {
     while (!selected_model->gpu_ready) {
     };
     models_parsed++;
+
   }
 }
 
@@ -424,7 +424,7 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   }
 
 
-  LOG("******************Loading nodes");
+//  LOG("******************Loading nodes");
   
   for(int i = 0; i < data->scene->nodes_count ; i++){
     pe_node_load(NULL, data->scene->nodes[i]);
@@ -435,11 +435,11 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   actual_vertex_array = NULL;
   actual_index_array = NULL;
 
-
-  if(data->animations_count >= 1){
-	LOG("Loding animation\n");
-    array_init(&pe_curr_skin_loading->animations,sizeof(Animation),data->animations_count);
-    for(int i = 0; i < data->animations_count; i++){
+  if (data->animations_count >= 1) {
+    LOG("Loding animation\n");
+    array_init(&pe_curr_skin_loading->animations, sizeof(Animation),
+               data->animations_count);
+    for (int i = 0; i < data->animations_count; i++) {
       current_animation = &data->animations[i];
       load_current_animation();
     }
@@ -471,8 +471,10 @@ Model* pe_vk_model_load(char* path){
 int pe_loader_model(const char* path){
     File new_file;
 
-  if(load_file(path,&new_file) == -1)
-    return -1;
+    if(load_file(path,&new_file) == -1){
+      LOG("**** load_file() error");
+      return -1;
+    }
 
   cgltf_result result = pe_loader_model_from_memory(new_file.data,new_file.size_in_bytes,path);
 

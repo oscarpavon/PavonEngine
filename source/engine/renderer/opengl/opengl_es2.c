@@ -126,12 +126,15 @@ void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, m
 
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
                         (void *)0);
 
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
                         (void *)offsetof(struct Vertex, normal));
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                        (void *)offsetof(struct Vertex, uv));
 
   GLint model_uniform = get_uniform_location(shader, "model");
 
@@ -148,12 +151,12 @@ void pe_mat_skinned(SkinnedMeshComponent* skin,  GLuint shader, GLuint buffer, m
 
 
 
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex),
-                        (void *)offsetof(Vertex, joint));
-
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex),
+                        (void *)offsetof(Vertex, joint));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, false, sizeof(Vertex),
                         (void *)offsetof(Vertex, weight));
   
   SkinnedMeshComponent *skin_component = skin;
@@ -239,11 +242,13 @@ void pe_render_skinned_model(SkinnedMeshComponent *skin) {
     return;
   }
 
-  glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
 
   pe_mat_skinned(skin, new_model->shader, new_model->mesh.vertex_buffer_id,
                  new_model->model_mat);
 
+
+  glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+  check_error("####### Bind texture");
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
 

@@ -37,8 +37,9 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
 }
 void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
-    if(skeletal_gizmo.vertex_array.initialized)
-    array_add(&skeletal_gizmo.vertex_array,&vert);
+    if(skeletal_gizmo.vertex_array.initialized){
+        array_add(&skeletal_gizmo.vertex_array,&vert);
+    }
 }
 
 void create_skeletal_vertices(){
@@ -88,6 +89,7 @@ void pe_debug_skeletal_draw(Element* element){
 void draw_skeletal_bones(){
     if(update_vertex_bones_gizmos){
        update_joints_vertex(); 
+       LOG("######### joins vertex updated");
        update_vertex_bones_gizmos = false;
     }
 
