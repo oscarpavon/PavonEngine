@@ -1,4 +1,5 @@
 #include "chess.h"
+#include "engine/elements.h"
 #include <editor/skeletal_editor.h>
 #include <engine/animation/node.h>
 
@@ -18,7 +19,12 @@ PMaterial piece_mat1;
 
 SkinnedMeshComponent* human_skin_component;
 
+Element* knight_white;
 
+
+CameraComponent chess_camera_view_board;
+
+bool chess_saw_face;
 PMesh chess_get_mesh(){
   StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
   
@@ -69,20 +75,37 @@ void chess_board_create() {
 
       selected_model->mesh = check_mesh;
 
-      pe_element_set_position(selected_element, VEC3(x, y, 0));
+      pe_element_set_position(selected_element, VEC3(x, y, -0.5));
+      float scale = -0.5f;
+      pe_element_set_scale(VEC3(scale,scale,scale)) ;
     }
   }
 }
 void chess_input(){
-  if(key_released(&input.M)){
-    LOG("a pressed\n");
-    chess_move_piece(VEC2(1,2))  ;
-   } 
   if(key_released(&input.A)){
-    LOG("###### pressed");
+    LOG("a pressed\n");
+    selected_element = knight_white;
+    chess_move_piece(VEC2(4,4))  ;
+   } 
+  if(key_released(&input.Q)){
+    LOG("###### Exit pressed");
     exit(0);
   }
-  
+
+  if (key_released(&input.V)) {
+    if (chess_saw_face == true) {
+        
+      memcpy(&main_camera,&chess_camera_view_board,sizeof(CameraComponent));
+      camera_update(&main_camera) ;
+      chess_saw_face = false;
+      return;
+    }
+    if (chess_saw_face == false) {
+      camera_rotate_control(-10, 0);
+      camera_update(&main_camera);
+      chess_saw_face = true;
+    }
+  }
 }
 void chess_init_materials(){
 
@@ -190,6 +213,7 @@ void chess_create_knight() {
   chess_move_piece(VEC2(7, 1));
   chess_piece_init_scale();
   pe_element_rotate(selected_element, 90, VEC3(1, 0, 0));
+  knight_white = selected_element;
 
 
 }
@@ -327,28 +351,67 @@ void chess_pieces_create(){
 void chess_init(){
 
   camera_init(&main_camera); 
-  init_vec3(-7,3.5,3.4, main_camera.position);
+  //init_vec3(-7,3.5,3.4, main_camera.position);
+  init_vec3(-6,3.5,8, main_camera.position);
   camera_update(&main_camera);
+  camera_rotate_control(-35,0);
   
+  camera_update(&main_camera);
+
+  memcpy(&chess_camera_view_board,&main_camera,sizeof(CameraComponent));
+
+
   chess_init_materials();
-/*
-  add_element_with_model_path("/home/pavon/chess/check.glb");
+
+  Vertex vert1;
+  ZERO(vert1);
+  vert1.postion[0] = 0.5f;
+  vert1.postion[1] = 0.5f;
+  vert1.postion[2] = 0.5f;
+  
+  Vertex vert2;
+  ZERO(vert2);
+  vert1.postion[0] = -0.5f;
+  vert1.postion[1] = -0.5f;
+  vert1.postion[2] = 0.5f;
+  
+  Vertex vert3;
+  ZERO(vert3);
+  vert1.postion[0] = -0.5f;
+  vert1.postion[1] = 0.5f;
+  vert1.postion[2] = 0.5f;
+  
+  Vertex vert4;
+  ZERO(vert4);
+  vert1.postion[0] = 0.5f;
+  vert1.postion[1] = -0.5f;
+  vert1.postion[2] = 0.5f;
+
+  Model quad;
+  ZERO(quad);
+ 
+  array_init(&quad.vertex_array,sizeof(Vertex),4);
+
+
+  add_element_with_model_path("/sdcard/Download/chess/cube.glb");
  
 
-  vec3 checkpos = {0,0,29};
-  pe_element_set_position(selected_element,checkpos);
+
 
   StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
   mesh->material = check_board_mat1;
   
   ZERO(check_mesh);
 
+      float scale_board = -0.5f;
+      pe_element_set_scale(VEC3(scale_board,scale_board,scale_board)) ;
+
   Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
   check_mesh = original_check_mesh->mesh;
   
   chess_board_create();
  
-*/
+
 
   chess_pieces_create();
 
@@ -379,7 +442,8 @@ void chess_init(){
       "/sdcard/Download/ImageConverter/Muro_head_dm.png");
 
   init_skeletal_editor();
-  
+
+
 }
 
 void chess_loop(){
@@ -406,6 +470,8 @@ void chess_draw(){
  // pe_anim_nodes_update(human_skin_component);
 
   //LOG("############### Node rotation");
+
+
 
 
 }
