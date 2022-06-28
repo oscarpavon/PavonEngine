@@ -19,7 +19,7 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   shader_creation.vertex = shader_skin_vertex;//TODO:Android 
   //shader_creation.vertex = standart_vertex_shader;
 
-  shader_creation.pixel = standart_fragment_shader;
+  shader_creation.pixel = shader_skin_diffuse;
 	shader_creation.shader = &selected_model->shader;
 
   

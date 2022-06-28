@@ -35,6 +35,7 @@ GLuint standart_fragment_shader;
 GLuint shader_standard_color;
 GLuint shader_source_color_fragment_shader;
 GLuint shader_skin_vertex; 
+GLuint shader_skin_diffuse; 
 
 GLuint actual_standard_fragment_shader;
 

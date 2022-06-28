@@ -5,8 +5,8 @@
 
 typedef struct Vertex{
     vec3 postion;
-    vec3 normal;
     vec2 uv;
+    vec3 normal;
     vec4 joint;
     vec4 weight;
 }Vertex;

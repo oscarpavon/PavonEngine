@@ -158,7 +158,6 @@ void pe_frame_draw(){
   }
   engine_draw_elements(&frame_draw_static_elements);
 
-  
   pe_frame_clean();
   
   draw_skeletal_bones();   

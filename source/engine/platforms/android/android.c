@@ -25,6 +25,9 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       case AKEYCODE_D:
         input.D.Released = true;
         break;
+      case AKEYCODE_R:
+        input.R.Released = true;
+        break;
       case AKEYCODE_W:
         input.W.Released = true;
         break;

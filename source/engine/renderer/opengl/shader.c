@@ -80,6 +80,7 @@ void pe_shader_compile_std() {
   standart_fragment_shader = pe_shader_load_src_and_create("/sdcard/Download/chess/diffuse.frag",GL_FRAGMENT_SHADER);
 
   shader_skin_vertex = pe_shader_load_src_and_create("/sdcard/Download/chess/skin.vert",GL_VERTEX_SHADER);
+  shader_skin_diffuse = pe_shader_load_src_and_create("/sdcard/Download/chess/skin.frag",GL_FRAGMENT_SHADER);
 
 
 

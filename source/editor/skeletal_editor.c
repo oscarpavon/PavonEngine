@@ -9,8 +9,9 @@
 
 
 Model skeletal_gizmo;
-void update_joints_vertex(){  
 
+
+void update_joints_vertex(){  
     update_gpu_vertex_data(&skeletal_gizmo.vertex_array, skeletal_gizmo.vertex_buffer_id);
 }
 
@@ -20,6 +21,7 @@ void clear_skeletal_vertices(){
 
 void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
+    
     array_add(&skeletal_gizmo.vertex_array,&vert);
 
     if(current_joint->parent != NULL){
@@ -32,8 +34,28 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
     }
     array_add(&skeletal_gizmo.index_array,&i);
 
-    LOG("Created vertices for: %s\n",current_joint->name);
+    //LOG("Created vertices for: %s\n",current_joint->name);
 
+}
+
+void pe_skeletal_update_draw_vertices(SkinnedMeshComponent* skin_component){
+    
+    array_clean(&skeletal_gizmo.vertex_array);
+    array_clean(&skeletal_gizmo.index_array);
+
+    for(int i = 0; i < skin_component->joints.count ; i++){       
+        
+        Node* joint = (Node*)array_get(&skin_component->joints,i);
+    
+				mat4 local;
+        get_global_matrix(joint, local);
+        mat4 global;
+        glm_mat4_mul(selected_element->transform->model_matrix, local, global);
+
+				init_skeletal_vertices(global,i,joint);
+    }     
+
+    update_vertex_bones_gizmos = true;
 }
 void update_skeletal_vertices_gizmo(mat4 global, int i, Node* current_joint){
     struct Vertex vert = { { global[3][0],global[3][1],global[3][2] } ,{0,0}};
@@ -87,8 +109,8 @@ void pe_debug_skeletal_draw(Element* element){
 }
 
 void draw_skeletal_bones(){
-    if(update_vertex_bones_gizmos){
-       update_joints_vertex(); 
+    if(update_vertex_bones_gizmos == true){
+       update_joints_vertex(); //on gpu
        LOG("######### joins vertex updated");
        update_vertex_bones_gizmos = false;
     }
@@ -131,7 +153,9 @@ void pe_debug_skeletal_show_bones(Element* element){
 
 void init_skeletal_editor(){      
 		LOG("Skeletal editor\n");
+
     create_skeletal_vertices();
+
     init_static_gpu_vertex_buffer(&skeletal_gizmo.vertex_array,&skeletal_gizmo.vertex_buffer_id);
     init_static_gpu_index_buffer(&skeletal_gizmo.index_array,&skeletal_gizmo.index_buffer_id);  
 

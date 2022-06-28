@@ -24,7 +24,9 @@ void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
     glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],
                  joint_mat);
 
+    //joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
+
   }
 }
 
@@ -37,7 +39,7 @@ void play_animation(SkinnedMeshComponent *skin, Animation *animation) {
 
     Node *node = channel->node;
     if (!node) {
-      LOGW("No node in this channel");
+      LOG("No node in this channel");
       return;
     }
 
@@ -106,8 +108,8 @@ void play_animation_list() {
     Animation *animation = play->anim;
     if (animation->time <= animation->end) {
       play_animation(play->skin, animation);
-#ifdef EDITOR
-// update_vertex_bones_gizmos = true;
+#ifdef DEBUG
+   update_vertex_bones_gizmos = true;
 #endif
     } else {
       if (animation->loop)

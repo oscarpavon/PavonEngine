@@ -18,8 +18,10 @@ void pe_node_rotate(Node* node, float angle, vec3 axis){
 
     //mat4 model_rot_mat;
     //glm_quat_mat4(new_rot_quat,model_rot_mat);
-    
+   
+#ifdef DEBUG
     update_vertex_bones_gizmos = true;
+#endif
     
 
 

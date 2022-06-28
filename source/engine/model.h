@@ -32,8 +32,11 @@ typedef struct PMesh{
 
 typedef struct Model{
     int id;
+    unsigned short int texture_count;
+    
     Array vertex_array;
     Array index_array;
+   
     vec3 min;
     vec3 max;
     
@@ -44,7 +47,8 @@ typedef struct Model{
     GLuint shader;
 
     Texture texture;
-	bool gpu_ready;
+    Texture textures[4];
+
     PMaterial material;
 
 #ifdef LINUX
@@ -53,6 +57,7 @@ typedef struct Model{
 #endif
     vec3 position;
     PMesh mesh;
+	  bool gpu_ready;
 }Model;
 
 typedef struct DrawData{

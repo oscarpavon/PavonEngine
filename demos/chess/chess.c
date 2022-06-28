@@ -403,8 +403,8 @@ void chess_init(){
   
   ZERO(check_mesh);
 
-      float scale_board = -0.5f;
-      pe_element_set_scale(VEC3(scale_board,scale_board,scale_board)) ;
+  float scale_board = -0.5f;
+  pe_element_set_scale(VEC3(scale_board, scale_board, scale_board));
 
   Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
   check_mesh = original_check_mesh->mesh;
@@ -438,8 +438,12 @@ void chess_init(){
     Vertex* v = array_get(&human_skin_component->mesh->vertex_array,i);
    // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
   }
+
   add_texture_to_selected_element_with_image_path(
-      "/sdcard/Download/ImageConverter/Muro_head_dm.png");
+     "/sdcard/Download/ImageConverter/Muro_head_dm.png");
+
+  add_texture_to_selected_element_with_image_path(
+     "/sdcard/Download/ImageConverter/Muro_body_dm.png");
 
   init_skeletal_editor();
 
@@ -464,12 +468,14 @@ void chess_draw(){
   if(!node1)
     return;
 
+  if(key_released(&input.R)){
+    LOG("**********Animating.....");
+    pe_node_rotate(node1,0.0005f,VEC3(1,1,0));
 
-  //pe_node_rotate(node1,0.0005f,VEC3(0,1,0));
+    pe_skeletal_update_draw_vertices(human_skin_component);
+  }
 
- // pe_anim_nodes_update(human_skin_component);
 
-  //LOG("############### Node rotation");
 
 
 
