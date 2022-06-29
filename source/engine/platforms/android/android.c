@@ -16,6 +16,9 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       case AKEYCODE_K:
         input.K.Released = true;
         break;
+      case AKEYCODE_Q:
+        input.Q.Released = true;
+        break;
       case AKEYCODE_A:
         input.A.Released = true;
         break;
@@ -31,8 +34,8 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       case AKEYCODE_W:
         input.W.Released = true;
         break;
-      case AKEYCODE_Q:
-        input.Q.Released = true;
+      case AKEYCODE_Y:
+        input.Y.Released = true;
         break;
       case AKEYCODE_V:
         input.V.Released = true;

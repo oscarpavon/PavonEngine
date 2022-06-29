@@ -70,7 +70,7 @@ void init_static_gpu_index_buffer(Array* array, GLuint *id){
 
 void update_gpu_vertex_data(Array* array, GLuint id){
     glBindBuffer(GL_ARRAY_BUFFER,id);
-    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex) , array->data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(Vertex) , array->data, GL_DYNAMIC_DRAW);
 
 }
 
@@ -166,7 +166,9 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
                        skin_component->node_uniform.joint_count, GL_FALSE,
                        skin_component->node_uniform.joints_matrix);
   */
+
 }
+
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     glUseProgram(shader);   

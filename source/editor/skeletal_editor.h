@@ -6,6 +6,8 @@
 #include <engine/components//skinned_mesh_component.h>
 
 void pe_skeletal_update_draw_vertices(SkinnedMeshComponent*);
+void pe_skeletal_editor_create_vertices(SkinnedMeshComponent* skin_component);
+void pe_skeletal_editor_init_for(SkinnedMeshComponent* skin);
 void pe_debug_skeletal_show_bones(Element* element);
 
 bool pe_bool_can_draw_skeletal;

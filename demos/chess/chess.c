@@ -1,4 +1,5 @@
 #include "chess.h"
+#include "ThirdParty/cglm/mat4.h"
 #include "engine/elements.h"
 #include <editor/skeletal_editor.h>
 #include <engine/animation/node.h>
@@ -33,6 +34,7 @@ PMesh chess_get_mesh(){
   return original_check_mesh->mesh;
 }
 
+
 void chess_piece_set_pos(vec2 pos){
   
   pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0));
@@ -50,7 +52,49 @@ void chess_move_piece(vec2 pos){
 
 }
 
+void chess_piece_reset_scale_rot(){
+
+  pe_element_rotate(selected_element, -90, VEC3(1,0,0));
+  float scale = 0.8f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+  chess_move_piece(VEC2(0,0));
+}
+
+void chess_piece_init_scale_rot(){
+
+    chess_piece_init_scale();
+    pe_element_rotate(selected_element, 90, VEC3(1,0,0));
+}
+
+void chess_piece_movement(int x , int y){
+//  chess_piece_reset_scale_rot();
+//  chess_move_piece(VEC2(x,y));
+ // chess_piece_init_scale_rot();
+  
+  TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
+  if (!transform)
+    return;
+
+  glm_mat4_identity(transform->model_matrix);
+  chess_move_piece(VEC2(x,y));
+  chess_piece_init_scale_rot(); 
+
+}
+
 void chess_board_create() {
+
+  add_element_with_model_path("/sdcard/Download/chess/cube.glb");
+
+  StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
+  mesh->material = check_board_mat1;
+  
+  ZERO(check_mesh);
+
+  float scale_board = -0.5f;
+  pe_element_set_scale(VEC3(scale_board, scale_board, scale_board));
+
+  Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
+  check_mesh = original_check_mesh->mesh;
 
   for (int x = 0; x < 8; x++) {
     for (int y = 0; y < 8; y++) {
@@ -83,10 +127,21 @@ void chess_board_create() {
 }
 void chess_input(){
   if(key_released(&input.A)){
-    LOG("a pressed\n");
     selected_element = knight_white;
-    chess_move_piece(VEC2(4,4))  ;
+    chess_piece_movement(4,4);
    } 
+  
+  if(key_released(&input.W)){
+    selected_element = knight_white;
+    chess_piece_movement(3,5);
+
+   } 
+  if(key_released(&input.Y)){
+    selected_element = knight_white;
+    chess_piece_movement(5,0);
+
+   } 
+
   if(key_released(&input.Q)){
     LOG("###### Exit pressed");
     exit(0);
@@ -348,7 +403,8 @@ void chess_pieces_create(){
   chess_create_knight();
 
 }
-void chess_init(){
+
+void chess_camera_init(){
 
   camera_init(&main_camera); 
   //init_vec3(-7,3.5,3.4, main_camera.position);
@@ -359,9 +415,55 @@ void chess_init(){
   camera_update(&main_camera);
 
   memcpy(&chess_camera_view_board,&main_camera,sizeof(CameraComponent));
+}
 
+void chess_human_create(){
+  LOG("###########HUman created and selected_element ");
+
+  add_element_with_model_path("/sdcard/Download/chess_human2.glb");
+
+  pe_element_set_position(selected_element,VEC3(10,4,-10));
+  pe_element_rotate(selected_element, -90, VEC3(0,0,1));
+  
+  float scale = 2.f;
+  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+
+
+  SkinnedMeshComponent* human_comp = get_component_from_element(selected_element,COMPONENT_SKINNED_MESH);
+  if(!human_comp){
+    LOG("********Human component not found");
+
+  }
+  human_comp->mesh->material = piece_mat1;
+  human_skin_component = human_comp;
+
+  for(int i = 0; i < human_skin_component->mesh->vertex_array.count; i++){
+    Vertex* v = array_get(&human_skin_component->mesh->vertex_array,i);
+   // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
+  }
+
+  add_texture_to_selected_element_with_image_path(
+     "/sdcard/Download/ImageConverter/Muro_head_dm.png");
+
+  add_texture_to_selected_element_with_image_path(
+     "/sdcard/Download/ImageConverter/Muro_body_dm.png");
+
+  pe_skeletal_editor_init_for(human_skin_component);
+
+
+}
+
+void chess_init(){
+
+  chess_camera_init();
 
   chess_init_materials();
+  
+  chess_board_create();
+
+  chess_pieces_create();
+  
+  chess_human_create();
 
   Vertex vert1;
   ZERO(vert1);
@@ -393,100 +495,37 @@ void chess_init(){
   array_init(&quad.vertex_array,sizeof(Vertex),4);
 
 
-  add_element_with_model_path("/sdcard/Download/chess/cube.glb");
- 
-
-
-
-  StaticMeshComponent* mesh = get_component_from_element(selected_element,STATIC_MESH_COMPONENT);
-  mesh->material = check_board_mat1;
   
-  ZERO(check_mesh);
-
-  float scale_board = -0.5f;
-  pe_element_set_scale(VEC3(scale_board, scale_board, scale_board));
-
-  Model* original_check_mesh = array_get_pointer(&mesh->models_p,0);
-  check_mesh = original_check_mesh->mesh;
-  
-  chess_board_create();
- 
-
-
-  chess_pieces_create();
-
-
-  
-  add_element_with_model_path("/sdcard/Download/chess_human2.glb");
-
-  pe_element_set_position(selected_element,VEC3(10,4,-10));
-  pe_element_rotate(selected_element, -90, VEC3(0,0,1));
-  
-  float scale = 2.f;
-  pe_element_set_scale(VEC3(scale,scale,scale)) ;
-
-
-  SkinnedMeshComponent* human_comp = get_component_from_element(selected_element,COMPONENT_SKINNED_MESH);
-  if(!human_comp){
-    LOG("********Human component not found");
-
-  }
-  human_comp->mesh->material = piece_mat1;
-  human_skin_component = human_comp;
-
-  for(int i = 0; i < human_skin_component->mesh->vertex_array.count; i++){
-    Vertex* v = array_get(&human_skin_component->mesh->vertex_array,i);
-   // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
-  }
-
-  add_texture_to_selected_element_with_image_path(
-     "/sdcard/Download/ImageConverter/Muro_head_dm.png");
-
-  add_texture_to_selected_element_with_image_path(
-     "/sdcard/Download/ImageConverter/Muro_body_dm.png");
-
-  init_skeletal_editor();
-
-
 }
 
 void chess_loop(){
 
 }
 
+
+
 void chess_draw(){
 
-  if(!human_skin_component) {
-    LOG("######### human skin component is NULL");
-    return;
-  }
-  if(human_skin_component->joints.count == 0){
-    LOG("######### human skin component joints ZERO");
-  }
-  Node* node1 = pe_node_by_name(&human_skin_component->joints,"Bone.004");
+  if (key_released(&input.R)) {
+    
+    if (!human_skin_component) {
+      LOG("######### human skin component is NULL");
+      return;
+    }
+    if (human_skin_component->joints.count == 0) {
+      LOG("######### human skin component joints ZERO");
+    }
+    Node *node1 = pe_node_by_name(&human_skin_component->joints, "Bone.007");
 
-  if(!node1)
-    return;
+    if (!node1){
+      LOG("######## NOde not found");
+      return;
+    }
+ 
+    //pe_node_translate(node1,VEC3(0,0.01f,0));
+    pe_node_rotate(node1, 45.f, VEC3(0, 1, 0));
 
-  if(key_released(&input.R)){
-    LOG("**********Animating.....");
-    pe_node_rotate(node1,0.0005f,VEC3(1,1,0));
 
     pe_skeletal_update_draw_vertices(human_skin_component);
   }
-
-
-
-
-
-
-}
-int main(){
-    PGame chess;
-    ZERO(chess);
-    chess.name = "Chess";
-    chess.loop = &chess_loop;
-    chess.init = &chess_init;
-    chess.input = &chess_input;
-    pe_game_create(&chess);
 }

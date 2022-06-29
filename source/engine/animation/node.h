@@ -14,6 +14,7 @@ typedef struct Node{
 
 Node* pe_node_by_name(Array* array, const char* name);
 void pe_node_rotate(Node* node, float angle, vec3 axis);
+void pe_node_translate(Node* node, vec3 position);
 
 #endif
 

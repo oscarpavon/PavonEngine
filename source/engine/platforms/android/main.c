@@ -16,7 +16,7 @@ void ainit() {
   init_vec3(-30, 0, 0, main_camera.position);
   camera_update(&main_camera);
 
-  add_element_with_model_path("/sdcard/Download/chess/peon.glb");
+  add_element_with_model_path("/data/data/com.termux/files/home/PavonEngine/demos/chess/peon.glb");
 
   pe_change_background_color(1, 0, 0, 1);
 
@@ -131,6 +131,42 @@ pe_renderer_type = PEWMOPENGLES2;
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
