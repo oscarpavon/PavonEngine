@@ -503,6 +503,7 @@ void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_windo
         pe_wm_events_update();
         
         pe_wm_input_update();
+
         
 		    program_loop();	
 

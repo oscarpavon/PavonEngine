@@ -9,43 +9,59 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
     //   LOG("KEY PRESSED");
     int32_t action = AKeyEvent_getAction(event);
-    if (action == AKEY_EVENT_ACTION_DOWN) {
+    int32_t key_code = AKeyEvent_getKeyCode(event);
 
-      int32_t key_code = AKeyEvent_getKeyCode(event);
-      switch (key_code) {
-      case AKEYCODE_K:
-        input.K.Released = true;
-        break;
-      case AKEYCODE_Q:
-        input.Q.Released = true;
-        break;
-      case AKEYCODE_A:
-        input.A.Released = true;
-        break;
-      case AKEYCODE_S:
-        input.S.Released = true;
-        break;
-      case AKEYCODE_D:
-        input.D.Released = true;
-        break;
-      case AKEYCODE_R:
-        input.R.Released = true;
-        break;
-      case AKEYCODE_W:
-        input.W.Released = true;
-        break;
-      case AKEYCODE_Y:
-        input.Y.Released = true;
-        break;
-      case AKEYCODE_V:
-        input.V.Released = true;
-        break;
-      case AKEYCODE_TAB:
-        input.TAB.Released = true;
-        break;
-      case AKEYCODE_E:
-        input.E.Released = true;
-        break;
+    Key *current_key = NULL;
+
+    switch (key_code) {
+    case AKEYCODE_K:
+      current_key = &input.K;
+      break;
+    case AKEYCODE_Q:
+      current_key = &input.Q;
+      break;
+    case AKEYCODE_A:
+      current_key = &input.A;
+      break;
+    case AKEYCODE_S:
+      current_key = &input.S;
+      break;
+    case AKEYCODE_D:
+      current_key = &input.D;
+      break;
+    case AKEYCODE_R:
+      current_key = &input.R;
+      break;
+    case AKEYCODE_W:
+      current_key = &input.R;
+      break;
+    case AKEYCODE_Y:
+      current_key = &input.Y;
+      break;
+    case AKEYCODE_V:
+      current_key = &input.V;
+      break;
+    case AKEYCODE_TAB:
+      current_key = &input.TAB;
+      break;
+    case AKEYCODE_E:
+      current_key = &input.E;
+      break;
+    case AKEYCODE_J:
+      current_key = &input.J;
+      break;
+    default:
+      break;
+    }
+
+    if (current_key) {
+      if (action == AKEY_EVENT_ACTION_DOWN) {
+        current_key->pressed = true;
+        current_key->Released = false;
+      }
+      if (action == AKEY_EVENT_ACTION_UP) {
+        current_key->pressed = false;
+        current_key->Released = true;
       }
     }
     return 1;
@@ -58,10 +74,11 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
     //		ALOGI("x %d\ty %d\n",engine->touchX,engine->touchY);
     return 1;
   }
-    float touch_x = AMotionEvent_getX(event, 0);
-    float touch_y = AMotionEvent_getY(event, 0);
 
-//    LOG("##### Input touch X: %f Y: %f", touch_x, touch_y);
+  float touch_x = AMotionEvent_getX(event, 0);
+  float touch_y = AMotionEvent_getY(event, 0);
+
+  //    LOG("##### Input touch X: %f Y: %f", touch_x, touch_y);
   touch_position_x = touch_x;
   touch_position_y = touch_y;
 

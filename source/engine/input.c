@@ -252,6 +252,6 @@ void pe_input_mouse_button_callback(GLFWwindow* window, int button, int action, 
 
 
 void pe_input_init(){
-    memset(&input,0,sizeof(Input));
+    ZERO(input);
 }
 

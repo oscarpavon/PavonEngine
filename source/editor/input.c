@@ -51,20 +51,18 @@ float move_ui_element_value_per_axis = 0.6;
 
 bool player_in_start_position = false;
 
+void input_change_mode() {
 
+  if (key_released(&input.G)) {
+    change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
+  }
 
-void input_change_mode(){
+  if (key_released(&input.R)) {
+    change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
+  }
 
-    if(key_released(&input.G)){
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
-    }
-
-    if(key_released(&input.R)){
-        change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
-    }
-  
-  if(key_released(&input.V)){
-        change_to_editor_mode(EDITOR_NAVIGATE_MODE);
+  if (key_released(&input.V)) {
+    change_to_editor_mode(EDITOR_NAVIGATE_MODE);
   }
 }
 
@@ -406,120 +404,123 @@ void scale_mode() {
   }
 }
 
-void default_mode(){
-    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
-        return;
-        
-    draw_rotate_gizmo = false;
-    draw_translate_gizmo = false;
-    gizmos_draw_scale = false;
+void default_mode() {
+  if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
+    return;
 
-    input_change_mode();
-        
-  if(selected_element != NULL){ 
-		if(key_released(&input.S)){
-			 change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
-		}
-	}
-    
-    if(input.B.pressed){
-       if(audio2.playing == false){
-        array_add_pointer(&pe_audio_array_queue,&audio2) ;
-        LOG("play cat\n") ;
-        audio2.playing = true;
-        audio2.finish = false;
-        audio2.file.bytes_readed = sizeof(struct PWaveHeader);
-       }
-    }
+  draw_rotate_gizmo = false;
+  draw_translate_gizmo = false;
+  gizmos_draw_scale = false;
 
-    //edit in blender
-    if(key_released(&input.TAB)){
-        if(selected_element){
-            if(selected_element->editor_data.has_blend_file){
-                char relative_path[] = "../assets/";
-                char new_file_path[strlen(relative_path) + strlen(selected_element->editor_data.blend_file_path) ];
-                memset(new_file_path,0,strlen(new_file_path));
-                strcat(new_file_path,relative_path);
-                strcat(new_file_path,selected_element->editor_data.blend_file_path);
-                system_command("blender ", new_file_path);
-                strcpy(editing_blender_file_path,new_file_path);
-                is_editing_blender_file = true;
-            }
-        }
+  input_change_mode();
+
+  if (selected_element != NULL) {
+    if (key_released(&input.S)) {
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
     }
+  }
+
+  if (input.B.pressed) {
+    if (audio2.playing == false) {
+      array_add_pointer(&pe_audio_array_queue, &audio2);
+      LOG("play cat\n");
+      audio2.playing = true;
+      audio2.finish = false;
+      audio2.file.bytes_readed = sizeof(struct PWaveHeader);
+    }
+  }
+
+  // edit in blender
+  if (key_released(&input.TAB)) {
+    if (selected_element) {
+      if (selected_element->editor_data.has_blend_file) {
+        char relative_path[] = "../assets/";
+        char new_file_path[strlen(relative_path) +
+                           strlen(
+                               selected_element->editor_data.blend_file_path)];
+        memset(new_file_path, 0, strlen(new_file_path));
+        strcat(new_file_path, relative_path);
+        strcat(new_file_path, selected_element->editor_data.blend_file_path);
+        system_command("blender ", new_file_path);
+        strcpy(editing_blender_file_path, new_file_path);
+        is_editing_blender_file = true;
+      }
+    }
+  }
 
 #ifdef DESKTOP
-    if(key__released(&input.D,GLFW_MOD_SHIFT)){
-       duplicate_selected_element(1,selected_element);
-       LOG("duplicated \n");
-       return; 
-    }
-    if(key__released(&input.A,GLFW_MOD_ALT)){
-        LOG("deselect all \n");
-        deselect_all();
-        return;  
-    }
-    
-    if(key__released(&input.P,GLFW_MOD_SHIFT)){
-        LOG("editor play mode \n");
-        change_to_editor_mode(EDITOR_PLAY_MODE);
-        return; 
-    }
+  if (key__released(&input.D, GLFW_MOD_SHIFT)) {
+    duplicate_selected_element(1, selected_element);
+    LOG("duplicated \n");
+    return;
+  }
+  if (key__released(&input.A, GLFW_MOD_ALT)) {
+    LOG("deselect all \n");
+    deselect_all();
+    return;
+  }
 
-    if(key__released(&input.P,GLFW_MOD_CONTROL)){
-        //TODO: open game in new window
-        LOG("playing \n");
-        play_game_standalone();
-        return; 
-    }
+  if (key__released(&input.P, GLFW_MOD_SHIFT)) {
+    LOG("editor play mode \n");
+    change_to_editor_mode(EDITOR_PLAY_MODE);
+    return;
+  }
+
+  if (key__released(&input.P, GLFW_MOD_CONTROL)) {
+    // TODO: open game in new window
+    LOG("playing \n");
+    play_game_standalone();
+    return;
+  }
 #endif
-    if(key_released(&input.X)){
-        remove_selected_element();            
-        return; 
-    }   
+  if (key_released(&input.X)) {
+    remove_selected_element();
+    return;
+  }
 
-    if(key_released(&input.F)){
-        editor_focus_selected_element();
-    }
+  if (key_released(&input.F)) {
+    editor_focus_selected_element();
+  }
 
-    if(key_released(&input.KEY_1)){
-        if(can_draw_gizmos){
-            can_draw_gizmos = false;
-        }else can_draw_gizmos = true;
-        return;
+  if (key_released(&input.KEY_1)) {
+    if (can_draw_gizmos) {
+      can_draw_gizmos = false;
+    } else
+      can_draw_gizmos = true;
+    return;
+  }
+  if (key_released(&input.KEY_2)) {
+
+    init_skeletal_editor();
+
+    can_draw_skeletal_bones = true;
+    return;
+  }
+  if (key_released(&input.KEY_3)) {
+    LOG("Draw bounding box\n");
+    can_draw_bounding_box_in_select_element = true;
+    return;
+  }
+
+  if (key_released(&input.Q)) {
+    if (controlling_camera_component) {
+      controlling_camera_component = false;
+      memcpy(&main_camera, &saved_camera, sizeof(CameraComponent));
+      camera_update(&main_camera);
+      return;
     }
-    if(key_released(&input.KEY_2)){
-				 
-			 	init_skeletal_editor();
-        
-				can_draw_skeletal_bones = true;
-        return; 
+    CameraComponent *camera_component = pe_comp_get(CAMERA_COMPONENT);
+    if (camera_component) {
+      controlling_camera_component = true;
+      change_view_to_camera_component(camera_component);
     }
-    if(key_released(&input.KEY_3)){        
-				LOG("Draw bounding box\n");
-        can_draw_bounding_box_in_select_element = true;
-        return; 
-    }
-           
-    if(key_released(&input.Q)){
-        if(controlling_camera_component){
-            controlling_camera_component = false;
-            memcpy(&main_camera,&saved_camera, sizeof(CameraComponent));
-            camera_update(&main_camera);
-            return;
-        }
-        CameraComponent* camera_component = pe_comp_get(CAMERA_COMPONENT);
-        if(camera_component){
-            controlling_camera_component = true;
-            change_view_to_camera_component(camera_component);
-        }
-    }
-	if(key_released(&input.M)){
-		editor_file_explorer_show = true;
-	}
-	if(key_released(&input.A)){
-		editor_content_browser_show = true;
-	}
+  }
+  if (key_released(&input.M)) {
+    editor_file_explorer_show = true;
+  }
+  if (key_released(&input.A)) {
+    editor_content_browser_show = true;
+  }
 }
 
 void rotate_input_mode(){

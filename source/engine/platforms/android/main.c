@@ -93,9 +93,9 @@ void android_main(struct android_app* state) {
   ZERO(editor);
   editor.name = "Editor";
   editor.init = &pe_editor_init; 
-  editor.input = &ainput; 
+  editor.input = &editor_window_level_editor_input_update; // handle editor modes
   editor.loop = &aloop;
-  editor.draw = &draw;
+  editor.draw = &pe_editor_draw;
   editor.app = state;
   game = &editor;
 
@@ -142,6 +142,30 @@ void android_main(struct android_app* state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

@@ -157,7 +157,7 @@ void draw_axis_lines() {
       GLenum error;
       error = glGetError();
       if (error != GL_NO_ERROR) {
-        LOG("[X] Send uniform error, Error %08x \n", error);
+//        LOG("[X] Send uniform error, Error %08x \n", error);
       }
       glDrawArrays(GL_LINES, 0, line->vertex_array.count);
       continue;
@@ -312,20 +312,20 @@ void gizmos_init() {
   array_init(&debug_objects, sizeof(DebugLine), 300);
 
   load_model_to_array(
-      &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/translate.glb",
-      "/home/pavon/PavonEngine/NativeContent/Editor/transform_gizmo.jpg");
+      &gizmos, "/sdcard/Download/NativeContent/Editor/translate.glb",
+      "/sdcard/Download/NativeContent/Editor/transform_gizmo.jpg");
   load_model_to_array(
-      &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/rotate.glb",
-      "/home/pavon/PavonEngine/NativeContent/Editor/rotate_gizmo.png");
+      &gizmos, "/sdcard/Download/NativeContent/Editor/rotate.glb",
+      "/sdcard/Download/NativeContent/Editor/rotate_gizmo.png");
   load_model_to_array(
-      &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/scale.glb",
-      "/home/pavon/PavonEngine/NativeContent/Editor/transform_gizmo.jpg");
+      &gizmos, "/sdcard/Download/NativeContent/Editor/scale.glb",
+      "/sdcard/Download/NativeContent/Editor/transform_gizmo.jpg");
   load_model_to_array(
-      &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
-      "/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
+      &gizmos, "/sdcard/Download/NativeContent/Editor/camera.gltf",
+      "/sdcard/Download/NativeContent/Editor/camera_gizmo.jpg");
   load_model_to_array(
-      &gizmos, "/home/pavon/PavonEngine/NativeContent/Editor/player_start.gltf",
-      "/home/pavon/PavonEngine/NativeContent/Editor/player_start_gizmo.jpg");
+      &gizmos, "/sdcard/Download/NativeContent/Editor/player_start.gltf",
+      "/sdcard/Download/NativeContent/Editor/player_start_gizmo.jpg");
 
   can_draw_gizmos = true;
   can_draw_skeletal_bones = false;

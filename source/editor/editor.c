@@ -24,21 +24,21 @@
 #include "HLOD/HLOD_factory.h"
 
 #include "ProjectManager/project_manager.h"
-
+#include <engine/renderer/renderer.h>
 
 #ifdef DESKTOP
 #include "windows/content_browser.h"
 
 #include "EditServer/edit_server.h"
-#include "text.h"
 
 #include "file_explorer.h"
-#include "menus.h"
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/text_renderer.h>
 
 #endif
 
+#include "text.h"
+#include "menus.h"
 #include "windows/windows.h"
 #include "commands.h"
 
@@ -411,19 +411,19 @@ void editor_update(){
 void pe_editor_load_native_model(){
 
     load_model_to_array(&engine_native_models,
-                        "/home/pavon/PavonEngine/NativeContent/Editor/sphere.glb",
-                        "/home/pavon/PavonEngine/NativeContent/Editor/sphere_diffuse.png");
+                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/sphere.glb",
+                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,
-                        "/home/pavon/PavonEngine/NativeContent/Editor/cube.glb",
-                        "/home/pavon/PavonEngine/NativeContent/Editor/cube_diffuse.jpg");
+                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/cube.glb",
+                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/cube_diffuse.jpg");
     load_model_to_array(&engine_native_models,
-                        "/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
-                        "/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
+                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
+                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&engine_native_models,
-                        "/home/pavon/PavonEngine/NativeContent/Editor/floor.glb",
-                        "/home/pavon/PavonEngine/NativeContent/Editor/floor.jpg");
+                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/floor.glb",
+                        "/data/data/com.termux/files/PavonEngine/NativeContent/Editor/floor.jpg");
     
-    texture_load("/home/pavon/PavonEngine/NativeContent/Editor/checker_texture.png",
+    texture_load("/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/checker_texture.png",
                  &editor_texture_checker);
 }
 
@@ -434,14 +434,12 @@ void editor_render_finish(){
 #endif
 }
 
-void editor_draw() {
+void pe_editor_draw() {
 
   glClearColor(COLOR(editor_background_color));
   render_clear_buffer(RENDER_COLOR_BUFFER | RENDER_DEPTH_BUFFER);
 
-#ifdef DESKTOP
   text_draw_commands();
-#endif
 
   if (isDrawUV)
     draw_UV();
@@ -483,15 +481,12 @@ void editor_draw() {
 
   draw_gizmos();
 
-
-#ifdef DESKTOP 
   if (editor_mode == EDITOR_MODE_GUI_EDITOR ||
       editor_mode == EDITOR_PLAY_MODE) {
     draw_gui();
   }
   text_renderer_loop();
   pe_editor_menus_update();
-#endif
   // editor_message("editor message");
 }
 
@@ -540,9 +535,9 @@ void editor_render_init() {
   }
 
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-  editor_text_init();
 #endif
 
+  editor_text_init();
   camera_init(&main_camera);
   init_vec3(-10, 0, 3, main_camera.position);
   camera_update(&main_camera);
@@ -566,7 +561,7 @@ void pe_editor_window_configure() {
   main_window.init = &editor_main_window_init; // window specific data
   main_window.input =
       &editor_window_level_editor_input_update; // handle editor modes
-  main_window.draw = &editor_draw;              // Main loop draw in window
+  main_window.draw = &pe_editor_draw;              // Main loop draw in window
   main_window.finish = &editor_render_finish;
 
   array_add(&engine_windows, &main_window);
@@ -609,10 +604,10 @@ void pe_editor_init() {//executed in main thread from main()
 #ifdef DESKTOP
     edit_server_init();
 #endif
-
     //pe_editor_window_configure();
 
     //pe_editor_render_thread_configure_and_start();
+    editor_render_init();
    
     LOG("[OK]Editor initialized\n");
 }

@@ -39,6 +39,8 @@ typedef struct HLODCluster HLODCluster;
 
 void pe_editor_init();
 
+void pe_editor_draw();
+
 void editor_main_loop();
 
 void editor_update();
