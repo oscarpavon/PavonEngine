@@ -38,8 +38,10 @@ set(link
     GLESv2
     pavon_engine
     m
+    peditor
     #${FREETYPE_LIBRARIES}
-    #    peditor
+    freetype
+    
     )
 
 

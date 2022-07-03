@@ -16,7 +16,7 @@ endif()
 
 add_compile_options (-fdiagnostics-color=always)
 
-#add_compile_definitions(PUBLIC EDITOR)
+add_compile_definitions(PUBLIC EDITOR)
 
 #add_compile_definitions(PUBLIC LINUX)
 add_compile_definitions(PUBLIC OPENGL_ES2)
@@ -28,7 +28,7 @@ add_compile_definitions(PUBLIC DEBUG)
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
 add_subdirectory(source/engine)
-#add_subdirectory(source/editor)
+add_subdirectory(source/editor)
 #add_subdirectory(source/engine/renderer/vulkan)
 #add_subdirectory(source/editor/utils/pcmd)
 #C:add_subdirectory(demos/)

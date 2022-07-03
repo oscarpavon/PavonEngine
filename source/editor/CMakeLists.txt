@@ -28,19 +28,19 @@ path.c
 network/network.c
 directories.c
 ../ThirdParty/parson.c
-		${windows}
-		file_explorer.c
+${windows}
+file_explorer.c
 ProjectManager/project_manager.c
 )
 
-	if(DESKTOP)
+if(DESKTOP)
 		set(editor_sources ${editor_sources}
  
 		EditServer/edit_server.c
 		main.c
 
 		)
-	endif()
+endif()
 
 set (game_source
         ../engine/game.c

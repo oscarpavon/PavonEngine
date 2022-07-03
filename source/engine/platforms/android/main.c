@@ -87,13 +87,22 @@ void android_main(struct android_app* state) {
   modelling.loop = &aloop;
   modelling.draw = &draw;
 	modelling.app = state;
-
 	game = &modelling;	//need for egl context creation
+
+  PGame editor;
+  ZERO(editor);
+  editor.name = "Editor";
+  editor.init = &pe_editor_init; 
+  editor.input = &ainput; 
+  editor.loop = &aloop;
+  editor.draw = &draw;
+  editor.app = state;
+  game = &editor;
 
 	game->app->onAppCmd = &pe_android_handle_cmd;
   game->app->onInputEvent = &pe_android_input_handle;
 
-  pe_game_create(&modelling);
+  pe_game_create(&editor);
 
 
 
@@ -133,6 +142,31 @@ void android_main(struct android_app* state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

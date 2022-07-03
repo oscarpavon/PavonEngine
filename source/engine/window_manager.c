@@ -255,6 +255,18 @@ void pe_wm_context_current(){
 
 }
 
+void window_set_focus(EngineWindow* window){
+    current_window->focus = false;
+#ifdef DESKTOP
+    glfwShowWindow(window->window);
+    glfwFocusWindow(window->window);
+    //memset(&input,0,sizeof(Input));
+    glfwMakeContextCurrent(window->window);
+#endif
+    window->focus = true;
+    current_window = window;
+    //LOG("Focus windows change\n");
+}
 
 void pe_wm_windows_draw() {
 

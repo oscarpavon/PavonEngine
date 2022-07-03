@@ -97,16 +97,6 @@ void window_focus_callback(GLFWwindow* window,int is_focus){
     }
 }
 
-void window_set_focus(EngineWindow* window){
-    current_window->focus = false;
-    glfwShowWindow(window->window);
-    glfwFocusWindow(window->window);
-    //memset(&input,0,sizeof(Input));
-    glfwMakeContextCurrent(window->window);
-    window->focus = true;
-    current_window = window;
-    //LOG("Focus windows change\n");
-}
 
 
 

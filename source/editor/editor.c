@@ -602,8 +602,6 @@ void pe_editor_render_thread_configure_and_start() {
 
 void pe_editor_init() {//executed in main thread from main()
 
-    pe_init();
-
     editor_data_init();
 
     editor_command_queue_init();
@@ -612,9 +610,9 @@ void pe_editor_init() {//executed in main thread from main()
     edit_server_init();
 #endif
 
-    pe_editor_window_configure();
+    //pe_editor_window_configure();
 
-    pe_editor_render_thread_configure_and_start();
+    //pe_editor_render_thread_configure_and_start();
    
     LOG("[OK]Editor initialized\n");
 }
