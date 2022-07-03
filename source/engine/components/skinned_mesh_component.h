@@ -11,7 +11,7 @@ typedef struct SkinnedMeshComponent{
     Array joints;
     vec3 bounding_box[2];
     Array animations;
-    mat4 inverse_bind_matrices[50];
+    mat4 inverse_bind_matrices[35];
     struct SkeletalNodeUniform node_uniform;
 		TransformComponent* transform;
 }SkinnedMeshComponent;

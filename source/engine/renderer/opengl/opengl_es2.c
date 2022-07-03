@@ -6,12 +6,6 @@
 #include <engine/camera.h>
 #include <engine/engine.h>
 
-#ifdef LINUX
-#define PEINLINE static inline
-#else
-#define PEINLINE 
-
-#endif
 
 PEINLINE void mvp_error(const char* uniform_name){
     LOG("Uniform not found: %s\n",uniform_name);
@@ -78,6 +72,12 @@ void GPU_buffers_create_for_model(Model* model){
     Array* vertex_array = &model->vertex_array;
     Array* index_array = &model->index_array;
 
+    for (int i = 0; i < vertex_array->count; i++) {
+      Vertex *vertex = array_get(vertex_array, i);
+
+     //  LOG("######weight %f %f %f %f", vertex->weight[0], vertex->weight[1], vertex->weight[2], vertex->weight[3]);
+//       LOG("######weight %f %f %f %f", vertex->joint[0], vertex->weight[1], vertex->weight[2], vertex->weight[3]);
+    }
     glGenBuffers(1,&model->vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER,model->vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex) , vertex_array->data, GL_STATIC_DRAW);
@@ -123,50 +123,98 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
   glUseProgram(shader);
 
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
+    int uv_id = 1;
+    int normal_id = 4;
+    int joint_id = 2;
+    int weith_id = 3;
   glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         (void *)0);
 
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
-                        (void *)offsetof(struct Vertex, uv));
+ glEnableVertexAttribArray(uv_id);
+  glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),                     (void *)offsetof(Vertex, uv));
 
     
-  glVertexAttribPointer(2,3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, normal));
+//  glEnableVertexAttribArray(normal_id);
+
+ // glVertexAttribPointer(normal_id,3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
+  glEnableVertexAttribArray(joint_id);
+  glVertexAttribPointer(joint_id, 4, GL_INT, GL_FALSE, sizeof(Vertex),(void *)offsetof(Vertex, joint));
+  glEnableVertexAttribArray(weith_id);
+  glVertexAttribPointer(weith_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void *)offsetof(Vertex, weight));
 
   GLint model_uniform = get_uniform_location(shader, "model");
-
   GLint projection_uniform = get_uniform_location(shader, "projection");
   GLint view_uniform = get_uniform_location(shader, "view");
 
+
   glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
 
+  glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
+  
   glUniformMatrix4fv(projection_uniform, 1, GL_FALSE,
                      &main_camera.projection[0][0]);
-
-  glUniformMatrix4fv(view_uniform, 1, GL_FALSE, &main_camera.view[0][0]);
-  check_send_matrix_error("view");
-
-  /*
-
+  
   GLint joints_matrices_uniform = get_uniform_location(shader, "joint_matrix");
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex),
-                          (void *)offsetof(Vertex, joint));
+  glUniformMatrix4fv(joints_matrices_uniform, skin->node_uniform.joint_count,
+                 GL_FALSE, &skin->node_uniform.joints_matrix[0][0][0]);
 
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, false, sizeof(Vertex),
-                          (void *)offsetof(Vertex, weight));
+}
+void pe_render_skinned_model(SkinnedMeshComponent *skin) {
+  Model *new_model = skin->mesh;
+  if (!new_model) {
+    LOG("Not model in skinned mesh component");
+    return;
+  }
 
-    SkinnedMeshComponent *skin_component = skin;
-    glUniformMatrix4fv(joints_matrices_uniform,
-                       skin_component->node_uniform.joint_count, GL_FALSE,
-                       skin_component->node_uniform.joints_matrix);
-  */
+  glUseProgram(new_model->shader);
+/*
+  if(new_model->texture_count == 2) {
+     
+    GLint uniform_texture0 = get_uniform_location(new_model->shader, "in_texture01");
+    GLint uniform_texture1 = get_uniform_location(new_model->shader, "in_texture02");
+    
+    GLint uniform_texture_id = get_uniform_location(new_model->shader, "texture_id");
 
+
+    glUniform1i(uniform_texture_id, 0);
+
+    glUniform1i(uniform_texture0, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, new_model->textures[0].id);
+
+    
+    glUniform1i(uniform_texture_id, 1);
+    glUniform1i(uniform_texture1, 1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, new_model->textures[1].id);
+
+
+
+  }else{
+
+    glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
+  }
+
+*/
+
+  pe_skinned_send_matrices(skin, new_model->shader, new_model->mesh.vertex_buffer_id,
+                 new_model->model_mat);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
+
+//  send_color_to_shader(new_model->shader, new_model->material.color);
+
+  if (new_model->mesh.index_array.count == 0) {
+    LOG("Index is equal to 0, skinned model not render\n");
+  }
+
+  glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count,
+                 GL_UNSIGNED_SHORT, (void *)0);
+
+  //check_error("sigle model error");
 }
 
 void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
@@ -241,59 +289,6 @@ void draw_model_like(Model* model, GLenum mode){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
-void pe_render_skinned_model(SkinnedMeshComponent *skin) {
-  Model *new_model = skin->mesh;
-  if (!new_model) {
-    LOG("Not model in skinned mesh component");
-    return;
-  }
-
-  glUseProgram(new_model->shader);
-
-  if(new_model->texture_count == 2) {
-     
-    GLint uniform_texture0 = get_uniform_location(new_model->shader, "in_texture01");
-    GLint uniform_texture1 = get_uniform_location(new_model->shader, "in_texture02");
-    
-    GLint uniform_texture_id = get_uniform_location(new_model->shader, "texture_id");
-
-
-    glUniform1i(uniform_texture_id, 0);
-
-    glUniform1i(uniform_texture0, 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, new_model->textures[0].id);
-
-    
-    glUniform1i(uniform_texture_id, 1);
-    glUniform1i(uniform_texture1, 1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, new_model->textures[1].id);
-
-
-
-  }else{
-
-    glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
-  }
-
-
-  pe_skinned_send_matrices(skin, new_model->shader, new_model->mesh.vertex_buffer_id,
-                 new_model->model_mat);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, new_model->mesh.index_buffer_id);
-
-  send_color_to_shader(new_model->shader, new_model->material.color);
-
-  if (new_model->mesh.index_array.count == 0) {
-    LOG("Index is equal to 0, skinned model not render\n");
-  }
-
-  glDrawElements(GL_TRIANGLES, new_model->mesh.index_array.count,
-                 GL_UNSIGNED_SHORT, (void *)0);
-
-  check_error("sigle model error");
-}
 
 void draw_simgle_model(Model *new_model) {
   mat4 mvp;

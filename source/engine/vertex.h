@@ -6,9 +6,12 @@
 typedef struct Vertex{
     vec3 postion;
     vec2 uv;
+    vec3 color;
     vec3 normal;
     vec4 joint;
     vec4 weight;
+    long unsigned int id;
+    bool selected;
 }Vertex;
 
 #endif // !VERTEX_H

@@ -47,6 +47,25 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
 
 }
 
+void pe_skeletal_update_draw_vertices_target(SkinnedMeshComponent* skin_component, mat4 target_model_mat){
+    
+    array_clean(&skeletal_gizmo.vertex_array);
+    array_clean(&skeletal_gizmo.index_array);
+
+    for(int i = 0; i < skin_component->joints.count ; i++){       
+        
+        Node* joint = (Node*)array_get(&skin_component->joints,i);
+    
+				mat4 local;
+        get_global_matrix(joint, local);
+        mat4 global;
+        glm_mat4_mul(skin_component->transform->model_matrix, local, global);
+
+				init_skeletal_vertices(global,i,joint);
+    }     
+
+    update_vertex_bones_gizmos = true;
+}
 void pe_skeletal_update_draw_vertices(SkinnedMeshComponent* skin_component){
     
     array_clean(&skeletal_gizmo.vertex_array);

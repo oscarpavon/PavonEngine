@@ -2,8 +2,12 @@
 #include <engine/engine.h>
 void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
-  SkinnedMeshComponent *mesh_component = element_component->data;
+  SkinnedMeshComponent *mesh_component = element_component->data;//this is all ZERO
+  if(mesh_component == NULL){
+    LOG("########## Skin mesh is NULL");
 
+  }
+  
   LOG("*********** SkinnedMesh array_models_loaded count %i",array_models_loaded.count);
 	Model *original_model = array_pop(&array_models_loaded);
   if(!original_model){
@@ -17,7 +21,6 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   PEShaderCreation shader_creation;
   ZERO(shader_creation);
   shader_creation.vertex = shader_skin_vertex;//TODO:Android 
-  //shader_creation.vertex = standart_vertex_shader;
 
   shader_creation.pixel = shader_skin_diffuse;
 	shader_creation.shader = &selected_model->shader;
@@ -28,13 +31,23 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
 
 	pe_th_wait(&thread_main); 
 
+	memcpy(mesh_component,pe_curr_skin_loading,sizeof(SkinnedMeshComponent));
+
+  
+
   glm_mat4_copy(element_component->parent->transform->model_matrix,
                 selected_model->model_mat);
 
-	memcpy(mesh_component,pe_curr_skin_loading,sizeof(SkinnedMeshComponent));
+  TransformComponent* parent_transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);  
+  if(!parent_transform){
+    LOG("##### Skinned mesh, no parent transform");
+  }
 
-	mesh_component->transform = get_component_from_element(element_component->parent,TRASNFORM_COMPONENT);  
-  mesh_component->mesh = selected_model;
+	mesh_component->transform = parent_transform;
+
+    mesh_component->mesh = selected_model;
+  
+  glm_mat4_copy(selected_model->model_mat,mesh_component->transform->model_matrix);
   
  
   if(original_model->vertex_array.count == 0){
@@ -50,7 +63,9 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   mesh_component->mesh->vertex_buffer_id = original_model->vertex_buffer_id;
   mesh_component->mesh->index_buffer_id= original_model->index_buffer_id;
 
-	pe_curr_skin_loading = NULL;//for new skin loading
 
+	pe_curr_skin_loading = NULL;//for new skin loading
   pe_anim_nodes_update(mesh_component);
+
+
 }

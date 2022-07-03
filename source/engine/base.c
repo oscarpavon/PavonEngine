@@ -19,8 +19,8 @@ void pe_init(){
   pe_change_background_color(1,0,0,1);
  
 
-#ifdef LINUX
   pe_th_main_id = pthread_self();
+#ifdef LINUX
   pe_vk_initialized = false;
   //pe_audio_init();
   //pe_phy_init();

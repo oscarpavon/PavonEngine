@@ -35,6 +35,12 @@ PMesh chess_get_mesh(){
 }
 
 
+
+void chess_create_notation(){
+
+}
+
+
 void chess_piece_set_pos(vec2 pos){
   
   pe_element_set_position(selected_element,VEC3(pos[0],pos[1],0));
@@ -78,6 +84,8 @@ void chess_piece_movement(int x , int y){
   glm_mat4_identity(transform->model_matrix);
   chess_move_piece(VEC2(x,y));
   chess_piece_init_scale_rot(); 
+
+  LOG("########## chess movement %i %i", x,y);
 
 }
 
@@ -161,6 +169,10 @@ void chess_input(){
       chess_saw_face = true;
     }
   }
+  
+  
+//  LOG("###### Touch %f %f",touch_position_x,touch_position_y);
+
 }
 void chess_init_materials(){
 
@@ -408,7 +420,8 @@ void chess_camera_init(){
 
   camera_init(&main_camera); 
   //init_vec3(-7,3.5,3.4, main_camera.position);
-  init_vec3(-6,3.5,8, main_camera.position);
+  //init_vec3(-6,3.5,8, main_camera.position);
+  init_vec3(-6,0,8, main_camera.position);
   camera_update(&main_camera);
   camera_rotate_control(-35,0);
   
@@ -420,13 +433,14 @@ void chess_camera_init(){
 void chess_human_create(){
   LOG("###########HUman created and selected_element ");
 
-  add_element_with_model_path("/sdcard/Download/chess_human2.glb");
+  //add_element_with_model_path("/sdcard/Download/chess_human2.glb");
+  add_element_with_model_path("/sdcard/Download/chess/bones.gltf");
 
-  pe_element_set_position(selected_element,VEC3(10,4,-10));
-  pe_element_rotate(selected_element, -90, VEC3(0,0,1));
+  //pe_element_set_position(selected_element,VEC3(10,4,-10));
+  //pe_element_rotate(selected_element, -90, VEC3(0,0,1));
   
-  float scale = 2.f;
-  pe_element_set_scale(VEC3(scale,scale,scale)) ;
+//  float scale = -0.2f;
+ // pe_element_set_scale(VEC3(scale,scale,scale)) ;
 
 
   SkinnedMeshComponent* human_comp = get_component_from_element(selected_element,COMPONENT_SKINNED_MESH);
@@ -459,40 +473,11 @@ void chess_init(){
 
   chess_init_materials();
   
-  chess_board_create();
+  //chess_board_create();
 
-  chess_pieces_create();
+  //chess_pieces_create();
   
   chess_human_create();
-
-  Vertex vert1;
-  ZERO(vert1);
-  vert1.postion[0] = 0.5f;
-  vert1.postion[1] = 0.5f;
-  vert1.postion[2] = 0.5f;
-  
-  Vertex vert2;
-  ZERO(vert2);
-  vert1.postion[0] = -0.5f;
-  vert1.postion[1] = -0.5f;
-  vert1.postion[2] = 0.5f;
-  
-  Vertex vert3;
-  ZERO(vert3);
-  vert1.postion[0] = -0.5f;
-  vert1.postion[1] = 0.5f;
-  vert1.postion[2] = 0.5f;
-  
-  Vertex vert4;
-  ZERO(vert4);
-  vert1.postion[0] = 0.5f;
-  vert1.postion[1] = -0.5f;
-  vert1.postion[2] = 0.5f;
-
-  Model quad;
-  ZERO(quad);
- 
-  array_init(&quad.vertex_array,sizeof(Vertex),4);
 
 
   
@@ -515,17 +500,57 @@ void chess_draw(){
     if (human_skin_component->joints.count == 0) {
       LOG("######### human skin component joints ZERO");
     }
+
     Node *node1 = pe_node_by_name(&human_skin_component->joints, "Bone.007");
 
     if (!node1){
       LOG("######## NOde not found");
       return;
     }
- 
-    //pe_node_translate(node1,VEC3(0,0.01f,0));
-    pe_node_rotate(node1, 45.f, VEC3(0, 1, 0));
+   
+
+    TransformComponent* knigt_trasform = get_component_from_element(knight_white,TRASNFORM_COMPONENT);
+    if(!knigt_trasform){
+      LOG("########### No knight transform component");
+    }
+   
+    StaticMeshComponent* knight_mesh_comp = get_component_from_element(knight_white,STATIC_MESH_COMPONENT)  ;
+    if(!knight_mesh_comp){
+      LOG("########### No mesh compon knight witeh");
+
+    }
+    
+    Model* knight_model = array_get(&knight_mesh_comp->models_p,0);
+    if(!knight_model){
+      LOG("#### Not model getted from knight model");
+    }
+
+    
+    
+          mat4 global_piece;
+    for(int i = 0; i < human_skin_component->joints.count ; i++){       
+        
+        Node* joint = (Node*)array_get(&human_skin_component->joints,i);
+    
+				mat4 local;
+        get_global_matrix(joint, local);
+        mat4 global;
+        glm_mat4_mul(human_skin_component->transform->model_matrix, local, global);
+        
+        if(joint == node1){
+           mat4 piece_local;
+          
+          glm_mat4_mul(knight_model->model_mat, global, global_piece );
+         // pe_node_translate(node1,VEC3(global_piece[3][0],global_piece[3][1],global_piece[3][2]));
+        }
+//				init_skeletal_vertices(global,i,joint);
+    }     
 
 
+    //pe_node_rotate(node1, 45.f, VEC3(1, 1, 0));
+
+
+   // pe_skeletal_update_draw_vertices_target(human_skin_component,knight_model->model_mat);
     pe_skeletal_update_draw_vertices(human_skin_component);
   }
 }

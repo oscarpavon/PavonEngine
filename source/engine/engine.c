@@ -5,6 +5,7 @@
 #include "engine.h"
 #include <unistd.h>
 
+#include "ThirdParty/cglm/io.h"
 #include "gui.h" 
 
 #include "file_loader.h"
@@ -26,6 +27,14 @@
 
 Array engine_elements;
 Array engine_textures;
+
+void pe_debug_print_mat4(mat4 mat){
+
+  LOG("matrix0 %f %f %f %f", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+  LOG("matrix1 %f %f %f %f", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+  LOG("matrix2 %f %f %f %f", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+  LOG("matrix3 %f %f %f %f", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+}
 
 
 void update_mvp(mat4 model, mat4 mvp_out){
@@ -494,7 +503,7 @@ void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_windo
         pe_wm_events_update();
         
         pe_wm_input_update();
-
+        
 		    program_loop();	
 
         usleep(2*1000);    

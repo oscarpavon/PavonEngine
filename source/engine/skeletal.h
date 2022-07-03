@@ -16,10 +16,10 @@ typedef struct Skeletal{
     unsigned short int joints_count;
 }Skeletal;
 
-struct SkeletalNodeUniform{
-    mat4 joints_matrix[50];
-    unsigned short int joint_count;
-};
+typedef struct SkeletalNodeUniform{
+    int joint_count;
+    mat4 joints_matrix[35];
+}SkeletalNodeUniform;
 
 void free_node(Node*);
 

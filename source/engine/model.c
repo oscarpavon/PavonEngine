@@ -79,8 +79,15 @@ void pe_loader_read_accessor(cgltf_accessor *accessor, float *out) {
     }
     break;
   }
-  case cgltf_type_scalar:
+  case cgltf_type_mat4: {
+    for (int i = 0; i < accessor->count; i++) {
+      cgltf_accessor_read_float(accessor, i, &out[i * 16], 16);
+    }
+    break;
+  }
+  case cgltf_type_scalar: {
 
+    LOG("### Scalar");
     for (int i = 0; i < accessor->count; i++) {
       float number;
       cgltf_accessor_read_float(accessor, i, &number, 1);
@@ -88,14 +95,7 @@ void pe_loader_read_accessor(cgltf_accessor *accessor, float *out) {
     }
 
     break;
-  case cgltf_type_mat4: {
-    for (int i = 0; i < accessor->count; i++) {
-      cgltf_accessor_read_float(accessor, i, &out[i * 16], 16);
-    }
-    break;
   }
-  default:
-    break;
   }
 
   switch (accessor->component_type) {
@@ -107,10 +107,43 @@ void pe_loader_read_accessor(cgltf_accessor *accessor, float *out) {
     break;
   }
 }
+void pe_debug_accesor_type(char* message , cgltf_accessor* accessor){
+
+    switch (accessor->type) {
+    case cgltf_type_vec2: {
+
+      LOG("######## %s data is VEC2",message);
+      break;
+    }
+    case cgltf_type_vec3: {
+      LOG("######## %s data is VEC3",message);
+      break;
+    }
+    case cgltf_type_vec4: {
+
+      LOG("######## %s data is VEC4",message);
+      break;
+    }
+    case cgltf_type_scalar: {
+
+      LOG("######## %s data is scalar",message);
+      break;
+    }
+
+    case cgltf_type_mat4: {
+
+      LOG("######## %s data is MAT4",message);
+      break;
+    }
+    default:
+      break;
+    }
+}
 
 void pe_loader_attribute(cgltf_attribute *attribute) {
   switch (attribute->type) {
   case cgltf_attribute_type_position: {
+    LOG("#### Vertex count: %i", (int)attribute->data->count) ;
     vec3 vertices_position[attribute->data->count];
     ZERO(vertices_position);
 
@@ -164,26 +197,37 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
   case cgltf_attribute_type_joints: {
     vec4 joints[attribute->data->count];
     ZERO(joints);
-
+    pe_debug_accesor_type("Joints", attribute->data);
     pe_loader_read_accessor(attribute->data, joints);
     for (int i = 0; i < attribute->data->count; i++) {
       Vertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(joints[i], vertex->joint);
+      LOG("#### Vertex Joint attribute %f, %f , %f ,%f", vertex->joint[0], vertex->joint[1], vertex->joint[2], vertex->joint[3]);
     }
+    LOG("##### Joint load");
 
     break;
   }
 
   case cgltf_attribute_type_weights: {
-    vec4 weight[attribute->data->count];
-    ZERO(weight);
+    vec4 weights[attribute->data->count];
+    ZERO(weights);
 
-    pe_loader_read_accessor(attribute->data, weight);
+    pe_debug_accesor_type("Weight", attribute->data);
+
+    pe_loader_read_accessor(attribute->data, weights);
+        
     for (int i = 0; i < attribute->data->count; i++) {
       Vertex *vertex = array_get(actual_vertex_array, i);
-      glm_vec4_copy(weight[i], vertex->weight);
+      glm_vec4_copy(weights[i], vertex->weight);
+      LOG("## Weight in vertex");
+      LOG("######vertex %f %f %f %f", vertex->weight[0], vertex->weight[1], vertex->weight[2], vertex->weight[3]);
+
+      LOG("## Weights array");
+      LOG("######array %f %f %f %f", weights[i][0], weights[i][1], weights[i][2], weights[i][3]);
     }
 
+    LOG("##### Weighs load");
     break;
   }
 
@@ -364,10 +408,10 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
 
   if (in_cgltf_node->skin != NULL) {
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
-
+    pe_debug_accesor_type("Inverse bind matrix", in_cgltf_node->skin->inverse_bind_matrices);
     pe_loader_read_accessor(in_cgltf_node->skin->inverse_bind_matrices,
                             pe_curr_skin_loading->inverse_bind_matrices);
-                            
+                                
   }
 
   Node *loaded_parent = NULL;

@@ -2,6 +2,7 @@
 #define COMPONENT_STATIC_MESH
 #include "components.h"
 #include <engine/renderer/material.h>
+#include <engine/model.h>
 typedef struct StaticMeshComponent{
     Array meshes;
     Array distances;
@@ -17,5 +18,9 @@ void pe_comp_static_mesh_init(ComponentDefinition*);
 void pe_comp_static_mesh_update(ComponentDefinition*);
 
 void pe_comp_static_mesh_add_to_element();
+
+void pe_comp_static_mesh_shader_init(Model* model);
+
+void pe_shader_create_for_model(Model* model, u32 frag, u32 vert);
 
 #endif

@@ -40,6 +40,12 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       case AKEYCODE_V:
         input.V.Released = true;
         break;
+      case AKEYCODE_TAB:
+        input.TAB.Released = true;
+        break;
+      case AKEYCODE_E:
+        input.E.Released = true;
+        break;
       }
     }
     return 1;
@@ -55,7 +61,10 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
     float touch_x = AMotionEvent_getX(event, 0);
     float touch_y = AMotionEvent_getY(event, 0);
 
-    LOG("##### Input touch X: %f Y: %f", touch_x, touch_y);
+//    LOG("##### Input touch X: %f Y: %f", touch_x, touch_y);
+  touch_position_x = touch_x;
+  touch_position_y = touch_y;
+
   //  LOG("################ Input handle ####################");
   return 0;
 }
