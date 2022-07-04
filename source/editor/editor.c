@@ -7,7 +7,7 @@
 #include <engine/base.h>
 
 #include "engine/engine.h"
-
+#include <editor/editor_mode.h>
 
 #include "engine/camera.h"
 
@@ -411,19 +411,19 @@ void editor_update(){
 void pe_editor_load_native_model(){
 
     load_model_to_array(&engine_native_models,
-                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/sphere.glb",
-                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/sphere_diffuse.png");
+                        "/sdcard/Download/NativeContent/Editor/sphere.glb",
+                        "/sdcard/Download/NativeContent/Editor/sphere_diffuse.png");
     load_model_to_array(&engine_native_models,
-                        "/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/cube.glb",
-                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/cube_diffuse.jpg");
+                        "/sdcard/Download/NativeContent/Editor/cube.glb",
+                        "/sdcard/Download/NativeContent/Editor/cube_diffuse.jpg");
     load_model_to_array(&engine_native_models,
-                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/camera.gltf",
-                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/camera_gizmo.jpg");
+                        "/sdcard/Download/NativeContent/Editor/camera.gltf",
+                        "/sdcard/Download/NativeContent/Editor/camera_gizmo.jpg");
     load_model_to_array(&engine_native_models,
-                        "/data/data/com.termux/files/home/home/pavon/PavonEngine/NativeContent/Editor/floor.glb",
-                        "/data/data/com.termux/files/PavonEngine/NativeContent/Editor/floor.jpg");
+                        "/sdcard/Download/NativeContent/Editor/floor.glb",
+                        "/sdcard/Download/NativeContent/Editor/floor.jpg");
     
-    texture_load("/data/data/com.termux/files/home/PavonEngine/NativeContent/Editor/checker_texture.png",
+    texture_load("/sdcard/Download/NativeContent/Editor/checker_texture.png",
                  &editor_texture_checker);
 }
 
@@ -520,7 +520,9 @@ void editor_data_init() {
   editor_mode = EDITOR_DEFAULT_MODE;
   editor_sub_mode = EDITOR_SUB_MODE_NULL;
 
-  editor_sub_mode_text = "";
+  ZERO(editor_sub_mode_text);
+
+  ZERO(editor_mode_show_text);
 
   strcpy(editor_mode_show_text, "Default");
 
@@ -545,7 +547,7 @@ void editor_render_init() {
   editor_standard_fragment_shader = compile_shader(
       editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-  // pe_editor_load_native_model();
+  pe_editor_load_native_model();
 
   gizmos_init();
 

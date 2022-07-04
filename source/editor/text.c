@@ -19,6 +19,7 @@
 #include <stdlib.h>
 unsigned short int directory_show_type = 50;
 
+int pe_editor_text_size = 16;
 void list_directory_files(PETextMenu *menu)
 {
 
@@ -178,78 +179,80 @@ void draw_directory_file_type(unsigned short int type)
 
 void draw_engine_memory()
 {
-  text_render_in_screen_space(12, "Memory:", 950, 0);
-  char buf[5];
-  float total_memory_in_kb = INIT_MEMORY / 1024;
+  text_render_in_screen_space(pe_editor_text_size, "Memory:", 800, 0);
+  char buf[10];
+  ZERO(buf);
+  float total_memory_in_kb = INIT_MEMORY / 1024.f;
 //gcvt(total_memory_in_kb, 6, buf);
-  text_render_in_screen_space(12, buf, 1020, 0);
+  text_render_in_screen_space(pe_editor_text_size, buf, 1020, 0);
   
-	float free_memory = actual_free_memory / 1024;
+	float free_memory = actual_free_memory / 1024.f;
  // gcvt(free_memory, 6, buf);
 	
-  text_render_in_screen_space(12, "/", 1095, 0);
-  text_render_in_screen_space(12, buf, 1110, 0);
+  text_render_in_screen_space(pe_editor_text_size, "/", 1095, 0);
+  text_render_in_screen_space(pe_editor_text_size, buf, 1110, 0);
 }
 
 void draw_frame_time()
 {
-	text_render_in_screen_space(12,"Frame",700,0);
+	text_render_in_screen_space(pe_editor_text_size,"Frame",700,0);
   char buf[16];
-  memset(buf,0,sizeof(buf));
+  ZERO(buf);
 
   //gcvt(frame_time, 6, buf);
-	text_render_in_screen_space(12,buf,750,0);
-	text_render_in_screen_space(12,"ms",795,0);
+	text_render_in_screen_space(pe_editor_text_size,buf,750,0);
+	text_render_in_screen_space(pe_editor_text_size,"ms",795,0);
 }
 
 void draw_FPS(){
-	text_render_in_screen_space(12,"FPS",600,0);
+	text_render_in_screen_space(pe_editor_text_size,"FPS",600,0);
   char buf[16];
-  memset(buf,0,sizeof(buf));
+  ZERO(buf);
   //gcvt(FPS, 6, buf);
-	text_render_in_screen_space(12,buf,650,0);
+	text_render_in_screen_space(pe_editor_text_size,buf,650,0);
 }
 
-void draw_count_of_draw_call(){
-	text_render_in_screen_space(12,"Draw:",0,0);
-  char buf[5]; 
-  float count = editor_stats_draw_calls; 
-  //gcvt(count, 6, buf);
-  if(count != 0)
-	text_render_in_screen_space(12,buf,100,0);
+void draw_count_of_draw_call() {
+  text_render_in_screen_space(pe_editor_text_size, "Draw:", 0, 0);
+  char buf[10];
+  ZERO(buf);
+  float count = editor_stats_draw_calls;
+  // gcvt(count, 6, buf);
+  if (count != 0)
+    text_render_in_screen_space(pe_editor_text_size, buf, 100, 0);
 }
-void draw_stats_triangles(){
-	text_render_in_screen_space(12,"Tris",500,0); 
-	char buf[7]; 
+
+void draw_stats_triangles() {
+  text_render_in_screen_space(pe_editor_text_size, "Tris", 500, 0);
+  char buf[10]; 
+  ZERO(buf);
   float count = editor_stats_triangles;
   //gcvt(count, 7, buf);
   if(count != 0)
-	text_render_in_screen_space(12,buf,540,0); 
-
+	text_render_in_screen_space(pe_editor_text_size,buf,540,0);
 }
 
-void text_draw_commands(){
-    if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
-    {
-		text_render_in_screen_space(12,command_text_buffer,0,-camera_heigth_screen+20);
-    }
+void text_draw_commands() {
+  if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT) {
+    text_render_in_screen_space(pe_editor_text_size, command_text_buffer, 0,
+                                -camera_heigth_screen + 20);
+  }
 }
 
 void text_renderer_loop() {
-// 	draw_engine_memory();
-  //draw_frame_time();
- // draw_FPS();
+  draw_engine_memory();
+  draw_frame_time();
+  draw_FPS();
   draw_count_of_draw_call();
   draw_stats_triangles();
 
-  text_render_in_screen_space(12, editor_mode_show_text,
+  text_render_in_screen_space(pe_editor_text_size, editor_mode_show_text,
                               camera_width_screen - 100, 0);
 
   if (editor_sub_mode != EDITOR_SUB_MODE_NULL) {
-    text_render_in_screen_space(12, editor_sub_mode_text,
+    text_render_in_screen_space(pe_editor_text_size, editor_sub_mode_text,
                                 camera_width_screen - 100, 30);
   }
-
 }
 
 void editor_text_init(){

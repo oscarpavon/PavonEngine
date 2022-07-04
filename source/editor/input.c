@@ -419,7 +419,9 @@ void default_mode() {
       change_to_editor_sub_mode(EDITOR_SUB_MODE_SCALE);
     }
   }
-
+  if(key_released(&input.Q)){
+    exit(0);
+  }
   if (input.B.pressed) {
     if (audio2.playing == false) {
       array_add_pointer(&pe_audio_array_queue, &audio2);

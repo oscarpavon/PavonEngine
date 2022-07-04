@@ -32,5 +32,6 @@ void text_render_in_screen_space( int text_size , const char* text, int x , int 
 
 void set_text_size(float size);
 
+void text_renderer_init();
 
 #endif

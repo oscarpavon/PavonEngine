@@ -21,6 +21,8 @@ void draw_model_like(Model* model, GLenum mode);
 void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color);
 
 PEINLINE void send_color_to_shader(u32 shader_id, vec4 color);
+PEINLINE void render_clear_buffer(int buffer_bits);
+
 void pe_tex_to_gpu(Texture*);
 
 void GPU_buffers_create_for_model(Model* model);

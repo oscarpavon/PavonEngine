@@ -5,6 +5,7 @@
 #include <engine/renderer/renderer.h>
 
 #include <editor/skeletal_editor.h>
+#include <engine/text_renderer.h>
 
 void engine_draw_elements(Array *elements) {
   for (size_t i = 0; i < elements->count; i++) {
@@ -61,9 +62,7 @@ void render_thread_init(){
   engine_initialized = true;
 
   pe_gui_init();
-#ifdef LINUX
   text_renderer_init();
-#endif
    
 
 }

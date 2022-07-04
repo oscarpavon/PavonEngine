@@ -66,7 +66,6 @@ void change_to_editor_mode(EditorMode mode) {
   switch (mode) {
   case EDITOR_DEFAULT_MODE:
     strcpy(editor_mode_show_text, "Default");
-    LOG("### changed to default");
     break;
   case EDITOR_NAVIGATE_MODE:
     strcpy(editor_mode_show_text, "Navigate");
@@ -74,6 +73,7 @@ void change_to_editor_mode(EditorMode mode) {
     break;
   case EDITOR_GRAB_MODE:
     strcpy(editor_mode_show_text, "Grab");
+    LOG("## Grab mode");
     break;
   case EDITOR_ROTATE_MODE:
     strcpy(editor_mode_show_text, "Rotate");

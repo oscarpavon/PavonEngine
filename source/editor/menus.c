@@ -385,9 +385,9 @@ void pe_menu_loaded_tex_exec(PETextMenu* menu){
 }
 
 void menus_init(){
-  memset(&add_element_menu, 0, sizeof(PETextMenu));
-  memset(&menu_add_texture, 0, sizeof(PETextMenu));
-  memset(&menu_editor_element_list, 0, sizeof(PETextMenu));
+  ZERO(add_element_menu);
+  ZERO(menu_add_texture);
+  ZERO(menu_editor_element_list);
 
   /*Text Menu functions */
   add_element_menu.execute_function = &menu_action_add_element;
@@ -402,6 +402,7 @@ void menus_init(){
   menu_new("Element Component List", &input.C, -1,
            &draw_components_from_selected_element,
            &menu_action_select_component_from_selected_element);
+
 #ifdef DESKTOP
   menu_new("Add Component", &input.C, GLFW_MOD_SHIFT,
            &draw_available_components,
@@ -411,7 +412,7 @@ void menus_init(){
 	PETextMenu native_elemets;
 	native_elemets.draw_text_funtion = &menu_action_draw_native_editor_elments;
 	native_elemets.execute_function = &menu_action_add_editor_native_element;	
-	native_elemets.open_key = &input.E;
+	native_elemets.open_key = &input.I;
 #ifdef DESKTOP
 	native_elemets.mods_key = GLFW_MOD_SHIFT;
 #endif

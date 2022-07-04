@@ -14,9 +14,7 @@ void set_text_size(float size){
 }
 
 void pe_text_set_size(int size){
-#ifdef LINUX
     FT_Set_Pixel_Sizes(face, 0, size);  
-#endif
 }
 
 void text_texture_create_buffer()
@@ -182,11 +180,7 @@ void text_renderer_init()
     }
 
     File font;
-    #ifndef ANDROID
-    load_file("/home/pavon/PavonEngine/NativeContent/DejaVuSerif.ttf",&font);
-    #else
-    load_file("DejaVuSerif.ttf",&font);
-    #endif
+    load_file("/sdcard/Download/NativeContent/DejaVuSerif.ttf",&font);
     int error = FT_New_Memory_Face(ft,font.data,font.size_in_bytes,0,&face);
 
     if(error !=  0 ){

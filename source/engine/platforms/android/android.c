@@ -17,6 +17,9 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
     case AKEYCODE_K:
       current_key = &input.K;
       break;
+    case AKEYCODE_G:
+      current_key = &input.G;
+      break;
     case AKEYCODE_Q:
       current_key = &input.Q;
       break;
@@ -33,7 +36,7 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       current_key = &input.R;
       break;
     case AKEYCODE_W:
-      current_key = &input.R;
+      current_key = &input.W;
       break;
     case AKEYCODE_Y:
       current_key = &input.Y;
@@ -49,6 +52,15 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
       break;
     case AKEYCODE_J:
       current_key = &input.J;
+      break;
+    case AKEYCODE_I:
+      current_key = &input.I;
+      break;
+    case AKEYCODE_O:
+      current_key = &input.O;
+      break;
+    case AKEYCODE_ENTER:
+      current_key = &input.ENTER;
       break;
     default:
       break;
