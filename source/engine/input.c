@@ -3,6 +3,7 @@
 #include <string.h>
 #include <engine/log.h>
 #include <engine/windows_manager.h>
+#include <engine/input.h>
 bool left_click = false;
 float actual_mouse_position_x;
 float actual_mouse_position_y;

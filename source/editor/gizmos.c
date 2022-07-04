@@ -5,6 +5,7 @@
 #include "geometry.h"
 #include "skeletal_editor.h"
 #include <engine/renderer/renderer.h>
+#include <editor/editor_mode.h>
 
 Array debug_objects;
 Array bounding_boxes;

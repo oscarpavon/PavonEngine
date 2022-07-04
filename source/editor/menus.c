@@ -399,15 +399,13 @@ void menus_init(){
   // New way to create texts menus
   array_init(&menus, sizeof(PETextMenu), 10);
 
-  menu_new("Element Component List", &input.C, -1,
+  menu_new("Element Component List", &input.P, -1,
            &draw_components_from_selected_element,
            &menu_action_select_component_from_selected_element);
 
-#ifdef DESKTOP
-  menu_new("Add Component", &input.C, GLFW_MOD_SHIFT,
+  menu_new("Add Component", &input.C, -1,
            &draw_available_components,
            &menu_action_add_component_to_select_element);
-#endif
 	
 	PETextMenu native_elemets;
 	native_elemets.draw_text_funtion = &menu_action_draw_native_editor_elments;

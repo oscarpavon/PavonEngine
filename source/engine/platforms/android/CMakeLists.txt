@@ -49,7 +49,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/arm64-v8a)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/arm64-v8a)
 
-add_library(pavon_engine_android SHARED main.c )
+add_library(pavon_engine_android SHARED main.c)
     
 
 
