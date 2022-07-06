@@ -3,8 +3,10 @@
 //
 
 #include "input.h"
+#include <android/keycodes.h>
 #include <engine/input.h>
 #include <engine/log.h>
+#include <engine/engine.h>
 
 static inline void touch_position(float x, float y) {
   LOG("------> X: %f , Y: %f", touch_position_x, touch_position_y);
@@ -51,82 +53,100 @@ int handle_input(android_app *app, AInputEvent *event) {
   return -1;
 }
 
+void pe_android_input_single_key(int32_t action, int32_t code) {
+
+  Key *current_key = NULL;
+
+  switch (code) {
+  case AKEYCODE_K:
+    current_key = &input.K;
+    break;
+  case AKEYCODE_G:
+    current_key = &input.G;
+    break;
+  case AKEYCODE_Q:
+    current_key = &input.Q;
+    break;
+  case AKEYCODE_U:
+    current_key = &input.U;
+    break;
+  case AKEYCODE_ESCAPE:
+    current_key = &input.ESC;
+    break;
+  case AKEYCODE_A:
+    current_key = &input.A;
+    break;
+  case AKEYCODE_S:
+    current_key = &input.S;
+    break;
+  case AKEYCODE_D:
+    current_key = &input.D;
+    break;
+  case AKEYCODE_R:
+    current_key = &input.R;
+    break;
+  case AKEYCODE_W:
+    current_key = &input.W;
+    break;
+  case AKEYCODE_Y:
+    current_key = &input.Y;
+    break;
+  case AKEYCODE_V:
+    current_key = &input.V;
+    break;
+  case AKEYCODE_TAB:
+    current_key = &input.TAB;
+    break;
+  case AKEYCODE_E:
+    current_key = &input.E;
+    break;
+  case AKEYCODE_J:
+    current_key = &input.J;
+    break;
+  case AKEYCODE_I:
+    current_key = &input.I;
+    break;
+  case AKEYCODE_O:
+    current_key = &input.O;
+    break;
+  case AKEYCODE_C:
+    current_key = &input.C;
+    break;
+  case AKEYCODE_ENTER:
+    current_key = &input.ENTER;
+    break;
+  default:
+    break;
+  }
+
+  if (current_key) {
+    if (action == AKEY_EVENT_ACTION_DOWN) {
+      current_key->pressed = true;
+      current_key->Released = false;
+    }
+    if (action == AKEY_EVENT_ACTION_UP) {
+      current_key->pressed = false;
+      current_key->Released = true;
+    }
+  }
+}
+
 int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-    //   LOG("KEY PRESSED");
     int32_t action = AKeyEvent_getAction(event);
     int32_t key_code = AKeyEvent_getKeyCode(event);
+    pe_android_input_single_key(action, key_code);
+    
+    int32_t scan_code = AKeyEvent_getScanCode(event);
+    LOG("### Scan code %c", key_code);
 
-    Key *current_key = NULL;
-
-    switch (key_code) {
-    case AKEYCODE_K:
-      current_key = &input.K;
-      break;
-    case AKEYCODE_G:
-      current_key = &input.G;
-      break;
-    case AKEYCODE_Q:
-      current_key = &input.Q;
-      break;
-    case AKEYCODE_A:
-      current_key = &input.A;
-      break;
-    case AKEYCODE_S:
-      current_key = &input.S;
-      break;
-    case AKEYCODE_D:
-      current_key = &input.D;
-      break;
-    case AKEYCODE_R:
-      current_key = &input.R;
-      break;
-    case AKEYCODE_W:
-      current_key = &input.W;
-      break;
-    case AKEYCODE_Y:
-      current_key = &input.Y;
-      break;
-    case AKEYCODE_V:
-      current_key = &input.V;
-      break;
-    case AKEYCODE_TAB:
-      current_key = &input.TAB;
-      break;
-    case AKEYCODE_E:
-      current_key = &input.E;
-      break;
-    case AKEYCODE_J:
-      current_key = &input.J;
-      break;
-    case AKEYCODE_I:
-      current_key = &input.I;
-      break;
-    case AKEYCODE_O:
-      current_key = &input.O;
-      break;
-    case AKEYCODE_C:
-      current_key = &input.C;
-      break;
-    case AKEYCODE_ENTER:
-      current_key = &input.ENTER;
-      break;
-    default:
-      break;
-    }
-
-    if (current_key) {
-      if (action == AKEY_EVENT_ACTION_DOWN) {
-        current_key->pressed = true;
-        current_key->Released = false;
-      }
-      if (action == AKEY_EVENT_ACTION_UP) {
-        current_key->pressed = false;
-        current_key->Released = true;
-      }
-    }
+//    char c = 
+ //   LOG("### char is %c", c);
+   // pe_input_character(scan_code);
     return 1;
   }
+  
+
 
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_DRAG) {
 

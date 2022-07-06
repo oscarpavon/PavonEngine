@@ -159,7 +159,7 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
   
   GLint joints_matrices_uniform = get_uniform_location(shader, "joint_matrix");
   glUniformMatrix4fv(joints_matrices_uniform, skin->node_uniform.joint_count,
-                 GL_FALSE, &skin->node_uniform.joints_matrix[0][0][0]);
+                GL_FALSE, &skin->node_uniform.joints_matrix[0][0]);
 
 }
 void pe_render_skinned_model(SkinnedMeshComponent *skin) {

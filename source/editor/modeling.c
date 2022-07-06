@@ -52,6 +52,7 @@ void pe_modeling_select_next_vertex(){
   vertex->selected = true;
   pe_modeling_update_vertex_selected(&model); 
   pe_modeling_vertex_update();
+  LOG("## new modeling udpated");
 }
 
 void draw_vertices(){
@@ -100,7 +101,10 @@ void vertex_new(float x , float y , float z){
   array_add(&model.vertex_array, &new_vertex);
    
   pe_modeling_update_vertex_selected(&model) ;
-  pe_modeling_vertex_update();
+
+
+//  pe_modeling_vertex_update();
+  pe_th_exec_in(pe_th_render_id, pe_modeling_vertex_update, NULL);
 
   LOG("## Vertex Added");
 }
@@ -120,5 +124,8 @@ void init_modeling() {
   pe_shader_create_for_model(&model, frag, standart_vertex_shader);
 
   current_select_vertex = -1;
+  
+  LOG("## Modeling init");
+
 
 }

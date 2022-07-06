@@ -315,6 +315,12 @@ void gizmos_init() {
   load_model_to_array(
       &gizmos, "/sdcard/Download/NativeContent/Editor/translate.glb",
       "/sdcard/Download/NativeContent/Editor/transform_gizmo.jpg");
+  selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
+  selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
+  
+  selected_model->mesh.vertex_array.count = selected_model->vertex_array.count;
+  selected_model->mesh.index_array.count = selected_model->index_array.count;
+
   load_model_to_array(
       &gizmos, "/sdcard/Download/NativeContent/Editor/rotate.glb",
       "/sdcard/Download/NativeContent/Editor/rotate_gizmo.png");

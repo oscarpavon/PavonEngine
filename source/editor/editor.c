@@ -43,6 +43,8 @@
 #include "commands.h"
 
 
+#include <editor/modeling.c>
+
 
 
 void play_game_standalone(){
@@ -485,6 +487,12 @@ void pe_editor_draw() {
       editor_mode == EDITOR_PLAY_MODE) {
     draw_gui();
   }
+
+  if(editor_mode == PE_EDITOR_MODELING_MODE){
+  }
+
+   draw_vertices(); 
+   
   text_renderer_loop();
   pe_editor_menus_update();
   // editor_message("editor message");
@@ -547,7 +555,7 @@ void editor_render_init() {
   editor_standard_fragment_shader = compile_shader(
       editor_standard_fragment_shader_source, GL_FRAGMENT_SHADER);
 
-  pe_editor_load_native_model();
+  //pe_editor_load_native_model();
 
   gizmos_init();
 
@@ -609,6 +617,9 @@ void pe_editor_init() {//executed in main thread from main()
     //pe_editor_window_configure();
 
     //pe_editor_render_thread_configure_and_start();
+    
+    init_modeling(); 
+
     editor_render_init();
    
     LOG("[OK]Editor initialized\n");

@@ -152,7 +152,7 @@ void text_render(const char *text, float x, float y, float pixel_size_x, float p
         x += (glyph->advance.x / 64) * pixel_size_x;
         y += (glyph->advance.y / 64) * pixel_size_y;
 
-        check_error("texture error");
+       // check_error("texture error");
     }
     glEnable(GL_CULL_FACE);
 }

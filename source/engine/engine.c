@@ -36,6 +36,28 @@ void pe_debug_print_mat4(mat4 mat){
   LOG("matrix3 %f %f %f %f", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
 
+void pe_input_character(unsigned int codepoint){
+    if(codepoint == 241)//equal "ñ"
+            return;
+    unsigned char character[2];
+    //code_to_utf8(character,codepoint);
+    char keyboard_utf = (char)codepoint;
+
+    LOG("Converted: %c",keyboard_utf);
+//    LOG("Converted: %s\n",character);
+#ifdef DESKTOP
+		if(current_window->char_parser == NULL){
+			LOG("Not charter parser assing to PEWindow\n");
+			return;	
+		}
+		current_window->char_parser(character[0]);
+#endif
+#ifdef ANDROID
+    pe_editor_parse_cmd_char(character[0]);
+#endif
+
+}
+
 
 void update_mvp(mat4 model, mat4 mvp_out){
     mat4 projection_view;

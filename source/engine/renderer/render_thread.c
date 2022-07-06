@@ -158,10 +158,13 @@ void pe_frame_draw(){
     Element* element = array_get(actual_elements_array,i);
     
   }
+
   engine_draw_elements(&frame_draw_static_elements);
 
-  pe_frame_clean();
-  
   draw_skeletal_bones();   
+
+  pe_frame_clean();
+
+  
 
 }

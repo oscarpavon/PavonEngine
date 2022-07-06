@@ -67,6 +67,9 @@ void change_to_editor_mode(EditorMode mode) {
   case EDITOR_DEFAULT_MODE:
     strcpy(editor_mode_show_text, "Default");
     break;
+  case PE_EDITOR_MODELING_MODE:
+    strcpy(editor_mode_show_text, "Modeling");
+    break;
   case EDITOR_NAVIGATE_MODE:
     strcpy(editor_mode_show_text, "Navigate");
     move_camera_input = true;

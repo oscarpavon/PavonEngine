@@ -32,6 +32,8 @@
 
 #include "Blender/blender.h"
 
+#include <editor/modeling.h>
+
 float rotate_value = 1;
 float camera_rotate_yaw = 1;
 
@@ -60,10 +62,15 @@ void input_change_mode() {
   if (key_released(&input.R)) {
     change_to_editor_sub_mode(EDITOR_SUB_MODE_ROTATE);
   }
-
+  
   if (key_released(&input.V)) {
     change_to_editor_mode(EDITOR_NAVIGATE_MODE);
   }
+  
+  if (key_released(&input.ESC)) {
+    change_to_editor_mode(EDITOR_DEFAULT_MODE);
+  }
+  
 }
 
 bool editor_input_camera_rotate_control() {
@@ -404,6 +411,38 @@ void scale_mode() {
   }
 }
 
+void pe_editor_input_modeling_mode(){
+  
+  draw_rotate_gizmo = false;
+  draw_translate_gizmo = false;
+  gizmos_draw_scale = false;
+  
+  input_change_mode();
+
+	if(key_released(&input.A)){
+		vertex_new(0,0,0)	;
+	}
+	
+  if(key_released(&input.D)){
+		vertex_new(0.1,0.1,0.1)	;
+	}
+	
+  if(key_released(&input.K)){
+
+		vertex_new(1,1,1)	;
+
+	}
+
+  if(key_released(&input.U)){
+    pe_modeling_select_next_vertex();
+  }
+
+	draw_vertices();
+
+
+}
+
+
 void default_mode() {
   if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT)
     return;
@@ -413,6 +452,10 @@ void default_mode() {
   gizmos_draw_scale = false;
 
   input_change_mode();
+
+  if (key_released(&input.TAB)) {
+    change_to_editor_mode(PE_EDITOR_MODELING_MODE);
+  }
 
   if (selected_element != NULL) {
     if (key_released(&input.S)) {
@@ -633,6 +676,9 @@ void editor_window_level_editor_input_update(){
             break;
         case EDITOR_NAVIGATE_MODE:
             editor_input_navigate();
+            break;        
+        case PE_EDITOR_MODELING_MODE:
+            pe_editor_input_modeling_mode();
             break;        
         case EDITOR_PLAY_MODE:
             input_mode_play();

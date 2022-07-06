@@ -39,10 +39,17 @@ void pe_thread_control(Array* thread_commads){
 		{
 				PEThreadCommand* new_command = array_get(thread_commads,i);
 				if(new_command && !new_command->done){
-						if(new_command->type == POINTER)
+					switch (new_command->type) {
+						case FUNCTION:
+							new_command->command(NULL)	;
+							break;
+						case POINTER:
 							new_command->command(new_command->data);//Execute command
-						else
+							break;
+						case TEXT:
 							new_command->command(new_command->command_text);//Execute command
+							break;
+					}
 						new_command->done = true;
 				}
 		}

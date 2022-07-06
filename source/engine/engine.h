@@ -66,6 +66,8 @@ static const char* const gui_folder = "../assets/gui/";
 
 void pe_debug_print_mat4(mat4 mat);
 
+void pe_input_character(unsigned int codepoint);
+
 void pe_init_global_variables();
 
 void pe_element_rotate(Element* element, float angle, vec3 axis);

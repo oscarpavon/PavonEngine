@@ -2,7 +2,7 @@
 
 #include <engine/platforms/android/android.h>
 
-#include "modeling.h"
+#include <editor/modeling.h>
 
 #include <engine/../../demos/chess/chess.h>
 
@@ -22,25 +22,6 @@ void ainit() {
 
 void draw(){
 
-	if(key_released(&input.A)){
-		vertex_new(0,0,0)	;
-	}
-	
-  if(key_released(&input.D)){
-		vertex_new(0.1,0.1,0.1)	;
-	}
-	
-  if(key_released(&input.K)){
-
-		vertex_new(1,1,1)	;
-
-	}
-
-  if(key_released(&input.TAB)){
-    pe_modeling_select_next_vertex();
-  }
-
-	draw_vertices();
 }
 
 void aloop(){
@@ -51,8 +32,6 @@ void aloop(){
 
 void ainput(){
 	
-
-
   
 
 	if(key_released(&input.W)){
@@ -142,6 +121,51 @@ void android_main(struct android_app* state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

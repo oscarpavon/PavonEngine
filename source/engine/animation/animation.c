@@ -2,7 +2,7 @@
 #include <engine/engine.h>
 
 void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
-   
+  ZERO(skin_component->node_uniform) ;
   if (!skin_component) {
     LOG("No skinned mesh component\n");
     return;
@@ -16,47 +16,34 @@ void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
 
     mat4 local;
     ZERO(local);
-    // glm_mat4_identity(local);
+    glm_mat4_identity(local);
     get_global_matrix(joint, local);
     // needed for transform
 
     mat4 inverse_model;
     ZERO(inverse_model);
-    glm_mat4_inv(skin_component->transform->model_matrix, inverse_model);
+//    glm_mat4_identity(skin_component->mesh->model_mat);
+    glm_mat4_inv(skin_component->mesh->model_mat, inverse_model);
 
     mat4 model_dot_local;
     ZERO(model_dot_local);
-    glm_mat4_mul(skin_component->transform->model_matrix, local,
-                 model_dot_local);
+    //glm_mat4_mul(skin_component->mesh->model_mat, local,model_dot_local);
+    glm_mat4_mul(local,skin_component->mesh->model_mat, model_dot_local);
 
     mat4 inverse_dot_local;
     ZERO(inverse_dot_local);
     mat4 joint_mat;
     ZERO(joint_mat);
 
-    glm_mat4_mul(inverse_model, local, inverse_dot_local);
+    glm_mat4_mul(local,inverse_model, inverse_dot_local);
     // glm_mat4_mul(inverse_model, model_dot_local, inverse_dot_local);
-    glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],
-                 joint_mat);
+    glm_mat4_mul(skin_component->inverse_bind_matrices[i],inverse_dot_local,joint_mat);
 
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
 
-    LOG("#### Joint matrix");
-    pe_debug_print_mat4(skin_component->node_uniform.joints_matrix[i]);
-
-  //  LOG("####Inverse bind matrix");
-  //  pe_debug_print_mat4(skin_component->inverse_bind_matrices[i]);
+    LOG("Joint count %i", i);
   }
-
-  LOG("####Model mat matrix");
-  pe_debug_print_mat4(skin_component->mesh->model_mat);
-
-    mat4 inverse_model;
-    ZERO(inverse_model);
-  LOG("####Inverse mat matrix");
-    glm_mat4_inv(skin_component->mesh->model_mat, inverse_model);
-    pe_debug_print_mat4(inverse_model);
 
   LOG("####### pe_anim_nodes_update ");
 }

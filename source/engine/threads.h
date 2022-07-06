@@ -15,7 +15,8 @@ typedef struct PEThread{
 
 typedef enum PEThreadCommandType{ 
 	POINTER,
-	TEXT
+	TEXT,
+  FUNCTION
 }PEThreadCommandType;
 
 typedef struct PEThreadCommand{

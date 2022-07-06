@@ -469,13 +469,15 @@ void chess_human_create(){
 
 void chess_init(){
 
+  pe_change_background_color(0,0.2,0.5,1);
+
   chess_camera_init();
 
   chess_init_materials();
   
-  //chess_board_create();
+  chess_board_create();
 
-  //chess_pieces_create();
+  chess_pieces_create();
   
   chess_human_create();
 
@@ -527,30 +529,8 @@ void chess_draw(){
 
     
     
-          mat4 global_piece;
-    for(int i = 0; i < human_skin_component->joints.count ; i++){       
-        
-        Node* joint = (Node*)array_get(&human_skin_component->joints,i);
-    
-				mat4 local;
-        get_global_matrix(joint, local);
-        mat4 global;
-        glm_mat4_mul(human_skin_component->transform->model_matrix, local, global);
-        
-        if(joint == node1){
-           mat4 piece_local;
-          
-          glm_mat4_mul(knight_model->model_mat, global, global_piece );
-         // pe_node_translate(node1,VEC3(global_piece[3][0],global_piece[3][1],global_piece[3][2]));
-        }
-//				init_skeletal_vertices(global,i,joint);
-    }     
-
-
-    //pe_node_rotate(node1, 45.f, VEC3(1, 1, 0));
-
-
-   // pe_skeletal_update_draw_vertices_target(human_skin_component,knight_model->model_mat);
     pe_skeletal_update_draw_vertices(human_skin_component);
+    pe_anim_nodes_update(human_skin_component);
+
   }
 }

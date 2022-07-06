@@ -31,6 +31,7 @@ directories.c
 ${windows}
 file_explorer.c
 ProjectManager/project_manager.c
+modeling.c
 )
 
 if(DESKTOP)
