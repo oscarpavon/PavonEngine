@@ -8,6 +8,8 @@
 #include <engine/engine.h>
 #include <engine/components/static_mesh_component.h>
 
+#include <engine/macros.h>
+
 GLuint new_mesh_vertex_buffer; 
 
 
@@ -84,6 +86,32 @@ void draw_vertices(){
 
 }
 
+void pe_modeling_vertex_copy_data(Vertex* vertex, Array* array){
+  
+  Vertex new_vertex;
+  ZERO(new_vertex);
+
+  memcpy(&new_vertex, vertex, sizeof(Vertex)) ;
+
+  array_add(&model.vertex_array, &new_vertex) ;
+
+   
+
+}
+
+void pe_modeling_move_vertex(Array* array , Vertex* vertex){
+
+}
+
+void pe_modeling_extrude_vertex(Array* vertex_array, Vertex* vertex){
+ 
+  Vertex* get_vertex = array_get(&model.vertex_array, 0);
+  pe_modeling_vertex_copy_data(get_vertex, &model.vertex_array)  ;
+
+  
+  pe_th_exec_function(pe_th_render_id, pe_modeling_vertex_update);
+
+}
 
 void vertex_new(float x , float y , float z){
 
@@ -103,8 +131,10 @@ void vertex_new(float x , float y , float z){
   pe_modeling_update_vertex_selected(&model) ;
 
 
-//  pe_modeling_vertex_update();
-  pe_th_exec_in(pe_th_render_id, pe_modeling_vertex_update, NULL);
+  
+  pe_th_exec_function(pe_th_render_id, pe_modeling_vertex_update);
+
+	pe_th_wait(&thread_main);
 
   LOG("## Vertex Added");
 }

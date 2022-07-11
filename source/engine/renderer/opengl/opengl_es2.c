@@ -135,20 +135,14 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
   glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),                     (void *)offsetof(Vertex, uv));
 
     
-//  glEnableVertexAttribArray(normal_id);
+  glEnableVertexAttribArray(normal_id);
 
- // glVertexAttribPointer(normal_id,3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+  glVertexAttribPointer(normal_id,3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
-  glEnableVertexAttribArray(joint_id);
-  glVertexAttribPointer(joint_id, 4, GL_INT, GL_FALSE, sizeof(Vertex),(void *)offsetof(Vertex, joint));
-  glEnableVertexAttribArray(weith_id);
-  glVertexAttribPointer(weith_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void *)offsetof(Vertex, weight));
 
   GLint model_uniform = get_uniform_location(shader, "model");
   GLint projection_uniform = get_uniform_location(shader, "projection");
   GLint view_uniform = get_uniform_location(shader, "view");
-
 
   glUniformMatrix4fv(model_uniform, 1, GL_FALSE, &matrix[0][0]);
 
@@ -156,10 +150,19 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
   
   glUniformMatrix4fv(projection_uniform, 1, GL_FALSE,
                      &main_camera.projection[0][0]);
-  
+
   GLint joints_matrices_uniform = get_uniform_location(shader, "joint_matrix");
+
+  glEnableVertexAttribArray(joint_id);
+  glVertexAttribPointer(joint_id, 4, GL_INT, GL_FALSE, sizeof(Vertex),(void *)offsetof(Vertex, joint));
+  glEnableVertexAttribArray(weith_id);
+  glVertexAttribPointer(weith_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void *)offsetof(Vertex, weight));
+
   glUniformMatrix4fv(joints_matrices_uniform, skin->node_uniform.joint_count,
-                GL_FALSE, &skin->node_uniform.joints_matrix[0][0]);
+                GL_FALSE, skin->node_uniform.joints_matrix);
+
+  
 
 }
 void pe_render_skinned_model(SkinnedMeshComponent *skin) {
@@ -200,6 +203,7 @@ void pe_render_skinned_model(SkinnedMeshComponent *skin) {
 
 */
 
+    glBindTexture(GL_TEXTURE_2D, new_model->texture.id);
   pe_skinned_send_matrices(skin, new_model->shader, new_model->mesh.vertex_buffer_id,
                  new_model->model_mat);
 

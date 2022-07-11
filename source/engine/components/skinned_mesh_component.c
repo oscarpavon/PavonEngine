@@ -44,10 +44,11 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   }
 
 	mesh_component->transform = parent_transform;
+  
 
     mesh_component->mesh = selected_model;
   
-  glm_mat4_copy(selected_model->model_mat,mesh_component->transform->model_matrix);
+ // glm_mat4_copy(selected_model->model_mat,mesh_component->transform->model_matrix);
   
  
   if(original_model->vertex_array.count == 0){

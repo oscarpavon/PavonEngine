@@ -202,7 +202,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     for (int i = 0; i < attribute->data->count; i++) {
       Vertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(joints[i], vertex->joint);
-      LOG("#### Vertex Joint attribute %f, %f , %f ,%f", vertex->joint[0], vertex->joint[1], vertex->joint[2], vertex->joint[3]);
+      //LOG("#### Vertex Joint attribute %f, %f , %f ,%f", vertex->joint[0], vertex->joint[1], vertex->joint[2], vertex->joint[3]);
     }
     LOG("##### Joint load");
 
@@ -382,13 +382,15 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
       Node new_node;
       ZERO(new_node);
 
-      if (in_cgltf_node->parent && parent != NULL)
+      if (in_cgltf_node->parent && parent != NULL){
         new_node.parent = parent;
+      }
 
       strcpy(new_node.name, in_cgltf_node->name);
 
-      memcpy(new_node.translation, in_cgltf_node->translation, sizeof(vec3));
-      memcpy(new_node.rotation, in_cgltf_node->rotation, sizeof(vec4));
+      glm_vec3_copy(in_cgltf_node->translation, new_node.translation);
+      glm_vec4_copy(new_node.rotation, in_cgltf_node->rotation);
+
 
       array_add(&pe_curr_skin_loading->joints, &new_node);
     }

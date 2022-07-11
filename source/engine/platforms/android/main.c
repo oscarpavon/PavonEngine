@@ -81,7 +81,7 @@ void android_main(struct android_app* state) {
 	game->app->onAppCmd = &pe_android_handle_cmd;
   game->app->onInputEvent = &pe_android_input_handle;
 
-  pe_game_create(&editor);
+  pe_game_create(&chess);
 
 
 
@@ -121,6 +121,37 @@ void android_main(struct android_app* state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

@@ -24,9 +24,12 @@ typedef struct PEThreadCommand{
     void* data;
     char command_text[1000];
     void (*command)(void*);
+    void (*command_function)();
 	PEThreadCommandType type;
 }PEThreadCommand;
 
+void pe_th_exec_function(PEThreadID id , void(*function)() );
+void pe_th_exec_in_with_type(PEThreadID to_id , void(*func)(void*), void* argment, PEThreadCommandType type);
 void thread_new_function(void*(*function)(void*),void* argument);
 void thread_new_detached(void*(*function)(void*),void* argument,const char* name,PEThreadID*);
 

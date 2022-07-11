@@ -41,7 +41,7 @@ void pe_thread_control(Array* thread_commads){
 				if(new_command && !new_command->done){
 					switch (new_command->type) {
 						case FUNCTION:
-							new_command->command(NULL)	;
+							new_command->command_function();
 							break;
 						case POINTER:
 							new_command->command(new_command->data);//Execute command
@@ -66,6 +66,49 @@ void pe_thread_control(Array* thread_commads){
 				array_clean(thread_commads);
 }
 
+void pe_th_exec_function(PEThreadID id , void(*function)() ){
+
+	PEThreadID curren_thread_id = pthread_self();
+
+	if(curren_thread_id == id){
+		function();
+		return;
+	}
+
+	PEThreadCommand command;
+	ZERO(command);
+	command.type = FUNCTION;
+	command.command_function = function;;
+
+	if(id == pe_th_render_id){
+		array_add(&render_thread_commads,&command);	
+		LOG("exec in renderen therd\n");
+	}
+
+
+}
+
+void pe_th_exec_in_with_type(PEThreadID to_id , void(*func)(void*), void* argment, PEThreadCommandType type){
+	
+	PEThreadID curren_thread_id = pthread_self();
+
+	if(curren_thread_id == to_id){
+		func(argment);
+		return;
+	}
+
+	PEThreadCommand command;
+	ZERO(command);
+	command.type = type;
+	command.command = func;	
+	command.data = argment;
+
+	if(to_id == pe_th_render_id){
+		array_add(&render_thread_commads,&command);	
+		LOG("exec in renderen therd\n");
+	}
+
+}
 void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment){
 	
 	PEThreadID curren_thread_id = pthread_self();

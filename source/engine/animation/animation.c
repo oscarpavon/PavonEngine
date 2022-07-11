@@ -15,29 +15,28 @@ void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
     Node *joint = (Node *)array_get(&skin_component->joints, i);
 
     mat4 local;
-    ZERO(local);
-    glm_mat4_identity(local);
     get_global_matrix(joint, local);
     // needed for transform
 
+    mat4 negative;
+    ZERO(negative);
+
     mat4 inverse_model;
     ZERO(inverse_model);
-//    glm_mat4_identity(skin_component->mesh->model_mat);
-    glm_mat4_inv(skin_component->mesh->model_mat, inverse_model);
-
-    mat4 model_dot_local;
-    ZERO(model_dot_local);
-    //glm_mat4_mul(skin_component->mesh->model_mat, local,model_dot_local);
-    glm_mat4_mul(local,skin_component->mesh->model_mat, model_dot_local);
 
     mat4 inverse_dot_local;
     ZERO(inverse_dot_local);
+
     mat4 joint_mat;
     ZERO(joint_mat);
+    
+    glm_mat4_inv(skin_component->transform->model_matrix,  negative);
 
-    glm_mat4_mul(local,inverse_model, inverse_dot_local);
-    // glm_mat4_mul(inverse_model, model_dot_local, inverse_dot_local);
-    glm_mat4_mul(skin_component->inverse_bind_matrices[i],inverse_dot_local,joint_mat);
+    glm_mat4_inv(negative, inverse_model);
+
+    glm_mat4_mul(inverse_model, local ,inverse_dot_local);
+
+    glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],joint_mat);
 
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);

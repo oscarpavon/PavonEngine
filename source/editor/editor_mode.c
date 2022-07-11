@@ -27,23 +27,23 @@ void change_to_editor_sub_mode(EditorMode mode) {
 
   switch (mode) {
   case EDITOR_SUB_MODE_TEXT_INPUT:
-    editor_sub_mode_text = "Text Input";
+    strcpy(editor_sub_mode_text, "Text Input");
     editor_sub_mode = mode;
     break;
   case EDITOR_SUB_MODE_GRAB:
-    editor_sub_mode_text = "Grab";
+    strcpy(editor_sub_mode_text, "Grab");
     editor_sub_mode = mode;
     break;
   case EDITOR_SUB_MODE_SCALE:
-    editor_sub_mode_text = "Scale";
+    strcpy(editor_sub_mode_text, "Scale");
     editor_sub_mode = mode;
     break;
   case EDITOR_SUB_MODE_ROTATE:
-    editor_sub_mode_text = "Rotate";
+    strcpy(editor_sub_mode_text, "Rotate");
     editor_sub_mode = mode;
     break;
   case EDITOR_SUB_MODE_NULL:
-    editor_sub_mode_text = "";
+    strcpy(editor_sub_mode_text, "Not submode");
     editor_sub_mode = mode;
     break;
   }

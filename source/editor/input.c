@@ -433,6 +433,15 @@ void pe_editor_input_modeling_mode(){
 
 	}
 
+  if(key_released(&input.E)){
+    
+      draw_translate_gizmo = true; 
+      pe_modeling_extrude_vertex(NULL, NULL)    ;
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_GRAB);
+
+	}
+
+
   if(key_released(&input.U)){
     pe_modeling_select_next_vertex();
   }

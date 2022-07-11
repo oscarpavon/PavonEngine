@@ -241,18 +241,20 @@ void text_draw_commands() {
 
 void text_renderer_loop() {
   draw_engine_memory();
-  draw_frame_time();
+  ////draw_frame_time();
   draw_FPS();
   draw_count_of_draw_call();
   draw_stats_triangles();
 
-  text_render_in_screen_space(pe_editor_text_size, editor_mode_show_text,
-                              camera_width_screen - 100, 0);
+ text_render_in_screen_space(pe_editor_text_size, editor_mode_show_text,camera_width_screen - 100, 0);
 
   if (editor_sub_mode != EDITOR_SUB_MODE_NULL) {
     text_render_in_screen_space(pe_editor_text_size, editor_sub_mode_text,
                                 camera_width_screen - 100, 30);
   }
+    strcpy(editor_sub_mode_text,"submode");
+    text_render_in_screen_space(pe_editor_text_size, editor_sub_mode_text,
+                                camera_width_screen - 100, -30);
 }
 
 void editor_text_init(){

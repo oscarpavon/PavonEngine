@@ -80,7 +80,7 @@ void editor_init_new_added_element();
 //++++++++++++++++++++++
 //Global variables
 char editor_mode_show_text[60];
-char* editor_sub_mode_text;
+char editor_sub_mode_text[60];
 
 float camera_velocity;
 
