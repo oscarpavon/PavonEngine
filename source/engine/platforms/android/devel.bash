@@ -1,16 +1,29 @@
-cd ~/PavonEngine/build
-make -j4
+if [ ! -d ~/PavonEngine/build ]
+then
+  echo Creating Engine build directory && mkdir ~/PavonEngine/build && cd ~/PavonEngine/build && cmake .. 
+else
+  cd ~/PavonEngine/build
+fi
+
+make -j8
 
 cd ~/PavonEngine/source/engine/platforms/android/
 
 echo // >> main.c
 
-cd ~/PavonEngine/source/engine/platforms/android/build
+if [ ! -d ~/PavonEngine/source/engine/platforms/android/build ]
+then
+  echo Creating Android build directory && mkdir ~/PavonEngine/source/engine/platforms/android/build 
+  cd ~/PavonEngine/source/engine/platforms/android/build && cmake ..
+else
+  cd ~/PavonEngine/source/engine/platforms/android/build
+fi
 
-make -j4
+make -j8
 
 cd ~/PavonEngine/source/engine/platforms/android/
 
-./build.sh
-fakeroot adb install -r --fastdeploy ./pavons.apk
+./apk_make.sh
+#fakeroot adb install -r --fastdeploy ./pavons.apk
+sudo pm install ./pavons.apk
 am start com.pavonstudios.app/android.app.NativeActivity

@@ -1,7 +1,7 @@
 #/bin/bash
-mkdir gen
-mkdir obj
-mkdir output
+[ ! -d gen ] && mkdir gen
+[ ! -d obj ] && mkdir obj
+[ ! -d output ] && mkdir output
 
 aapt package -f --target-sdk-version 19 --generate-dependencies -J gen -M AndroidManifest.xml -S res
 
