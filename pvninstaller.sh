@@ -13,5 +13,8 @@ pkg install dx
 pkg install aapt2
 pkg install ecj
 pkg install automake
+pkg install fzf
+pkg install ripgrep
+pkg install libtool
 git config --global user.email pavon_oscar@outlook.com
 git config --global user.name Oscar Pavon

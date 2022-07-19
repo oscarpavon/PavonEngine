@@ -1,11 +1,11 @@
 
-set(OpenGL_GL_PREFERENCE GLVND)
+#set(OpenGL_GL_PREFERENCE GLVND)
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
-find_package(OpenGL REQUIRED)
+#find_package(OpenGL REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
