@@ -3,7 +3,6 @@ pkg install make
 pkg install cmake
 pkg install wget
 pkg install tsu
-wget https://dl.google.com/android/repository/android-ndk-r25-linux.zip
 pkg install vulkan-headers
 pkg install binutils
 pkg install mesa
@@ -15,6 +14,11 @@ pkg install ecj
 pkg install automake
 pkg install fzf
 pkg install ripgrep
+pkg install git
+pkg install nodejs
 pkg install libtool
+pkg install zsh
+pkg install cmus
+wget https://dl.google.com/android/repository/android-ndk-r25-linux.zip
 git config --global user.email pavon_oscar@outlook.com
 git config --global user.name Oscar Pavon
