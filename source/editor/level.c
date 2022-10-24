@@ -35,7 +35,7 @@ void editor_level_open(const char *name) {
   }
 
   for_each_element_components(&init_element_component);
-
+  
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 
   struct timespec result = time_diffence(time1, time2);
