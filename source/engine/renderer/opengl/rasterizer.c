@@ -12,6 +12,9 @@ void pe_render_rasterize_init(){
 void pe_render_rasterize(){
    
   //  glDrawPixels(400,400,GL_RGB, GL_UNSIGNED_BYTE, frame) ;
+    
 
 
 }
+
+
