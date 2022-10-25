@@ -10,6 +10,9 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 
 set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
 
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY /data/data/com.termux/files/home/PavonEngine/lib)
+
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
@@ -32,19 +35,8 @@ include_directories(/data/data/com.termux/files/home/PavonEngine/source/)
 include_directories(
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-set(link 
-    android
-    native_app_glue
-    EGL
-    log
-    GLESv2
-    pavon_engine
-    m
-    peditor
-    #${FREETYPE_LIBRARIES}
-    freetype
-    
-    )
+include(../../../../make_include.txt)
+
 
 #set(ANDROID_ABI arm64-v8a)
 #set(ANDROID_ABI armabi-v7a)
@@ -57,12 +49,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/${ANDROID_ABI})
 add_library(pavon_engine_android SHARED main.c)
     
 
-
-
 target_include_directories(pavon_engine_android PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_directories(pavon_engine_android PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
 target_link_libraries(pavon_engine_android
-    ${link})
+    ${android_link})
 

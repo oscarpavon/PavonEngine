@@ -50,4 +50,17 @@ set(engine_link
 	${FREETYPE_LIBRARIES}
     )
 
+set(android_link 
+    android
+    native_app_glue
+    EGL
+    log
+    GLESv2
+    pavon_engine
+    m
+    peditor
+    #${FREETYPE_LIBRARIES}
+    freetype
+    
+    )
 

@@ -42,3 +42,10 @@ void editor_level_open(const char *name) {
   long millisecond = result.tv_nsec / 1000000;
   LOG("Level loading time: %ld ms\n", millisecond);
 }
+
+//for level command line  util 
+int main(){
+//LOG("Level editor test");
+printf("level\n");
+return 0;
+}

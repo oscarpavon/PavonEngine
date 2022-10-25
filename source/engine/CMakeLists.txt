@@ -114,6 +114,11 @@ STATIC
 ${engine_source}
 )
 
+include(../../make_include.txt)
+add_executable(level level.c)
+target_link_libraries(level ${android_link})
+target_link_directories(level PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
+
 #add_library(engine_dynamic
 #	SHARED
 #	${engine_source}
