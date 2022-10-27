@@ -1,6 +1,8 @@
 #include "level.h"
 #include "editor.h"
 #include <engine/level.h>
+#include <editor/data.h>
+
 void editor_level_new(const char * name){
 	LOG("New level\n");
 
@@ -47,5 +49,8 @@ void editor_level_open(const char *name) {
 int main(){
 //LOG("Level editor test");
 printf("level\n");
+
+save_level_data("new_level.lvl");
+
 return 0;
 }
