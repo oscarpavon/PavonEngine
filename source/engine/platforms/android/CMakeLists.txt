@@ -1,5 +1,11 @@
-cmake_minimum_required(VERSION 3.6.0)
+cmake_minimum_required(VERSION 3.7.0)
 project(PavonEngineAndroid)
+set(CMAKE_SYSTEM_NAME Android)
+set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
+set(CMAKE_ANDROID_NDK ${ANDROID_NDK})
+set(CMAKE_ANDROID_ARCH_ABI armabi-v7a)
+
+
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # build native_app_glue as a static lib
@@ -8,16 +14,12 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
-set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
-
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY /data/data/com.termux/files/home/PavonEngine/lib)
 
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
-set(CMAKE_ANDROID_ARCH_ABI javon)
-message("My Android Arch ${CMAKE_ANDROID_ARCH_ABI}")
 
 # Export ANativeActivity_onCreate(),
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
@@ -35,7 +37,7 @@ include_directories(/data/data/com.termux/files/home/PavonEngine/source/)
 include_directories(
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-include(../../../../make_include.txt)
+include(/data/data/com.termux/files/home/PavonEngine/make_include.txt)
 
 
 #set(ANDROID_ABI arm64-v8a)
@@ -56,3 +58,5 @@ target_link_directories(pavon_engine_android PUBLIC /data/data/com.termux/files/
 target_link_libraries(pavon_engine_android
     ${android_link})
 
+#set(CMAKE_ANDROID_ARCH_ABI ${CMAKE_ANDROID_ARCH_ABI})
+message("My Android Arch ABI ${CMAKE_ANDROID_ARCH_ABI}")

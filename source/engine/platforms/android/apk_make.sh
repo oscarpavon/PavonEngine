@@ -19,7 +19,7 @@ cd ../
 #aapt add -v -f pavon.apk lib/arm64-v8a/libpavon_engine_android.so
 #aapt add -v -f pavon.apk lib/armabi-v7a/libpavon_engine_android.so
 #aapt add -v -f pavon.apk lib/armabi/libpavon_engine_android.so
-#aapt add -v -f pavon.apk lib/arm/libpavon_engine_android.so
+aapt add -v -f pavon.apk lib/arm/libpavon_engine_android.so
 
 
 RDR="/data/data/com.termux/files/home/buildAPKs/"
