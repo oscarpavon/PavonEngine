@@ -21,6 +21,9 @@ fi
 
 make -j8
 
+cd ~/PavonEngine/android/
+./configure_content.sh
+
 cd ~/PavonEngine/source/engine/platforms/android/
 
 ./apk_make.sh

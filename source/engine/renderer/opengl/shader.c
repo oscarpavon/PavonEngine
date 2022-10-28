@@ -23,7 +23,7 @@ void pe_shader_get_error(GLuint shader, GLenum info_type,
       glGetShaderInfoLog(shader, lenght, &lenght, &error[0]);
       LOG("%s shader: %s\n", status_description, path_for_error_debug);
       LOG("Error Compiling: %s\n", error);
-      debug_break();     
+     // debug_break();     
     }
   }
   if (info_type == GL_LINK_STATUS) {
@@ -48,11 +48,15 @@ GLuint compile_shader(const char* src , GLenum type){
     char* error_description;
     if(type == GL_FRAGMENT_SHADER){
         error_description = "fragment shader";
+    pe_shader_get_error(shader,GL_COMPILE_STATUS,error_description);
+        return PE_SHADER_ERROR;
+        
     }else if (type == GL_VERTEX_SHADER){
         error_description = "vertex shader";
+    pe_shader_get_error(shader,GL_COMPILE_STATUS,error_description);
+        return PE_SHADER_ERROR;
     }
 
-    pe_shader_get_error(shader,GL_COMPILE_STATUS,error_description);
     return shader;
 }
 
@@ -60,10 +64,14 @@ GLuint pe_shader_load_src_and_create(const char* path, GLenum shader_type){
     File new_file;
     load_file(path,&new_file);
     GLuint shader = compile_shader(new_file.data,shader_type);
+    if(shader == PE_SHADER_ERROR){
+      LOG("Shader %s",path);
+return PE_SHADER_ERROR;
+    }
     return shader;
 }
 
-void pe_shader_compile_std() {
+bool pe_shader_compile_std() {
 #ifdef LINUX 
   
   standart_vertex_shader = pe_shader_load_src_and_create("/home/pavon/PavonEngine/NativeContent/shaders/std.vert",GL_VERTEX_SHADER);
@@ -74,20 +82,20 @@ void pe_shader_compile_std() {
       GL_VERTEX_SHADER);
 #endif
 #ifdef ANDROID
-  //on android files are not in the same location
+  //########## on android systems files are not in the same location #########
+
 //  standart_vertex_shader = compile_shader(pe_shader_src_std_vert, GL_VERTEX_SHADER);
-  standart_vertex_shader = pe_shader_load_src_and_create("/sdcard/Download/chess/std.vert",GL_VERTEX_SHADER);
-  standart_fragment_shader = pe_shader_load_src_and_create("/sdcard/Download/chess/diffuse.frag",GL_FRAGMENT_SHADER);
+  standart_vertex_shader = pe_shader_load_src_and_create("/sdcard/Download/PavonEngine/shaders/std.vert",GL_VERTEX_SHADER);
+  standart_fragment_shader = pe_shader_load_src_and_create("/sdcard/Download/PavonEngine/shaders/diffuse.frag",GL_FRAGMENT_SHADER);
 
-  shader_skin_vertex = pe_shader_load_src_and_create("/sdcard/Download/chess/skin2.vert",GL_VERTEX_SHADER);
-  shader_skin_diffuse = pe_shader_load_src_and_create("/sdcard/Download/chess/skin2.frag",GL_FRAGMENT_SHADER);
-
-
+  shader_skin_vertex = pe_shader_load_src_and_create("/sdcard/Download/PavonEngine/shaders/skin_vertex_shader.glsl",GL_VERTEX_SHADER);
+  shader_skin_diffuse = pe_shader_load_src_and_create("/sdcard/Download/PavonEngine/shaders/diffuse.frag",GL_FRAGMENT_SHADER);
 
 #endif
  
   shader_source_color_fragment_shader =
       compile_shader(pe_shader_src_color, GL_FRAGMENT_SHADER);
+
 
 }
 

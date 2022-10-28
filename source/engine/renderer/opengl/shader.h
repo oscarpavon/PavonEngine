@@ -11,6 +11,8 @@
 #include <engine/shaders_code.h>
 #include <engine/model.h>
 
+#define PE_SHADER_ERROR 9999999
+
 typedef struct PEShaderCreation{
 	Model* model;
 	GLuint vertex;
@@ -28,7 +30,7 @@ void pe_shader_create(PEShaderCreation* creation);
 
 void pe_shader_new(PEShaderCreation* creation);
 
-void pe_shader_compile_std();
+bool pe_shader_compile_std();
 
 GLuint standart_vertex_shader;
 GLuint standart_fragment_shader;

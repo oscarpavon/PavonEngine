@@ -148,7 +148,7 @@ void init_modeling() {
 
   //pe_comp_static_mesh_shader_init(&model);
   
-  GLuint frag = pe_shader_load_src_and_create("/sdcard/Download/chess/vertex_modelling.frag", GL_FRAGMENT_SHADER);
+  GLuint frag = pe_shader_load_src_and_create("/sdcard/Download/PavonEngine/shaders/vertex_modelling.frag", GL_FRAGMENT_SHADER);
   
 
   pe_shader_create_for_model(&model, frag, standart_vertex_shader);

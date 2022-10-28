@@ -16,8 +16,17 @@ For render object in scene the engine fill "models_for_test_occlusion" array
 After that a function "test occlusion" is called and fill "frame_draw_static_elements" array
 
 
-Engine Init --> render thread definition --> draw windows --> pe_frame_draw()
+##Game engine initialition
+First call engine_init()
+-Global variables initialization
+-Global array initialization and general engine data
 
+Second call render_thread_init() 
+-here is when standart shader are called for compilation
+
+
+##Game engine draw
+Engine Init --> render thread definition --> draw windows --> pe_frame_draw()
 
 ##Creating geometry
 Create a "Vertex" struct with vertex data, then add to the vertex_array and finily create the graphics buffer of that geometry.

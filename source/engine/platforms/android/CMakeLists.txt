@@ -41,8 +41,7 @@ include(/data/data/com.termux/files/home/PavonEngine/make_include.txt)
 
 
 #set(ANDROID_ABI arm64-v8a)
-set(ANDROID_ABI armabi-v7a)
-#set(ANDROID_ABI armabi)
+set(ANDROID_ABI armeabi-v7a)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/${ANDROID_ABI})
 
