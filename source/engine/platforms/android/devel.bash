@@ -27,6 +27,8 @@ cd ~/PavonEngine/android/
 cd ~/PavonEngine/source/engine/platforms/android/
 
 ./apk_make.sh
+adb install ./pavons.apk
+./start.sh && ./debug.sh
 
 #Installation process
 #fakeroot adb install -r --fastdeploy ./pavons.apk

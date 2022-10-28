@@ -475,11 +475,11 @@ void chess_init(){
 
   chess_init_materials();
   
-  chess_board_create();
+  //chess_board_create();
 
   chess_pieces_create();
   
-  chess_human_create();
+  //chess_human_create();
 
 
   

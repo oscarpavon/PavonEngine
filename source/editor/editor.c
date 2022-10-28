@@ -491,10 +491,10 @@ void pe_editor_draw() {
   if(editor_mode == PE_EDITOR_MODELING_MODE){
   }
 
-    draw_vertices(); 
+   // draw_vertices(); 
    
-  text_renderer_loop();
-  pe_editor_menus_update();
+//  text_renderer_loop();
+  //pe_editor_menus_update();
   // editor_message("editor message");
 }
 
