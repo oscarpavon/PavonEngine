@@ -229,12 +229,17 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(struct Vertex),(void*)0);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
 
-
-    glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, normal));
-
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                          (void *)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                          (void *)offsetof(struct Vertex, uv));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                          (void *)offsetof(struct Vertex, color));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct Vertex),
+                          (void *)offsetof(struct Vertex, normal));
 
     GLint mvp_uniform =  get_uniform_location(shader,"MVP");
 

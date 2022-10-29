@@ -386,7 +386,7 @@ void chess_pieces_create() {
 void chess_camera_init() {
 
   camera_init(&main_camera);
-  init_vec3(-7, 3.5, 3.4, main_camera.position);
+  init_vec3(-6, 3.5, 10, main_camera.position); //x: back/forward z: up/down y: left/right
   // init_vec3(-6,3.5,8, main_camera.position);
 
   // init_vec3(-6,0,8, main_camera.position);//test human
