@@ -14,9 +14,9 @@ varying vec3 FragPosition;
 void main()
 {
     gl_Position = MVP * vec4(vPosition,1);
-    gl_PointSize = 10.0;
-    FragPosition = vec3(model * vec4(vPosition,1));
-    v_TexCoord = inUV;
-    Normal = inNormal;
+//   gl_PointSize = 10.0;
+   // FragPosition = vec3(model * vec4(vPosition,1));
+    //v_TexCoord = inUV;
+    //Normal = inNormal;
 }
 //end
