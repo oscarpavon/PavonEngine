@@ -1,12 +1,6 @@
 pkg install neovim
 pkg install git
-if [ ! -d .config ]
-then mkdir .config && cd .conig && git clone https://github.com/oscarpavon/nvim
-else
-cd .config && git clone https://github.com/oscarpavon/nvim && cd ..
-fi
-nvim -c "PlugUpdate"
-nvim -c "CocInstall coc-clang"
+pkg install nodejs
 
 pkg install make
 pkg install cmake
@@ -23,7 +17,6 @@ pkg install ecj
 pkg install automake
 pkg install fzf
 pkg install ripgrep
-pkg install nodejs
 pkg install libtool
 pkg install zsh
 pkg install cmus

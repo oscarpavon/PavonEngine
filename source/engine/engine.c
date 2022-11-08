@@ -421,7 +421,7 @@ void test_elements_occlusion(){
 
     for(int i = 0; i<array_skinned_mesh_pointers.count; i++){
         SkinnedMeshComponent** skin_component = array_get(&array_skinned_mesh_pointers,i);
-        //if(glm_aabb_frustum(skin_component[0]->bounding_box,frustrum_planes) == true)
+        //if(glm_aabb_frustum(skin_component[0]->bounding_box,frustrum_planes) == true)//TODO: skinned mesh culling
             array_add(&array_skinned_mesh_for_distance_test,&skin_component[0]);
     }
 
