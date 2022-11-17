@@ -37,7 +37,7 @@ include_directories(/data/data/com.termux/files/home/PavonEngine/source/)
 include_directories(
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-include(/data/data/com.termux/files/home/PavonEngine/make_include.txt)
+include(/data/data/com.termux/files/home/PavonEngine/include.cmake)
 
 
 #set(ANDROID_ABI arm64-v8a)

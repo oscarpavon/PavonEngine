@@ -490,3 +490,23 @@ void chess_draw() {
     pe_anim_nodes_update(human_skin_component);
   }
 }
+
+PGame* chess_main(){
+
+  PGame chess;
+  ZERO(chess);
+  chess.name = "Chess";
+  chess.loop = &chess_loop;
+  chess.init = &chess_init;
+	chess.draw = &chess_draw; 
+	chess.input = &chess_input;
+	game = &chess;	//need for egl context creation
+  pe_game_create(&chess);
+
+
+  return &chess;
+}
+
+void main(){
+chess_main();
+}

@@ -26,12 +26,12 @@ set(linux_libraries
 
 set(pc_link 
 	  glfw
-    pe_vk
+    #pe_vk
     vulkan
     pulse
     pulse-simple
     asound
-    BulletDynamics
+    #BulletDynamics
     #BulletCollision
     #BulletSoftBody
     #LinearMath
@@ -40,6 +40,7 @@ set(pc_link
 	  m
 	  pthread
     EGL 
+    GLESv2
 )
 
 set(lib ${lib} ${linux_libraries})
@@ -48,6 +49,7 @@ endif()
 
 set(engine_link 
 	${FREETYPE_LIBRARIES}
+  ${pc_link}
     )
 
 set(android_link 

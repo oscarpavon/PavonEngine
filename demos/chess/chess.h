@@ -14,9 +14,11 @@ typedef struct ChessMovement{
   char movemenet[10];
 }ChessMovement;
 
+
 void chess_init();
 void chess_loop();
 void chess_draw();
 void chess_input();
+PGame* chess_main();
 
 #endif

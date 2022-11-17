@@ -1,7 +1,9 @@
 #ifndef ENGINE_INPUT
 #define ENGINE_INPUT
 
+#ifdef ANDROID
 #include <engine/platforms/android/input.h>
+#endif
 
     
 #ifdef EDITOR

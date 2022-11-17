@@ -114,11 +114,13 @@ STATIC
 ${engine_source}
 )
 
-include(../../make_include.txt)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Android")
+include(../../include.cmake)
 add_executable(level level.c)
 target_link_libraries(level ${android_link})
 target_link_directories(level PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
-
+endif()
 #add_library(engine_dynamic
 #	SHARED
 #	${engine_source}

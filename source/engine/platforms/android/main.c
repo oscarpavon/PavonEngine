@@ -45,18 +45,8 @@ void ainput(){
 
 }
 
-void android_main(struct android_app* state) {
+void android_main(struct android_app* android_state) {
 
-
-  PGame chess;
-  ZERO(chess);
-  chess.name = "Chess";
-  chess.loop = &chess_loop;
-  chess.init = &chess_init;
-	chess.draw = &chess_draw; 
-	chess.input = &chess_input;
-	chess.app = state;
-	game = &chess;	//need for egl context creation
 
   PGame modelling;
   ZERO(modelling);
@@ -65,7 +55,7 @@ void android_main(struct android_app* state) {
   modelling.input = &ainput;
   modelling.loop = &aloop;
   modelling.draw = &draw;
-	modelling.app = state;
+	modelling.app = android_state;
 	game = &modelling;	//need for egl context creation
 
   PGame editor;
@@ -75,15 +65,19 @@ void android_main(struct android_app* state) {
   editor.input = &editor_window_level_editor_input_update; // handle editor modes
   editor.loop = &aloop;
   editor.draw = &pe_editor_draw;
-  editor.app = state;
+  editor.app = android_state;
   game = &editor;
+
+PGame* chess = chess_main();
+chess->app = android_state;
+//TODO: game reference on android devices need to be create for input
+//and handle
 
 	game->app->onAppCmd = &pe_android_handle_cmd;
   game->app->onInputEvent = &pe_android_input_handle;
 
-  game = &chess;
 
-  pe_game_create(&chess);
+  pe_game_create(chess);
 
 
 

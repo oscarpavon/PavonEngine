@@ -18,11 +18,12 @@ add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
-#add_compile_definitions(PUBLIC LINUX)
+add_compile_definitions(PUBLIC LINUX)
+add_compile_definitions(PUBLIC DESKTOP)
 add_compile_definitions(PUBLIC OPENGL_ES2)
 #add_compile_definitions(PUBLIC BSD)
 
-add_compile_definitions(PUBLIC ANDROID)
+#add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
 
 include(FindFreetype)
@@ -31,4 +32,4 @@ add_subdirectory(source/engine)
 add_subdirectory(source/editor)
 #add_subdirectory(source/engine/renderer/vulkan)
 #add_subdirectory(source/editor/utils/pcmd)
-#add_subdirectory(demos/)
+add_subdirectory(demos/)

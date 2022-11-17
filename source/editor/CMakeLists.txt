@@ -1,4 +1,4 @@
-include(../../make_include.txt)
+include(../../include.cmake)
 
 set(windows 
 		windows/tabs.c

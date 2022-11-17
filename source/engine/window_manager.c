@@ -7,46 +7,13 @@
 EGLDisplay display;
 EGLSurface surface;
 EGLContext context;
+#include <GLES/gl.h>
 #endif
 
 #include <engine/game.h>
 
-#include <GLES/gl.h>
 
-
-/**
- * Tear down the EGL context currently associated with the display.
- */
-void pe_wm_egl_end() {
-	if (display != EGL_NO_DISPLAY) {
-		eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-		if (context != EGL_NO_CONTEXT) {
-			eglDestroyContext(display, context);
-		}
-		if (surface != EGL_NO_SURFACE) {
-			eglDestroySurface(display, surface);
-		}
-		eglTerminate(display);
-	}
-	display = EGL_NO_DISPLAY;
-	context = EGL_NO_CONTEXT;
-	surface = EGL_NO_SURFACE;
-}
-
-void pe_wm_swap_buffers() {
 #ifdef ANDROID
-  eglSwapBuffers(display, surface);
-#endif
-
-#ifdef LINUX
-  glfwSwapBuffers(window->window);
-
-#endif
-}
-void pe_wm_egl_context_make_current(){
-	eglMakeCurrent(display, surface, surface, context);
-}
-
 void pe_wm_egl_init(){
 
 	// Setup OpenGL ES 2
@@ -118,6 +85,40 @@ void pe_wm_egl_init(){
 	return 0;
 
 }
+void pe_wm_egl_context_make_current(){
+	eglMakeCurrent(display, surface, surface, context);
+}
+/**
+ * Tear down the EGL context currently associated with the display.
+ */
+void pe_wm_egl_end() {
+	if (display != EGL_NO_DISPLAY) {
+		eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+		if (context != EGL_NO_CONTEXT) {
+			eglDestroyContext(display, context);
+		}
+		if (surface != EGL_NO_SURFACE) {
+			eglDestroySurface(display, surface);
+		}
+		eglTerminate(display);
+	}
+	display = EGL_NO_DISPLAY;
+	context = EGL_NO_CONTEXT;
+	surface = EGL_NO_SURFACE;
+}
+#endif
+
+void pe_wm_swap_buffers() {
+#ifdef ANDROID
+  eglSwapBuffers(display, surface);
+#endif
+
+#ifdef LINUX
+  //glfwSwapBuffers(window->window);
+
+#endif
+}
+
 
 void pe_wm_events_update() {
 #ifdef LINUX
@@ -191,8 +192,9 @@ void pe_wm_create_window(EngineWindow* win){
 
   current_window = win;
 
-
+#ifdef ANDROID
 	pe_wm_egl_init();	
+#endif
 
   win->initialized = true;
 }
@@ -247,7 +249,7 @@ void pe_wm_window_init(EngineWindow* window){
 void pe_wm_context_current(){
 
 #ifdef LINUX
-      glfwMakeContextCurrent(window->window);
+      //glfwMakeContextCurrent(window->window);
 #endif
 #ifdef ANDROID
       pe_wm_egl_context_make_current();

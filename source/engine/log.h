@@ -12,7 +12,7 @@
     #define ALOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
 #else
     #include <stdio.h>
-    #define OG printf
+    #define LOG printf
 #endif//DEF ANDROID
 
 #define LOGW(t) printf(t); printf("\n")
