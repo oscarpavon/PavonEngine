@@ -1,7 +1,7 @@
 #include "base.h"
 
 #include "engine.h"
-
+#include <engine/windows_manager.h>
 
 void pe_end(){
     engine_running = false;   
@@ -9,6 +9,7 @@ void pe_end(){
 }
 
 void pe_init(){
+  LOG("Initializing Pavon Engine");
   init_engine_memory();//VERY IMPORTANT
 
   pe_init_arrays();
@@ -25,6 +26,8 @@ void pe_init(){
   //pe_audio_init();
   //pe_phy_init();
   pe_input_init();
-  windows_manager_init();
+  
 #endif
+pe_wm_init();
+LOG("Pavon Engine initialized");
 }

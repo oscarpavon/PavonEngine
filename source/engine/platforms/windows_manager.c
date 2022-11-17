@@ -1,9 +1,9 @@
 #include "windows_manager.h"
 #include <stdio.h>
 
-#include "game.h"
-#include "log.h"
-#include "text_renderer.h"
+#include <engine/game.h>
+#include <engine/log.h>
+#include <engine/text_renderer.h>
 
 void window_manager_error_callback(int error, const char* description)
 {
@@ -30,14 +30,16 @@ void pe_wm_glfw_init(){
 
     }
 
-    glfwSetErrorCallback(window_manager_error_callback);
+    //glfwSetErrorCallback(window_manager_error_callback);
     glfwInit();
 }
 
 
 
 void windows_manager_init(){
+  LOG("Window manager init....");
 	pe_wm_glfw_init();		
+  LOG("Window manager initilized");
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){

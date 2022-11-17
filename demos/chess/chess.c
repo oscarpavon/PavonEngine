@@ -507,7 +507,8 @@ PGame* chess_main(PGame * chess){
 }
 
 void main(){
+  
+  LOG("Chess init");
   PGame chess;
 chess_main(&chess);
-pe_game_create(&chess);
 }
