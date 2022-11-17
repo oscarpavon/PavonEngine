@@ -19,6 +19,6 @@ void chess_init();
 void chess_loop();
 void chess_draw();
 void chess_input();
-PGame* chess_main();
+PGame* chess_main(PGame*);
 
 #endif
