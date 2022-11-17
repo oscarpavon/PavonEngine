@@ -54,9 +54,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
 if(DESKTOP)
 add_executable(peditor ${editor_sources} ${game_source})
-FIND_LIBRARY(bullet libBulletDynamics.so )
-FIND_LIBRARY(bullet1 libBulletCollision.so)
-FIND_LIBRARY(bullet2 libBullet3Common.so)
+#FIND_LIBRARY(bullet libBulletDynamics.so )
+#FIND_LIBRARY(bullet1 libBulletCollision.so)
+#FIND_LIBRARY(bullet2 libBullet3Common.so)
 set(lib 
 	engine        
     ${engine_link}
@@ -64,12 +64,10 @@ set(lib
 target_link_libraries(peditor ${lib})
 endif()
 
-if(ANDROID)
 
 add_library(peditor
 STATIC
 ${editor_sources} 
 )
 
-endif()
 

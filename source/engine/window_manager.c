@@ -11,6 +11,7 @@ EGLContext context;
 #endif
 
 #include <engine/game.h>
+#include <engine/input.h>
 
 
 #ifdef ANDROID
@@ -168,10 +169,6 @@ void windows_manager_init(){
 
 }
 
-void pe_input_init(){
-
-
-}
 
 void window_update_viewport(int width, int height){
 		glViewport(0,0,width,height);
@@ -183,6 +180,7 @@ void window_update_viewport(int width, int height){
 
 void pe_wm_create_window(EngineWindow* win){
 	
+
   if (win == NULL) {
     LOG("ERROR: Window not found\n");
     return;
@@ -191,6 +189,17 @@ void pe_wm_create_window(EngineWindow* win){
     return;
 
   current_window = win;
+
+#ifdef LINUX
+    glfwSetKeyCallback(win, pe_input_key_callback);
+	  glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
+	  glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);
+    glfwSetCharCallback(win, pe_input_key_callback);
+
+		//TODO: fix window focus and resize
+    //glfwSetWindowFocusCallback(win,window_focus_callback);
+    //glfwSetFramebufferSizeCallback(win, window_resize_callback);
+#endif
 
 #ifdef ANDROID
 	pe_wm_egl_init();	

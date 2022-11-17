@@ -89,10 +89,10 @@ set(engine_source
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 	set(platform_pc 	
-		${CMAKE_CURRENT_LIST_DIR}/windows_manager.c
+		${CMAKE_CURRENT_LIST_DIR}/window_manager.c
 		${CMAKE_CURRENT_LIST_DIR}/input.c
 		)
-	set(engine_source ${engine_source} ${window_manager})	
+	set(engine_source ${engine_source} ${window_manager} ${platform_pc})	
 endif()
 
 if(ANDROID)

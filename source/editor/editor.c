@@ -581,7 +581,7 @@ void pe_editor_window_configure() {
 
   PEThreadCommand thread_commad;
 #ifdef DESKTOP
-    thread_commad.command = &window_manager_init_window;
+    //thread_commad.command = &window_manager_init_window;
 
 #endif
     thread_commad.data = window_editor_main;

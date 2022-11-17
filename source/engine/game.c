@@ -14,6 +14,7 @@
 
 #include <dlfcn.h>
 #include <engine/base.h>
+#include <engine/input.h>
 
 static vec4 backcolor= {0.1,0.2,0.4,1};
 
@@ -42,14 +43,6 @@ void pe_game_init(){
     //window_create(game_window, NULL, game->name); 
     pe_wm_create_window(game_window);
 
-#ifdef LINUX
-    glfwSetKeyCallback(game_window->window, pe_input_key_callback);
-	  glfwSetCursorPosCallback(game_window->window, pe_input_mouse_movement_callback);
-	  glfwSetMouseButtonCallback(game_window->window, pe_input_mouse_button_callback);
-    glfwSetCharCallback(game_window->window, pe_input_key_callback);
-    glfwSetWindowFocusCallback(game_window->window,window_focus_callback);
-    glfwSetFramebufferSizeCallback(game_window->window, window_resize_callback);
-#endif
 }
 void pe_game_input(){
   game->input();

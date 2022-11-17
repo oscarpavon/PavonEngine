@@ -9,7 +9,7 @@
 #define RENDER_DEPTH_BUFFER GL_DEPTH_BUFFER_BIT
 
 #ifdef LINUX
-#define PEINLINE static inline
+#define PEINLINE //static inline
 #else
 #define PEINLINE 
 
@@ -35,5 +35,16 @@ void update_gpu_vertex_data(Array* array, GLuint id);
 void pe_render_skinned_model(SkinnedMeshComponent * new_model);
 
 PEINLINE GLint get_uniform_location(GLuint shader, const char* name);
+PEINLINE void mvp_error(const char* uniform_name);
+
+PEINLINE void check_send_matrix_error(const char* message);
+
+PEINLINE void check_error(const char* message);
+
+PEINLINE GLint get_uniform_location(GLuint shader, const char* name);
+
+PEINLINE void send_color_to_shader(u32 shader_id, vec4 color);
+
+PEINLINE void render_clear_buffer(int buffer_bits);
 
 #endif // !OPENGL_ES_2_RENDERER_H

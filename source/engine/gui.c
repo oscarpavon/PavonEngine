@@ -15,6 +15,8 @@
 
 #include "engine.h"
 
+#include <engine/renderer/renderer.h>
+
 
 GLuint logo_shader;
 

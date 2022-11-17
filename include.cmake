@@ -26,7 +26,7 @@ set(linux_libraries
 
 set(pc_link 
 	  glfw
-    #pe_vk
+    pe_vk
     vulkan
     pulse
     pulse-simple
@@ -41,6 +41,7 @@ set(pc_link
 	  pthread
     EGL 
     GLESv2
+    peditor
 )
 
 set(lib ${lib} ${linux_libraries})
