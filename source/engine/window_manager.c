@@ -180,16 +180,15 @@ LOG("Window already initialized\n");
 
 
 #ifdef LINUX
-    glfwSetKeyCallback(win, pe_input_key_callback);
+window_create(win,NULL, "Window");
+    glfwSetKeyCallback(win->window, pe_input_key_callback);
 	  glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
 	  glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);
-    glfwSetCharCallback(win, pe_input_key_callback);
+    glfwSetCharCallback(win->window, pe_input_key_callback);
 
-		//TODO: fix window focus and resize
-    //glfwSetWindowFocusCallback(win,window_focus_callback);
-    //glfwSetFramebufferSizeCallback(win, window_resize_callback);
+    glfwSetWindowFocusCallback(win->window,window_focus_callback);
+    glfwSetFramebufferSizeCallback(win->window, window_resize_callback);
 
-window_create(win,NULL, "Window");
 #endif
 
 #ifdef ANDROID

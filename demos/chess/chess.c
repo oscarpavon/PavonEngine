@@ -78,7 +78,7 @@ void chess_piece_movement(int x, int y) {
 
 void chess_board_create() {
 
-  add_element_with_model_path("/sdcard/Download/NativeContent/Editor/cube.glb");
+  add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/cube.glb");
 
   StaticMeshComponent *mesh =
       get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
@@ -403,7 +403,7 @@ void chess_human_create() {
   LOG("###########HUman created and selected_element ");
 
   // add_element_with_model_path("/sdcard/Download/chess_human2.glb");
-  add_element_with_model_path("/sdcard/Download/chess/bones.gltf");
+  add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/sphere.glb");
 
   // pe_element_set_position(selected_element,VEC3(10,4,-10));
   // pe_element_rotate(selected_element, -90, VEC3(0,0,1));
@@ -424,11 +424,11 @@ void chess_human_create() {
     // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
   }
 
-  add_texture_to_selected_element_with_image_path(
-      "/sdcard/Download/ImageConverter/Muro_head_dm.png");
+  //add_texture_to_selected_element_with_image_path(
+   //   "/sdcard/Download/ImageConverter/Muro_head_dm.png");
 
-  add_texture_to_selected_element_with_image_path(
-      "/sdcard/Download/ImageConverter/Muro_body_dm.png");
+  //add_texture_to_selected_element_with_image_path(
+   //   "/sdcard/Download/ImageConverter/Muro_body_dm.png");
 
   pe_skeletal_editor_init_for(human_skin_component);
 }
@@ -441,7 +441,7 @@ void chess_init() {
 
   chess_init_materials();
 
-  //chess_board_create();
+  chess_board_create();
 
   //chess_pieces_create();
 

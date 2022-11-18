@@ -36,4 +36,4 @@ mat4 bone_transform = joint_matrix[int(inJoint0.x)] * inWeight0.x
 	gl_Position = projection * pos;
 	v_TexCoord = inUV;
 }
-//end
+//end\0
