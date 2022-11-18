@@ -110,26 +110,6 @@ void pe_wm_egl_end() {
 }
 #endif
 
-void pe_wm_swap_buffers() {
-#ifdef ANDROID
-  eglSwapBuffers(display, surface);
-#endif
-
-#ifdef LINUX
-  glfwSwapBuffers(current_window->window);
-
-#endif
-}
-
-
-void pe_wm_events_update() {
-#ifdef LINUX
-  glfwPollEvents();
-#endif
-#ifdef ANDROID
-  pe_android_poll_envents();
-#endif
-}
 
 void pe_wm_input_update() {
 
@@ -168,10 +148,11 @@ bool pe_wm_should_close(EngineWindow* window){
 
 
 void pe_wm_init(){
+
 #ifdef DESKTOP
 windows_manager_init();
-pe_is_window_init = true;
 #endif
+pe_is_window_init = true;
 }
 
 
@@ -197,6 +178,7 @@ LOG("Window already initialized\n");
 
   current_window = win;
 
+
 #ifdef LINUX
     glfwSetKeyCallback(win, pe_input_key_callback);
 	  glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
@@ -206,6 +188,8 @@ LOG("Window already initialized\n");
 		//TODO: fix window focus and resize
     //glfwSetWindowFocusCallback(win,window_focus_callback);
     //glfwSetFramebufferSizeCallback(win, window_resize_callback);
+
+window_create(win,NULL, "Window");
 #endif
 
 #ifdef ANDROID
@@ -213,6 +197,8 @@ LOG("Window already initialized\n");
 #endif
 
   win->initialized = true;
+
+
 
 	LOG("Window created\n");
 }
@@ -224,20 +210,10 @@ void pe_wm_window_init(EngineWindow* window){
 		window->init();
 	window->initialized = true;
 
-	LOG("Window initialized\n");
+	LOG("Window\n");
 }
 
 
-void pe_wm_context_current(){
-
-#ifdef LINUX
-     glfwMakeContextCurrent(current_window->window);
-#endif
-#ifdef ANDROID
-      pe_wm_egl_context_make_current();
-#endif
-
-}
 
 void window_set_focus(EngineWindow* window){
     current_window->focus = false;
@@ -252,6 +228,37 @@ void window_set_focus(EngineWindow* window){
     //LOG("Focus windows change\n");
 }
 
+void pe_wm_context_current(){
+
+#ifdef LINUX
+     glfwMakeContextCurrent(current_window->window);
+#endif
+#ifdef ANDROID
+      pe_wm_egl_context_make_current();
+#endif
+
+}
+
+void pe_wm_swap_buffers() {
+#ifdef ANDROID
+  eglSwapBuffers(display, surface);
+#endif
+
+#ifdef LINUX
+  glfwSwapBuffers(current_window->window);
+
+#endif
+}
+
+
+void pe_wm_events_update() {
+#ifdef LINUX
+  glfwPollEvents();
+#endif
+#ifdef ANDROID
+  pe_android_poll_envents();
+#endif
+}
 void pe_wm_windows_draw() {
 
   for (u8 i = 0; i < engine_windows.count; i++) {

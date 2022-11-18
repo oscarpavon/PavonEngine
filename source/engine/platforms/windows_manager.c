@@ -38,9 +38,9 @@ void pe_wm_glfw_init(){
 
 
 void windows_manager_init(){
-  LOG("Window manager init....");
+  LOG("Window manager init....\n");
 	pe_wm_glfw_init();		
-  LOG("Window manager initilized");
+  LOG("Window manager initilized\n");
 }
 
 void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
