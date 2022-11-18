@@ -170,6 +170,7 @@ bool pe_wm_should_close(EngineWindow* window){
 void pe_wm_init(){
 #ifdef DESKTOP
 windows_manager_init();
+pe_is_window_init = true;
 #endif
 }
 
@@ -189,8 +190,10 @@ void pe_wm_create_window(EngineWindow* win){
     LOG("ERROR: Window not found\n");
     return;
   }
-  if (win->initialized)
+	if (win->initialized){
+LOG("Window already initialized\n");
     return;
+	}
 
   current_window = win;
 
@@ -210,13 +213,18 @@ void pe_wm_create_window(EngineWindow* win){
 #endif
 
   win->initialized = true;
+
+	LOG("Window created\n");
 }
 
 
 void pe_wm_window_init(EngineWindow* window){
+	LOG("Initialing Window\n");
 	if(window->init != NULL)
 		window->init();
 	window->initialized = true;
+
+	LOG("Window initialized\n");
 }
 
 

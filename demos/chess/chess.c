@@ -493,7 +493,7 @@ void chess_draw() {
 
 PGame* chess_main(PGame * chess){
 
-  ZERO(chess);
+  ZERO(*chess);
   chess->name = "Chess";
   chess->loop = &chess_loop;
   chess->init = &chess_init;
@@ -508,7 +508,8 @@ PGame* chess_main(PGame * chess){
 
 void main(){
   
+  
   LOG("Chess init");
   PGame chess;
-chess_main(&chess);
+  chess_main(&chess);
 }

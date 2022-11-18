@@ -41,6 +41,7 @@ void pe_game_draw(){
 void pe_game_init(){
 
     //window_create(game_window, NULL, game->name); 
+    LOG("Creating window for game\n");
     pe_wm_create_window(game_window);
 
 }
@@ -50,7 +51,7 @@ void pe_game_input(){
 }
 
 void pe_game_create(PGame * created_game){
-    LOG("Creating Pavon Engine game...");
+    LOG("Creating Pavon Engine game...\n");
     game = created_game; 
 
     pe_renderer_type = PEWMOPENGLES2;
