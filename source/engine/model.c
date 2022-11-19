@@ -457,10 +457,13 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   if(data->skins_count >= 1){
 		SkinnedMeshComponent skin;
 		ZERO(skin);
+    LOG("Creating skin mesh joints\n");
 
-		array_init(&skin.joints,sizeof(Node),data->nodes_count);	 
-        memset(skin.joints.data,0,sizeof(Node) * data->nodes_count);
+		//array_init(&skin.joints,sizeof(Node),data->nodes_count);	 
+        //ZERO(skin.joints.data);
 		
+    LOG("nodes count: %i \n", data->nodes_count);
+
 		array_add(&pe_arr_skin_loaded,&skin);
 		pe_curr_skin_loading = array_pop(&pe_arr_skin_loaded); 
 

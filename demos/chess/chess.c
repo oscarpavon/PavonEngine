@@ -307,7 +307,7 @@ void chess_create_bishop() {
 
 void chess_create_pawn() {
 
-  add_element_with_model_path("/sdcard/Download/chess/peon.glb");
+  add_element_with_model_path("/home/pavon/PavonEngine/demos/chess/peon.glb");
 
   chess_piece_set_pos(VEC2(1, 0));
   chess_piece_init_scale();
@@ -377,10 +377,10 @@ void chess_create_rooks() {
 void chess_pieces_create() {
 
   chess_create_pawn();
-  chess_create_rooks();
-  chess_create_bishop();
-  chess_create_leaders();
-  chess_create_knight();
+  //chess_create_rooks();
+  //chess_create_bishop();
+  //chess_create_leaders();
+  //chess_create_knight();
 }
 
 void chess_camera_init() {
@@ -403,7 +403,7 @@ void chess_human_create() {
   LOG("###########HUman created and selected_element ");
 
   // add_element_with_model_path("/sdcard/Download/chess_human2.glb");
-  add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/sphere.glb");
+  add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/simple_skeletal.glb");
 
   // pe_element_set_position(selected_element,VEC3(10,4,-10));
   // pe_element_rotate(selected_element, -90, VEC3(0,0,1));
@@ -415,6 +415,7 @@ void chess_human_create() {
       get_component_from_element(selected_element, COMPONENT_SKINNED_MESH);
   if (!human_comp) {
     LOG("********Human component not found");
+    return;
   }
   human_comp->mesh->material = piece_mat1;
   human_skin_component = human_comp;
@@ -430,7 +431,7 @@ void chess_human_create() {
   //add_texture_to_selected_element_with_image_path(
    //   "/sdcard/Download/ImageConverter/Muro_body_dm.png");
 
-  pe_skeletal_editor_init_for(human_skin_component);
+  //pe_skeletal_editor_init_for(human_skin_component);
 }
 
 void chess_init() {
@@ -443,9 +444,9 @@ void chess_init() {
 
   chess_board_create();
 
-  //chess_pieces_create();
+  chess_pieces_create();
 
-  // chess_human_create();
+ // chess_human_create();
 }
 
 void chess_loop() {}

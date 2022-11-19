@@ -10,7 +10,9 @@ void main()
   vec3 ligth_dir = normalize(light_pos - FragPosition);
   float diff = max(dot(norm,ligth_dir),0.0);
   vec3 diffuse = diff * vec3(color.x, color.y, color.z);
-  gl_FragColor = vec4(diffuse,1.0);
+  //gl_FragColor = vec4(diffuse,1.0);
+  
+  gl_FragColor = vec4(color.x,color.y,color.z,1.0);
 
 }
 //end$

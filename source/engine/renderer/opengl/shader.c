@@ -85,6 +85,7 @@ bool pe_shader_compile_std() {
 
     shader_skin_vertex = pe_shader_load_src_and_create(
         "/home/pavon/PavonEngine/NativeContent/shaders/skin_vertex_shader.glsl",
+        //"/home/pavon/PavonEngine/NativeContent/shaders/std.vert",
         GL_VERTEX_SHADER);
 #endif
 #ifdef ANDROID

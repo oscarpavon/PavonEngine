@@ -33,6 +33,7 @@ mat4 bone_transform = joint_matrix[int(inJoint0.x)] * inWeight0.x
 	mat4 mv = view * model;
 
 	vec4 pos = mv * skin_matrix * vec4(position,1.0);
+	
 	gl_Position = projection * pos;
 	v_TexCoord = inUV;
 }
