@@ -11,7 +11,7 @@
 #include <engine/model.h>
 #include <engine/engine.h>
 
-#include </home/pavon/PavonEngine/demos/chess/chess.h>
+#include <../demos/chess/chess.h>
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description(){
     VkVertexInputBindingDescription binding;

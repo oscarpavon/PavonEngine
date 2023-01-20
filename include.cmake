@@ -20,7 +20,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 find_package(glfw3 REQUIRED)
 
 set(linux_libraries 
-	asound
+	
+  pulse
+    pulse-simple
+    asound
 )
 
 
@@ -28,9 +31,7 @@ set(pc_link
 	  glfw
     pe_vk
     vulkan
-    pulse
-    pulse-simple
-    asound
+    
     #BulletDynamics
     #BulletCollision
     #BulletSoftBody
