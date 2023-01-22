@@ -1,8 +1,8 @@
 
 #set(OpenGL_GL_PREFERENCE GLVND)
 
-include(FindFreetype)
-include_directories(${FREETYPE_INCLUDE_DIRS})
+#include(FindFreetype)
+#include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
 #find_package(OpenGL REQUIRED)
@@ -50,8 +50,11 @@ set(lib ${lib} ${linux_libraries})
 endif()
 
 set(engine_link 
-	${FREETYPE_LIBRARIES}
+#	${FREETYPE_LIBRARIES}
   ${pc_link}
+  pavon_engine
+  glfw3
+
     )
 
 set(android_link 

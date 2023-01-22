@@ -158,7 +158,7 @@ pe_is_window_init = true;
 
 void window_update_viewport(int width, int height){
 		glViewport(0,0,width,height);
-#ifdef LINUX
+#ifdef PE_FREETYPE
     text_renderer_update_pixel_size();
 #endif
 		camera_update_aspect_ratio(&current_window->camera);

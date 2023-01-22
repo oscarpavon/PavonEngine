@@ -1,4 +1,9 @@
 
+if(PE_FREETYPE)
+        set(engine_src 
+        ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
+        )
+endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
@@ -81,7 +86,6 @@ set(engine_source
 	      ${CMAKE_CURRENT_LIST_DIR}/elements.c
 	      ${CMAKE_CURRENT_LIST_DIR}/window_manager.c
 	      ${CMAKE_CURRENT_LIST_DIR}/animation/node.c
-        ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
 
         ${demos}
 
