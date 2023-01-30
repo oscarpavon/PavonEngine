@@ -31,11 +31,6 @@ set(pc_link
 	  glfw
     pe_vk
     vulkan
-    
-    #BulletDynamics
-    #BulletCollision
-    #BulletSoftBody
-    #LinearMath
 	  ${OPENGL_LIBRARIES}
 	  dl
 	  m
@@ -50,10 +45,8 @@ set(lib ${lib} ${linux_libraries})
 endif()
 
 set(engine_link 
-#	${FREETYPE_LIBRARIES}
   ${pc_link}
   pavon_engine
-  glfw3
 
     )
 
@@ -66,7 +59,6 @@ set(android_link
     pavon_engine
     m
     peditor
-    #${FREETYPE_LIBRARIES}
     freetype
     
     )
