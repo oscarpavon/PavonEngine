@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7.0)
 project(PavonEngineAndroid)
 set(CMAKE_SYSTEM_NAME Android)
-set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
+set(ANDROID_NDK ~/android-ndk-r25c)
 set(CMAKE_ANDROID_NDK ${ANDROID_NDK})
 set(CMAKE_ANDROID_ARCH_ABI armabi-v7a)
 
@@ -15,7 +15,7 @@ include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY /data/data/com.termux/files/home/PavonEngine/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ~/PavonEngine/lib)
 
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
@@ -32,12 +32,12 @@ add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
 
 
-include_directories(/data/data/com.termux/files/home/PavonEngine/source/)
+include_directories(~/PavonEngine/source/)
 
 include_directories(
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-include(/data/data/com.termux/files/home/PavonEngine/include.cmake)
+include(~/PavonEngine/include.cmake)
 
 
 #set(ANDROID_ABI arm64-v8a)
@@ -53,7 +53,7 @@ add_library(pavon_engine_android SHARED main.c)
 target_include_directories(pavon_engine_android PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
-target_link_directories(pavon_engine_android PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
+target_link_directories(pavon_engine_android PUBLIC ~/PavonEngine/lib)
 target_link_libraries(pavon_engine_android
     ${android_link})
 

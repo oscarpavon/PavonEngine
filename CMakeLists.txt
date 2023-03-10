@@ -8,7 +8,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-int-conversion -Wn
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g ")
 
 if(ANDROID)
-        set(ANDROID_NDK /data/data/com.termux/files/home/android-ndk-r23b)
+        set(ANDROID_NDK ~/android-ndk-r25c)
         include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 #include_directories(/home/pavon/sources/freetype2/include)
 
@@ -28,6 +28,8 @@ add_compile_definitions(PUBLIC DEBUG)
 
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
+
+
 add_subdirectory(source/engine)
 add_subdirectory(source/editor)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
