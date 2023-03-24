@@ -180,7 +180,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     break;
   }
   case cgltf_attribute_type_normal: {
-
+LOG("Normal attribute \n");
     vec3 normals[attribute->data->count];
     ZERO(normals);
 

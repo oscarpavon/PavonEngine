@@ -377,9 +377,9 @@ void chess_create_rooks() {
 void chess_pieces_create() {
 
   chess_create_pawn();
-  //chess_create_rooks();
+  chess_create_rooks();
   //chess_create_bishop();
-  //chess_create_leaders();
+ // chess_create_leaders();
   //chess_create_knight();
 }
 
@@ -436,7 +436,7 @@ void chess_human_create() {
 
 void chess_init() {
 
-  pe_change_background_color(0, 0.2, 0.5, 1);
+  pe_change_background_color(0, 0.4f, 1, 1);
 
   chess_camera_init();
 
@@ -492,25 +492,24 @@ void chess_draw() {
   }
 }
 
-PGame* chess_main(PGame * chess){
+PGame *chess_main(PGame *chess) {
 
   ZERO(*chess);
   chess->name = "Chess";
   chess->loop = &chess_loop;
   chess->init = &chess_init;
-	chess->draw = &chess_draw; 
-	chess->input = &chess_input;
-	game = chess;	//need for egl context creation
+  chess->draw = &chess_draw;
+  chess->input = &chess_input;
+  game = chess; // need for egl context creation
   pe_game_create(chess);
-
 
   return chess;
 }
 
-void main(){
-  
-  
+int main() {
+
   LOG("Chess init");
   PGame chess;
   chess_main(&chess);
+  return 0;
 }
