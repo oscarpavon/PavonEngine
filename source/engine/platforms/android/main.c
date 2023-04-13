@@ -812,3 +812,8 @@ chess->app = android_state;
 //
 //
 //
+//
+//
+//
+//
+//

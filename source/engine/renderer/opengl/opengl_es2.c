@@ -270,11 +270,12 @@ void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color){
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, sizeof(struct Vertex), (void*)offsetof(struct Vertex, uv));
-		
-		if(color != NULL)	
-    send_color_to_shader(data->shader,color);
 
-    glDrawArrays(GL_TRIANGLE_STRIP,0,4);        
+    if (color != NULL) {
+    send_color_to_shader(data->shader, color);
+    }
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     check_error("Two dimension");
 }
