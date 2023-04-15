@@ -69,8 +69,8 @@ void android_main(struct android_app* android_state) {
   game = &editor;
 
   PGame chess_game;
-PGame* chess = chess_main(&chess_game);
-chess->app = android_state;
+  PGame* chess = chess_main(&chess_game);
+  chess->app = android_state;
 //TODO: game reference on android devices need to be create for input
 //and handle
 
@@ -118,6 +118,19 @@ chess->app = android_state;
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

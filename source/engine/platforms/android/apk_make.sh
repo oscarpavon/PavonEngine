@@ -16,7 +16,7 @@ cd output
 aapt add -v -f ../pavon.apk classes.dex 
 cd ../
 
-aapt add -v -f pavon.apk lib/armeabi-v7a/libpavon_engine_android.so
+aapt add -v -f pavon.apk lib/arm64-v8a/libpavon_engine_android.so
 
 
 RDR="/data/data/com.termux/files/home/buildAPKs/"

@@ -40,8 +40,8 @@ include_directories(
 include(~/PavonEngine/include.cmake)
 
 
-#set(ANDROID_ABI arm64-v8a)
-set(ANDROID_ABI armeabi-v7a)
+set(ANDROID_ABI arm64-v8a)
+#set(ANDROID_ABI armeabi-v7a)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib/${ANDROID_ABI})
 

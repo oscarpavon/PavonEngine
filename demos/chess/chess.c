@@ -3,6 +3,7 @@
 #include "engine/elements.h"
 #include <editor/skeletal_editor.h>
 #include <engine/animation/node.h>
+#include <engine/shader.h>
 
 vec4 color1 = {0, 0.2, 0, 1};
 vec4 color2 = {1, 0.5, 1, 1};

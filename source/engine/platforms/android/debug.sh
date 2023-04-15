@@ -1,1 +1,1 @@
-adb shell logcat -v color | grep pavonstudios | less
+adb shell logcat *:E -v color | grep pavonstudios 
