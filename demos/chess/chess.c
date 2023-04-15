@@ -506,10 +506,3 @@ PGame *chess_main(PGame *chess) {
   return chess;
 }
 
-int main() {
-
-  LOG("Chess init");
-  PGame chess;
-  chess_main(&chess);
-  return 0;
-}

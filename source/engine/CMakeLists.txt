@@ -55,7 +55,6 @@ set(pe_base
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/threads.c
         )
-set(demos ${CMAKE_CURRENT_LIST_DIR}/../../demos/chess/chess.c)
 
 set(engine_source
         ${pe_base} 
@@ -87,8 +86,6 @@ set(engine_source
 	      ${CMAKE_CURRENT_LIST_DIR}/window_manager.c
 	      ${CMAKE_CURRENT_LIST_DIR}/animation/node.c
 
-        ${demos}
-
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -118,15 +115,4 @@ STATIC
 ${engine_source}
 )
 
-
-if(CMAKE_SYSTEM_NAME MATCHES "Android")
-include(../../include.cmake)
-add_executable(level level.c)
-target_link_libraries(level ${android_link})
-target_link_directories(level PUBLIC /data/data/com.termux/files/home/PavonEngine/lib)
-endif()
-#add_library(engine_dynamic
-#	SHARED
-#	${engine_source}
-#)
 

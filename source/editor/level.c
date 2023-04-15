@@ -45,12 +45,3 @@ void editor_level_open(const char *name) {
   LOG("Level loading time: %ld ms\n", millisecond);
 }
 
-//for level command line  util 
-int main(){
-//LOG("Level editor test");
-printf("level\n");
-
-save_level_data("new_level.lvl");
-
-return 0;
-}

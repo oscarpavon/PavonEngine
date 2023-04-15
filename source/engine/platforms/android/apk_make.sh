@@ -3,14 +3,14 @@
 [ ! -d obj ] && mkdir obj
 [ ! -d output ] && mkdir output
 
-aapt package -f --target-sdk-version 19 --generate-dependencies -J gen -M AndroidManifest.xml -S res
+aapt package -f --target-sdk-version 25 --generate-dependencies -J gen -M AndroidManifest.xml -S res
 
 unset JAVA_HOME
 dalvikvm -Xmx512m -Xcompiler-option --compiler-filter=speed -cp "$PREFIX"/share/dex/ecj.jar org.eclipse.jdt.internal.compiler.batch.Main -proc:none -source 1.8 -target 1.8 -cp "$PREFIX"/share/java/android.jar $ECJENT -d ./obj .
 
 dx --dex --output=output/classes.dex ./obj
 
-aapt package -f --target-sdk-version 19 -M AndroidManifest.xml -S ./res -F pavon.apk
+aapt package -f --target-sdk-version 25 -M AndroidManifest.xml -S ./res -F pavon.apk
 
 cd output 
 aapt add -v -f ../pavon.apk classes.dex 
