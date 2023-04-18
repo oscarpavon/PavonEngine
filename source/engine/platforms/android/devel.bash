@@ -24,7 +24,8 @@ make -j8
 cd ~/PavonEngine/source/engine/platforms/android/
 
 ./apk_make.sh
-adb install ./pavons.apk
+#adb install ./pavons.apk #without root on android devices
+sudo pm install ./pavons.apk #with root
 ./start.sh && ./debug.sh
 
 #Installation process

@@ -16,12 +16,12 @@ add_compile_definitions(PUBLIC OPENGL_ES2)
 
 add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
+set(PE_FREETYPE TRUE)
 
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g ")
 if(ANDROID)
         set(ANDROID_NDK ~/android-ndk-r25c)
         include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
-#include_directories(/home/pavon/sources/freetype2/include)
 
 endif()
 include(FindFreetype)

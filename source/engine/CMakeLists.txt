@@ -1,8 +1,9 @@
 
 if(PE_FREETYPE)
-        set(engine_src 
+        set(engine_source 
         ${CMAKE_CURRENT_LIST_DIR}/text_renderer.c
         )
+        message("Text renderer compilation")
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -57,6 +58,7 @@ set(pe_base
         )
 
 set(engine_source
+        ${engine_source}
         ${pe_base} 
         ${renderer}
 

@@ -64,13 +64,17 @@ void render_thread_init(){
   pe_gui_init();
   #ifdef PE_FREETYPE
   text_renderer_init();
-   #endif
+  #endif
 
 }
 
 void engine_render_draw() {
 
+  LOG("########## PE renderizer GO");
+
   render_thread_init();
+
+
 
   //*********  Timing ******
   float render_frame_time = 0;
@@ -80,7 +84,6 @@ void engine_render_draw() {
   float frame_second = 0;
   //************************
 
-  LOG("########## PE renderizer GO");
 
   while (engine_running) {
 
