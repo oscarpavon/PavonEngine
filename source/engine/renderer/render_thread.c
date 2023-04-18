@@ -68,7 +68,7 @@ void render_thread_init(){
 
 }
 
-void engine_render_draw() {
+void pe_render_draw() {
 
   LOG("########## PE renderizer GO");
 
@@ -116,7 +116,7 @@ void engine_render_draw() {
 
 /*Start render thread and call engine_render_draw()*/
 void pe_render_thread_start_and_draw(){
-	thread_new_detached(engine_render_draw,NULL,"Render",&pe_th_render_id);    
+	thread_new_detached(pe_render_draw,NULL,"Render",&pe_th_render_id);    
 }
 
 void pe_frame_static_fill(ComponentDefinition* definition){
