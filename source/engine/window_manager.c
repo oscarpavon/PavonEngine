@@ -165,14 +165,13 @@ void window_update_viewport(int width, int height){
 }
 
 void pe_wm_create_window(EngineWindow* win){
-	
-
-  if (win == NULL) {
-    LOG("ERROR: Window not found\n");
+  
+	if (win == NULL) { 
+		LOG("ERROR: Window not found\n");
     return;
   }
 	if (win->initialized){
-LOG("Window already initialized\n");
+		LOG("Window already initialized\n");
     return;
 	}
 
@@ -180,14 +179,14 @@ LOG("Window already initialized\n");
 
 
 #ifdef LINUX
-window_create(win,NULL, "Window");
-    glfwSetKeyCallback(win->window, pe_input_key_callback);
-	  glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
-	  glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);
-    glfwSetCharCallback(win->window, pe_input_key_callback);
+	window_create(win,NULL, "Window");
+	glfwSetKeyCallback(win->window, pe_input_key_callback);
+	glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
+	glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);
+	glfwSetCharCallback(win->window, pe_input_key_callback);
 
-    glfwSetWindowFocusCallback(win->window,window_focus_callback);
-    glfwSetFramebufferSizeCallback(win->window, window_resize_callback);
+	glfwSetWindowFocusCallback(win->window,window_focus_callback);
+	glfwSetFramebufferSizeCallback(win->window, window_resize_callback);
 
 #endif
 
@@ -196,9 +195,7 @@ window_create(win,NULL, "Window");
 #endif
 
   win->initialized = true;
-
-
-
+	
 	LOG("Window created\n");
 }
 
