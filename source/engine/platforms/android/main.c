@@ -69,19 +69,17 @@ void android_main(struct android_app* android_state) {
   game = &editor;
 
   PGame chess_game;
+  ZERO(chess_game);
+  chess_game.app = android_state;
   PGame* chess = chess_main(&chess_game);
-  chess->app = android_state;
-//TODO: game reference on android devices need to be create for input
-//and handle
 
-	game->app->onAppCmd = &pe_android_handle_cmd;
+  // TODO: game reference on android devices need to be create for input
+  // and handle
+  game->app->onAppCmd = &pe_android_handle_cmd;
   game->app->onInputEvent = &pe_android_input_handle;
 
 
   pe_game_create(chess);
-
-
-
 
 	//pe_log("hello world, from android read file");
 
@@ -118,6 +116,48 @@ void android_main(struct android_app* android_state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

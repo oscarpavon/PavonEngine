@@ -79,7 +79,8 @@ void chess_piece_movement(int x, int y) {
 
 void chess_board_create() {
 
-  add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/cube.glb");
+ // add_element_with_model_path("/home/pavon/PavonEngine/NativeContent/Editor/cube.glb");
+  add_element_with_model_path("/sdcard/Download/NativeContent/Editor/cube.glb");
 
   StaticMeshComponent *mesh =
       get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
@@ -495,14 +496,12 @@ void chess_draw() {
 
 PGame *chess_main(PGame *chess) {
 
-  ZERO(*chess);
   chess->name = "Chess";
   chess->loop = &chess_loop;
   chess->init = &chess_init;
   chess->draw = &chess_draw;
   chess->input = &chess_input;
   game = chess; // need for egl context creation
-  pe_game_create(chess);
 
   return chess;
 }

@@ -17,7 +17,6 @@ EGLContext context;
 
 #ifdef ANDROID
 void pe_wm_egl_init(){
-
 	// Setup OpenGL ES 2
 	// http://stackoverflow.com/questions/11478957/how-do-i-create-an-opengl-es-2-context-in-a-native-activity
 
@@ -40,7 +39,9 @@ void pe_wm_egl_init(){
 	EGLint numConfigs;
 	EGLConfig config;
 
+
 	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
 
 	eglInitialize(display, 0, 0);
 
@@ -55,14 +56,26 @@ void pe_wm_egl_init(){
 	 * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
 	eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
 
-	ANativeWindow_setBuffersGeometry(game->app->window, 0, 0, format);
+	if(game == NULL){
 
+		LOG("game null");
+	}
+
+	if(game->app == NULL){
+		LOG("game->app null");
+	}
+
+	if(game->app->window == NULL){
+		LOG("game->app->window is null");
+	}
+	
+	ANativeWindow_setBuffersGeometry(game->app->window, 0, 0, format);
 	surface = eglCreateWindowSurface(display, config, game->app->window, NULL);
 
 	context = eglCreateContext(display, config, NULL, attribList);
 
 	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
-	//	ALOGW("Unable to eglMakeCurrent");
+		LOG("Unable to eglMakeCurrent");
 		return -1;
 	}
 
@@ -70,12 +83,6 @@ void pe_wm_egl_init(){
 	eglQuerySurface(display, surface, EGL_WIDTH, &w);
 	eglQuerySurface(display, surface, EGL_HEIGHT, &h);
 	
-	//engine->display = display;
-	//engine->context = context;
-	//engine->surface = surface;
-	//engine->width = w;
-	//engine->height = h;
-
 	// Initialize GL state.
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glEnable(GL_CULL_FACE);
@@ -84,6 +91,7 @@ void pe_wm_egl_init(){
   camera_heigth_screen = h;
   camera_width_screen = w;
   window_update_viewport(w, h);
+	LOG("EGL initialized");
 	return 0;
 
 }
@@ -196,7 +204,7 @@ void pe_wm_create_window(EngineWindow* win){
 
   win->initialized = true;
 	
-	LOG("Window created\n");
+	LOG("Window created");
 }
 
 
@@ -206,7 +214,7 @@ void pe_wm_window_init(EngineWindow* window){
 		window->init();
 	window->initialized = true;
 
-	LOG("Window\n");
+	LOG("Window init pe_wm_window_init\n");
 }
 
 

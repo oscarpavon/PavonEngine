@@ -38,10 +38,10 @@ void pe_game_draw(){
     if(game->draw)
         game->draw();
 }
-void pe_game_init(){
+void pe_game_create_window(){
 
     //window_create(game_window, NULL, game->name); 
-    LOG("Creating window for game\n");
+    LOG("Creating window for game");
     pe_wm_create_window(game_window);
 
 }
@@ -64,7 +64,7 @@ void pe_game_create(PGame * created_game){
     array_add(&engine_windows, &win);
     game_window = array_pop(&engine_windows);
 
-    game_window->init = &pe_game_init;//window specific data
+    game_window->init = &pe_game_create_window;//window specific data
     game_window->draw = &pe_game_draw;//Main loop draw in window
     game_window->input = &pe_game_input; 
 
@@ -80,7 +80,7 @@ void pe_game_create(PGame * created_game){
     array_add(&render_thread_commads, &thread_commad);
 
     
-        //wait for android window initialization
+    //wait for android window initialization
     while(pe_is_window_init== false){
         pe_wm_events_update();
     } 
