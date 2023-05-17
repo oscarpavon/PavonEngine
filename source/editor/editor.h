@@ -48,8 +48,6 @@ void get_element_status(Element* element);
 
 void editor_load_level(const char*);
 
-void list_directory_files();
-
 void deselect_all();
 
 void editor_finish();

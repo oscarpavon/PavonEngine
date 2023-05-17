@@ -43,6 +43,7 @@ typedef struct PETextMenu{
 void draw_directory_files();
 void draw_directory_file_type(unsigned short int type);
 
+
 void draw_element_text_list(PETextMenu *menu, const char *text, int i);
 
 void text_renderer_loop();

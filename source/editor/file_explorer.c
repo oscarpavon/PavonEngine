@@ -11,9 +11,9 @@
 #include <string.h>
 int file_manager_current_directory_count = 0;
 int file_manager_current_directory_id = 0;
-char file_manager_current_path[200] = "/";
-char file_manager_temp_path[200];
-char file_manager_back_directory[200];
+char file_manager_current_path[256] = "/";
+char file_manager_temp_path[256];
+char file_manager_back_directory[256];
 bool file_explorer_can_open_directory;
 int file_explorer_previous_directory_count;
 

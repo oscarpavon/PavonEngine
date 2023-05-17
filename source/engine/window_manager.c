@@ -13,6 +13,7 @@ EGLContext context;
 #include <engine/game.h>
 #include <engine/input.h>
 #include <engine/platforms/windows_manager.h>
+#include <engine/window_manager.h>
 
 
 #ifdef ANDROID

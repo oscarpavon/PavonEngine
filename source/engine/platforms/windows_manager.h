@@ -55,8 +55,6 @@ void pe_wm_window_init(EngineWindow *window);
 
 void window_initialize_windows();
 
-void window_update_viewport();
-
 void window_manager_create_editor_windows_data();
 
 void window_set_focus(EngineWindow *window);

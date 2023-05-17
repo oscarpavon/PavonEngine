@@ -132,7 +132,7 @@ void pe_th_exec_in(PEThreadID to_id , void(*func)(void*), void* argment){
 
 void pe_th_wait(PEThread* thread){
 	while(thread->wait){
-		sleep(0.01);			
+		sleep(1);			
 	}
 
 }

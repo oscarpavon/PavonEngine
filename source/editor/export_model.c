@@ -126,7 +126,7 @@ typedef struct Encoded{
     char* data;
 }Encoded;
 
-void float_to_unsigned_char(float* numbers, char* data , int byte_count){
+void float_to_unsigned_char(float* numbers, unsigned char* data , int byte_count){
     uint8_t      bytes[sizeof(float)];
     *(float*)(bytes) = numbers[0]; 
     int bytes_counter = 0;
