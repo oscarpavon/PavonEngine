@@ -3,9 +3,6 @@ project(PavonEngine)
 set(CMAKE_BUILD_TYPE=Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-implicit-function-declaration -Wno-int-conversion -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source")
-
-add_compile_options (-fdiagnostics-color=always)
 
 add_compile_definitions(PUBLIC EDITOR)
 
@@ -18,10 +15,18 @@ add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
 set(PE_FREETYPE TRUE)
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g ")
 if(ANDROID)
         set(ANDROID_NDK ~/android-ndk-r25c)
+endif()
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-implicit-function-declaration -Wno-int-conversion -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source -I${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/")
+
+add_compile_options (-fdiagnostics-color=always)
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g ")
+if(ANDROID)
         include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
+        include_directories(${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include)
 
 endif()
 include(FindFreetype)

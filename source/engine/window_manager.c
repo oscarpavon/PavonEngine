@@ -161,7 +161,6 @@ void pe_wm_init(){
 #ifdef DESKTOP
 windows_manager_init();
 #endif
-pe_is_window_init = true;
 }
 
 

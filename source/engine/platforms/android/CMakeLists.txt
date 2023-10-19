@@ -14,6 +14,7 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
+include_directories(${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ~/PavonEngine/lib)
 
@@ -54,6 +55,7 @@ target_include_directories(pavon_engine_android PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_directories(pavon_engine_android PUBLIC ~/PavonEngine/lib)
+target_link_directories(pavon_engine_android PUBLIC ${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/33/)
 target_link_libraries(pavon_engine_android
     ${android_link})
 

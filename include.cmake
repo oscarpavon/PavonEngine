@@ -54,8 +54,8 @@ set(android_link
     android
     native_app_glue
     EGL
-    log
     GLESv2
+    log
     pavon_engine
     m
     peditor

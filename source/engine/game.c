@@ -81,7 +81,7 @@ void pe_game_create(PGame * created_game){
 
     
     //wait for android window initialization
-    while(pe_is_window_init== false){
+    while(pe_is_window_init == false){
         pe_wm_events_update();
     } 
 
