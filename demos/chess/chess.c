@@ -380,9 +380,9 @@ void chess_pieces_create() {
 
   chess_create_pawn();
   chess_create_rooks();
-  //chess_create_bishop();
- // chess_create_leaders();
-  //chess_create_knight();
+  chess_create_bishop();
+  chess_create_leaders();
+  chess_create_knight();
 }
 
 void chess_camera_init() {

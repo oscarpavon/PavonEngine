@@ -493,7 +493,7 @@ void pe_editor_draw() {
 
    // draw_vertices(); 
    
-//  text_renderer_loop();
+  text_renderer_loop();
   //pe_editor_menus_update();
   // editor_message("editor message");
 }

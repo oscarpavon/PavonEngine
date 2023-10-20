@@ -71,7 +71,7 @@ void android_main(struct android_app* android_state) {
   PGame chess_game;
   ZERO(chess_game);
   chess_game.app = android_state;
-  PGame* chess = chess_main(&chess_game);
+//  PGame* chess = chess_main(&chess_game);
 
   // TODO: game reference on android devices need to be create for input
   // and handle
@@ -79,7 +79,7 @@ void android_main(struct android_app* android_state) {
   game->app->onInputEvent = &pe_android_input_handle;
 
 
-  pe_game_create(chess);
+  pe_game_create(game);
 
 	//pe_log("hello world, from android read file");
 
@@ -116,6 +116,18 @@ void android_main(struct android_app* android_state) {
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

@@ -135,14 +135,13 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
     int32_t action = AKeyEvent_getAction(event);
     int32_t key_code = AKeyEvent_getKeyCode(event);
-    pe_android_input_single_key(action, key_code);
+    pe_android_input_single_key(action, key_code);//for standard input AWSD 
     
-    int32_t scan_code = AKeyEvent_getScanCode(event);
-    LOG("### Scan code %c", key_code);
+    if ( key_code == AKEYCODE_SEMICOLON ){
 
-//    char c = 
- //   LOG("### char is %c", c);
-   // pe_input_character(scan_code);
+      pe_editor_parse_cmd_char(":");
+    }
+//    pe_input_character(scan_code);
     return 1;
   }
   
