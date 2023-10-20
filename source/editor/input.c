@@ -472,6 +472,7 @@ void default_mode() {
     }
   }
   if(key_released(&input.Q)){
+    LOG("Exit");
     exit(0);
   }
   if (input.B.pressed) {

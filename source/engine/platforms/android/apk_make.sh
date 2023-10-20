@@ -1,4 +1,5 @@
 #/bin/bash
+echo "Creating APK..."
 [ ! -d gen ] && mkdir gen
 [ ! -d obj ] && mkdir obj
 [ ! -d output ] && mkdir output
@@ -28,3 +29,4 @@ rm -r gen
 rm -r obj
 rm -r output
 rm pavon.apk
+echo "[OK] APK created" 
