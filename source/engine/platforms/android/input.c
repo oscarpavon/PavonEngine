@@ -58,59 +58,89 @@ void pe_android_input_single_key(int32_t action, int32_t code) {
   Key *current_key = NULL;
 
   switch (code) {
-  case AKEYCODE_K:
-    current_key = &input.K;
-    break;
-  case AKEYCODE_G:
-    current_key = &input.G;
-    break;
-  case AKEYCODE_Q:
-    current_key = &input.Q;
-    break;
-  case AKEYCODE_U:
-    current_key = &input.U;
-    break;
   case AKEYCODE_ESCAPE:
     current_key = &input.ESC;
     break;
   case AKEYCODE_A:
     current_key = &input.A;
     break;
-  case AKEYCODE_S:
-    current_key = &input.S;
+  case AKEYCODE_B:
+    current_key = &input.B;
+    break;
+  case AKEYCODE_C:
+    current_key = &input.C;
     break;
   case AKEYCODE_D:
     current_key = &input.D;
     break;
-  case AKEYCODE_R:
-    current_key = &input.R;
-    break;
-  case AKEYCODE_W:
-    current_key = &input.W;
-    break;
-  case AKEYCODE_Y:
-    current_key = &input.Y;
-    break;
-  case AKEYCODE_V:
-    current_key = &input.V;
-    break;
-  case AKEYCODE_TAB:
-    current_key = &input.TAB;
-    break;
   case AKEYCODE_E:
     current_key = &input.E;
     break;
-  case AKEYCODE_J:
-    current_key = &input.J;
+  case AKEYCODE_F:
+    current_key = &input.F;
+    break;
+  case AKEYCODE_G:
+    current_key = &input.G;
+    break;
+  case AKEYCODE_H:
+    current_key = &input.H;
     break;
   case AKEYCODE_I:
     current_key = &input.I;
     break;
+  case AKEYCODE_J:
+    current_key = &input.J;
+    break;
+  case AKEYCODE_K:
+    current_key = &input.K;
+    break;
+  case AKEYCODE_L:
+    current_key = &input.L;
+    break;
+  case AKEYCODE_M:
+    current_key = &input.M;
+    break;
+  case AKEYCODE_N:
+    current_key = &input.N;
+    break;
   case AKEYCODE_O:
     current_key = &input.O;
     break;
-  case AKEYCODE_C:
-    current_key = &input.C;
+  case AKEYCODE_P:
+    current_key = &input.P;
+    break;
+  case AKEYCODE_Q:
+    current_key = &input.Q;
+    break;
+  case AKEYCODE_R:
+    current_key = &input.R;
+    break;
+  case AKEYCODE_S:
+    current_key = &input.S;
+    break;
+  case AKEYCODE_T:
+    current_key = &input.T;
+    break;
+  case AKEYCODE_U:
+    current_key = &input.U;
+    break;
+  case AKEYCODE_V:
+    current_key = &input.V;
+    break;
+  case AKEYCODE_W:
+    current_key = &input.W;
+    break;
+  case AKEYCODE_X:
+    current_key = &input.X;
+    break;
+  case AKEYCODE_Y:
+    current_key = &input.Y;
+    break;
+  case AKEYCODE_Z:
+    current_key = &input.Z;
+    break;
+  case AKEYCODE_TAB:
+    current_key = &input.TAB;
     break;
   case AKEYCODE_ENTER:
     current_key = &input.ENTER;
