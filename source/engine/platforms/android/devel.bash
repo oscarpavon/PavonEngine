@@ -24,11 +24,14 @@ make -j8
 cd ~/PavonEngine/source/engine/platforms/android/
 
 ./apk_make.sh
-#adb install ./pavons.apk #without root on android devices
-sudo pm install ./pavons.apk #with root
-./start.sh && ./debug.sh
 
-#Installation process
+###Installation process
+echo "Installing APK..."
+sudo pm install ./pavons.apk #with root
+#adb install ./pavons.apk #without root on android devices
 #fakeroot adb install -r --fastdeploy ./pavons.apk
-#sudo pm install ./pavons.apk
+
+echo "Starting APK..."
+./start.sh && ./debug.sh
 #am start com.pavonstudios.app/android.app.NativeActivity
+
