@@ -36,7 +36,7 @@ VkResult pe_vk_create_debug_messeger(VkInstance instance, const VkDebugUtilsMess
 		}
 
 }
-void pe_vk_populate_messeger_debug_info(VkDebugUtilsMessengerCreateInfoEXT* info_messeger){
+void pe_vk_populate_messenger_debug_info(VkDebugUtilsMessengerCreateInfoEXT* info_messeger){
 
 	info_messeger->sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	//info_messeger->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 

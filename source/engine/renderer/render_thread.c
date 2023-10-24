@@ -48,7 +48,7 @@ void render_thread_init(){
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max);
   LOG("########## Maximun vertex attributes: %i",max);
 
-#ifdef LINUX
+#ifdef DESKTOP
   glEnable(GL_MULTISAMPLE);
 #endif
 
@@ -60,6 +60,10 @@ void render_thread_init(){
     render_thread_definition.init();
 
   engine_initialized = true;
+
+#if VULKAN
+  pe_vk_init();
+#endif
 
   pe_gui_init();
 

@@ -1,7 +1,7 @@
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY /home/pavon/PavonEngine/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY /home/pavon/PavonEngine/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /home/pavon/PavonEngine/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ~/PavonEngine/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ~/PavonEngine/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ~/PavonEngine/lib)
 
 set(vk_source vulkan.c debug.c swap_chain.c 
 			shader_module.c pipeline.c 

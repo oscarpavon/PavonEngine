@@ -11,7 +11,7 @@
 
 #include "array.h"
 
-#ifdef LINUX
+#ifdef VULKAN
 #include <engine/renderer/vulkan/vulkan.h>
 #endif
 
@@ -51,7 +51,7 @@ typedef struct Model{
 
     PMaterial material;
 
-#ifdef LINUX
+#ifdef VULKAN
     VkBuffer vertex_buffer;
     VkBuffer index_buffer;
 #endif

@@ -17,7 +17,8 @@
 #include "vk_buffer.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
-const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+//const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+const char* instance_extension[] = {"VK_KHR_surface"};
 const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 
@@ -103,7 +104,7 @@ void pe_vk_create_instance(){
 
   int instance_layer_properties_count = 0;
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count, NULL);
-  //LOG("VK instance layer count: %i\n", instance_layer_properties_count);
+  LOG("VK instance layer count: %i\n", instance_layer_properties_count);
 
   VkLayerProperties layers_properties[instance_layer_properties_count];
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count,
@@ -122,44 +123,46 @@ void pe_vk_create_instance(){
   app_info.pEngineName = "PavonEngine";
 
   VkInstanceCreateInfo instance_info;
-  memset(&instance_info, 0, sizeof(VkInstanceCreateInfo));
+  ZERO(instance_info);
   instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   instance_info.pApplicationInfo = &app_info;
+  instance_info.enabledExtensionCount = 1;
+  instance_info.ppEnabledExtensionNames = instance_extension;
   
   if(pe_vk_validation_layer_enable == true){
 
     instance_info.enabledLayerCount = 1;
     instance_info.ppEnabledLayerNames = validation_layers;
+    ZERO(g_messenger_info);
+    pe_vk_populate_messenger_debug_info(&g_messenger_info);
+    instance_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&g_messenger_info;
 
   }else {
     instance_info.enabledLayerCount = 0;
   }
 
-  ZERO(g_messenger_info);
-  pe_vk_populate_messeger_debug_info(&g_messenger_info);
-  
-  instance_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&g_messenger_info;
+  VKVALID(vkCreateInstance(&instance_info, NULL, &vk_instance),"Can't create vk instance");
+//  VkResult r = vkCreateInstance(&instance_info, NULL, &vk_instance);
+ // LOG("ERROR enum = %i", r);
 
-  instance_info.enabledExtensionCount = 3;
-  instance_info.ppEnabledExtensionNames = instance_extension;
-
-  VKVALID(vkCreateInstance(&instance_info, NULL, &vk_instance),
-          "Can't create vk instance");
-  pe_vk_setup_debug_messenger();
+  if (pe_vk_validation_layer_enable == true) {
+    pe_vk_setup_debug_messenger();
+  }
 }
-
 
 int pe_vk_init() {
 	
-    pe_vk_validation_layer_enable = true;
+    pe_vk_validation_layer_enable = false;
 
     pe_vk_create_instance();
 
+#if DESKTOP
   if(!current_window){
     LOGW("NO WINDOWS CREATED");
   }
   VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL, &vk_surface),
           "Can't create window surface");
+#endif
 
   //****************
   // Physical devices
@@ -172,7 +175,7 @@ int pe_vk_init() {
   vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
   vk_physical_device = phy_devices[0];
 
-    pe_vk_queue_families_support();
+  pe_vk_queue_families_support();
 
   pe_vk_new_log_divice();
 

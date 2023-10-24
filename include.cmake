@@ -60,6 +60,8 @@ set(android_link
     m
     peditor
     freetype
+    pe_vk
+    vulkan
     
     )
 
