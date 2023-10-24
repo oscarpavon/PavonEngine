@@ -7,7 +7,7 @@
 
 
 void pe_android_handle_cmd(struct android_app *app, int32_t cmd) {
-  LOG("##### Android CMD ######");
+  //LOG("##### Android CMD ######");
   switch (cmd) {
   case APP_CMD_SAVE_STATE:
     break;

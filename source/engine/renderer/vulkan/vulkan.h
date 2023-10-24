@@ -1,12 +1,13 @@
 #ifndef PEVULKAN_H
 #define PEVULKAN_H
 
+#define VK_USE_PLATFORM_ANDROID_KHR
 #include <vulkan/vulkan.h>
 #include <engine/array.h>
 #include <engine/macros.h>
 #include "draw.h"
 
-#define VKVALID(f,message) if(f != VK_SUCCESS){LOG("%s\n",message);}
+#define VKVALID(f,message) if(f != VK_SUCCESS){LOG("%s \n",message);}
 
 int pe_vk_init();
 void pe_vk_end();

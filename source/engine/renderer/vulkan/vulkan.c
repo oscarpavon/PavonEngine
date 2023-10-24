@@ -14,11 +14,15 @@
 #include <engine/renderer/vulkan/swap_chain.h>
 #include "descriptor_set.h"
 #include "vk_vertex.h"
+#include <engine/game.h>
+#include <vulkan/vulkan_core.h>
 #include "vk_buffer.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+//For Linux support
 //const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
-const char* instance_extension[] = {"VK_KHR_surface"};
+//For Android support
+const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface"};
 const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 
@@ -28,13 +32,14 @@ const float queue_priority = 1.f;
 
 
 
-int pe_vk_new_log_divice(){
+int pe_vk_new_logical_divice(){
 
 	VkDeviceQueueCreateInfo qinfo;
 	ZERO(qinfo);
 	qinfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	qinfo.pQueuePriorities = &queue_priority;
-	qinfo.queueCount = 1; qinfo.queueFamilyIndex = q_graphic_family;	
+	qinfo.queueCount = 1; 
+  qinfo.queueFamilyIndex = q_graphic_family;	
 	
 	VkDeviceQueueCreateInfo qinfo2;
 	ZERO(qinfo2);
@@ -54,9 +59,9 @@ int pe_vk_new_log_divice(){
 	info.queueCreateInfoCount = 2;
 	info.pQueueCreateInfos = queues_creates_infos;
 
-    info.enabledExtensionCount = 1;
-    info.ppEnabledExtensionNames = devices_extensions;
-    info.ppEnabledExtensionNames = devices_extensions;
+  info.enabledExtensionCount = 1;
+  info.ppEnabledExtensionNames = devices_extensions;
+  info.ppEnabledExtensionNames = devices_extensions;
 	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
 }
 
@@ -126,7 +131,7 @@ void pe_vk_create_instance(){
   ZERO(instance_info);
   instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   instance_info.pApplicationInfo = &app_info;
-  instance_info.enabledExtensionCount = 1;
+  instance_info.enabledExtensionCount = 2;
   instance_info.ppEnabledExtensionNames = instance_extension;
   
   if(pe_vk_validation_layer_enable == true){
@@ -155,7 +160,18 @@ int pe_vk_init() {
     pe_vk_validation_layer_enable = false;
 
     pe_vk_create_instance();
-
+  
+  VkAndroidSurfaceCreateInfoKHR surface_info;
+  ZERO(surface_info);
+  surface_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+  surface_info.pNext = NULL;
+  surface_info.flags = 0;
+  surface_info.window = game->app->window;
+  if(game->app->window == NULL){
+    LOG("WIndow null");
+  }
+  VKVALID(vkCreateAndroidSurfaceKHR(vk_instance, &surface_info, NULL, &vk_surface), "Surface Error");
+  
 #if DESKTOP
   if(!current_window){
     LOGW("NO WINDOWS CREATED");
@@ -177,11 +193,12 @@ int pe_vk_init() {
 
   pe_vk_queue_families_support();
 
-  pe_vk_new_log_divice();
+  pe_vk_new_logical_divice();
 
   vkGetDeviceQueue(vk_device, q_graphic_family, 0, &vk_queue);
 
   pe_vk_swch_create();
+
   pe_vk_create_images_views();
 
   pe_vk_create_descriptor_set_layout();

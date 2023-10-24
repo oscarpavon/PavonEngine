@@ -98,7 +98,7 @@ void pe_vk_swch_create(){
   info.clipped = VK_TRUE;
   info.oldSwapchain = VK_NULL_HANDLE;
   
-  VKVALID(vkCreateSwapchainKHR(vk_device,&info,NULL,&pe_vk_swap_chain),"Can't create a swap schaing");
+  VKVALID(vkCreateSwapchainKHR(vk_device,&info,NULL,&pe_vk_swap_chain),"Can't create a swap schain");
 
 
 
