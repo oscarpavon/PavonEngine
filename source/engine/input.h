@@ -70,6 +70,7 @@ typedef struct Input {
 	struct Key KEY_8;
 	struct Key KEY_9;
 	struct Key BACKSPACE;
+	struct Key SEMICOLON;
 	struct Key ALT;
 	struct Key KEY_UP;
 	struct Key KEY_DOWN;

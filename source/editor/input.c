@@ -134,76 +134,73 @@ bool editor_input_camera_rotate_control() {
   return false;
 }
 
-void editor_input_navigate(){
-    input_change_mode();
-    float camera_navigate_velocity = 0.05f;
-    if(input.I.pressed){
-        camera_velocity += camera_navigate_velocity;
-    }
-    if(input.O.pressed){
-        camera_velocity -= camera_navigate_velocity;
-    }
+void editor_input_navigate() {
+  input_change_mode();
+  float camera_navigate_velocity = 0.05f;
+  if (input.I.pressed) {
+    camera_velocity += camera_navigate_velocity;
+  }
+  if (input.O.pressed) {
+    camera_velocity -= camera_navigate_velocity;
+  }
 
+  vec3 velocity_vector;
+  float velocity_per_frame = camera_velocity * time_delta;
+  glm_vec3_copy(
+      (vec3){velocity_per_frame, velocity_per_frame, velocity_per_frame},
+      velocity_vector);
+  bool update = false;
 
-    vec3 velocity_vector;
-    float velocity_per_frame = camera_velocity * time_delta;
-    glm_vec3_copy((vec3){velocity_per_frame,velocity_per_frame,velocity_per_frame}, velocity_vector);
-    bool update = false;
+  if (input.E.pressed) {
+    vec3 move;
+    glm_vec3_mul(velocity_vector, main_camera.up, move);
+    glm_vec3_add(main_camera.position, move, main_camera.position);
+    update = true;
+  }
+  if (input.Q.pressed) {
+    vec3 move;
+    glm_vec3_mul(velocity_vector, main_camera.up, move);
+    glm_vec3_sub(main_camera.position, move, main_camera.position);
+    update = true;
+  }
 
-    if(input.E.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.up,move);
-        glm_vec3_add(main_camera.position,move,main_camera.position);
-        update = true;
-    }
-    if(input.Q.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.up,move);
-        glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update = true;
-    }
+  if (input.W.pressed) {
+    vec3 move;
+    glm_vec3_mul(velocity_vector, main_camera.front, move);
+    glm_vec3_add(main_camera.position, move, main_camera.position);
+    update = true;
+  }
+  if (input.S.pressed) {
+    vec3 move;
+    glm_vec3_mul(velocity_vector, main_camera.front, move);
+    glm_vec3_sub(main_camera.position, move, main_camera.position);
+    update = true;
+  }
+  if (input.D.pressed) {
+    vec3 cross;
+    glm_vec3_cross(main_camera.front, main_camera.up, cross);
+    glm_normalize(cross);
+    vec3 move;
+    glm_vec3_mul(velocity_vector, cross, move);
+    glm_vec3_add(main_camera.position, move, main_camera.position);
+    update = true;
+  }
+  if (input.A.pressed) {
+    vec3 cross;
+    glm_vec3_cross(main_camera.front, main_camera.up, cross);
+    glm_normalize(cross);
+    vec3 move;
+    glm_vec3_mul(velocity_vector, cross, move);
+    glm_vec3_sub(main_camera.position, move, main_camera.position);
+    update = true;
+  }
 
-
-    if(input.W.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.front,move);
-        glm_vec3_add(main_camera.position,move,main_camera.position);
-        update = true;
-    }
-    if(input.S.pressed){
-        vec3 move;
-        glm_vec3_mul(velocity_vector,main_camera.front,move);
-        glm_vec3_sub(main_camera.position,move,main_camera.position);
-        update = true;
-    }
-    if(input.D.pressed){
-        vec3 cross;
-        glm_vec3_cross(main_camera.front, main_camera.up, cross);
-        glm_normalize(cross);
-        vec3 move;
-        glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_add(main_camera.position, move,main_camera.position);
-        update = true;
-    }
-    if(input.A.pressed){
-        vec3 cross;
-        glm_vec3_cross(main_camera.front, main_camera.up, cross);
-        glm_normalize(cross);
-        vec3 move;
-        glm_vec3_mul(velocity_vector, cross, move );
-        glm_vec3_sub(main_camera.position, move,main_camera.position);
-        update = true;
-    }
-    
-    if(editor_input_camera_rotate_control()){	
-        camera_update(&main_camera);
-		} 
-	if(update)
-        camera_update(&main_camera);
-
-
+  if (editor_input_camera_rotate_control()) {
+    camera_update(&main_camera);
+  }
+  if (update)
+    camera_update(&main_camera);
 }
-
 
 void grab_mode(){
     draw_translate_gizmo = true;

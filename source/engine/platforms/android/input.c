@@ -145,6 +145,9 @@ void pe_android_input_single_key(int32_t action, int32_t code) {
   case AKEYCODE_ENTER:
     current_key = &input.ENTER;
     break;
+  case AKEYCODE_SEMICOLON:
+    current_key = &input.SEMICOLON;
+    break;
   default:
     break;
   }
