@@ -38,7 +38,7 @@ void pe_vk_draw_model(int i , Model* model){
 void pe_vk_draw(int i){
 
     pe_vk_draw_model(i,test_model);
-    LOG("drawing model");
+    //LOG("drawing model");
     //pe_vk_draw_model(i,test_model2);
 }
 
@@ -50,7 +50,7 @@ void pe_vk_draw_frame() {
                         pe_vk_semaphore_images_available, VK_NULL_HANDLE,
                         &image_index);
 
-  pe_vk_uniform_buffer_update(image_index);
+  //pe_vk_uniform_buffer_update(image_index);
   pe_vk_record_commands_buffer(image_index);
 
   VkSemaphore singal_semaphore[] = {pe_vk_semaphore_render_finished};

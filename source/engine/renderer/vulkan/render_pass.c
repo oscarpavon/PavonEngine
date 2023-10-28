@@ -77,7 +77,6 @@ void pe_vk_start_render_pass(int i){
   vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 
   pe_vk_draw(i);
-//  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
   vkCmdEndRenderPass(*(cmd_buffer));
 
