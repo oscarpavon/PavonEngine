@@ -1,56 +1,52 @@
 #include "descriptor_set.h"
 
-#include <engine/engine.h>
-#include "swap_chain.h"
-#include <engine/array.h>
 #include "uniform_buffer.h"
+#include <engine/array.h>
 #include <engine/engine.h>
 
-void pe_vk_descriptor_pool_create(){
-    VkDescriptorPoolSize pool_size[2];
-    ZERO(pool_size);
-    pool_size[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    pool_size[0].descriptorCount = 100;
-    pool_size[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    pool_size[1].descriptorCount = 100;
+void pe_vk_descriptor_pool_create() {
+  VkDescriptorPoolSize pool_size[2];
+  ZERO(pool_size);
+  pool_size[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  pool_size[0].descriptorCount = 100;
+  pool_size[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  pool_size[1].descriptorCount = 100;
 
-    VkDescriptorPoolCreateInfo info;
-    ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    info.poolSizeCount = 2;
-    info.pPoolSizes = pool_size;
-    info.maxSets = 100;
+  VkDescriptorPoolCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  info.poolSizeCount = 2;
+  info.pPoolSizes = pool_size;
+  info.maxSets = 100;
 
-    
-    vkCreateDescriptorPool(vk_device,&info,NULL,&pe_vk_descriptor_pool);
+  vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool);
 }
 
-void pe_vk_create_descriptor_set_layout(){
-    VkDescriptorSetLayoutBinding uniform;
-    ZERO(uniform);
-    uniform.binding = 0;
-    uniform.descriptorCount = 1;
-    uniform.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uniform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    
-    VkDescriptorSetLayoutBinding color;
-    ZERO(color);
-    color.binding = 1;
-    color.descriptorCount = 1;
-    color.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    color.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    
+void pe_vk_create_descriptor_set_layout() {
+  VkDescriptorSetLayoutBinding uniform;
+  ZERO(uniform);
+  uniform.binding = 0;
+  uniform.descriptorCount = 1;
+  uniform.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  uniform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-    VkDescriptorSetLayoutBinding all_binding[] = {uniform,color};
+  VkDescriptorSetLayoutBinding color;
+  ZERO(color);
+  color.binding = 1;
+  color.descriptorCount = 1;
+  color.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  color.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    VkDescriptorSetLayoutCreateInfo info;
-    ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    info.bindingCount = 2;
-    info.pBindings = all_binding;
+  VkDescriptorSetLayoutBinding all_binding[] = {uniform, color};
 
-    vkCreateDescriptorSetLayout(vk_device,&info,NULL,&pe_vk_descriptor_set_layout);
+  VkDescriptorSetLayoutCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  info.bindingCount = 2;
+  info.pBindings = all_binding;
 
+  vkCreateDescriptorSetLayout(vk_device, &info, NULL,
+                              &pe_vk_descriptor_set_layout);
 }
 
 void pe_vk_descriptor_set_create() {
@@ -65,8 +61,9 @@ void pe_vk_descriptor_set_create() {
 
   array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 100);
 
-  array_resize(&pe_vk_descriptor_sets,
-               100); // resize because we need to allocate descriptor copy in array.data
+  array_resize(
+      &pe_vk_descriptor_sets,
+      100); // resize because we need to allocate descriptor copy in array.data
 
   // Allocation
   VkDescriptorSetAllocateInfo alloc_info;
@@ -85,7 +82,7 @@ void pe_vk_descriptor_set_create() {
       ZERO(info);
       VkBuffer *buffer = array_get(&pe_vk_uniform_buffers, i);
       info.buffer = *(buffer);
-      //info.offset = sizeof(PEUniformBufferObject) * index_object;
+      // info.offset = sizeof(PEUniformBufferObject) * index_object;
       info.offset = 0;
       info.range = sizeof(PEUniformBufferObject);
 
