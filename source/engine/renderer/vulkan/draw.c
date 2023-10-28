@@ -38,7 +38,8 @@ void pe_vk_draw_model(int i , Model* model){
 void pe_vk_draw(int i){
 
     pe_vk_draw_model(i,test_model);
-    pe_vk_draw_model(i,test_model2);
+    LOG("drawing model");
+    //pe_vk_draw_model(i,test_model2);
 }
 
 
@@ -46,7 +47,8 @@ void pe_vk_draw_frame(){
 
     uint32_t image_index;
 
-    vkAcquireNextImageKHR(vk_device,pe_vk_swap_chain,UINT64_MAX,pe_vk_semaphore_images_available, VK_NULL_HANDLE,&image_index);
+    vkAcquireNextImageKHR(vk_device,pe_vk_swap_chain,UINT64_MAX,
+            pe_vk_semaphore_images_available, VK_NULL_HANDLE,&image_index);
 
     pe_vk_uniform_buffer_update(image_index);
     

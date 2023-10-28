@@ -17,11 +17,11 @@ VkShaderModule pe_vk_shader_module_create(File* file){
 void pe_vk_shader_load(){
     File new_file;
     ZERO(new_file);
-    pe_file_openb("/home/pavon/PavonEngine/NativeContent/shaders/frag.spv",&new_file);
+    pe_file_openb("/sdcard/Download/NativeContent/shaders/frag.spv",&new_file);
     
     File new_file2;
     ZERO(new_file2);
-    pe_file_openb("/home/pavon/PavonEngine/NativeContent/shaders/vert.spv",&new_file2);
+    pe_file_openb("/sdcard/Download/NativeContent/shaders/vert.spv",&new_file2);
 
     VkShaderModule module1 = pe_vk_shader_module_create(&new_file);
     VkShaderModule module2 = pe_vk_shader_module_create(&new_file2);

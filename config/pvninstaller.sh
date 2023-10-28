@@ -21,6 +21,7 @@ pkg install libtool
 pkg install zsh
 pkg install cmus
 pkg install expect
+pkg install shaderc
 #wget https://dl.google.com/android/repository/android-ndk-r25-linux.zip
 git config --global user.email pavon_oscar@outlook.com
 git config --global user.name Oscar Pavon

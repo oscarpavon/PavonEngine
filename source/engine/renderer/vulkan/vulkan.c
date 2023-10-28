@@ -16,6 +16,8 @@
 #include "vk_vertex.h"
 #include <engine/game.h>
 #include <vulkan/vulkan_core.h>
+#include <engine/renderer/vulkan/descriptor_set.h>
+#include <engine/renderer/vulkan/uniform_buffer.h>
 #include "vk_buffer.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
@@ -157,10 +159,11 @@ void pe_vk_create_instance(){
 
 int pe_vk_init() {
 	
-    pe_vk_validation_layer_enable = false;
+  pe_vk_validation_layer_enable = false;
 
-    pe_vk_create_instance();
-  
+  pe_vk_create_instance();
+ 
+#ifdef ANDROID
   VkAndroidSurfaceCreateInfoKHR surface_info;
   ZERO(surface_info);
   surface_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
@@ -171,7 +174,7 @@ int pe_vk_init() {
     LOG("WIndow null");
   }
   VKVALID(vkCreateAndroidSurfaceKHR(vk_instance, &surface_info, NULL, &vk_surface), "Surface Error");
-  
+#endif 
 #if DESKTOP
   if(!current_window){
     LOGW("NO WINDOWS CREATED");
@@ -222,7 +225,7 @@ int pe_vk_init() {
   
   pe_vk_semaphores_create();
 
-
+  LOG("Vulkan intialize [OK]");
   return 0;
 }
  
