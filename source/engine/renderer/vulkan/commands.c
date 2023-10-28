@@ -2,6 +2,7 @@
 #include <engine/macros.h>
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/renderer/vulkan/framebuffer.h>
+#include <vulkan/vulkan_core.h>
 #include "render_pass.h"
 
 
@@ -54,6 +55,21 @@ void pe_vk_commands_pool_init(){
   vkCreateCommandPool(vk_device, &info, NULL, &pe_vk_commands_pool);
 
 }
+
+void pe_vk_record_commands_buffer(int i){
+
+    VkCommandBufferBeginInfo begininfo;
+    ZERO(begininfo);
+    begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    begininfo.flags = 0;
+    begininfo.pInheritanceInfo = NULL;
+
+    VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);
+//    vkResetCommandBuffer(*(buffer),0);
+
+    vkBeginCommandBuffer(*(buffer), &begininfo);
+    pe_vk_start_render_pass(i);
+}
 void pe_vk_command_init() {
 
 
@@ -70,17 +86,6 @@ void pe_vk_command_init() {
 
   vkAllocateCommandBuffers(vk_device, &bufferinfo, pe_vk_command_buffers.data);
 
-  for (int i = 0; i < pe_vk_command_buffers.count; i++) {
-    VkCommandBufferBeginInfo begininfo;
-    ZERO(begininfo);
-    begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    begininfo.flags = 0;
-    begininfo.pInheritanceInfo = NULL;
-
-    VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);
-    vkBeginCommandBuffer(*(buffer), &begininfo);
-    pe_vk_start_render_pass(i);
-  }
 }
 
 void pe_vk_commands_end(int i) {

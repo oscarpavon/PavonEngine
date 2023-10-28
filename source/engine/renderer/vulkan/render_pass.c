@@ -59,31 +59,27 @@ void pe_vk_create_render_pass(){
 
 void pe_vk_start_render_pass(int i){
 
-    
-    VkRenderPassBeginInfo info;
-    ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    info.renderPass = pe_vk_render_pass;
-    VkFramebuffer* framebuffer = array_get(&pe_vk_framebuffers,i);
-    info.framebuffer = *(framebuffer);
+  VkFramebuffer *framebuffer = array_get(&pe_vk_framebuffers, i);
+  VkOffset2D offset = {0, 0};
+  VkClearValue clear_color = {0.0f, 0.0f, 1.0f, 1.0f};
+  VkCommandBuffer *cmd_buffer = array_get(&pe_vk_command_buffers, i);
 
-    VkOffset2D offset = {0,0};
-    info.renderArea.offset = offset;
-    info.renderArea.extent = pe_vk_swch_extent;
+  VkRenderPassBeginInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  info.renderPass = pe_vk_render_pass;
+  info.framebuffer = *(framebuffer);
+  info.renderArea.offset = offset;
+  info.renderArea.extent = pe_vk_swch_extent;
+  info.clearValueCount = 1;
+  info.pClearValues = &clear_color;
 
-    VkClearValue clear_color = {1.0f, 0.0f , 0.0f, 1.0f};
-    info.clearValueCount = 1;
-    info.pClearValues = &clear_color;
+  vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 
-    VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
+  pe_vk_draw(i);
+//  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
-    vkCmdBeginRenderPass(*(cmd_buffer),&info,VK_SUBPASS_CONTENTS_INLINE);
+  vkCmdEndRenderPass(*(cmd_buffer));
 
-    
-    pe_vk_draw(i);
-
-
-    vkCmdEndRenderPass(*(cmd_buffer));
-
-    pe_vk_commands_end(i);
+  pe_vk_commands_end(i);
 }
