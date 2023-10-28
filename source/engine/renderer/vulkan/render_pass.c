@@ -4,6 +4,7 @@
 #include "framebuffer.h"
 #include "commands.h"
 #include "draw.h"
+#include"pipeline.h" 
 void pe_vk_create_render_pass(){
 
     VkAttachmentDescription color;
@@ -76,7 +77,10 @@ void pe_vk_start_render_pass(int i){
 
   vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 
-  pe_vk_draw(i);
+ // pe_vk_draw(i);
+  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+
+  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
   vkCmdEndRenderPass(*(cmd_buffer));
 
