@@ -3,18 +3,18 @@
 #include <string.h>
 #include <engine/renderer/vulkan/swap_chain.h>
 
+#define PE_IMAGES_VIEWS_COUNT 4
 
-void pe_vk_create_images_views(){
+void pe_vk_create_images_views() {
 
-  array_init(&pe_vk_images_views,sizeof(VkImageView),4);
-  
- //images view count equal to pe_vk_images array
-  for(size_t i = 0; i < 4; i++)
-  {
+  array_init(&pe_vk_images_views, sizeof(VkImageView), PE_IMAGES_VIEWS_COUNT);
+
+  // images view count equal to pe_vk_images array
+  for (size_t i = 0; i < PE_IMAGES_VIEWS_COUNT; i++) {
     VkImageViewCreateInfo info;
     ZERO(info);
     info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    
+
     info.image = pe_vk_images[i];
     info.viewType = VK_IMAGE_VIEW_TYPE_2D;
     info.format = pe_vk_swch_format;
@@ -30,9 +30,8 @@ void pe_vk_create_images_views(){
     info.subresourceRange.baseArrayLayer = 0;
     info.subresourceRange.layerCount = 1;
 
-    
-    VkImageView image_view;    
-    vkCreateImageView(vk_device,&info,NULL,&image_view);
-    array_add(&pe_vk_images_views,&image_view);
+    VkImageView image_view;
+    vkCreateImageView(vk_device, &info, NULL, &image_view);
+    array_add(&pe_vk_images_views, &image_view);
   }
 }

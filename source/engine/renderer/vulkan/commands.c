@@ -43,46 +43,47 @@ void pe_vk_end_single_cmd(VkCommandBuffer buffer){
     vkFreeCommandBuffers(vk_device, pe_vk_commands_pool, 1, &buffer);
 }
 
+void pe_vk_commands_pool_init(){
 
-void pe_vk_command_init(){
+  VkCommandPoolCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+  info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+  info.queueFamilyIndex = q_graphic_family;
 
-    VkCommandPoolCreateInfo info;
-    ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    info.flags = 0;
-    info.queueFamilyIndex = q_graphic_family;
+  vkCreateCommandPool(vk_device, &info, NULL, &pe_vk_commands_pool);
 
-    vkCreateCommandPool(vk_device,&info,NULL,&pe_vk_commands_pool);
-
-
-    array_init(&pe_vk_command_buffers,sizeof(VkCommandBuffer),pe_vk_framebuffers.count);
-    array_resize(&pe_vk_command_buffers,pe_vk_framebuffers.count);
+}
+void pe_vk_command_init() {
 
 
-    VkCommandBufferAllocateInfo bufferinfo;
-    ZERO(bufferinfo);
-    bufferinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    bufferinfo.commandPool = pe_vk_commands_pool;
-    bufferinfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    bufferinfo.commandBufferCount = pe_vk_command_buffers.count;
+  array_init(&pe_vk_command_buffers, sizeof(VkCommandBuffer),
+             pe_vk_framebuffers.count);
+  array_resize(&pe_vk_command_buffers, pe_vk_framebuffers.count);
 
-    vkAllocateCommandBuffers(vk_device,&bufferinfo,pe_vk_command_buffers.data);
+  VkCommandBufferAllocateInfo bufferinfo;
+  ZERO(bufferinfo);
+  bufferinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  bufferinfo.commandPool = pe_vk_commands_pool;
+  bufferinfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  bufferinfo.commandBufferCount = pe_vk_command_buffers.count;
 
+  vkAllocateCommandBuffers(vk_device, &bufferinfo, pe_vk_command_buffers.data);
 
-    for(int i = 0; i < pe_vk_command_buffers.count ; i++){
-        VkCommandBufferBeginInfo begininfo;
-        ZERO(begininfo);
-        begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        begininfo.flags = 0;
-        begininfo.pInheritanceInfo = NULL;
+  for (int i = 0; i < pe_vk_command_buffers.count; i++) {
+    VkCommandBufferBeginInfo begininfo;
+    ZERO(begininfo);
+    begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    begininfo.flags = 0;
+    begininfo.pInheritanceInfo = NULL;
 
-        VkCommandBuffer* buffer = array_get(&pe_vk_command_buffers,i);
-        vkBeginCommandBuffer(*(buffer),&begininfo);
-        pe_vk_start_render_pass(i);
-    }
+    VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);
+    vkBeginCommandBuffer(*(buffer), &begininfo);
+    pe_vk_start_render_pass(i);
+  }
 }
 
-void pe_vk_commands_end(int i){
-    VkCommandBuffer* buffer = array_get(&pe_vk_command_buffers,i);
-    vkEndCommandBuffer(*(buffer));
+void pe_vk_commands_end(int i) {
+  VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);
+  vkEndCommandBuffer(*(buffer));
 }
