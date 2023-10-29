@@ -1,6 +1,7 @@
 
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/macros.h>
+#include <vulkan/vulkan_core.h>
 #include "framebuffer.h"
 #include "commands.h"
 #include "draw.h"
@@ -80,7 +81,24 @@ void pe_vk_start_render_pass(int i){
  // pe_vk_draw(i);
   vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
 
+  VkViewport viewport;
+  ZERO(viewport);
+  viewport.x = 0.0f;
+  viewport.y = 0.0f;
+  viewport.width = (float)pe_vk_swch_extent.width;
+  viewport.height = (float)pe_vk_swch_extent.height;
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
+  vkCmdSetViewport(*(cmd_buffer), 0 , 1 , &viewport); 
+
+  VkRect2D scissor;
+  scissor.extent = pe_vk_swch_extent;
+  scissor.offset = offset;
+
+  vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
+
   vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+
 
   vkCmdEndRenderPass(*(cmd_buffer));
 

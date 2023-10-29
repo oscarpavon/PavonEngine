@@ -105,6 +105,8 @@ void pe_vk_swch_create(){
   pe_vk_swch_extent = extent;
   pe_vk_swch_format = format.format;
   
+//  LOG("Swap chain extent %i, %i", pe_vk_swch_extent.width, pe_vk_swch_extent.height);
+  
   vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,NULL);
  
   VKVALID(vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_images),"Cant't create images view");
