@@ -24,7 +24,7 @@ const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 //For Linux support
 //const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
 //For Android support
-const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface"};
+const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface", VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
 const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 
@@ -62,7 +62,6 @@ int pe_vk_new_logical_divice(){
 	info.pQueueCreateInfos = queues_creates_infos;
 
   info.enabledExtensionCount = 1;
-  info.ppEnabledExtensionNames = devices_extensions;
   info.ppEnabledExtensionNames = devices_extensions;
 	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
 }
@@ -109,6 +108,8 @@ void pe_vk_queue_families_support(){
 }
 void pe_vk_create_instance(){
 
+  pe_vk_validation_layer_enable = true;
+
   int instance_layer_properties_count = 0;
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count, NULL);
   LOG("VK instance layer count: %i\n", instance_layer_properties_count);
@@ -133,7 +134,7 @@ void pe_vk_create_instance(){
   ZERO(instance_info);
   instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   instance_info.pApplicationInfo = &app_info;
-  instance_info.enabledExtensionCount = 2;
+  instance_info.enabledExtensionCount = 3;
   instance_info.ppEnabledExtensionNames = instance_extension;
   
   if(pe_vk_validation_layer_enable == true){
