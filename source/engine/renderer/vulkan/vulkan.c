@@ -66,47 +66,46 @@ int pe_vk_new_logical_divice(){
 	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
 }
 
-void pe_vk_queue_families_support(){
+void pe_vk_queue_families_support() {
 
   uint32_t queue_family_count = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device,
                                            &queue_family_count, NULL);
+  LOG("Queue families count: %i\n", queue_family_count);
+
   VkQueueFamilyProperties q_families[queue_family_count];
   vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device,
                                            &queue_family_count, q_families);
-	LOG("queue families count: %i\n",queue_family_count);
   for (int i = 0; i < queue_family_count; i++) {
     VkQueueFamilyProperties property = q_families[i];
     if (property.queueFlags == VK_QUEUE_GRAPHICS_BIT) {
       q_graphic_family = i;
-			LOGW("graphics queue found");
-    }else
-			LOGW("[X] NOgraphics queue found");
+    
+      LOG("graphics queue found");
+    } else
+      LOG("[X] No graphics queue found");
 
-  
     VkBool32 present_support = false;
     vkGetPhysicalDeviceSurfaceSupportKHR(vk_physical_device, i, vk_surface,
                                          &present_support);
     if (present_support == true)
       q_present_family = i;
-		else
-			LOGW("[X] NO present queue found");
-
+    else
+      LOG("[X] NO present queue found");
   }
 
   ZERO(queues_creates_infos);
-	uint32_t q_unique_falimiles[] = {q_graphic_family, q_present_family};
-	for(uint32_t i = 0; i < 2 ; i++){
-		VkDeviceQueueCreateInfo* info = &queues_creates_infos[i];
-		info->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		info->queueFamilyIndex = q_unique_falimiles[i];
-		info->queueCount = 1;
-		info->pQueuePriorities = &queue_priority;
-	}
-
-	
+  uint32_t q_unique_falimiles[] = {q_graphic_family, q_present_family};
+  for (uint32_t i = 0; i < 2; i++) {
+    VkDeviceQueueCreateInfo *info = &queues_creates_infos[i];
+    info->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    info->queueFamilyIndex = q_unique_falimiles[i];
+    info->queueCount = 1;
+    info->pQueuePriorities = &queue_priority;
+  }
 }
-void pe_vk_create_instance(){
+
+void pe_vk_create_instance() {
 
   pe_vk_validation_layer_enable = true;
 
@@ -157,6 +156,20 @@ void pe_vk_create_instance(){
     pe_vk_setup_debug_messenger();
   }
 }
+void pe_vk_physical_device_get(){
+
+  //****************
+  // Physical devices
+  //****************
+  uint32_t devices_count = 0;
+  vkEnumeratePhysicalDevices(vk_instance, &devices_count, NULL);
+  if (devices_count == 0)
+    LOG("Not devices compatibles\n");
+  VkPhysicalDevice phy_devices[devices_count];
+  vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
+  vk_physical_device = phy_devices[0];
+
+}
 
 int pe_vk_init() {
 	
@@ -183,17 +196,7 @@ int pe_vk_init() {
   VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL, &vk_surface),
           "Can't create window surface");
 #endif
-
-  //****************
-  // Physical devices
-  //****************
-  uint32_t devices_count = 0;
-  vkEnumeratePhysicalDevices(vk_instance, &devices_count, NULL);
-  if (devices_count == 0)
-    LOG("Not devices compatibles\n");
-  VkPhysicalDevice phy_devices[devices_count];
-  vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
-  vk_physical_device = phy_devices[0];
+  pe_vk_physical_device_get();
 
   pe_vk_queue_families_support();
 

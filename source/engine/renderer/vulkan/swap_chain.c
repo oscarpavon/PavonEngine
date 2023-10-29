@@ -93,7 +93,8 @@ void pe_vk_swch_create(){
   info.imageArrayLayers = 1;
   info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
   info.preTransform = support.capabilities.currentTransform;
-  info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  //info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  info.compositeAlpha = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
 
   info.clipped = VK_TRUE;
   info.oldSwapchain = VK_NULL_HANDLE;
