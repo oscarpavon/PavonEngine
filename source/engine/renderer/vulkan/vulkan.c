@@ -32,38 +32,20 @@ VkDeviceQueueCreateInfo queues_creates_infos[2];
 
 const float queue_priority = 1.f;
 
+int pe_vk_new_logical_divice() {
 
-
-int pe_vk_new_logical_divice(){
-
-	VkDeviceQueueCreateInfo qinfo;
-	ZERO(qinfo);
-	qinfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	qinfo.pQueuePriorities = &queue_priority;
-	qinfo.queueCount = 1; 
-  qinfo.queueFamilyIndex = q_graphic_family;	
-	
-	VkDeviceQueueCreateInfo qinfo2;
-	ZERO(qinfo2);
-	qinfo2.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	qinfo2.pQueuePriorities = &queue_priority;
-	qinfo2.queueCount = 1;
-	qinfo2.queueFamilyIndex = q_present_family;	
-	
-	memcpy(&queues_creates_infos[0],&qinfo,sizeof(qinfo));
-	memcpy(&queues_creates_infos[1],&qinfo2,sizeof(qinfo2));
-
-	VkDeviceCreateInfo info;
-	ZERO(info);
-	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	info.enabledLayerCount = 1;
-	info.ppEnabledLayerNames = validation_layers;
-	info.queueCreateInfoCount = 2;
-	info.pQueueCreateInfos = queues_creates_infos;
+  VkDeviceCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+  info.enabledLayerCount = 1;
+  info.ppEnabledLayerNames = validation_layers;
+  info.queueCreateInfoCount = 2;
+  info.pQueueCreateInfos = queues_creates_infos;
 
   info.enabledExtensionCount = 1;
   info.ppEnabledExtensionNames = devices_extensions;
-	VKVALID(vkCreateDevice(vk_physical_device,&info,NULL,&vk_device),"Can't create vkphydevice")
+  VKVALID(vkCreateDevice(vk_physical_device, &info, NULL, &vk_device),
+          "Can't create vkphydevice")
 }
 
 void pe_vk_queue_families_support() {
@@ -74,10 +56,12 @@ void pe_vk_queue_families_support() {
   LOG("Queue families count: %i\n", queue_family_count);
 
   VkQueueFamilyProperties q_families[queue_family_count];
+  ZERO(q_families);
   vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device,
                                            &queue_family_count, q_families);
   for (int i = 0; i < queue_family_count; i++) {
     VkQueueFamilyProperties property = q_families[i];
+    LOG("Family queue flag %x", property.queueFlags);
     if (property.queueFlags == VK_QUEUE_GRAPHICS_BIT) {
       q_graphic_family = i;
     
