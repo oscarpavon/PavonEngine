@@ -199,7 +199,7 @@ void pe_wm_create_window(EngineWindow* win){
 #endif
 
 #ifdef ANDROID
-	//pe_wm_egl_init();	
+	pe_wm_egl_init();	
 #endif
 
   win->initialized = true;

@@ -11,7 +11,7 @@ add_compile_definitions(PUBLIC EDITOR)
 add_compile_definitions(PUBLIC OPENGL_ES2)
 #add_compile_definitions(PUBLIC BSD)
 
-add_compile_definitions(PUBLIC VULKAN)
+#add_compile_definitions(PUBLIC VULKAN)
 add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
 set(PE_FREETYPE TRUE)
@@ -20,7 +20,7 @@ if(ANDROID)
         set(ANDROID_NDK ~/android-ndk-r25c)
 endif()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-implicit-function-declaration -Wno-int-conversion -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source -I${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wno-switch -Wno-implicit-function-declaration -Wno-int-conversion -Wno-return-type -fcommon -Wno-incompatible-pointer-types -I/usr/X11R6/include -I/usr/local/include -I./source")
 
 add_compile_options (-fdiagnostics-color=always)
 
@@ -36,6 +36,6 @@ include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
 
 add_subdirectory(source/engine)
 add_subdirectory(source/editor)
-add_subdirectory(source/engine/renderer/vulkan)
+#add_subdirectory(source/engine/renderer/vulkan)
 #add_subdirectory(source/editor/utils/pcmd)
 #add_subdirectory(demos/)
