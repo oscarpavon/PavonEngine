@@ -170,11 +170,6 @@ int32_t pe_android_input_handle(struct android_app *app, AInputEvent *event) {
     int32_t key_code = AKeyEvent_getKeyCode(event);
     pe_android_input_single_key(action, key_code);//for standard input AWSD 
     
-    if ( key_code == AKEYCODE_SEMICOLON ){
-
-      pe_editor_parse_cmd_char(":");
-    }
-//    pe_input_character(scan_code);
     return 1;
   }
   

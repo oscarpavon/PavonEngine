@@ -17,48 +17,46 @@ char first_char_command;
 char* command_array_pointer;
 char* argument_array_pointer;
 
-void pe_editor_parse_cmd_char(unsigned char character){
-    if(character == ':'){
-        LOG("## command mode");
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;        
-				if(editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT) 
-					change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-        return;
-    }else if(character == '/'){
-        if(editor_sub_mode == EDITOR_SUB_MODE_NULL)
-        { 
-            LOG("Search mode\n");
-            command_text_buffer[command_character_count] = character;
-            command_character_count++;
-            editor_search_objects = true;
-            change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
-            return;
-        }
+void pe_editor_parse_cmd_char(unsigned char character) {
+  if (character == ':') {
+    LOG("## command mode");
+    command_text_buffer[command_character_count] = character;
+    command_character_count++;
+    if (editor_sub_mode != EDITOR_SUB_MODE_TEXT_INPUT)
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+    return;
+  } else if (character == '/') {
+    if (editor_sub_mode == EDITOR_SUB_MODE_NULL) {
+      LOG("Search mode\n");
+      command_text_buffer[command_character_count] = character;
+      command_character_count++;
+      editor_search_objects = true;
+      change_to_editor_sub_mode(EDITOR_SUB_MODE_TEXT_INPUT);
+      return;
     }
+  }
 
-    if(editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT){
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;
-    }
-if(editor_window_content_browser_hint && window_content_browser->focus){
-        command_text_buffer[command_character_count] = character;
-        command_character_count++;
-    }
+  if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT) {
+    command_text_buffer[command_character_count] = character;
+    command_character_count++;
+  }
+  if (editor_window_content_browser_hint && window_content_browser->focus) {
+    command_text_buffer[command_character_count] = character;
+    command_character_count++;
+  }
 }
 
-void system_command(const char* command, const char* argument){
-    char final_command[strlen(command) + strlen(argument)];
-    memset(final_command,0,strlen(final_command));
-    strcat(final_command,command);
-    strcat(final_command,argument);
+void system_command(const char *command, const char *argument) {
+  char final_command[strlen(command) + strlen(argument)];
+  memset(final_command, 0, strlen(final_command));
+  strcat(final_command, command);
+  strcat(final_command, argument);
 
-    if(fork() == 0){
-        system(final_command);
-        exit(0);
-    }
+  if (fork() == 0) {
+    system(final_command);
+    exit(0);
+  }
 }
-
 
 void command_parse_parameter(const char* command, const char*  parameter){
   if (strcmp(command, "project_new") == 0) {
@@ -122,6 +120,55 @@ void command_while_not_space(const char* command){
 }
 
 void text_input_mode(){
+  if(key_released(&input.A))
+    pe_editor_parse_cmd_char('a'); 
+  if(key_released(&input.B))
+    pe_editor_parse_cmd_char('b');
+  if(key_released(&input.C))
+    pe_editor_parse_cmd_char('c');
+  if(key_released(&input.D))
+    pe_editor_parse_cmd_char('d');
+  if(key_released(&input.E))
+    pe_editor_parse_cmd_char('e');
+  if(key_released(&input.F))
+    pe_editor_parse_cmd_char('f');
+  if(key_released(&input.G))
+    pe_editor_parse_cmd_char('g');
+  if(key_released(&input.H))
+    pe_editor_parse_cmd_char('h');
+  if(key_released(&input.I))
+    pe_editor_parse_cmd_char('i');
+  if(key_released(&input.J))
+    pe_editor_parse_cmd_char('j');
+  if(key_released(&input.K))
+    pe_editor_parse_cmd_char('k');
+  if(key_released(&input.L))
+    pe_editor_parse_cmd_char('l');
+  if(key_released(&input.M))
+    pe_editor_parse_cmd_char('m');
+  if(key_released(&input.N))
+    pe_editor_parse_cmd_char('n');
+  if(key_released(&input.O))
+    pe_editor_parse_cmd_char('o');
+  if(key_released(&input.P))
+    pe_editor_parse_cmd_char('p');
+  if(key_released(&input.Q))
+    pe_editor_parse_cmd_char('q');
+  if(key_released(&input.R))
+    pe_editor_parse_cmd_char('r');
+  if(key_released(&input.S))
+    pe_editor_parse_cmd_char('s');
+  if(key_released(&input.T))
+    pe_editor_parse_cmd_char('t');
+  if(key_released(&input.U))
+    pe_editor_parse_cmd_char('u');
+  if(key_released(&input.X))
+    pe_editor_parse_cmd_char('x');
+  if(key_released(&input.Y))
+    pe_editor_parse_cmd_char('y');
+  if(key_released(&input.Z))
+    pe_editor_parse_cmd_char('z');
+
     if(key_released(&input.ENTER)){
         parse_command(command_text_buffer);
         command_character_count = 0;

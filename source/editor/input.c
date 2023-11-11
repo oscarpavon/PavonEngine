@@ -10,15 +10,8 @@
 
 #include "../engine/engine.h"
 
-#include "../ThirdParty/cglm/cglm.h"
-#include "../engine/camera.h"
-
-#include <math.h>
 
 #include "editor.h"
-
-#include "text.h"
-
 #include "../engine/game.h"
 
 #include "editor_mode.h"
@@ -458,6 +451,13 @@ void default_mode() {
   gizmos_draw_scale = false;
 
   input_change_mode();
+
+  if(key_released(&input.SEMICOLON)){
+      pe_editor_parse_cmd_char(':');
+  }
+  if (editor_sub_mode == EDITOR_SUB_MODE_TEXT_INPUT) {
+
+  }
 
   if (key_released(&input.TAB)) {
     change_to_editor_mode(PE_EDITOR_MODELING_MODE);
