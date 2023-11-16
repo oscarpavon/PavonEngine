@@ -6,6 +6,7 @@
 #include "render_pass.h"
 #include <engine/macros.h>
 #include <engine/renderer/vulkan/vulkan.h>
+#include <engine/log.h>
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
@@ -74,7 +75,7 @@ void pe_vk_pipeline_init() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -137,6 +138,7 @@ void pe_vk_pipeline_init() {
   pipeline_info.renderPass = pe_vk_render_pass;
   pipeline_info.subpass = 0;
 
-  vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1, &pipeline_info, NULL,
-                            &pe_vk_pipeline);
+  VKVALID(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1,
+                                    &pipeline_info, NULL, &pe_vk_pipeline),
+                                    "Can't create pipeline");
 }

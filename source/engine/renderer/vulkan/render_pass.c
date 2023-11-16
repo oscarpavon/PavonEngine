@@ -6,6 +6,7 @@
 #include "commands.h"
 #include "draw.h"
 #include"pipeline.h" 
+#include <engine/log.h>
 void pe_vk_create_render_pass(){
 
     VkAttachmentDescription color;
@@ -54,9 +55,8 @@ void pe_vk_create_render_pass(){
     info.pSubpasses = &subpass;
     info.dependencyCount = 1;
     info.pDependencies = &dependency;
-
-    vkCreateRenderPass(vk_device,&info,NULL,&pe_vk_render_pass);
-
+    VKVALID(vkCreateRenderPass(vk_device, &info, NULL, &pe_vk_render_pass),
+            "Can't create render pass");
 }
 
 void pe_vk_start_render_pass(int i){

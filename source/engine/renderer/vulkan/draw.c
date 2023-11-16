@@ -84,7 +84,7 @@ void pe_vk_draw_frame() {
   present_info.pSwapchains = swap_chains;
   present_info.pImageIndices = &image_index;
 
-  vkQueuePresentKHR(vk_queue, &present_info);
+  VKVALID(vkQueuePresentKHR(vk_queue, &present_info), "Can't present");
 
   vkQueueWaitIdle(vk_queue);
 }

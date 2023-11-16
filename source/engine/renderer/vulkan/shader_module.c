@@ -1,17 +1,19 @@
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/file_loader.h>
 #include "shader_module.h"
+#include <engine/log.h>
 
-VkShaderModule pe_vk_shader_module_create(File* file){
-    VkShaderModuleCreateInfo info;
-    ZERO(info);
-    info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    info.codeSize = file->size_in_bytes;
-    info.pCode = file->data;
+VkShaderModule pe_vk_shader_module_create(File *file) {
+  VkShaderModuleCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+  info.codeSize = file->size_in_bytes;
+  info.pCode = file->data;
 
-    VkShaderModule module;
-    vkCreateShaderModule(vk_device,&info,NULL,&module);
-    return module;
+  VkShaderModule module;
+  VKVALID(vkCreateShaderModule(vk_device, &info, NULL, &module),
+          "Can't create Shader Module");
+  return module;
 }
 
 void pe_vk_shader_load() {

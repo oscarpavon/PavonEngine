@@ -169,7 +169,7 @@ int pe_vk_init() {
   surface_info.flags = 0;
   surface_info.window = game->app->window;
   if(game->app->window == NULL){
-    LOG("WIndow null");
+    LOG("Window null");
   }
   VKVALID(vkCreateAndroidSurfaceKHR(vk_instance, &surface_info, NULL, &vk_surface), "Surface Error");
 #endif 
