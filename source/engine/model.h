@@ -1,19 +1,14 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "utils.h"
 
 #include <GLES2/gl2.h>
-
-#include "../ThirdParty/cglm/cglm.h"
 
 #include "images.h"
 
 #include "array.h"
 
-#ifdef VULKAN
-#include <engine/renderer/vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 #include <engine/renderer/material.h>
 
@@ -24,10 +19,8 @@ typedef struct PMesh{
   Array vertex_array;
   Array index_array;
 
-#ifdef LINUX
   VkBuffer vertex_buffer;
   VkBuffer index_buffer;
-#endif
 }PMesh;
 
 typedef struct Model{
@@ -51,10 +44,9 @@ typedef struct Model{
 
     PMaterial material;
 
-#ifdef VULKAN
     VkBuffer vertex_buffer;
     VkBuffer index_buffer;
-#endif
+ 
     vec3 position;
     PMesh mesh;
 	  bool gpu_ready;

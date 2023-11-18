@@ -7,6 +7,7 @@
 #include "draw.h"
 #include"pipeline.h" 
 #include <engine/log.h>
+#include <engine/engine.h>
 void pe_vk_create_render_pass(){
 
     VkAttachmentDescription color;
@@ -78,8 +79,7 @@ void pe_vk_start_render_pass(int i){
 
   vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 
- // pe_vk_draw(i);
-  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+
 
   VkViewport viewport;
   ZERO(viewport);
@@ -97,10 +97,15 @@ void pe_vk_start_render_pass(int i){
 
   vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
 
-  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+  
+  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+  //vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
+
+  pe_vk_draw_model(i,test_model);
 
   vkCmdEndRenderPass(*(cmd_buffer));
+
 
   pe_vk_commands_end(i);
 }

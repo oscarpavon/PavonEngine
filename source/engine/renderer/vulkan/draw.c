@@ -26,16 +26,16 @@ void pe_vk_draw_model(int i , Model* model){
 
     //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
 
-    VkDescriptorSet* set = array_get(&pe_vk_descriptor_sets,i);
+//    VkDescriptorSet* set = array_get(&pe_vk_descriptor_sets,i);
 
-    vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
+ //   vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
     
     vkCmdDrawIndexed(*(cmd_buffer),model->index_array.count,1,0,0,0);
 
 }
 
 
-void pe_vk_draw(int i){
+void pe_vk_draw_simple_model(int i){
 
     pe_vk_draw_model(i,test_model);
     //LOG("drawing model");
