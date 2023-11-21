@@ -6,8 +6,10 @@
 #include <engine/macros.h>
 #include "vk_vertex.h"
 #include <engine/engine.h>
+#include <vulkan/vulkan_core.h>
 #include "descriptor_set.h"
 #include "uniform_buffer.h"
+#include "vulkan.h"
 
 void pe_vk_draw_model(int i , Model* model){
 
@@ -43,6 +45,9 @@ void pe_vk_draw_simple_model(int i){
 }
 
 void pe_vk_draw_frame() {
+
+  vkWaitForFences(vk_device, 1, &pe_vk_fence_in_flight, VK_TRUE, UINT64_MAX);
+  vkResetFences(vk_device, 1 , &pe_vk_fence_in_flight);
 
   uint32_t image_index;
 

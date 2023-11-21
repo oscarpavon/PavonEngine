@@ -99,10 +99,11 @@ void pe_vk_start_render_pass(int i){
 
   
   vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
-  //vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+  
+  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
 
-  pe_vk_draw_model(i,test_model);
+  //pe_vk_draw_model(i,test_model);
 
   vkCmdEndRenderPass(*(cmd_buffer));
 
