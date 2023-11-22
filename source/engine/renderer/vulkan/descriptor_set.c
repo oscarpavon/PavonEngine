@@ -8,18 +8,20 @@ void pe_vk_descriptor_pool_create() {
   VkDescriptorPoolSize pool_size[2];
   ZERO(pool_size);
   pool_size[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  pool_size[0].descriptorCount = 2;
+  pool_size[0].descriptorCount = 4;
   pool_size[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  pool_size[1].descriptorCount = 2;
+  pool_size[1].descriptorCount = 4;
 
   VkDescriptorPoolCreateInfo info;
   ZERO(info);
   info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  info.poolSizeCount = 1;
+  info.poolSizeCount = 2;
   info.pPoolSizes = pool_size;
-  info.maxSets = 4;
+  info.maxSets = 8;
 
-  VKVALID(vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool), "Can't create descriptor pool");
+  VKVALID(
+      vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool),
+      "Can't create descriptor pool");
 }
 
 void pe_vk_create_descriptor_set_layout() {
@@ -49,32 +51,7 @@ void pe_vk_create_descriptor_set_layout() {
                                       &pe_vk_descriptor_set_layout),
           "Can't create Descriptor Set Layout");
 }
-
-void pe_vk_descriptor_set_create() {
-
-  VkDescriptorSetLayout layouts[2];
-
-  ZERO(layouts);
-
-  for (int i = 0; i < 2; i++) {
-    layouts[i] = pe_vk_descriptor_set_layout;
-  }
-
-  array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 2);
-
-  array_resize(
-      &pe_vk_descriptor_sets,
-      2); // resize because we need to allocate descriptor copy in array.data
-
-  // Allocation
-  VkDescriptorSetAllocateInfo alloc_info;
-  ZERO(alloc_info);
-  alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-  alloc_info.descriptorPool = pe_vk_descriptor_pool;
-  alloc_info.descriptorSetCount = 2;
-  alloc_info.pSetLayouts = layouts;
-
-  vkAllocateDescriptorSets(vk_device, &alloc_info, pe_vk_descriptor_sets.data);
+void pe_vk_descriptor_update(){
 
   for (int i = 0; i < 2; i++) {
 
@@ -116,4 +93,32 @@ void pe_vk_descriptor_set_create() {
       vkUpdateDescriptorSets(vk_device, 2, des_write, 0, NULL);
     }
   }
+}
+void pe_vk_descriptor_set_create() {
+
+  VkDescriptorSetLayout layouts[2];
+
+  ZERO(layouts);
+
+  for (int i = 0; i < 2; i++) {
+    layouts[i] = pe_vk_descriptor_set_layout;
+  }
+
+  array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 4);
+
+  // resize because we need to allocate descriptor copy in array.data
+  array_resize(&pe_vk_descriptor_sets, 4);
+
+  // Allocation
+  VkDescriptorSetAllocateInfo alloc_info = {
+    .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+    .descriptorPool = pe_vk_descriptor_pool,
+    .descriptorSetCount = 2,
+    .pSetLayouts = layouts
+  };
+
+  vkAllocateDescriptorSets(vk_device, &alloc_info, pe_vk_descriptor_sets.data);
+
+  //pe_vk_descriptor_update();
+
 }
