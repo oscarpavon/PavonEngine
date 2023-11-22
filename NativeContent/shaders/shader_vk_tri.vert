@@ -1,6 +1,6 @@
 #version 450
 
-layout(location = 0) in vec3 in_position;
+//layout(location = 0) in vec3 in_position;
 
 void main() {
     vec2 positions[3] = vec2[3](

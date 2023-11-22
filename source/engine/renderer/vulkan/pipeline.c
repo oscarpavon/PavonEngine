@@ -114,10 +114,6 @@ void pe_vk_pipeline_init() {
   vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
                          &pe_vk_pipeline_layout);
 
-  pe_vk_create_render_pass();
-
-  pe_vk_shader_load();
-
   VkGraphicsPipelineCreateInfo pipeline_info;
   ZERO(pipeline_info);
   pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;

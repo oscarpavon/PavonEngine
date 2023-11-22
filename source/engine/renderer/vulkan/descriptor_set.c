@@ -8,26 +8,26 @@ void pe_vk_descriptor_pool_create() {
   VkDescriptorPoolSize pool_size[2];
   ZERO(pool_size);
   pool_size[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  pool_size[0].descriptorCount = 100;
+  pool_size[0].descriptorCount = 2;
   pool_size[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  pool_size[1].descriptorCount = 100;
+  pool_size[1].descriptorCount = 2;
 
   VkDescriptorPoolCreateInfo info;
   ZERO(info);
   info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  info.poolSizeCount = 2;
+  info.poolSizeCount = 1;
   info.pPoolSizes = pool_size;
-  info.maxSets = 100;
+  info.maxSets = 4;
 
-  vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool);
+  VKVALID(vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool), "Can't create descriptor pool");
 }
 
 void pe_vk_create_descriptor_set_layout() {
   VkDescriptorSetLayoutBinding uniform;
   ZERO(uniform);
   uniform.binding = 0;
-  uniform.descriptorCount = 1;
   uniform.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  uniform.descriptorCount = 1;
   uniform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
   VkDescriptorSetLayoutBinding color;
@@ -45,37 +45,38 @@ void pe_vk_create_descriptor_set_layout() {
   info.bindingCount = 2;
   info.pBindings = all_binding;
 
-  vkCreateDescriptorSetLayout(vk_device, &info, NULL,
-                              &pe_vk_descriptor_set_layout);
+  VKVALID(vkCreateDescriptorSetLayout(vk_device, &info, NULL,
+                                      &pe_vk_descriptor_set_layout),
+          "Can't create Descriptor Set Layout");
 }
 
 void pe_vk_descriptor_set_create() {
 
-  VkDescriptorSetLayout layouts[100];
+  VkDescriptorSetLayout layouts[2];
 
   ZERO(layouts);
 
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 2; i++) {
     layouts[i] = pe_vk_descriptor_set_layout;
   }
 
-  array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 100);
+  array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 2);
 
   array_resize(
       &pe_vk_descriptor_sets,
-      100); // resize because we need to allocate descriptor copy in array.data
+      2); // resize because we need to allocate descriptor copy in array.data
 
   // Allocation
   VkDescriptorSetAllocateInfo alloc_info;
   ZERO(alloc_info);
   alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
   alloc_info.descriptorPool = pe_vk_descriptor_pool;
-  alloc_info.descriptorSetCount = 100;
+  alloc_info.descriptorSetCount = 2;
   alloc_info.pSetLayouts = layouts;
 
   vkAllocateDescriptorSets(vk_device, &alloc_info, pe_vk_descriptor_sets.data);
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 2; i++) {
 
     for (int index_object = 0; index_object < 100; index_object++) {
       VkDescriptorBufferInfo info;

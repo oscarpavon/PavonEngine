@@ -192,12 +192,18 @@ int pe_vk_init() {
 
   pe_vk_create_images_views();
 
-  //pe_vk_create_descriptor_set_layout();
 
   
   pe_vk_shader_load();
 
   pe_vk_create_render_pass();
+  
+
+  pe_vk_create_render_pass();
+
+  pe_vk_shader_load();
+  
+  pe_vk_create_descriptor_set_layout();
 
   pe_vk_pipeline_init();  
 
@@ -207,11 +213,12 @@ int pe_vk_init() {
   pe_vk_model_create();
 
 
+  pe_vk_descriptor_pool_create();
+  //pe_vk_descriptor_set_create();
+  
   //pe_vk_uniform_buffer_create();
 
-  //pe_vk_descriptor_pool_create();
   
-//  pe_vk_descriptor_set_create();
 
     
   pe_vk_framebuffer_create();
