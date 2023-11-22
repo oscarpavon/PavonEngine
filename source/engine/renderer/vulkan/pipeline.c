@@ -10,6 +10,20 @@
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
+void pe_vk_pipeline_create_layout() {
+
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+  ZERO(pipelineLayoutInfo);
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 0;
+  pipelineLayoutInfo.pSetLayouts = NULL;
+  pipelineLayoutInfo.pNext = NULL;
+  pipelineLayoutInfo.flags = 0;
+
+  VKVALID(vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
+                                 &pe_vk_pipeline_layout),
+          "Can't create Pipeline Layout");
+}
 
 void pe_vk_pipeline_init() {
   VkVertexInputBindingDescription binding =
@@ -102,18 +116,7 @@ void pe_vk_pipeline_init() {
   colorBlending.attachmentCount = 1;
   colorBlending.pAttachments = &colorBlendAttachment;
 
-
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo;
-  ZERO(pipelineLayoutInfo);
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = NULL;
-  pipelineLayoutInfo.pNext = NULL;
-  pipelineLayoutInfo.flags = 0;
-
-  vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
-                         &pe_vk_pipeline_layout);
-
+  
   VkGraphicsPipelineCreateInfo pipeline_info;
   ZERO(pipeline_info);
   pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;

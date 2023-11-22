@@ -204,6 +204,7 @@ int pe_vk_init() {
   pe_vk_shader_load();
   
   pe_vk_create_descriptor_set_layout();
+  pe_vk_pipeline_create_layout();
 
   pe_vk_pipeline_init();  
 
