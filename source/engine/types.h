@@ -19,11 +19,11 @@ typedef struct TransformComponent TransformComponent;
 typedef struct ComponentDefinition ComponentDefinition;
 
 
-typedef struct PEUniformBufferObject{
+typedef struct PUniformBufferObject{
     mat4 model;
     mat4 view;
     mat4 projection;
-}PEUniformBufferObject;
+}PUniformBufferObject;
 
 typedef struct PEColorShader{
     float x;

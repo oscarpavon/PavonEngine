@@ -2,7 +2,7 @@
 #include <engine/engine.h>
 #include "vk_buffer.h"
 
-PEUniformBufferObject ubo;
+PUniformBufferObject ubo;
 
 
 void pe_vk_ubo_init(){
@@ -27,7 +27,7 @@ PEVKBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
 }
 
 void pe_vk_uniform_buffer_create() {
-  VkDeviceSize buffer_size = sizeof(PEUniformBufferObject);
+  VkDeviceSize buffer_size = sizeof(PUniformBufferObject);
 
   array_init(&pe_vk_uniform_buffers, sizeof(VkBuffer), 4);
   array_init(&pe_vk_uniform_buffers_memory, sizeof(VkDeviceMemory), 4);
@@ -35,12 +35,12 @@ void pe_vk_uniform_buffer_create() {
   for (int i = 0; i < 4; i++) {
     // create buffer
     PEVKBufferCreateInfo info =
-        pe_vk_uniform_buffer_create_buffer(sizeof(PEUniformBufferObject) * 100);
+        pe_vk_uniform_buffer_create_buffer(sizeof(PUniformBufferObject));
     array_add(&pe_vk_uniform_buffers, &info.buffer);
     array_add(&pe_vk_uniform_buffers_memory, &info.buffer_memory);
   }
 
-  buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
+  //buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
 }
 
 void pe_vk_memory_copy(size_t size, VkDeviceMemory *memory, void *in_data) {
@@ -53,7 +53,7 @@ void pe_vk_memory_copy(size_t size, VkDeviceMemory *memory, void *in_data) {
 
 void pe_vk_uniform_buffer_update(uint32_t image_index) {
 
-  PEUniformBufferObject pawn_ubo;
+  PUniformBufferObject pawn_ubo;
 
   ZERO(pawn_ubo);
 
@@ -67,7 +67,7 @@ void pe_vk_uniform_buffer_update(uint32_t image_index) {
 
   pawn_ubo.projection[1][1] *= -1;
 
-  PEUniformBufferObject buffers[] = {pawn_ubo};
+  PUniformBufferObject buffers[] = {pawn_ubo};
 
   VkDeviceMemory *memory =
       array_get(&pe_vk_uniform_buffers_memory, image_index);

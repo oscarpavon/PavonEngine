@@ -62,7 +62,7 @@ void pe_vk_descriptor_update(){
       info.buffer = *(buffer);
       // info.offset = sizeof(PEUniformBufferObject) * index_object;
       info.offset = 0;
-      info.range = sizeof(PEUniformBufferObject);
+      info.range = sizeof(PUniformBufferObject);
 
       VkDescriptorBufferInfo info2;
       ZERO(info2);
