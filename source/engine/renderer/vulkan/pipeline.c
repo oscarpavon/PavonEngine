@@ -1,7 +1,6 @@
 #include "pipeline.h"
 #include "descriptor_set.h"
 #include "shader_module.h"
-#include "uniform_buffer.h"
 #include "vk_vertex.h"
 #include "render_pass.h"
 #include <engine/macros.h>
@@ -10,6 +9,22 @@
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
+
+void pe_vk_pipeline_create_layout() {
+
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+  ZERO(pipelineLayoutInfo);
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 0;
+  pipelineLayoutInfo.pSetLayouts = NULL;
+  pipelineLayoutInfo.pNext = NULL;
+  pipelineLayoutInfo.flags = 0;
+
+  VKVALID(vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
+                                 &pe_vk_pipeline_layout),
+          "Can't create Pipeline Layout");
+}
+
 typedef struct PPipelineInfo {
   VkPipelineVertexInputStateCreateInfo vertex_input_state;
   VkPipelineViewportStateCreateInfo viewport_state;
@@ -44,20 +59,6 @@ VkPipelineVertexInputStateCreateInfo pe_vk_pipeline_get_default_vertex_input(){
   vertexInputInfo.pVertexAttributeDescriptions = NULL;
   return vertexInputInfo;
 
-}
-void pe_vk_pipeline_create_layout() {
-
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo;
-  ZERO(pipelineLayoutInfo);
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = NULL;
-  pipelineLayoutInfo.pNext = NULL;
-  pipelineLayoutInfo.flags = 0;
-
-  VKVALID(vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
-                                 &pe_vk_pipeline_layout),
-          "Can't create Pipeline Layout");
 }
 
 VkPipelineViewportStateCreateInfo pe_vk_pipeline_get_default_viewport(){
