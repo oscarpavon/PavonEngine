@@ -166,27 +166,25 @@ void pe_vk_pipeline_init() {
   pe_vk_main_pipeline_info.multisample_state = pe_vk_pipeline_get_default_multisample();
   pe_vk_main_pipeline_info.color_blend_state = pe_vk_pipeline_get_default_color_blend();
 
-  
-  VkGraphicsPipelineCreateInfo pipeline_info;
-  ZERO(pipeline_info);
-  pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-  pipeline_info.stageCount = 2;
-  pipeline_info.pStages = pe_vk_shaders_stages_infos;//created in pe_vk_shader_load()
-  pipeline_info.layout = pe_vk_pipeline_layout;//created in pe_vk_pipeline_create_layout()
-  pipeline_info.renderPass = pe_vk_render_pass;//created in pe_vk_create_render_pass()
+  VkGraphicsPipelineCreateInfo pipeline_info = {
 
-  pipeline_info.pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state;
-  pipeline_info.pInputAssemblyState = &pe_vk_main_pipeline_info.input_assembly_state;
-  pipeline_info.pViewportState = &pe_vk_main_pipeline_info.viewport_state;
-  pipeline_info.pRasterizationState = &pe_vk_main_pipeline_info.rasterization_state;
-  pipeline_info.pMultisampleState = &pe_vk_main_pipeline_info.multisample_state;
-  pipeline_info.pColorBlendState = &pe_vk_main_pipeline_info.color_blend_state;
-  pipeline_info.pDynamicState = &pe_vk_main_pipeline_info.dynamic_state;
-  pipeline_info.pDepthStencilState = NULL;
+      .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+      .stageCount = 2,
+      .pStages = pe_vk_shaders_stages_infos, // created in pe_vk_shader_load()
+      .layout = pe_vk_pipeline_layout, // created in pe_vk_pipeline_create_layout()
+      .renderPass = pe_vk_render_pass, // created in pe_vk_create_render_pass()
+      .pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state,
+      .pInputAssemblyState = &pe_vk_main_pipeline_info.input_assembly_state,
+      .pViewportState = &pe_vk_main_pipeline_info.viewport_state,
+      .pRasterizationState = &pe_vk_main_pipeline_info.rasterization_state,
+      .pMultisampleState = &pe_vk_main_pipeline_info.multisample_state,
+      .pColorBlendState = &pe_vk_main_pipeline_info.color_blend_state,
+      .pDynamicState = &pe_vk_main_pipeline_info.dynamic_state,
+      .pDepthStencilState = NULL,
 
-  pipeline_info.subpass = 0;
+      .subpass = 0};
 
   VKVALID(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1,
                                     &pipeline_info, NULL, &pe_vk_pipeline),
-                                    "Can't create pipeline");
+          "Can't create pipeline");
 }
