@@ -157,10 +157,10 @@ void pe_vk_pipeline_init() {
 
 
   ZERO(pe_vk_main_pipeline_info);
-  pe_vk_main_pipeline_info.dynamic_state = pe_vk_pipeline_get_default_dynamic_state();
   pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input();
-  pe_vk_main_pipeline_info.viewport_state = pe_vk_pipeline_get_default_viewport();
   pe_vk_main_pipeline_info.rasterization_state = pe_vk_pipeline_get_default_rasterization();
+  pe_vk_main_pipeline_info.dynamic_state = pe_vk_pipeline_get_default_dynamic_state();
+  pe_vk_main_pipeline_info.viewport_state = pe_vk_pipeline_get_default_viewport();
   pe_vk_main_pipeline_info.input_assembly_state = pe_vk_pipeline_get_default_input_assembly();
   pe_vk_main_pipeline_info.multisample_state = pe_vk_pipeline_get_default_multisample();
   pe_vk_main_pipeline_info.color_blend_state = pe_vk_pipeline_get_default_color_blend();
@@ -170,20 +170,19 @@ void pe_vk_pipeline_init() {
   ZERO(pipeline_info);
   pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
   pipeline_info.stageCount = 2;
-  pipeline_info.pStages = pe_vk_shaders_stages;
+  pipeline_info.pStages = pe_vk_shaders_stages_infos;//created in pe_vk_shader_load()
+  pipeline_info.layout = pe_vk_pipeline_layout;//created in pe_vk_pipeline_create_layout()
+  pipeline_info.renderPass = pe_vk_render_pass;//created in pe_vk_create_render_pass()
 
   pipeline_info.pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state;
   pipeline_info.pInputAssemblyState = &pe_vk_main_pipeline_info.input_assembly_state;
   pipeline_info.pViewportState = &pe_vk_main_pipeline_info.viewport_state;
   pipeline_info.pRasterizationState = &pe_vk_main_pipeline_info.rasterization_state;
   pipeline_info.pMultisampleState = &pe_vk_main_pipeline_info.multisample_state;
-  pipeline_info.pDepthStencilState = NULL;
   pipeline_info.pColorBlendState = &pe_vk_main_pipeline_info.color_blend_state;
   pipeline_info.pDynamicState = &pe_vk_main_pipeline_info.dynamic_state;
+  pipeline_info.pDepthStencilState = NULL;
 
-  pipeline_info.layout = pe_vk_pipeline_layout;
-
-  pipeline_info.renderPass = pe_vk_render_pass;
   pipeline_info.subpass = 0;
 
   VKVALID(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1,

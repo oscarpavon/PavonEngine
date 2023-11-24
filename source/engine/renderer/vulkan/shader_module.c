@@ -42,6 +42,6 @@ void pe_vk_shader_load() {
   info2.module = module2;
   info2.pName = "main";
 
-  pe_vk_shaders_stages[0] = info1;
-  pe_vk_shaders_stages[1] = info2;
+  pe_vk_shaders_stages_infos[0] = info1;
+  pe_vk_shaders_stages_infos[1] = info2;
 }
