@@ -64,7 +64,7 @@ void pe_vk_start_render_pass(int i){
 
   VkFramebuffer *framebuffer = array_get(&pe_vk_framebuffers, i);
   VkOffset2D offset = {0, 0};
-  VkClearValue clear_color = {0.0f, 0.0f, 1.0f, 1.0f};
+  VkClearValue clear_color = {0.5f, 0.0f, 1.0f, 1.0f};
   VkCommandBuffer *cmd_buffer = array_get(&pe_vk_command_buffers, i);
 
   VkRenderPassBeginInfo info;
@@ -79,31 +79,7 @@ void pe_vk_start_render_pass(int i){
 
   vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 
-
-
-  VkViewport viewport;
-  ZERO(viewport);
-  viewport.x = 0.0f;
-  viewport.y = 0.0f;
-  viewport.width = (float)pe_vk_swch_extent.width;
-  viewport.height = (float)pe_vk_swch_extent.height;
-  viewport.minDepth = 0.0f;
-  viewport.maxDepth = 1.0f;
-  vkCmdSetViewport(*(cmd_buffer), 0 , 1 , &viewport); 
-
-  VkRect2D scissor;
-  scissor.extent = pe_vk_swch_extent;
-  scissor.offset = offset;
-
-  vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
-
-  
-  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
-  
-  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
-
-
-  //pe_vk_draw_model(i,test_model);
+  pe_vk_draw_commands(cmd_buffer);
 
   vkCmdEndRenderPass(*(cmd_buffer));
 

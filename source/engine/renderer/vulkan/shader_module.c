@@ -16,14 +16,14 @@ VkShaderModule pe_vk_shader_module_create(File *file) {
   return module;
 }
 
-void pe_vk_shader_load() {
+void pe_vk_shader_load(VkPipelineShaderStageCreateInfo* infos, const char *vert_path, const char* frag_path) {
   File new_file;
   ZERO(new_file);
-  pe_file_openb("/sdcard/Download/NativeContent/shaders/vert.spv", &new_file);
+  pe_file_openb(vert_path, &new_file);
 
   File new_file2;
   ZERO(new_file2);
-  pe_file_openb("/sdcard/Download/NativeContent/shaders/frag.spv", &new_file2);
+  pe_file_openb(frag_path,  &new_file2);
 
   VkShaderModule module1 = pe_vk_shader_module_create(&new_file);
   VkShaderModule module2 = pe_vk_shader_module_create(&new_file2);
@@ -42,6 +42,6 @@ void pe_vk_shader_load() {
   info2.module = module2;
   info2.pName = "main";
 
-  pe_vk_shaders_stages_infos[0] = info1;
-  pe_vk_shaders_stages_infos[1] = info2;
+  infos[0] = info1;
+  infos[1] = info2;
 }

@@ -43,7 +43,40 @@ void pe_vk_draw_simple_model(int i){
     //LOG("drawing model");
     //pe_vk_draw_model(i,test_model2);
 }
+void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer){
+  
+  VkOffset2D offset = {0, 0};
 
+  VkViewport viewport;
+  ZERO(viewport);
+  viewport.x = 0.0f;
+  viewport.y = 0.0f;
+  viewport.width = (float)pe_vk_swch_extent.width;
+  viewport.height = (float)pe_vk_swch_extent.height;
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
+  vkCmdSetViewport(*(cmd_buffer), 0 , 1 , &viewport); 
+
+  VkRect2D scissor;
+  scissor.extent = pe_vk_swch_extent;
+  scissor.offset = offset;
+
+  vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
+
+  VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 1);
+
+  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(triangle_pipeline));
+  
+  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+
+  
+  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+  
+  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+
+
+  //pe_vk_draw_model(i,test_model);
+}
 void pe_vk_draw_frame() {
 
   vkWaitForFences(vk_device, 1, &pe_vk_fence_in_flight, VK_TRUE, UINT64_MAX);

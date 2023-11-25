@@ -162,7 +162,7 @@ void pe_vk_pipeline_create_pipelines() {
 
 }
 
-void pe_vk_pipeline_init() {
+void pe_vk_pipelines_init() {
   ZERO(pe_vk_main_pipeline_info);
   array_init(&pe_vk_pipeline_infos, sizeof(VkGraphicsPipelineCreateInfo), PE_VK_PIPELINES_MAX);
   array_init(&pe_graphics_pipelines, sizeof(VkPipeline), PE_VK_PIPELINES_MAX);
@@ -171,7 +171,11 @@ void pe_vk_pipeline_init() {
       pe_vk_vertex_get_binding_description();
   VkVertexInputAttributeDescription des = pe_vk_vertex_get_attribute();
 
-  pe_vk_shader_load();
+  VkPipelineShaderStageCreateInfo red_shader[2];
+  ZERO(red_shader);
+  pe_vk_shader_load(red_shader, 
+                    "/sdcard/Download/NativeContent/shaders/other_vert.spv",
+                    "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
 
   pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input();
   pe_vk_main_pipeline_info.rasterization_state = pe_vk_pipeline_get_default_rasterization();
@@ -185,7 +189,7 @@ void pe_vk_pipeline_init() {
 
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .stageCount = 2,
-      .pStages = pe_vk_shaders_stages_infos, // created in pe_vk_shader_load()
+      .pStages = red_shader, // created in pe_vk_shader_load()
       .layout = pe_vk_pipeline_layout, // created in pe_vk_pipeline_create_layout()
       .renderPass = pe_vk_render_pass, // created in pe_vk_create_render_pass()
       .pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state,
@@ -198,6 +202,15 @@ void pe_vk_pipeline_init() {
       .pDepthStencilState = NULL,
 
       .subpass = 0};
+
+  array_add(&pe_vk_pipeline_infos, &triangle_pipeline_info);
+
+  VkPipelineShaderStageCreateInfo blue_shader[2];
+  ZERO(blue_shader);
+  pe_vk_shader_load(blue_shader,
+                    "/sdcard/Download/NativeContent/shaders/vert.spv",
+                    "/sdcard/Download/NativeContent/shaders/frag.spv");
+  triangle_pipeline_info.pStages = blue_shader;
   array_add(&pe_vk_pipeline_infos, &triangle_pipeline_info);
 
   pe_vk_pipeline_create_pipelines();
