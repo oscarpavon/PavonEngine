@@ -63,16 +63,26 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer){
 
   vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
 
+
+
   VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 1);
 
   vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(triangle_pipeline));
   
   vkCmdDraw(*(cmd_buffer), 3,1,0,0);
 
-  
+ 
+
   vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
   
   vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+  
+
+
+  VkPipeline* in_position = array_get(&pe_graphics_pipelines, 2);
+
+  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(in_position));
+  
 
 
   //pe_vk_draw_model(i,test_model);
