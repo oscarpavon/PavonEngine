@@ -21,6 +21,10 @@ fi
 
 make -j8
 
+echo "Compiling shaders..."
+cd ~/PavonEngine/NativeContent/shaders/
+./vk_compile.sh
+
 cd ~/PavonEngine/source/engine/platforms/android/
 
 ./apk_make.sh
