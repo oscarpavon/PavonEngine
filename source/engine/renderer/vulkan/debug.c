@@ -10,8 +10,22 @@ pe_vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
                      const VkDebugUtilsMessengerCallbackDataEXT *callback_data,
                      void *user_data) {
 
-  LOG("Vulkan: %s\n", callback_data->pMessage);
-
+  //LOG("Vulkan: %s\n", callback_data->pMessage);
+  char *message = callback_data->pMessage;
+  int char_count = 0;
+  int char_position = 0;
+  for (char_position = 0; message[char_position]; char_position++) {
+    if (message[char_position] == ':') {
+    }
+    char_count++;
+  }
+  char new_message[char_count + 20];
+  ZERO(new_message);
+  //  LOG("Message lengh = %i", char_count);
+  for (int i = 0; i < char_count; i++) {
+    new_message[i] = message[i];
+  }
+  LOG("%s", new_message);
   return VK_FALSE;
 }
 
