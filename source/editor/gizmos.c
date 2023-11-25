@@ -217,17 +217,17 @@ void init_grid_greometry() {
       Vertex vertex7;
       Vertex vertex8;
 
-      glm_vec3_copy((vec3){i, o, 0}, vertex1.postion);
-      glm_vec3_copy((vec3){-i, o, 0}, vertex2.postion);
+      glm_vec3_copy((vec3){i, o, 0}, vertex1.position);
+      glm_vec3_copy((vec3){-i, o, 0}, vertex2.position);
 
-      glm_vec3_copy((vec3){o, i, 0}, vertex3.postion);
-      glm_vec3_copy((vec3){o, -i, 0}, vertex4.postion);
+      glm_vec3_copy((vec3){o, i, 0}, vertex3.position);
+      glm_vec3_copy((vec3){o, -i, 0}, vertex4.position);
 
-      glm_vec3_copy((vec3){i, -o, 0}, vertex5.postion);
-      glm_vec3_copy((vec3){-i, -o, 0}, vertex6.postion);
+      glm_vec3_copy((vec3){i, -o, 0}, vertex5.position);
+      glm_vec3_copy((vec3){-i, -o, 0}, vertex6.position);
 
-      glm_vec3_copy((vec3){-o, i, 0}, vertex7.postion);
-      glm_vec3_copy((vec3){-o, -i, 0}, vertex8.postion);
+      glm_vec3_copy((vec3){-o, i, 0}, vertex7.position);
+      glm_vec3_copy((vec3){-o, -i, 0}, vertex8.position);
 
       array_add(&new_grid.vertex_array, &vertex1);
       array_add(&new_grid.vertex_array, &vertex2);

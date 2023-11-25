@@ -37,7 +37,7 @@ void init_skeletal_vertices(mat4 global, int i, Node* current_joint){
     Vertex new_vertex;
     ZERO(new_vertex);
     
-    glm_vec3_copy(global[3], new_vertex.postion);
+    glm_vec3_copy(global[3], new_vertex.position);
     
     array_add(&skeletal_gizmo.vertex_array,&new_vertex);
     

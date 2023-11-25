@@ -180,7 +180,7 @@ int prepare_vertices_data_from_model(Model* model){
         Vertex* vertex = array_get(&model->vertex_array,i);
         mat4 position;
         glm_mat4_identity(position);
-        glm_translate(position,vertex->postion);
+        glm_translate(position,vertex->position);
         glm_translate(position,selected_element->transform->position);
         
         vertex_position_array[i][0] = position[3][0];

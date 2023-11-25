@@ -119,9 +119,9 @@ void vertex_new(float x , float y , float z){
  
   ZERO(new_vertex);
 
-  new_vertex.postion[0] = x;
-  new_vertex.postion[1] = y;
-  new_vertex.postion[2] = z;
+  new_vertex.position[0] = x;
+  new_vertex.position[1] = y;
+  new_vertex.position[2] = z;
 
   new_vertex.selected = false;  
 

@@ -31,7 +31,7 @@ VkVertexInputAttributeDescription pe_vk_vertex_get_attribute(){
     attribute.location = 0;
 
     attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
-    attribute.offset = offsetof(Vertex,postion);
+    attribute.offset = offsetof(Vertex,position);
 
 
     return attribute;

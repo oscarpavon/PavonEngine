@@ -158,7 +158,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     for (int i = 0; i < attribute->data->count; i++) {
       Vertex vertex;
       ZERO(vertex);
-      glm_vec3_copy(vertices_position[i], vertex.postion);
+      glm_vec3_copy(vertices_position[i], vertex.position);
       array_add(actual_vertex_array, &vertex);
     }
     break;

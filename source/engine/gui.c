@@ -160,22 +160,22 @@ void init_button(Button* button, float position_x , float position_y , float siz
 
 void init_gui_element_geometry(){
     struct Vertex vert1;
-    init_vec3(-1.0F,1.0,0.0, vert1.postion);
+    init_vec3(-1.0F,1.0,0.0, vert1.position);
     vert1.uv[0] = 0;
     vert1.uv[1] = 1;
 
     struct Vertex vert2;
-    init_vec3(-1.0F,-1.0F,0.0, vert2.postion);
+    init_vec3(-1.0F,-1.0F,0.0, vert2.position);
     vert2.uv[0] = 0;
     vert2.uv[1] = 0;
 
     struct Vertex vert3;
-    init_vec3(1.0,1.0,0.0, vert3.postion);
+    init_vec3(1.0,1.0,0.0, vert3.position);
     vert3.uv[0] = 1;
     vert3.uv[1] = 1;
 
     struct Vertex vert4;
-    init_vec3(1.0,-1.0F,0.0, vert4.postion);
+    init_vec3(1.0,-1.0F,0.0, vert4.position);
     vert4.uv[0] = 1;
     vert4.uv[1] = 0;
 

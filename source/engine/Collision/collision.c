@@ -10,7 +10,7 @@ void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
        vec3 global_position;
         mat4 position;
         glm_mat4_identity(position);
-        glm_translate(position,vertex->postion);
+        glm_translate(position,vertex->position);
         glm_translate(position,model->model_mat[3]);
 
         glm_vec3_copy(position[3],global_position);
@@ -27,7 +27,7 @@ void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
        vec3 global_position;
         mat4 position;
         glm_mat4_identity(position);
-        glm_translate(position,vertex->postion);
+        glm_translate(position,vertex->position);
         glm_translate(position,model->model_mat[3]);
 
         glm_vec3_copy(position[3],global_position);
@@ -58,9 +58,9 @@ void get_edges_axis(Model* model, vec3* axis){
 
 
         vec3 edge;
-        glm_vec3_sub(vertex->postion,vertex2->postion,edge);
+        glm_vec3_sub(vertex->position,vertex2->position,edge);
         vec3 edge2;
-        glm_vec3_sub(vertex2->postion,vertex3->postion,edge2);
+        glm_vec3_sub(vertex2->position,vertex3->position,edge2);
         vec3 surface_normal;
         glm_cross(edge,edge2,surface_normal);
         glm_normalize(surface_normal);

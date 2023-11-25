@@ -4,7 +4,7 @@
 #include "../ThirdParty/cglm/cglm.h"
 
 typedef struct Vertex{
-    vec3 postion;
+    vec3 position;
     vec2 uv;
     vec3 color;
     vec3 normal;

@@ -26,20 +26,20 @@ void geometry_cube_create_vertices(float *box)
     struct Vertex back_left_down;
     struct Vertex front_right_up;
 
-    glm_vec3_copy(&box[0], back_right_down.postion);
-    glm_vec3_copy(&box[3], front_left_up.postion);
+    glm_vec3_copy(&box[0], back_right_down.position);
+    glm_vec3_copy(&box[3], front_left_up.position);
 
-    glm_vec3_copy((vec3){back_right_down.postion[0], front_left_up.postion[1], back_right_down.postion[2]}, front_right_down.postion);
+    glm_vec3_copy((vec3){back_right_down.position[0], front_left_up.position[1], back_right_down.position[2]}, front_right_down.position);
 
-    glm_vec3_copy((vec3){front_left_up.postion[0], back_right_down.postion[1], front_left_up.postion[2]}, back_left_up.postion);
+    glm_vec3_copy((vec3){front_left_up.position[0], back_right_down.position[1], front_left_up.position[2]}, back_left_up.position);
 
-    glm_vec3_copy((vec3){front_left_up.postion[0], front_left_up.postion[1], back_right_down.postion[2]}, front_left_down.postion);
+    glm_vec3_copy((vec3){front_left_up.position[0], front_left_up.position[1], back_right_down.position[2]}, front_left_down.position);
 
-    glm_vec3_copy((vec3){back_right_down.postion[0], back_right_down.postion[1], front_left_up.postion[2]}, back_right_up.postion);
+    glm_vec3_copy((vec3){back_right_down.position[0], back_right_down.position[1], front_left_up.position[2]}, back_right_up.position);
 
-    glm_vec3_copy((vec3){front_left_up.postion[0], back_right_down.postion[1], back_right_down.postion[2]}, back_left_down.postion);
+    glm_vec3_copy((vec3){front_left_up.position[0], back_right_down.position[1], back_right_down.position[2]}, back_left_down.position);
 
-    glm_vec3_copy((vec3){back_right_down.postion[0], front_left_up.postion[1], front_left_up.postion[2]}, front_right_up.postion);
+    glm_vec3_copy((vec3){back_right_down.position[0], front_left_up.position[1], front_left_up.position[2]}, front_right_up.position);
 
     array_add(&selected_model->vertex_array, &front_right_up);
     array_add(&selected_model->vertex_array, &front_left_up);
@@ -83,7 +83,7 @@ void geometry_sphere_create_vertices(int vertice_count)
 		X = (float)(0 + 2 * cos(Theta));
 		Y = (float)(0 - 2 * sin(Theta));
         Vertex vertex;
-		glm_vec3_copy(VEC3(X,Y,0),vertex.postion);
+		glm_vec3_copy(VEC3(X,Y,0),vertex.position);
         array_add(&selected_model->vertex_array,&vertex);
 	}
 
@@ -96,7 +96,7 @@ void geometry_sphere_create_vertices(int vertice_count)
 		X = (float)(0 + 2 * cos(Theta));
 		Y = (float)(0 - 2 * sin(Theta));
         Vertex vertex;
-		glm_vec3_copy(VEC3(0,X,Y),vertex.postion);
+		glm_vec3_copy(VEC3(0,X,Y),vertex.position);
         array_add(&selected_model->vertex_array,&vertex);
 	}
 }
