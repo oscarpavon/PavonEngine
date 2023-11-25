@@ -6,6 +6,7 @@
 #include <engine/macros.h>
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/log.h>
+#include <vulkan/vulkan_core.h>
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
@@ -151,13 +152,27 @@ VkPipelineColorBlendStateCreateInfo pe_vk_pipeline_get_default_color_blend(){
 
 }
 
+void pe_vk_pipeline_create_pipelines() {
+
+  array_resize(&pe_graphics_pipelines, pe_vk_pipeline_infos.count);
+  VKVALID(vkCreateGraphicsPipelines(
+              vk_device, VK_NULL_HANDLE, pe_vk_pipeline_infos.count,
+              pe_vk_pipeline_infos.data, NULL, pe_graphics_pipelines.data),
+          "Can't create pipelines");
+
+}
+
 void pe_vk_pipeline_init() {
+  ZERO(pe_vk_main_pipeline_info);
+  array_init(&pe_vk_pipeline_infos, sizeof(VkGraphicsPipelineCreateInfo), PE_VK_PIPELINES_MAX);
+  array_init(&pe_graphics_pipelines, sizeof(VkPipeline), PE_VK_PIPELINES_MAX);
+
   VkVertexInputBindingDescription binding =
       pe_vk_vertex_get_binding_description();
   VkVertexInputAttributeDescription des = pe_vk_vertex_get_attribute();
 
+  pe_vk_shader_load();
 
-  ZERO(pe_vk_main_pipeline_info);
   pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input();
   pe_vk_main_pipeline_info.rasterization_state = pe_vk_pipeline_get_default_rasterization();
   pe_vk_main_pipeline_info.dynamic_state = pe_vk_pipeline_get_default_dynamic_state();
@@ -166,7 +181,7 @@ void pe_vk_pipeline_init() {
   pe_vk_main_pipeline_info.multisample_state = pe_vk_pipeline_get_default_multisample();
   pe_vk_main_pipeline_info.color_blend_state = pe_vk_pipeline_get_default_color_blend();
 
-  VkGraphicsPipelineCreateInfo pipeline_info = {
+  VkGraphicsPipelineCreateInfo triangle_pipeline_info= {
 
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .stageCount = 2,
@@ -183,8 +198,11 @@ void pe_vk_pipeline_init() {
       .pDepthStencilState = NULL,
 
       .subpass = 0};
+  array_add(&pe_vk_pipeline_infos, &triangle_pipeline_info);
 
-  VKVALID(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1,
-                                    &pipeline_info, NULL, &pe_vk_pipeline),
-          "Can't create pipeline");
+  pe_vk_pipeline_create_pipelines();
+
+  VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 0);
+  pe_vk_pipeline = *(triangle_pipeline);
+
 }
