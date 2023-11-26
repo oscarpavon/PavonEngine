@@ -185,12 +185,6 @@ void pe_vk_pipelines_init() {
   array_init(&pe_graphics_pipelines, sizeof(VkPipeline), PE_VK_PIPELINES_MAX);
 
 
-  VkPipelineShaderStageCreateInfo red_shader[2];
-  ZERO(red_shader);
-  pe_vk_shader_load(red_shader, 
-                    "/sdcard/Download/NativeContent/shaders/other_vert.spv",
-                    "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
-
   pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(false);
   pe_vk_main_pipeline_info.rasterization_state = pe_vk_pipeline_get_default_rasterization();
   pe_vk_main_pipeline_info.dynamic_state = pe_vk_pipeline_get_default_dynamic_state();
@@ -203,7 +197,7 @@ void pe_vk_pipelines_init() {
 
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .stageCount = 2,
-      .pStages = red_shader, // created in pe_vk_shader_load()
+      //.pStages = red_shader, // created in pe_vk_shader_load()
       .layout = pe_vk_pipeline_layout, // created in pe_vk_pipeline_create_layout()
       .renderPass = pe_vk_render_pass, // created in pe_vk_create_render_pass()
       .pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state,
@@ -217,6 +211,12 @@ void pe_vk_pipelines_init() {
 
       .subpass = 0};
 
+  VkPipelineShaderStageCreateInfo red_shader[2];
+  ZERO(red_shader);
+  pe_vk_shader_load(red_shader, 
+                    "/sdcard/Download/NativeContent/shaders/other_vert.spv",
+                    "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
+  base_pipeline_info.pStages = red_shader;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
   //red triangle
