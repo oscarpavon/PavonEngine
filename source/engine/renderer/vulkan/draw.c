@@ -82,8 +82,11 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer){
   VkPipeline* in_position = array_get(&pe_graphics_pipelines, 2);
 
   vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(in_position));
-  
 
+  VkBuffer vertex_buffers[] = {test_model->vertex_buffer};
+  VkDeviceSize offsets[] = {0};
+  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, vertex_buffers, offsets);
+  vkCmdDraw(*(cmd_buffer), test_model->vertex_array.count , 1, 0, 0);
 
   //pe_vk_draw_model(i,test_model);
 }

@@ -176,7 +176,7 @@ void pe_vk_pipeline_create_pipelines() {
               vk_device, VK_NULL_HANDLE, pe_vk_pipeline_infos.count,
               pe_vk_pipeline_infos.data, NULL, pe_graphics_pipelines.data),
           "Can't create pipelines");
-
+  LOG("Created %i pipelines", pe_vk_pipeline_infos.count);
 }
 
 void pe_vk_pipelines_init() {
@@ -231,8 +231,10 @@ void pe_vk_pipelines_init() {
                     "/sdcard/Download/NativeContent/shaders/in_position.spv",
                     "/sdcard/Download/NativeContent/shaders/frag.spv");
   base_pipeline_info.pStages = in_position;
-  pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(true);
-  base_pipeline_info.pInputAssemblyState = &pe_vk_main_pipeline_info.input_assembly_state;
+  PPipelineInfo in_position_pipeline_info;
+  ZERO(in_position_pipeline_info);
+  in_position_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(true);
+  base_pipeline_info.pVertexInputState = &in_position_pipeline_info.vertex_input_state;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
   pe_vk_pipeline_create_pipelines();
