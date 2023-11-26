@@ -90,7 +90,6 @@ void pe_render_draw() {
 
 
   while (engine_running) {
-
     render_frame_time += time_delta;
 
     time_start();
@@ -169,9 +168,8 @@ void pe_frame_draw(){
 
   engine_draw_elements(&frame_draw_static_elements);
 
-#ifdef VULKAN
   pe_vk_draw_frame();
-#endif
+
   draw_skeletal_bones();   
 
   pe_frame_clean();
