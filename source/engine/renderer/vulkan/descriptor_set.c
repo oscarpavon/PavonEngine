@@ -32,19 +32,12 @@ void pe_vk_create_descriptor_set_layout() {
   uniform.descriptorCount = 1;
   uniform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-  VkDescriptorSetLayoutBinding color;
-  ZERO(color);
-  color.binding = 1;
-  color.descriptorCount = 1;
-  color.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  color.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-  VkDescriptorSetLayoutBinding all_binding[] = {uniform, color};
+  VkDescriptorSetLayoutBinding all_binding[] = {uniform};
 
   VkDescriptorSetLayoutCreateInfo info;
   ZERO(info);
   info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  info.bindingCount = 2;
+  info.bindingCount = 1;
   info.pBindings = all_binding;
 
   VKVALID(vkCreateDescriptorSetLayout(vk_device, &info, NULL,

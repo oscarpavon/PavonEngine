@@ -4,6 +4,7 @@
 
 
 VkPipelineLayout pe_vk_pipeline_layout;
+VkPipelineLayout pe_vk_pipeline_layout_with_descriptors;
 
 VkDescriptorSetLayout pe_vk_descriptor_set_layout;
 Array pe_vk_descriptor_sets;

@@ -1,4 +1,5 @@
 #include "vulkan.h"
+#include <stdint.h>
 #include <vulkan/vulkan.h>
 #include <engine/log.h>
 #include <string.h>
@@ -39,7 +40,7 @@ int pe_vk_new_logical_divice() {
   info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
   info.enabledLayerCount = 1;
   info.ppEnabledLayerNames = validation_layers;
-  info.queueCreateInfoCount = 2;
+  info.queueCreateInfoCount = 1;
   info.pQueueCreateInfos = queues_creates_infos;
 
   info.enabledExtensionCount = 1;
@@ -93,7 +94,7 @@ void pe_vk_create_instance() {
 
   pe_vk_validation_layer_enable = true;
 
-  int instance_layer_properties_count = 0;
+  uint32_t instance_layer_properties_count = 0;
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count, NULL);
   LOG("VK instance layer count: %i\n", instance_layer_properties_count);
 
@@ -198,7 +199,8 @@ int pe_vk_init() {
   pe_vk_create_render_pass();
   
   pe_vk_create_descriptor_set_layout();
-  pe_vk_pipeline_create_layout();
+  pe_vk_pipeline_create_layout(false, &pe_vk_pipeline_layout);
+  pe_vk_pipeline_create_layout(true, &pe_vk_pipeline_layout_with_descriptors);
 
   pe_vk_pipelines_init();  
 

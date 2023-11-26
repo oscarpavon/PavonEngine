@@ -11,18 +11,22 @@
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
 
-void pe_vk_pipeline_create_layout() {
+void pe_vk_pipeline_create_layout(bool use_descriptor, VkPipelineLayout* layout) {
 
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo;
-  ZERO(pipelineLayoutInfo);
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = NULL;
-  pipelineLayoutInfo.pNext = NULL;
-  pipelineLayoutInfo.flags = 0;
+  VkPipelineLayoutCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  info.pNext = NULL;
+  info.flags = 0;
+  info.setLayoutCount = 0;
+  info.pSetLayouts = NULL;
 
-  VKVALID(vkCreatePipelineLayout(vk_device, &pipelineLayoutInfo, NULL,
-                                 &pe_vk_pipeline_layout),
+  if (use_descriptor == true) {
+    info.setLayoutCount = 1;
+    info.pSetLayouts = &pe_vk_descriptor_set_layout;
+  }
+
+  VKVALID(vkCreatePipelineLayout(vk_device, &info, NULL, layout),
           "Can't create Pipeline Layout");
 }
 
