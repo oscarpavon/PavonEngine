@@ -243,6 +243,20 @@ void pe_vk_pipelines_init() {
   base_pipeline_info.pVertexInputState = &in_position_pipeline_info.vertex_input_state;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
+  VkPipelineShaderStageCreateInfo uniform[2];
+  pe_vk_shader_load(uniform,
+                    "/sdcard/Download/NativeContent/shaders/uniform.spv",
+                    "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
+  base_pipeline_info.pStages = uniform;
+  PPipelineInfo uniform_pipeline_info;
+  ZERO(uniform_pipeline_info);
+  uniform_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(true);
+  base_pipeline_info.pVertexInputState = &uniform_pipeline_info.vertex_input_state;
+  base_pipeline_info.layout = pe_vk_pipeline_layout_with_descriptors;
+  array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
+
+  // ####################################################
+  // ############## Create pipelines ##################
   pe_vk_pipeline_create_pipelines();
 
   VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 0);
