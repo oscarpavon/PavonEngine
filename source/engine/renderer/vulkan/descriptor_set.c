@@ -51,47 +51,30 @@ void pe_vk_create_descriptor_set_layout() {
                                       &pe_vk_descriptor_set_layout),
           "Can't create Descriptor Set Layout");
 }
-void pe_vk_descriptor_update(){
+void pe_vk_descriptor_update() {
 
   for (int i = 0; i < 2; i++) {
 
-    for (int index_object = 0; index_object < 100; index_object++) {
-      VkDescriptorBufferInfo info;
-      ZERO(info);
-      VkBuffer *buffer = array_get(&pe_vk_uniform_buffers, i);
-      info.buffer = *(buffer);
-      // info.offset = sizeof(PEUniformBufferObject) * index_object;
-      info.offset = 0;
-      info.range = sizeof(PUniformBufferObject);
+    VkDescriptorBufferInfo info;
+    ZERO(info);
+    VkBuffer *buffer = array_get(&pe_vk_uniform_buffers, i);
+    info.buffer = *(buffer);
+    info.offset = 0;
+    info.range = sizeof(PUniformBufferObject);
 
-      VkDescriptorBufferInfo info2;
-      ZERO(info2);
-      info2.buffer = buffer_color.buffer;
-      info2.offset = 0;
-      info2.range = sizeof(buffer_color);
+    VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, i);
 
-      VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, index_object);
+    VkWriteDescriptorSet des_write;
+    ZERO(des_write);
+    des_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    des_write.dstSet = *(set);
+    des_write.dstBinding = 0;
+    des_write.dstArrayElement = 0;
+    des_write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    des_write.descriptorCount = 1;
+    des_write.pBufferInfo = &info;
 
-      VkWriteDescriptorSet des_write[2];
-      ZERO(des_write);
-      des_write[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      des_write[0].dstSet = *(set);
-      des_write[0].dstBinding = 0;
-      des_write[0].dstArrayElement = 0;
-      des_write[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      des_write[0].descriptorCount = 1;
-      des_write[0].pBufferInfo = &info;
-
-      des_write[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      des_write[1].dstSet = *(set);
-      des_write[1].dstBinding = 1;
-      des_write[1].dstArrayElement = 0;
-      des_write[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      des_write[1].descriptorCount = 1;
-      des_write[1].pBufferInfo = &info2;
-
-      vkUpdateDescriptorSets(vk_device, 2, des_write, 0, NULL);
-    }
+    vkUpdateDescriptorSets(vk_device, 1, &des_write, 0, NULL);
   }
 }
 void pe_vk_descriptor_set_create() {
@@ -119,6 +102,5 @@ void pe_vk_descriptor_set_create() {
 
   vkAllocateDescriptorSets(vk_device, &alloc_info, pe_vk_descriptor_sets.data);
 
-  //pe_vk_descriptor_update();
-
+  pe_vk_descriptor_update();
 }

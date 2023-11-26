@@ -219,13 +219,15 @@ void pe_vk_pipelines_init() {
 
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
+  //red triangle
   VkPipelineShaderStageCreateInfo blue_shader[2];
   pe_vk_shader_load(blue_shader,
                     "/sdcard/Download/NativeContent/shaders/vert.spv",
                     "/sdcard/Download/NativeContent/shaders/frag.spv");
   base_pipeline_info.pStages = blue_shader;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
-  
+ 
+  //vertex buffer model 
   VkPipelineShaderStageCreateInfo in_position[2];
   pe_vk_shader_load(in_position,
                     "/sdcard/Download/NativeContent/shaders/in_position.spv",
