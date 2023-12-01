@@ -34,14 +34,12 @@ ProjectManager/project_manager.c
 modeling.c
 )
 
-if(DESKTOP)
 		set(editor_sources ${editor_sources}
  
 		EditServer/edit_server.c
 		main.c
 
 		)
-endif()
 
 set (game_source
         ../engine/game.c
@@ -57,7 +55,7 @@ add_executable(peditor ${editor_sources} ${game_source})
 #FIND_LIBRARY(bullet libBulletDynamics.so )
 #FIND_LIBRARY(bullet1 libBulletCollision.so)
 #FIND_LIBRARY(bullet2 libBullet3Common.so)
-set(lib 
+set(lib
 	engine        
     ${engine_link}
     )
@@ -67,7 +65,13 @@ endif()
 
 add_library(peditor
 STATIC
-${editor_sources} 
-)
+${editor_sources})
+
+add_executable(peditorexec main.c)
+set(lib
+    ${engine_link}
+    )
+target_link_libraries(peditorexec ${lib})
+
 
 

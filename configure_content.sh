@@ -23,3 +23,7 @@ else
 cp -r ~/PavonEngine/NativeContent /sdcard/Download
 fi
 
+echo "Contents copy to /sdcard/Download"
+
+./bin/peditorexec
+

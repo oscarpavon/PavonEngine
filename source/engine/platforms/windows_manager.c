@@ -41,47 +41,48 @@ void windows_manager_init(){
   LOG("Window manager init....\n");
 	pe_wm_glfw_init();		
   LOG("Window manager initilized\n");
+  pe_is_window_init = true;
 }
 
-void window_create(EngineWindow *win, EngineWindow* share_window, const char* name){
-    if(win == NULL){
-        LOG("ERROR: Window not found\n");
-        return;
-    }
-    if(win->initialized)
-        return;
+void window_create(EngineWindow *win, EngineWindow *share_window,
+                   const char *name) {
+  if (win == NULL) {
+            LOG("ERROR: Window not found\n");
+            return;
+  }
+  if (win->initialized)
+            return;
 
-    current_window = win;
-    
-    GLFWwindow* share_glfw_window = NULL;
-    if(share_window)
-     share_glfw_window = share_window->window;
+  current_window = win;
 
-	
-	if (pe_renderer_type == PEWMVULKAN) {
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  	}
+  GLFWwindow *share_glfw_window = NULL;
+  if (share_window)
+            share_glfw_window = share_window->window;
 
-	GLFWwindow* new_window = glfwCreateWindow( INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y,name, NULL ,share_glfw_window );
-	if(!new_window){ 
-		LOG("Window can't be created\nPavon Engine was closed\n");
-		exit(-1);
-	}
-	win->window = new_window;
-	
-	if (pe_renderer_type == PEWMOPENGLES2) {
-		glfwMakeContextCurrent(win->window);
-	}   
+  if (pe_renderer_type == PEWMVULKAN) {
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  }
 
-    glfwSetWindowUserPointer(win->window,win);
+  GLFWwindow *new_window = glfwCreateWindow(
+      INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y, name, NULL, share_glfw_window);
+  if (!new_window) {
+            LOG("Window can't be created\nPavon Engine was closed\n");
+            exit(-1);
+  }
+  win->window = new_window;
 
-    camera_heigth_screen = INIT_WINDOW_SIZE_Y;
-    camera_width_screen = INIT_WINDOW_SIZE_X;
-	window_update_viewport(INIT_WINDOW_SIZE_X,INIT_WINDOW_SIZE_Y);
-    
-    win->initialized = true;
+  if (pe_renderer_type == PEWMOPENGLES2) {
+            glfwMakeContextCurrent(win->window);
+  }
+
+  glfwSetWindowUserPointer(win->window, win);
+
+  camera_heigth_screen = INIT_WINDOW_SIZE_Y;
+  camera_width_screen = INIT_WINDOW_SIZE_X;
+  window_update_viewport(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);
+
+  win->initialized = true;
 }
-
 
 void window_resize_callback(GLFWwindow* window, int width, int height){
     camera_heigth_screen = height;

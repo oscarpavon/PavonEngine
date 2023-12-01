@@ -187,7 +187,7 @@ void pe_wm_create_window(EngineWindow* win){
 
 
 #ifdef LINUX
-	window_create(win,NULL, "Window");
+	window_create(win,NULL, "PavonEngine");
 	glfwSetKeyCallback(win->window, pe_input_key_callback);
 	glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
 	glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);

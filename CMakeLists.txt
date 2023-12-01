@@ -6,13 +6,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_compile_definitions(PUBLIC EDITOR)
 
-#add_compile_definitions(PUBLIC LINUX)
-#add_compile_definitions(PUBLIC DESKTOP)
+add_compile_definitions(PUBLIC LINUX)
+add_compile_definitions(PUBLIC DESKTOP)
 add_compile_definitions(PUBLIC OPENGL_ES2)
 #add_compile_definitions(PUBLIC BSD)
 
 add_compile_definitions(PUBLIC VULKAN)
-add_compile_definitions(PUBLIC ANDROID)
+#add_compile_definitions(PUBLIC ANDROID)
 add_compile_definitions(PUBLIC DEBUG)
 set(PE_FREETYPE TRUE)
 

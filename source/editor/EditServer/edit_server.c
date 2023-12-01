@@ -14,8 +14,8 @@ void edit_server_proccess_data(){
 			return;
 	} 
 	printf("%s\n",buffer ); 
-	char path[strlen(pavon_the_game_project_folder) + 30];
-	sprintf(path,"%s%s%s%s",pavon_the_game_project_folder,"Content/",buffer,".glb");
+	char path[strlen("/home/") + 30];
+	sprintf(path,"%s%s%s%s","/home/","Content/",buffer,".glb");
 	LOG("%s\n",path);
 
 	EditorCommand new_command;

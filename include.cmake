@@ -38,6 +38,8 @@ set(pc_link
     EGL 
     GLESv2
     peditor
+    freetype
+    pe_vk
 )
 
 set(lib ${lib} ${linux_libraries})

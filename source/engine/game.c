@@ -54,7 +54,7 @@ void pe_game_create(PGame * created_game){
     LOG("Creating Pavon Engine game...\n");
     game = created_game; 
 
-    pe_renderer_type = PEWMOPENGLES2;
+    pe_renderer_type = PEWMVULKAN;
     pe_init();
 
    

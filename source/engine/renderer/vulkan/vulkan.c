@@ -23,9 +23,13 @@
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 //For Linux support
-//const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+#ifdef DESKTOP
+const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+#endif
 //For Android support
+#ifdef ANDROID
 const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface", VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+#endif
 const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 
@@ -33,7 +37,7 @@ VkDeviceQueueCreateInfo queues_creates_infos[2];
 
 const float queue_priority = 1.f;
 
-int pe_vk_new_logical_divice() {
+int pe_vk_create_logical_device() {
 
   VkDeviceCreateInfo info;
   ZERO(info);
@@ -141,7 +145,7 @@ void pe_vk_create_instance() {
     pe_vk_setup_debug_messenger();
   }
 }
-void pe_vk_physical_device_get(){
+void pe_vk_get_physical_device() {
 
   //****************
   // Physical devices
@@ -153,15 +157,9 @@ void pe_vk_physical_device_get(){
   VkPhysicalDevice phy_devices[devices_count];
   vkEnumeratePhysicalDevices(vk_instance, &devices_count, phy_devices);
   vk_physical_device = phy_devices[0];
-
 }
 
-int pe_vk_init() {
-	
-  pe_vk_validation_layer_enable = false;
-
-  pe_vk_create_instance();
- 
+void pe_vk_create_surface() {
 #ifdef ANDROID
   VkAndroidSurfaceCreateInfoKHR surface_info;
   ZERO(surface_info);
@@ -169,67 +167,74 @@ int pe_vk_init() {
   surface_info.pNext = NULL;
   surface_info.flags = 0;
   surface_info.window = game->app->window;
-  if(game->app->window == NULL){
+  if (game->app->window == NULL) {
     LOG("Window null");
   }
-  VKVALID(vkCreateAndroidSurfaceKHR(vk_instance, &surface_info, NULL, &vk_surface), "Surface Error");
-#endif 
+  VKVALID(
+      vkCreateAndroidSurfaceKHR(vk_instance, &surface_info, NULL, &vk_surface),
+      "Surface Error");
+#endif
 #if DESKTOP
-  if(!current_window){
+  if (!current_window) {
     LOGW("NO WINDOWS CREATED");
   }
-  VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL, &vk_surface),
+
+  VKVALID(glfwCreateWindowSurface(vk_instance, current_window->window, NULL,
+                                  &vk_surface),
           "Can't create window surface");
 #endif
-  pe_vk_physical_device_get();
+}
+int pe_vk_init() {
+
+  pe_vk_validation_layer_enable = false;
+
+  pe_vk_create_instance();
+
+  pe_vk_create_surface();
+ 
+  pe_vk_get_physical_device();
 
   pe_vk_queue_families_support();
 
-  pe_vk_new_logical_divice();
+  pe_vk_create_logical_device();
 
   vkGetDeviceQueue(vk_device, q_graphic_family, 0, &vk_queue);
 
   pe_vk_swch_create();
 
   pe_vk_create_images_views();
-
-
   
-
   pe_vk_create_render_pass();
   
   pe_vk_create_descriptor_set_layout();
+
   pe_vk_pipeline_create_layout(false, &pe_vk_pipeline_layout);
+
   pe_vk_pipeline_create_layout(true, &pe_vk_pipeline_layout_with_descriptors);
 
   pe_vk_pipelines_init();  
 
-
   pe_vk_initialized = true;
-  
+
   pe_vk_model_create();
   pe_vk_uniform_buffer_create();
 
-
   pe_vk_descriptor_pool_create();
   pe_vk_descriptor_set_create();
-  
 
-  
 
-    
   pe_vk_framebuffer_create();
 
   pe_vk_commands_pool_init();
 
   pe_vk_command_init();
-  
+
   pe_vk_semaphores_create();
 
   LOG("Vulkan intialize [OK]");
   return 0;
 }
- 
+
 void pe_vk_end(){
 	pe_vk_debug_end();
 	vkDestroySurfaceKHR(vk_instance,vk_surface,NULL);
