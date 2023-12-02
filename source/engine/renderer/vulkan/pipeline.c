@@ -246,7 +246,7 @@ void pe_vk_pipelines_init() {
   VkPipelineShaderStageCreateInfo uniform[2];
   pe_vk_shader_load(uniform,
                     "/sdcard/Download/NativeContent/shaders/uniform.spv",
-                    "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
+                    "/sdcard/Download/NativeContent/shaders/green_frag.spv");
   base_pipeline_info.pStages = uniform;
   PPipelineInfo uniform_pipeline_info;
   ZERO(uniform_pipeline_info);

@@ -103,7 +103,9 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS, *(uniform));
 
   vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model2->vertex_buffer, offsets);
-  vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
+  vkCmdBindIndexBuffer(*(cmd_buffer),test_model2->index_buffer,0,VK_INDEX_TYPE_UINT16);
+  vkCmdDrawIndexed(*(cmd_buffer),test_model2->index_array.count,1,0,0,0);
+  //vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
   // pe_vk_draw_model(i,test_model);
 }
 void pe_vk_draw_frame() {
