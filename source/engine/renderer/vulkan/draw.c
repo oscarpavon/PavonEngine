@@ -91,24 +91,28 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
  
 //############################################################
 //############### with descriptor set ########################
-  VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
+   VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
+  
+   VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, index);
+   LOG("Frame number %i \n", index);
 
-  VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, index);
-  //  LOG("Frame number %i", index);
+   vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                           pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
+                           NULL);
+   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                     *(uniform));
 
-  vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
-                          NULL);
+   vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model2->vertex_buffer,
+                          offsets);
+   vkCmdBindIndexBuffer(*(cmd_buffer), test_model2->index_buffer, 0,
+                        VK_INDEX_TYPE_UINT16);
+   vkCmdDrawIndexed(*(cmd_buffer), test_model2->index_array.count, 1, 0, 0, 0);
 
-  vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS, *(uniform));
-
-  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model2->vertex_buffer, offsets);
-  vkCmdBindIndexBuffer(*(cmd_buffer),test_model2->index_buffer,0,VK_INDEX_TYPE_UINT16);
-  vkCmdDrawIndexed(*(cmd_buffer),test_model2->index_array.count,1,0,0,0);
-  //vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
-  // pe_vk_draw_model(i,test_model);
+   // vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
+   //  pe_vk_draw_model(i,test_model);
 }
 void pe_vk_draw_frame() {
+  
 
   vkWaitForFences(vk_device, 1, &pe_vk_fence_in_flight, VK_TRUE, UINT64_MAX);
   vkResetFences(vk_device, 1 , &pe_vk_fence_in_flight);
@@ -142,7 +146,7 @@ void pe_vk_draw_frame() {
   submit_info.signalSemaphoreCount = 1;
   submit_info.pSignalSemaphores = singal_semaphore;
 
-  vkQueueSubmit(vk_queue, 1, &submit_info, VK_NULL_HANDLE);
+  vkQueueSubmit(vk_queue, 1, &submit_info, pe_vk_fence_in_flight);
 
   VkPresentInfoKHR present_info;
   ZERO(present_info);
@@ -156,4 +160,5 @@ void pe_vk_draw_frame() {
   VKVALID(vkQueuePresentKHR(vk_queue, &present_info), "Can't present");
 
   vkQueueWaitIdle(vk_queue);
+
 }

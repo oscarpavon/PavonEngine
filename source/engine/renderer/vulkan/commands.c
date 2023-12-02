@@ -65,7 +65,7 @@ void pe_vk_record_commands_buffer(int i){
     begininfo.pInheritanceInfo = NULL;
 
     VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);
-//    vkResetCommandBuffer(*(buffer),0);
+    vkResetCommandBuffer(*(buffer),0);
 
     vkBeginCommandBuffer(*(buffer), &begininfo);
     pe_vk_start_render_pass(i);

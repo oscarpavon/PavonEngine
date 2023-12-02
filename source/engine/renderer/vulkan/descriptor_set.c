@@ -46,7 +46,7 @@ void pe_vk_create_descriptor_set_layout() {
 }
 void pe_vk_descriptor_update() {
 
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 4; i++) {
 
     VkDescriptorBufferInfo info;
     ZERO(info);
@@ -72,11 +72,11 @@ void pe_vk_descriptor_update() {
 }
 void pe_vk_descriptor_set_create() {
 
-  VkDescriptorSetLayout layouts[2];
+  VkDescriptorSetLayout layouts[4];
 
   ZERO(layouts);
 
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 4; i++) {
     layouts[i] = pe_vk_descriptor_set_layout;
   }
 
@@ -89,7 +89,7 @@ void pe_vk_descriptor_set_create() {
   VkDescriptorSetAllocateInfo alloc_info = {
     .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
     .descriptorPool = pe_vk_descriptor_pool,
-    .descriptorSetCount = 2,
+    .descriptorSetCount = 4,
     .pSetLayouts = layouts
   };
 
