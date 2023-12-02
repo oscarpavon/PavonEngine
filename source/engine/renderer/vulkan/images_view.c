@@ -8,7 +8,6 @@
 #define PE_IMAGES_VIEWS_COUNT 4
 
 void pe_vk_create_images_views() {
-  ZERO(pe_vk_images_views);
   array_init(&pe_vk_images_views, sizeof(VkImageView), PE_IMAGES_VIEWS_COUNT);
 
   // images view count equal to pe_vk_images array

@@ -3,8 +3,10 @@
 #include "interruptions.h"
 #include "log.h"
 #include <string.h>
+#include <engine/macros.h>
 
 int array_init(Array * array, u32 element_bytes_size, int count){
+    ZERO(*(array));
     if(array == NULL){
         LOG("Array is NULL");
         return -1;
