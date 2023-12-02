@@ -43,18 +43,19 @@ void array_add(Array* array,const void* element){
         debug_break();;
         return;
     }
+    if(array->bytes_capacity < (array->actual_bytes_size + array->element_bytes_size)){
+        LOG("Element byte size %i\n",array->element_bytes_size);
+        LOG("Current bytes size: %i\n",array->actual_bytes_size);
+        LOG("Needed %i\n",(array->actual_bytes_size + array->element_bytes_size));
+        LOG("Array byte capacity %i\n",array->bytes_capacity);
+        LOG("Array need reallocation\n");//TODO: reallocation engine memory
+        debug_break();
+    }
     if(array->count == 0){
         array->actual_bytes_size += array->element_bytes_size;
         memcpy(array->data,element,array->element_bytes_size);
         array->count++;
         return;
-    }
-    if(array->bytes_capacity < (array->actual_bytes_size + array->element_bytes_size)){
-        LOG("Array need reallocation\n");//TODO: reallocation engine memory
-        LOG("Current bytes size: %i",array->actual_bytes_size);
-        LOG("Need %i",(array->actual_bytes_size + array->element_bytes_size));
-        LOG("Array byte capacity %i",array->bytes_capacity);
-        debug_break();
     }
     size_t offset = array->actual_bytes_size;
     array->count++;

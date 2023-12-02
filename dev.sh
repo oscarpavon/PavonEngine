@@ -15,3 +15,5 @@ cd ~/PavonEngine/NativeContent/shaders/
 
 cd ~/PavonEngine
 ./configure_content.sh
+
+./bin/peditorexec

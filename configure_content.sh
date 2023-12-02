@@ -25,5 +25,4 @@ fi
 
 echo "Contents copy to /sdcard/Download"
 
-./bin/peditorexec
 

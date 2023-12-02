@@ -2,11 +2,13 @@
 #include <engine/macros.h>
 #include <string.h>
 #include <engine/renderer/vulkan/swap_chain.h>
+#include <engine/log.h>
+#include <engine/macros.h>
 
 #define PE_IMAGES_VIEWS_COUNT 4
 
 void pe_vk_create_images_views() {
-
+  ZERO(pe_vk_images_views);
   array_init(&pe_vk_images_views, sizeof(VkImageView), PE_IMAGES_VIEWS_COUNT);
 
   // images view count equal to pe_vk_images array
@@ -31,6 +33,7 @@ void pe_vk_create_images_views() {
     info.subresourceRange.layerCount = 1;
 
     VkImageView image_view;
+    ZERO(image_view);
     vkCreateImageView(vk_device, &info, NULL, &image_view);
     array_add(&pe_vk_images_views, &image_view);
   }
