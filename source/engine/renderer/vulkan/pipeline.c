@@ -262,13 +262,15 @@ void pe_vk_pipelines_init() {
 
   VkPipelineShaderStageCreateInfo uniform[2];
   pe_vk_shader_load(uniform,
-                    "/sdcard/Download/NativeContent/shaders/uniform.spv",
-                    "/sdcard/Download/NativeContent/shaders/green_frag.spv");
+                    "/sdcard/Download/NativeContent/shaders/diffuse_vert.spv",
+                    "/sdcard/Download/NativeContent/shaders/diffuse_frag.spv");
   base_pipeline_info.pStages = uniform;
   PPipelineInfo uniform_pipeline_info;
   ZERO(uniform_pipeline_info);
   uniform_pipeline_info.attributes.has_attributes = true;
   uniform_pipeline_info.attributes.position = true;
+  uniform_pipeline_info.attributes.color = true;
+  uniform_pipeline_info.attributes.normal = true;
   uniform_pipeline_info.vertex_input_state =
       pe_vk_pipeline_get_default_vertex_input(
           &uniform_pipeline_info.attributes);
