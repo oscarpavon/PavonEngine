@@ -91,9 +91,28 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
  
 //############################################################
 //############### with descriptor set ########################
+  pe_vk_uniform_buffer_update_one(index);
    VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
 
    VkDescriptorSet *set = array_get(&test_model->descriptor_sets, index);
+
+   vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                           pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
+                           NULL);
+   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                     *(uniform));
+
+   vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer,
+                          offsets);
+   vkCmdBindIndexBuffer(*(cmd_buffer), test_model->index_buffer, 0,
+                        VK_INDEX_TYPE_UINT16);
+   vkCmdDrawIndexed(*(cmd_buffer), test_model->index_array.count, 1, 0, 0, 0);
+
+//############################################################
+//############### with descriptor set ########################
+
+  pe_vk_uniform_buffer_update_two(index);
+   set = array_get(&test_model2->descriptor_sets, index);
 
    vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
                            pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
@@ -106,7 +125,6 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
    vkCmdBindIndexBuffer(*(cmd_buffer), test_model2->index_buffer, 0,
                         VK_INDEX_TYPE_UINT16);
    vkCmdDrawIndexed(*(cmd_buffer), test_model2->index_array.count, 1, 0, 0, 0);
-
    // vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
    //  pe_vk_draw_model(i,test_model);
 }
@@ -122,7 +140,7 @@ void pe_vk_draw_frame() {
                         pe_vk_semaphore_images_available, VK_NULL_HANDLE,
                         &image_index);
 
-  pe_vk_uniform_buffer_update(image_index);
+  //pe_vk_uniform_buffer_update(image_index);
   pe_vk_record_commands_buffer(image_index);
 
   VkSemaphore singal_semaphore[] = {pe_vk_semaphore_render_finished};

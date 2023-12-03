@@ -147,7 +147,7 @@ void pe_vk_models_create() {
   pe_vk_descriptor_pool_create(test_model);
   pe_vk_descriptor_set_create(test_model);
 
-  pe_loader_model("/sdcard/Download/chess/sphere.glb");
+  pe_loader_model("/sdcard/Download/chess/peon.glb");
   test_model2 = selected_model;
 
   test_model2->vertex_buffer =
@@ -156,4 +156,7 @@ void pe_vk_models_create() {
       pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
 
+  pe_vk_create_uniform_buffers(test_model2);
+  pe_vk_descriptor_pool_create(test_model2);
+  pe_vk_descriptor_set_create(test_model2);
 }
