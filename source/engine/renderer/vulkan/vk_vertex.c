@@ -131,7 +131,7 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array *indices) {
   return info.buffer;
 }
 
-void pe_vk_model_create() {
+void pe_vk_models_create() {
 
   actual_model_array = &array_models_loaded;
   pe_loader_model("/sdcard/Download/chess/torre.glb");
@@ -143,6 +143,10 @@ void pe_vk_model_create() {
   test_model->index_buffer =
       pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
+  pe_vk_create_uniform_buffers(test_model);
+  pe_vk_descriptor_pool_create(test_model);
+  pe_vk_descriptor_set_create(test_model);
+
   pe_loader_model("/sdcard/Download/chess/sphere.glb");
   test_model2 = selected_model;
 
@@ -150,4 +154,6 @@ void pe_vk_model_create() {
       pe_vk_vertex_create_buffer(&selected_model->vertex_array);
   test_model2->index_buffer =
       pe_vk_vertex_create_index_buffer(&selected_model->index_array);
+
+
 }

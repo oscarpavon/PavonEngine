@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 
 #include <engine/renderer/material.h>
+#include <vulkan/vulkan_core.h>
 
 
 typedef struct PMesh{
@@ -46,6 +47,11 @@ typedef struct PModel{
 
     VkBuffer vertex_buffer;
     VkBuffer index_buffer;
+
+    Array uniform_buffers;
+    Array uniform_buffers_memory;
+    Array descriptor_sets;
+    VkDescriptorPool descriptor_pool;
  
     vec3 position;
     PMesh mesh;

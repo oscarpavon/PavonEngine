@@ -19,7 +19,7 @@ VkBuffer pe_vk_vertex_create_buffer(Array* vertices);
 
 VkBuffer pe_vk_vertex_create_index_buffer(Array* indices);
 
-void pe_vk_model_create();
+void pe_vk_models_create();
 
 VkBuffer vertex_buffer;
 VkBuffer index_buffer;

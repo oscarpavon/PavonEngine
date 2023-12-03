@@ -4,7 +4,7 @@
 #include <engine/array.h>
 #include <engine/engine.h>
 
-void pe_vk_descriptor_pool_create() {
+void pe_vk_descriptor_pool_create(PModel* model) {
   VkDescriptorPoolSize pool_size[2];
   ZERO(pool_size);
   pool_size[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -20,7 +20,7 @@ void pe_vk_descriptor_pool_create() {
   info.maxSets = 8;
 
   VKVALID(
-      vkCreateDescriptorPool(vk_device, &info, NULL, &pe_vk_descriptor_pool),
+      vkCreateDescriptorPool(vk_device, &info, NULL, &model->descriptor_pool),
       "Can't create descriptor pool");
 }
 
@@ -44,18 +44,18 @@ void pe_vk_create_descriptor_set_layout() {
                                       &pe_vk_descriptor_set_layout),
           "Can't create Descriptor Set Layout");
 }
-void pe_vk_descriptor_update() {
+void pe_vk_descriptor_update(PModel* model) {
 
   for (int i = 0; i < 4; i++) {
 
     VkDescriptorBufferInfo info;
     ZERO(info);
-    VkBuffer *buffer = array_get(&pe_vk_uniform_buffers, i);
+    VkBuffer *buffer = array_get(&model->uniform_buffers, i);
     info.buffer = *(buffer);
     info.offset = 0;
     info.range = sizeof(PUniformBufferObject);
 
-    VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, i);
+    VkDescriptorSet *set = array_get(&model->descriptor_sets, i);
 
     VkWriteDescriptorSet des_write;
     ZERO(des_write);
@@ -70,7 +70,7 @@ void pe_vk_descriptor_update() {
     vkUpdateDescriptorSets(vk_device, 1, &des_write, 0, NULL);
   }
 }
-void pe_vk_descriptor_set_create() {
+void pe_vk_descriptor_set_create(PModel* model) {
 
   VkDescriptorSetLayout layouts[4];
 
@@ -80,20 +80,20 @@ void pe_vk_descriptor_set_create() {
     layouts[i] = pe_vk_descriptor_set_layout;
   }
 
-  array_init(&pe_vk_descriptor_sets, sizeof(VkDescriptorSet), 4);
+  array_init(&model->descriptor_sets, sizeof(VkDescriptorSet), 4);
 
   // resize because we need to allocate descriptor copy in array.data
-  array_resize(&pe_vk_descriptor_sets, 4);
+  array_resize(&model->descriptor_sets, 4);
 
   // Allocation
   VkDescriptorSetAllocateInfo alloc_info = {
     .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-    .descriptorPool = pe_vk_descriptor_pool,
+    .descriptorPool = model->descriptor_pool,
     .descriptorSetCount = 4,
     .pSetLayouts = layouts
   };
 
-  vkAllocateDescriptorSets(vk_device, &alloc_info, pe_vk_descriptor_sets.data);
+  vkAllocateDescriptorSets(vk_device, &alloc_info, model->descriptor_sets.data);
 
-  pe_vk_descriptor_update();
+  pe_vk_descriptor_update(model);
 }

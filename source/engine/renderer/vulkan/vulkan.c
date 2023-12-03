@@ -6,6 +6,7 @@
 #include <engine/macros.h>
 #include "debug.h"
 #include <engine/windows_manager.h>
+#include "engine/engine.h"
 #include "pipeline.h"
 #include "render_pass.h"
 #include "framebuffer.h"
@@ -216,11 +217,10 @@ int pe_vk_init() {
 
   pe_vk_initialized = true;
 
-  pe_vk_model_create();
-  pe_vk_uniform_buffer_create();
+  pe_vk_models_create();
 
-  pe_vk_descriptor_pool_create();
-  pe_vk_descriptor_set_create();
+  pe_vk_descriptor_pool_create(test_model);
+  pe_vk_descriptor_set_create(test_model);
 
 
   pe_vk_framebuffer_create();

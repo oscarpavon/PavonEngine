@@ -26,18 +26,18 @@ PEVKBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
   return info;
 }
 
-void pe_vk_uniform_buffer_create() {
+void pe_vk_create_uniform_buffers(PModel* model) {
   VkDeviceSize buffer_size = sizeof(PUniformBufferObject);
 
-  array_init(&pe_vk_uniform_buffers, sizeof(VkBuffer), 4);
-  array_init(&pe_vk_uniform_buffers_memory, sizeof(VkDeviceMemory), 4);
+  array_init(&model->uniform_buffers, sizeof(VkBuffer), 4);
+  array_init(&model->uniform_buffers_memory, sizeof(VkDeviceMemory), 4);
 
   for (int i = 0; i < 4; i++) {
     // create buffer
     PEVKBufferCreateInfo info =
         pe_vk_uniform_buffer_create_buffer(sizeof(PUniformBufferObject));
-    array_add(&pe_vk_uniform_buffers, &info.buffer);
-    array_add(&pe_vk_uniform_buffers_memory, &info.buffer_memory);
+    array_add(&model->uniform_buffers, &info.buffer);
+    array_add(&model->uniform_buffers_memory, &info.buffer_memory);
   }
 
   //buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
@@ -70,7 +70,7 @@ void pe_vk_uniform_buffer_update(uint32_t image_index) {
   PUniformBufferObject buffers[] = {pawn_ubo};
 
   VkDeviceMemory *memory =
-      array_get(&pe_vk_uniform_buffers_memory, image_index);
+      array_get(&test_model->uniform_buffers_memory, image_index);
 
   pe_vk_memory_copy(sizeof(buffers), memory, buffers);
 

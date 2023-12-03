@@ -6,13 +6,10 @@
 
 #include "vk_buffer.h"
 
-Array pe_vk_uniform_buffers;
-Array pe_vk_uniform_buffers_memory;
-
 PEVKBufferCreateInfo buffer_color;
 
 void pe_vk_uniform_buffer_update(uint32_t image_index);
 
-void pe_vk_uniform_buffer_create();
+void pe_vk_create_uniform_buffers(PModel* model);
 
 #endif

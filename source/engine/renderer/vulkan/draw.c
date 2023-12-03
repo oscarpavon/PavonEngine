@@ -92,8 +92,8 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
 //############################################################
 //############### with descriptor set ########################
    VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
-  
-   VkDescriptorSet *set = array_get(&pe_vk_descriptor_sets, index);
+
+   VkDescriptorSet *set = array_get(&test_model->descriptor_sets, index);
 
    vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
                            pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
