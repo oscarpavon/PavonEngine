@@ -11,6 +11,7 @@
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
 
+
 void pe_vk_pipeline_create_layout(bool use_descriptor, VkPipelineLayout* layout) {
 
   VkPipelineLayoutCreateInfo info;
@@ -40,7 +41,7 @@ typedef struct PPipelineInfo {
   VkPipelineColorBlendAttachmentState color_attachment;
   VkPipelineColorBlendStateCreateInfo color_blend_state;
   VkVertexInputBindingDescription input_binding_description;
-  VkVertexInputAttributeDescription input_attribute_description;
+  PVertexAtrributes attributes;
 } PPipelineInfo;
 
 PPipelineInfo pe_vk_main_pipeline_info;
@@ -56,31 +57,33 @@ VkPipelineDynamicStateCreateInfo pe_vk_pipeline_get_default_dynamic_state(){
 }
 
 VkPipelineVertexInputStateCreateInfo
-pe_vk_pipeline_get_default_vertex_input(bool has_attribute) {
+pe_vk_pipeline_get_default_vertex_input(PVertexAtrributes *attributes) {
 
-  VkPipelineVertexInputStateCreateInfo vertexInputInfo;
-  ZERO(vertexInputInfo);
-  vertexInputInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-  vertexInputInfo.vertexBindingDescriptionCount = 0;
-  vertexInputInfo.pVertexBindingDescriptions = NULL;
-  vertexInputInfo.vertexAttributeDescriptionCount = 0;
-  vertexInputInfo.pVertexAttributeDescriptions = NULL;
-  if (has_attribute== true) {
+  VkPipelineVertexInputStateCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+  info.vertexBindingDescriptionCount = 0;
+  info.pVertexBindingDescriptions = NULL;
+  info.vertexAttributeDescriptionCount = 0;
+  info.pVertexAttributeDescriptions = NULL;
+
+  if (attributes->has_attributes == true) {
+
+    array_init(&attributes->attributes_descriptions,
+               sizeof(VkVertexInputAttributeDescription), 5);
 
     pe_vk_main_pipeline_info.input_binding_description =
         pe_vk_vertex_get_binding_description();
-    pe_vk_main_pipeline_info.input_attribute_description =
-        pe_vk_vertex_get_attribute();
-    vertexInputInfo.vertexBindingDescriptionCount = 1;
-    vertexInputInfo.pVertexBindingDescriptions =
+    pe_vk_vertex_get_attribute(attributes);
+    info.vertexBindingDescriptionCount = 1;
+    info.pVertexBindingDescriptions =
         &pe_vk_main_pipeline_info.input_binding_description;
-    vertexInputInfo.vertexAttributeDescriptionCount = 1;
-    vertexInputInfo.pVertexAttributeDescriptions =
-        &pe_vk_main_pipeline_info.input_attribute_description;
-    ;
+    info.vertexAttributeDescriptionCount =
+        attributes->attributes_descriptions.count;
+    info.pVertexAttributeDescriptions =
+        attributes->attributes_descriptions.data;
   }
-  return vertexInputInfo;
+  return info;
 }
 
 VkPipelineViewportStateCreateInfo pe_vk_pipeline_get_default_viewport(){
@@ -187,22 +190,29 @@ void pe_vk_pipelines_init() {
   ZERO(pe_vk_main_pipeline_info);
   array_init(&pe_vk_pipeline_infos, sizeof(VkGraphicsPipelineCreateInfo), PE_VK_PIPELINES_MAX);
   array_init(&pe_graphics_pipelines, sizeof(VkPipeline), PE_VK_PIPELINES_MAX);
+  pe_vk_main_pipeline_info.attributes.has_attributes = false;
+  pe_vk_main_pipeline_info.vertex_input_state =
+      pe_vk_pipeline_get_default_vertex_input(&pe_vk_main_pipeline_info.attributes);
+  pe_vk_main_pipeline_info.rasterization_state =
+      pe_vk_pipeline_get_default_rasterization();
+  pe_vk_main_pipeline_info.dynamic_state =
+      pe_vk_pipeline_get_default_dynamic_state();
+  pe_vk_main_pipeline_info.viewport_state =
+      pe_vk_pipeline_get_default_viewport();
+  pe_vk_main_pipeline_info.input_assembly_state =
+      pe_vk_pipeline_get_default_input_assembly();
+  pe_vk_main_pipeline_info.multisample_state =
+      pe_vk_pipeline_get_default_multisample();
+  pe_vk_main_pipeline_info.color_blend_state =
+      pe_vk_pipeline_get_default_color_blend();
 
-
-  pe_vk_main_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(false);
-  pe_vk_main_pipeline_info.rasterization_state = pe_vk_pipeline_get_default_rasterization();
-  pe_vk_main_pipeline_info.dynamic_state = pe_vk_pipeline_get_default_dynamic_state();
-  pe_vk_main_pipeline_info.viewport_state = pe_vk_pipeline_get_default_viewport();
-  pe_vk_main_pipeline_info.input_assembly_state = pe_vk_pipeline_get_default_input_assembly();
-  pe_vk_main_pipeline_info.multisample_state = pe_vk_pipeline_get_default_multisample();
-  pe_vk_main_pipeline_info.color_blend_state = pe_vk_pipeline_get_default_color_blend();
-
-  VkGraphicsPipelineCreateInfo base_pipeline_info= {
+  VkGraphicsPipelineCreateInfo base_pipeline_info = {
 
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .stageCount = 2,
       //.pStages = red_shader, // created in pe_vk_shader_load()
-      .layout = pe_vk_pipeline_layout, // created in pe_vk_pipeline_create_layout()
+      .layout =
+          pe_vk_pipeline_layout, // created in pe_vk_pipeline_create_layout()
       .renderPass = pe_vk_render_pass, // created in pe_vk_create_render_pass()
       .pVertexInputState = &pe_vk_main_pipeline_info.vertex_input_state,
       .pInputAssemblyState = &pe_vk_main_pipeline_info.input_assembly_state,
@@ -239,8 +249,13 @@ void pe_vk_pipelines_init() {
   base_pipeline_info.pStages = in_position;
   PPipelineInfo in_position_pipeline_info;
   ZERO(in_position_pipeline_info);
-  in_position_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(true);
-  base_pipeline_info.pVertexInputState = &in_position_pipeline_info.vertex_input_state;
+  in_position_pipeline_info.attributes.has_attributes = true;
+  in_position_pipeline_info.attributes.position = true;
+  in_position_pipeline_info.vertex_input_state =
+      pe_vk_pipeline_get_default_vertex_input(
+          &in_position_pipeline_info.attributes);
+  base_pipeline_info.pVertexInputState =
+      &in_position_pipeline_info.vertex_input_state;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
   VkPipelineShaderStageCreateInfo uniform[2];
@@ -250,8 +265,13 @@ void pe_vk_pipelines_init() {
   base_pipeline_info.pStages = uniform;
   PPipelineInfo uniform_pipeline_info;
   ZERO(uniform_pipeline_info);
-  uniform_pipeline_info.vertex_input_state = pe_vk_pipeline_get_default_vertex_input(true);
-  base_pipeline_info.pVertexInputState = &uniform_pipeline_info.vertex_input_state;
+  uniform_pipeline_info.attributes.has_attributes = true;
+  uniform_pipeline_info.attributes.position = true;
+  uniform_pipeline_info.vertex_input_state =
+      pe_vk_pipeline_get_default_vertex_input(
+          &uniform_pipeline_info.attributes);
+  base_pipeline_info.pVertexInputState =
+      &uniform_pipeline_info.vertex_input_state;
   base_pipeline_info.layout = pe_vk_pipeline_layout_with_descriptors;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 

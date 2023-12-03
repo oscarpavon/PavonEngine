@@ -5,9 +5,9 @@
 
 typedef struct Vertex{
     vec3 position;
-    vec2 uv;
-    vec3 color;
     vec3 normal;
+    vec3 color;
+    vec2 uv;
     vec4 joint;
     vec4 weight;
     long unsigned int id;

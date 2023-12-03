@@ -1,3 +1,4 @@
+rm ~/PavonEngine/bin/peditorexec
 
 if [ ! -d ~/PavonEngine/build ]
 then

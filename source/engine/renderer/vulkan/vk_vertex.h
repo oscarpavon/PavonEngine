@@ -1,9 +1,18 @@
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/array.h>
 
+typedef struct PVertexAtrributes {
+  bool has_attributes;
+  bool position;
+  bool color;
+  bool normal;
+  bool uv;
+  bool weight;
+  Array attributes_descriptions;
+} PVertexAtrributes;
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description();
-VkVertexInputAttributeDescription pe_vk_vertex_get_attribute();
+void pe_vk_vertex_get_attribute(PVertexAtrributes* attributes);
 
 VkBuffer pe_vk_vertex_create_buffer(Array* vertices);
 
@@ -13,3 +22,5 @@ void pe_vk_model_create();
 
 VkBuffer vertex_buffer;
 VkBuffer index_buffer;
+
+

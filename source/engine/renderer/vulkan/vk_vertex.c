@@ -21,17 +21,20 @@ VkVertexInputBindingDescription pe_vk_vertex_get_binding_description() {
   return binding;
 }
 
-VkVertexInputAttributeDescription pe_vk_vertex_get_attribute() {
-  VkVertexInputAttributeDescription attribute;
-  ZERO(attribute);
+void pe_vk_vertex_get_attribute(PVertexAtrributes* attributes) {
 
-  attribute.binding = 0;
-  attribute.location = 0;
+  if (attributes->position) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
 
-  attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
-  attribute.offset = offsetof(Vertex, position);
+    attribute.binding = 0;
+    attribute.location = 0;
 
-  return attribute;
+    attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
+    attribute.offset = offsetof(Vertex, position);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
+
 }
 
 VkBuffer pe_vk_vertex_create_buffer(Array *vertices) {
@@ -85,7 +88,7 @@ void pe_vk_model_create() {
   test_model->index_buffer =
       pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
-  pe_loader_model("/sdcard/Download/chess/reina.glb");
+  pe_loader_model("/sdcard/Download/chess/sphere.glb");
   test_model2 = selected_model;
 
   test_model2->vertex_buffer =
