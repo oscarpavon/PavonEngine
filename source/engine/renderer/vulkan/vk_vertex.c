@@ -34,6 +34,61 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes* attributes) {
     attribute.offset = offsetof(Vertex, position);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
+  if (attributes->color) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
+
+    attribute.binding = 0;
+    attribute.location = 1;
+
+    attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
+    attribute.offset = offsetof(Vertex, color);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
+  if (attributes->normal) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
+
+    attribute.binding = 0;
+    attribute.location = 2;
+
+    attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
+    attribute.offset = offsetof(Vertex, normal);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
+  if (attributes->uv) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
+
+    attribute.binding = 0;
+    attribute.location = 3;
+
+    attribute.format = VK_FORMAT_R32G32_SFLOAT;
+    attribute.offset = offsetof(Vertex, uv);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
+  if (attributes->joint) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
+
+    attribute.binding = 0;
+    attribute.location = 4;
+
+    attribute.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    attribute.offset = offsetof(Vertex, joint);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
+  if (attributes->weight) {
+    VkVertexInputAttributeDescription attribute;
+    ZERO(attribute);
+
+    attribute.binding = 0;
+    attribute.location = 5;
+
+    attribute.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    attribute.offset = offsetof(Vertex, weight);
+    array_add(&attributes->attributes_descriptions, &attribute);
+  }
 
 }
 

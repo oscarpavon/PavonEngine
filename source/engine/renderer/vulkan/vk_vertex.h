@@ -8,6 +8,7 @@ typedef struct PVertexAtrributes {
   bool normal;
   bool uv;
   bool weight;
+  bool joint;
   Array attributes_descriptions;
 } PVertexAtrributes;
 

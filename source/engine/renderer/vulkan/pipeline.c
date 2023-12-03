@@ -188,11 +188,13 @@ void pe_vk_pipeline_create_pipelines() {
 
 void pe_vk_pipelines_init() {
   ZERO(pe_vk_main_pipeline_info);
-  array_init(&pe_vk_pipeline_infos, sizeof(VkGraphicsPipelineCreateInfo), PE_VK_PIPELINES_MAX);
+  array_init(&pe_vk_pipeline_infos, sizeof(VkGraphicsPipelineCreateInfo),
+             PE_VK_PIPELINES_MAX);
   array_init(&pe_graphics_pipelines, sizeof(VkPipeline), PE_VK_PIPELINES_MAX);
   pe_vk_main_pipeline_info.attributes.has_attributes = false;
   pe_vk_main_pipeline_info.vertex_input_state =
-      pe_vk_pipeline_get_default_vertex_input(&pe_vk_main_pipeline_info.attributes);
+      pe_vk_pipeline_get_default_vertex_input(
+          &pe_vk_main_pipeline_info.attributes);
   pe_vk_main_pipeline_info.rasterization_state =
       pe_vk_pipeline_get_default_rasterization();
   pe_vk_main_pipeline_info.dynamic_state =
