@@ -13,13 +13,13 @@ void pe_comp_static_mesh_update(ComponentDefinition *element_component) {
   if (mesh_component->meshes.initialized == true) {
     for (u8 i = 1; i <= mesh_component->meshes.count - 1; i++) {
       u8 *id = array_get(&mesh_component->meshes, i);
-      Model *model = array_get(actual_model_array, *id);
+      PModel *model = array_get(actual_model_array, *id);
 
       glm_mat4_copy(element_component->parent->transform->model_matrix,
                     model->model_mat);
     }
     u8 *id = array_get(&mesh_component->meshes, 1);
-    Model *model = array_get(actual_model_array, *id);
+    PModel *model = array_get(actual_model_array, *id);
     if (!model)
       return;
     glm_vec3_copy(model->min, mesh_component->bounding_box[0]);
@@ -30,13 +30,13 @@ void pe_comp_static_mesh_update(ComponentDefinition *element_component) {
     glm_aabb_center(mesh_component->bounding_box, mesh_component->center);
   }
 
-  Model *modelf = array_get_pointer(&mesh_component->models_p, 0);
+  PModel *modelf = array_get_pointer(&mesh_component->models_p, 0);
 
   glm_mat4_copy(element_component->parent->transform->model_matrix,
                 modelf->model_mat);
 }
 
-void pe_shader_create_for_model(Model* model, u32 frag, u32 vert) {
+void pe_shader_create_for_model(PModel* model, u32 frag, u32 vert) {
 
   // Shaders
   PEShaderCreation shader_creation;
@@ -52,7 +52,7 @@ void pe_shader_create_for_model(Model* model, u32 frag, u32 vert) {
   pe_th_wait(&thread_main);
 }
 
-void pe_comp_static_mesh_shader_init(Model* model) {
+void pe_comp_static_mesh_shader_init(PModel* model) {
 
   // Shaders
   PEShaderCreation shader_creation;
@@ -106,7 +106,7 @@ void pe_comp_static_mesh_init(ComponentDefinition *element_component) {
 
   for (int i = 0; i < mesh_component->models_p.count; i++) {
 
-    Model *model = array_get_pointer(&mesh_component->models_p, i);
+    PModel *model = array_get_pointer(&mesh_component->models_p, i);
 
     pe_comp_static_mesh_shader_init(model);
 
@@ -121,7 +121,7 @@ void pe_comp_static_mesh_init(ComponentDefinition *element_component) {
       // Models ids
       u8 *id = array_get(&mesh_component->meshes, i);
 
-      Model *original_model = array_get(&array_models_loaded, *id);
+      PModel *original_model = array_get(&array_models_loaded, *id);
       if (!original_model)
         return;
 

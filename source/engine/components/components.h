@@ -36,12 +36,12 @@ typedef struct ComponentDefinition{
 typedef struct SphereComponent{    
     int radius;
     vec3 center;
-    Model* model;
+    PModel* model;
 }SphereComponent;
 
 typedef struct CubeComponent{    
     vec3 center;
-    Model* model;
+    PModel* model;
 }CubeComponent;
 
 typedef struct TransformComponent{    
@@ -57,13 +57,13 @@ typedef struct CameraComponent{
     vec3 front;
     vec3 up;
     vec3 position;
-    Model* camera_gizmo;
+    PModel* camera_gizmo;
 }CameraComponent;
 
 typedef struct HierarchicalLevelOfDetail HierarchicalLevelOfDetail;
 
 typedef struct HierarchicalLevelOfDetail{
-    Model model;
+    PModel model;
     float distance;
     bool draw;
     bool drew;
@@ -76,7 +76,7 @@ typedef struct HierarchicalLevelOfDetail{
 typedef struct HLODComponent{
     vec3 center;
     vec3 bounding_box[2];
-    Model* model;
+    PModel* model;
     float distance;
     bool has_childs_HLOD;
     Array childs;//HLOD childs

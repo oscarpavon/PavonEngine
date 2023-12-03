@@ -112,7 +112,7 @@ void load_simple_image(const char* path);
 
 void test_elements_occlusion();
 
-void duplicate_model_data(Model* destination , Model* source);
+void duplicate_model_data(PModel* destination , PModel* source);
 
 void new_empty_model_in_array(Array* array);
 
@@ -174,7 +174,7 @@ Array actions_pointers;;
 // Global pointers
 //
 Element* selected_element;
-Model* selected_model;
+PModel* selected_model;
 Element* player1;
 Element* player_start;
 
@@ -212,8 +212,8 @@ Array main_thread_commads;
 
 vec4 pe_background_color;
 
-Model* test_model;
-Model* test_model2;
+PModel* test_model;
+PModel* test_model2;
 
 
 #endif //PAVON_ENGINE_H

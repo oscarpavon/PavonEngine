@@ -82,11 +82,11 @@ void init_selected_object_bounding_box_vertices() {
     actual_model_array = prev_model_array;
   }
 }
-void update_bounding_vertices_array(Model *model) {
+void update_bounding_vertices_array(PModel *model) {
 
   glm_vec3_copy(selected_element->transform->position, last_position);
 
-  Model *box = array_get(&bounding_boxes, 0);
+  PModel *box = array_get(&bounding_boxes, 0);
 
   array_clean(&box->vertex_array);
   selected_model = box;
@@ -97,7 +97,7 @@ void update_bounding_vertices_array(Model *model) {
 void draw_bounding_box() {
   if (bounding_box_initialized == true) {
 
-    Model *bounding_model = array_get(&bounding_boxes, 0);
+    PModel *bounding_model = array_get(&bounding_boxes, 0);
 
     update_bounding_vertices_array(bounding_model);
     if (can_draw_box == false)
@@ -266,7 +266,7 @@ void gizmos_boanding_sphere_draw(Sphere *sphere, vec4 color) {
     if (bounding_boxes.count > 1) {
       bounding_id = 1;
     }
-    Model *bounding_model = array_get(&bounding_boxes, bounding_id);
+    PModel *bounding_model = array_get(&bounding_boxes, bounding_id);
 
     mat4 new_model_mat;
     glm_mat4_identity(new_model_mat);
@@ -306,9 +306,9 @@ void gizmos_boanding_sphere_draw(Sphere *sphere, vec4 color) {
 }
 
 void gizmos_init() {
-  array_init(&gizmos, sizeof(Model), 10);
+  array_init(&gizmos, sizeof(PModel), 10);
 
-  array_init(&bounding_boxes, sizeof(Model), 10);
+  array_init(&bounding_boxes, sizeof(PModel), 10);
 
   array_init(&debug_objects, sizeof(DebugLine), 300);
 
@@ -391,7 +391,7 @@ void draw_gizmos() {
 
     glClear(GL_DEPTH_BUFFER_BIT);
 		
-		Model *actual_gizmo = NULL;
+		PModel *actual_gizmo = NULL;
 
     if (draw_translate_gizmo) {
       actual_gizmo = array_get(&gizmos, 0);
@@ -422,7 +422,7 @@ void draw_gizmos() {
     PEComponentPlayerStart *player_start_comp =
 				get_component_from_element(player_start,PE_COMP_PLAYER_START);
     if (player_start_comp) {
-      Model* player_start_gizmo_model = array_get(&gizmos, 4);
+      PModel* player_start_gizmo_model = array_get(&gizmos, 4);
 
       TransformComponent *transform =
 					get_component_from_element(player_start,TRASNFORM_COMPONENT);

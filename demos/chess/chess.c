@@ -29,7 +29,7 @@ PMesh chess_get_mesh() {
   StaticMeshComponent *mesh =
       get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
 
-  Model *original_check_mesh = array_get_pointer(&mesh->models_p, 0);
+  PModel *original_check_mesh = array_get_pointer(&mesh->models_p, 0);
   return original_check_mesh->mesh;
 }
 
@@ -91,7 +91,7 @@ void chess_board_create() {
   float scale_board = -0.5f;
   pe_element_set_scale(VEC3(scale_board, scale_board, scale_board));
 
-  Model *original_check_mesh = array_get_pointer(&mesh->models_p, 0);
+  PModel *original_check_mesh = array_get_pointer(&mesh->models_p, 0);
   check_mesh = original_check_mesh->mesh;
 
   for (int x = 0; x < 8; x++) {
@@ -317,7 +317,7 @@ void chess_create_pawn() {
   StaticMeshComponent *pawn_mesh_comp =
       get_component_from_element(selected_element, STATIC_MESH_COMPONENT);
 
-  Model *model = array_get_pointer(&pawn_mesh_comp->models_p, 0);
+  PModel *model = array_get_pointer(&pawn_mesh_comp->models_p, 0);
   PMesh pawn_mesh = model->mesh;
 
   for (int i = 1; i < 8; i++) {
@@ -484,7 +484,7 @@ void chess_draw() {
       LOG("########### No mesh compon knight witeh");
     }
 
-    Model *knight_model = array_get(&knight_mesh_comp->models_p, 0);
+    PModel *knight_model = array_get(&knight_mesh_comp->models_p, 0);
     if (!knight_model) {
       LOG("#### Not model getted from knight model");
     }

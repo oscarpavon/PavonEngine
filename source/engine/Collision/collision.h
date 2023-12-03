@@ -3,9 +3,9 @@
 
 #include "../types.h"
 
-typedef struct Model Model;
+typedef struct Model PModel;
 
 
-bool collision_of(Model* model, Model* model2);
+bool collision_of(PModel* model, PModel* model2);
 
 #endif // !ENGINE_COLLISION_H

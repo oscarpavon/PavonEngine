@@ -7,7 +7,7 @@ typedef struct SkinnedMeshComponent{
     Array meshes;
     Array distances;
     Array textures;
-    Model* mesh;
+    PModel* mesh;
     Array joints;
     vec3 bounding_box[2];
     Array animations;

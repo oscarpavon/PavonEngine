@@ -91,7 +91,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     char path[strlen(pavon_the_game_project_folder) + 40];
     sprintf(path,"%sContent/HLOD/HLOD_out%i.gltf",pavon_the_game_project_folder,cluster->id);
     pe_loader_model(path);
-    Model* original = selected_model;
+    PModel* original = selected_model;
     new_empty_model();
     duplicate_model_data(selected_model, original);
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
@@ -285,7 +285,7 @@ void editor_init_new_added_element(){
     for(int i = 1; i<=mesh_component->meshes.count-1 ; i++){                
 
         u8* id = array_get(&mesh_component->meshes,i);
-        Model* model = array_get(actual_model_array,*id);
+        PModel* model = array_get(actual_model_array,*id);
         model->texture.id = editor_texture_checker.id;
 
     }
@@ -302,20 +302,20 @@ void editor_add_element_with_model_path(const char* path){
 void editor_stats_calculates_triangles(){
     int triangles = 0;
     for(int i = 0; i<frame_draw_static_elements.count; i++){
-        Model** modelp = array_get(&frame_draw_static_elements,i);
+        PModel** modelp = array_get(&frame_draw_static_elements,i);
         if(!modelp)
             return;
-				Model* model = modelp[0];
+				PModel* model = modelp[0];
 				if(!model)
 					return;	
         int vertices_count = model->vertex_array.count;
         triangles += vertices_count/3;
     }
     for(int i = 0; i<frame_draw_skinned_elements.count; i++){
-        Model** modelp = array_get(&frame_draw_static_elements,i);
+        PModel** modelp = array_get(&frame_draw_static_elements,i);
         if(!modelp)
             return;
-				Model* model = modelp[0];
+				PModel* model = modelp[0];
 				if(!model)
 					return;	
         int vertices_count = model->vertex_array.count;
@@ -358,8 +358,8 @@ void collision_test(){
         StaticMeshComponent* mesh2 = get_component_from_element(element2,STATIC_MESH_COMPONENT);
         unsigned int* modelid2 = array_get(&mesh2->meshes,1);
 
-        Model* model1 = array_get(actual_model_array,*modelid);
-        Model* model2 = array_get(actual_model_array,*modelid2);
+        PModel* model1 = array_get(actual_model_array,*modelid);
+        PModel* model2 = array_get(actual_model_array,*modelid2);
     
         if( collision_of(model1,model2) ){
             LOG("collision SAT\n");
@@ -519,9 +519,9 @@ void editor_data_init() {
   current_textures_array = &editor_textures;
 
   array_init(&selected_elements_id, sizeof(unsigned short int), 100);
-  array_init(&LOD_models, sizeof(Model), 10);
+  array_init(&LOD_models, sizeof(PModel), 10);
   array_init(&editor_elements, sizeof(Element), 100);
-  array_init(&editor_models, sizeof(Model), 100);
+  array_init(&editor_models, sizeof(PModel), 100);
   array_init(&editor_textures, sizeof(Texture), 100);
 
   element_id_count = 0;

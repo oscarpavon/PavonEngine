@@ -55,7 +55,7 @@ void LOD_check_distance_static_mesh_component_and_add_to_draw_elements(StaticMes
     LOD_system_calculate_AABB_on_screen(static_mesh_component,aabb,center);
     DrawData new_draw;
     new_draw.vertex = UI_plane_vertex_buffer_id;
-    Model* model = array_get(actual_model_array,0);
+    PModel* model = array_get(actual_model_array,0);
     if(!model)
         return;
     new_draw.shader = model->shader;
@@ -82,7 +82,7 @@ void LOD_check_distance_static_mesh_component_and_add_to_draw_elements(StaticMes
         }
         
     }
-    Model* draw_model = array_get(actual_model_array,id);
+    PModel* draw_model = array_get(actual_model_array,id);
     
     array_add(&frame_draw_static_elements,&draw_model);
 }  

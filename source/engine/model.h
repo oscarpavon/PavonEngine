@@ -50,7 +50,7 @@ typedef struct Model{
     vec3 position;
     PMesh mesh;
 	  bool gpu_ready;
-}Model;
+}PModel;
 
 typedef struct DrawData{
     u32 shader;
@@ -59,7 +59,7 @@ typedef struct DrawData{
     u32 index;
 }DrawData;
 
-Model* pe_vk_model_load(char* path);
+PModel* pe_vk_model_load(char* path);
 
 int pe_loader_model(const char* path);
 

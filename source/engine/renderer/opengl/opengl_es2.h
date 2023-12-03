@@ -15,9 +15,9 @@
 
 #endif
 
-void draw_vertices_like(GLenum mode, Model* model, vec4 color);
-void draw_model_with_color(Model* model, GLenum mode, vec4 color);
-void draw_model_like(Model* model, GLenum mode);
+void draw_vertices_like(GLenum mode, PModel* model, vec4 color);
+void draw_model_with_color(PModel* model, GLenum mode, vec4 color);
+void draw_model_like(PModel* model, GLenum mode);
 void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color);
 
 PEINLINE void send_color_to_shader(u32 shader_id, vec4 color);
@@ -25,7 +25,7 @@ PEINLINE void render_clear_buffer(int buffer_bits);
 
 void pe_tex_to_gpu(Texture*);
 
-void GPU_buffers_create_for_model(Model* model);
+void GPU_buffers_create_for_model(PModel* model);
 
 void init_static_gpu_vertex_buffer(Array* array, GLuint *id);
 void init_static_gpu_index_buffer(Array* array, GLuint *id);

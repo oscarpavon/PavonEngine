@@ -19,8 +19,8 @@ void pe_comp_static_mesh_update(ComponentDefinition*);
 
 void pe_comp_static_mesh_add_to_element();
 
-void pe_comp_static_mesh_shader_init(Model* model);
+void pe_comp_static_mesh_shader_init(PModel* model);
 
-void pe_shader_create_for_model(Model* model, u32 frag, u32 vert);
+void pe_shader_create_for_model(PModel* model, u32 frag, u32 vert);
 
 #endif

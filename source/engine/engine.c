@@ -96,8 +96,8 @@ void new_empty_element(){
 }
 
 void new_empty_model_in_array(Array* array){
-    Model new_model;
-    memset(&new_model,0,sizeof(Model));
+    PModel new_model;
+    memset(&new_model,0,sizeof(PModel));
     array_add(array,&new_model);
 
     selected_model = array_get(array,array->count-1);        
@@ -106,7 +106,7 @@ void new_empty_model_in_array(Array* array){
 }
 
 void new_empty_model(){
-    Model new_model;
+    PModel new_model;
 	  ZERO(new_model);
     if(!actual_model_array)
         return;
@@ -124,7 +124,7 @@ void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture,
     array_add(textures, &path_id);
     for (u8 i = 1; i < meshes->count; i++) {
       u8 *model_id = array_get(meshes, i);
-      Model *model = array_get(actual_model_array, *model_id);
+      PModel *model = array_get(actual_model_array, *model_id);
       model->texture.id = texture->id;
       array_add(textures, &path_id);
     }
@@ -398,8 +398,8 @@ void test_elements_occlusion(){
 
 		//this is for gizmos and native elements
     for(size_t i = 0; i < models_for_test_occlusion.count ; i++) { 
-        Model** model = array_get(&models_for_test_occlusion,i);
-        Model* test_model = model[0];
+        PModel** model = array_get(&models_for_test_occlusion,i);
+        PModel* test_model = model[0];
         
         vec3 box[2];
         glm_vec3_copy(test_model->min,box[0]);
@@ -427,8 +427,8 @@ void test_elements_occlusion(){
 
 }
 
-void duplicate_model_data(Model* destination , Model* source){
-    memcpy(destination,source,sizeof(Model));
+void duplicate_model_data(PModel* destination , PModel* source){
+    memcpy(destination,source,sizeof(PModel));
 }
 
 void pe_init_arrays() {
@@ -438,10 +438,10 @@ void pe_init_arrays() {
   array_init(&pe_arr_models_paths, sizeof(char[100]), 50);
   array_init(&pe_arr_tex_paths, sizeof(char[20]), 50);
 
-  array_init(&array_models_loaded, sizeof(Model), 100);
+  array_init(&array_models_loaded, sizeof(PModel), 100);
   array_init(&pe_arr_skin_loaded, sizeof(SkinnedMeshComponent), 100);
 
-  array_init(&engine_native_models, sizeof(Model), 100);
+  array_init(&engine_native_models, sizeof(PModel), 100);
 
   array_init(&array_hirarchical_level_of_detail,
              sizeof(HierarchicalLevelOfDetail), 5);

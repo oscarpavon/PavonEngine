@@ -11,7 +11,7 @@
 #include "uniform_buffer.h"
 #include "vulkan.h"
 
-void pe_vk_draw_model(int i , Model* model){
+void pe_vk_draw_model(int i , PModel* model){
 
     VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
 

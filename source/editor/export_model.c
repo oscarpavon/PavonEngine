@@ -171,7 +171,7 @@ void float_array_to_base64_encoded_bytes(float* position, int count, Encoded* en
   
 }
 
-int prepare_vertices_data_from_model(Model* model){
+int prepare_vertices_data_from_model(PModel* model){
        
     vec2 UV_values[model->vertex_array.count];
     vec3 vertex_position_array[model->vertex_array.count];
@@ -321,7 +321,7 @@ void data_count_merged(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh_component = component->data;
         unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = array_get(actual_model_array,*mode_id);
+        PModel* model = array_get(actual_model_array,*mode_id);
         vertex_count_merged += model->vertex_array.count;
         indices_count_merged += model->index_array.count;
         UV_count_merged += model->vertex_array.count;
@@ -336,7 +336,7 @@ void data_export_buffer_count_and_AABB(ComponentDefinition* component, cgltf_dat
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh_component = component->data;
         unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = array_get(actual_model_array,*mode_id);
+        PModel* model = array_get(actual_model_array,*mode_id);
 
         if(mesh_component->bounding_box[1][0] > box[1][0]){
             box[1][0] = mesh_component->bounding_box[1][0];
@@ -373,7 +373,7 @@ void encode_vertices(ComponentDefinition* component){
     if(component->type == STATIC_MESH_COMPONENT){
         StaticMeshComponent* mesh_component = component->data;
         unsigned int *mode_id = array_get(&mesh_component->meshes,mesh_component->meshes.count-1);
-        Model* model = array_get(actual_model_array,*mode_id);
+        PModel* model = array_get(actual_model_array,*mode_id);
         prepare_vertices_data_from_model(model);
 
         if(mesh_component->bounding_box[1][0] > box[1][0]){

@@ -14,7 +14,7 @@
 #define PE_SHADER_ERROR 9999999
 
 typedef struct PEShaderCreation{
-	Model* model;
+	PModel* model;
 	GLuint vertex;
 	GLuint pixel;
 	GLuint* shader;

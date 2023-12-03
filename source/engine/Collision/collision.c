@@ -2,7 +2,7 @@
 #include "collision.h"
 #include "../../engine/vertex.h"
 
-void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
+void collision_SAT_project_on_axis(PModel* model, vec3 axis, float* projection){
     //project on axis
      u8 vertex_count = model->vertex_array.count;
 
@@ -45,7 +45,7 @@ void collision_SAT_project_on_axis(Model* model, vec3 axis, float* projection){
     projection[0] = max;
 }
 
-void get_edges_axis(Model* model, vec3* axis){
+void get_edges_axis(PModel* model, vec3* axis){
     u8 vertex_count = model->vertex_array.count;
        
     for (u8 i = 0; i < vertex_count; i+=3)
@@ -78,7 +78,7 @@ void get_edges_axis(Model* model, vec3* axis){
 }   
 
 
-bool collision_of(Model* model, Model* model2){
+bool collision_of(PModel* model, PModel* model2){
     u8 vertex_count = model->vertex_array.count;
     u8 vertex_count2 = model2->vertex_array.count;
 

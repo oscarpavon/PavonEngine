@@ -8,7 +8,7 @@
 #include <engine/renderer/renderer.h>
 
 
-Model skeletal_gizmo;
+PModel skeletal_gizmo;
 
 
 void update_joints_vertex(){  

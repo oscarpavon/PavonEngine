@@ -10,15 +10,15 @@
 #define SAVED_DATA_COUNT 20
 vec2 UV_tranlation_offset;
 void *saved_vertex_data[SAVED_DATA_COUNT];
-Model *saved_vertex_model[SAVED_DATA_COUNT];
+PModel *saved_vertex_model[SAVED_DATA_COUNT];
 int saved_model_data_count = 0;
 
 HLODBoxComponent *current_HLOD_box_component;
 
-void atlas_resize_UV(Model *model)
+void atlas_resize_UV(PModel *model)
 {
-    Model new_model;
-    memset(&new_model, 0, sizeof(Model));
+    PModel new_model;
+    memset(&new_model, 0, sizeof(PModel));
     array_init(&new_model.vertex_array, sizeof(Vertex), model->vertex_array.count);
     void *data = new_model.vertex_array.data;
     duplicate_model_data(&new_model, model);
@@ -53,7 +53,7 @@ void check_is_inside(ComponentDefinition *component_definition)
             array_add(&array_elements_for_HLOD_generation, &component_definition->parent);
             LOG("%s\n", component_definition->parent->name);
             unsigned int *id = array_get(&mesh->meshes, mesh->meshes.count - 1);
-            Model *model = array_get(actual_model_array, *id);
+            PModel *model = array_get(actual_model_array, *id);
         }
     }
 }
@@ -397,7 +397,7 @@ void export_actives_cluster()
 
                 StaticMeshComponent *mesh = get_component_from_element(element, STATIC_MESH_COMPONENT);
                 u32 *id = array_get(&mesh->meshes, mesh->meshes.count - 1);
-                Model *model = array_get(actual_model_array, *id);
+                PModel *model = array_get(actual_model_array, *id);
                 atlas_resize_UV(model);
             }
 

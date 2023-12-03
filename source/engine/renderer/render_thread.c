@@ -9,7 +9,7 @@
 
 void engine_draw_elements(Array *elements) {
   for (size_t i = 0; i < elements->count; i++) {
-    Model *draw_model = array_get_pointer(elements, i);
+    PModel *draw_model = array_get_pointer(elements, i);
     if (!draw_model)
       continue;
     draw_simgle_model(draw_model);
@@ -128,7 +128,7 @@ void pe_frame_static_fill(ComponentDefinition* definition){
     StaticMeshComponent *mesh_comp = definition->data;
     if (mesh_comp->models_p.initialized == false)
       return;
-    Model *model = (Model *)array_get_pointer(&mesh_comp->models_p, 0);
+    PModel *model = (PModel *)array_get_pointer(&mesh_comp->models_p, 0);
     // model->shader = mesh_comp->material.shader;
     model->material = mesh_comp->material;
 

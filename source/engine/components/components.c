@@ -31,8 +31,8 @@ void init_sphere_component(SphereComponent *component) {
   actual_model_array = &engine_native_models;
   new_empty_model();
   actual_model_array = previous_models_array;
-  Model *sphere_model = array_get(&engine_native_models, 0);
-  memcpy(selected_model, sphere_model, sizeof(Model));
+  PModel *sphere_model = array_get(&engine_native_models, 0);
+  memcpy(selected_model, sphere_model, sizeof(PModel));
   selected_model->shader =
       create_engine_shader(standart_vertex_shader, standart_fragment_shader);
   component->model = selected_model;
@@ -43,8 +43,8 @@ void init_cube_component(CubeComponent *component) {
   actual_model_array = &engine_native_models;
   new_empty_model();
   actual_model_array = previous_models_array;
-  Model *cube_model = array_get(&engine_native_models, 1);
-  memcpy(selected_model, cube_model, sizeof(Model));
+  PModel *cube_model = array_get(&engine_native_models, 1);
+  memcpy(selected_model, cube_model, sizeof(PModel));
   selected_model->shader =
       create_engine_shader(standart_vertex_shader, standart_fragment_shader);
   component->model = selected_model;
@@ -55,8 +55,8 @@ void init_camera_component(CameraComponent *component) {
   actual_model_array = &engine_native_models;
   new_empty_model();
   actual_model_array = previous_models_array;
-  Model *camera_model = array_get(&engine_native_models, 2);
-  memcpy(selected_model, camera_model, sizeof(Model));
+  PModel *camera_model = array_get(&engine_native_models, 2);
+  memcpy(selected_model, camera_model, sizeof(PModel));
   selected_model->shader =
       create_engine_shader(standart_vertex_shader, standart_fragment_shader);
   component->camera_gizmo = selected_model;
@@ -390,7 +390,7 @@ void pe_comp_add(u32 models_loaded) {
     array_new_pointer(&mesh_component.models_p, models_loaded);
 
     if (models_loaded == 1) {
-      Model *model = array_pop(&array_models_loaded);
+      PModel *model = array_pop(&array_models_loaded);
 
       selected_model->mesh.index_array.count =
           selected_model->index_array.count;
@@ -403,10 +403,10 @@ void pe_comp_add(u32 models_loaded) {
 
       for (int i = 0; i < models_loaded; i++) {
         int id = pe_data_loader_models_loaded_count + i;
-        Model *model = array_get(&array_models_loaded, id);
+        PModel *model = array_get(&array_models_loaded, id);
 
         array_add_pointer(&mesh_component.models_p, model);
-        Model *model_from_models_p = array_pop(&mesh_component.models_p);
+        PModel *model_from_models_p = array_pop(&mesh_component.models_p);
         model_from_models_p->mesh.index_array.count = model->index_array.count;
         model_from_models_p->index_buffer_id = model->index_buffer_id;
 

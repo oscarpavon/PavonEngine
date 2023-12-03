@@ -500,11 +500,11 @@ pe_loader_model_from_memory(void* gltf_data, u32 size, const char* path){
   return result;
 }
 
-Model* pe_vk_model_load(char* path){
+PModel* pe_vk_model_load(char* path){
 
     actual_model_array = &array_models_loaded;
     pe_loader_model(path);
-    Model* model = selected_model;
+    PModel* model = selected_model;
 #ifdef LINUX 
     model->vertex_buffer =  pe_vk_vertex_create_buffer(&selected_model->vertex_array);
     model->index_buffer =  pe_vk_vertex_create_index_buffer(&selected_model->index_array);

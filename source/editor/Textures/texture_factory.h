@@ -8,7 +8,7 @@ typedef struct{
     u8 size;
 }TextureCreated;
 
-void init_UV_draw(Model* model);
+void init_UV_draw(PModel* model);
 
 void draw_UV();
 
@@ -18,9 +18,9 @@ void render_to_texture(int size, void(*function)(int) );
 
 void init_model_to_draw_texture();
 
-void scale_UV(float size, Model* model, vec2 UV_offset);
+void scale_UV(float size, PModel* model, vec2 UV_offset);
 
-void translate_UV(vec3 tranlation, Model* model, vec2 UV_offset);
+void translate_UV(vec3 tranlation, PModel* model, vec2 UV_offset);
 
 void texture_export(int size);
 

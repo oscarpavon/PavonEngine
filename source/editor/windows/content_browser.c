@@ -15,7 +15,7 @@
 #include "../../engine/content_manager.h"
  
 
-Model content_model;
+PModel content_model;
 
 Array array_content_views;
 Array array_finding_content;
@@ -374,7 +374,7 @@ void content_browser_window_create_contents_thumbnails(){
 
     int memory_mark = engine_memory_mark();
     Array models_loaded_for_create_thumbnails;
-    array_init(&models_loaded_for_create_thumbnails,sizeof(Model),array_content_views.count+5);
+    array_init(&models_loaded_for_create_thumbnails,sizeof(PModel),array_content_views.count+5);
     Array* prev_model_array = actual_model_array;
     actual_model_array = &models_loaded_for_create_thumbnails;
     int model_offset = 0;   
@@ -389,7 +389,7 @@ void content_browser_window_create_contents_thumbnails(){
         char directory[sizeof(pavon_the_game_project_folder) + 150];
         sprintf(directory,"%s%s%s",pavon_the_game_project_folder,"Content/",content_view->content_name);
         int models_count = pe_loader_model(directory);
-        Model* model = array_get(&models_loaded_for_create_thumbnails,i+model_offset);
+        PModel* model = array_get(&models_loaded_for_create_thumbnails,i+model_offset);
         model_offset = 0;
         if(models_count > 1){
             

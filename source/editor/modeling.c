@@ -13,13 +13,13 @@
 GLuint new_mesh_vertex_buffer; 
 
 
-Model model;
+PModel model;
 
 Array vertex_modeling;
 
 uint current_select_vertex;
 
-void pe_modeling_update_vertex_selected(Model* model){
+void pe_modeling_update_vertex_selected(PModel* model){
   for(int i = 0; i < model->vertex_array.count ; i++){
     Vertex* vertex = array_get(&model->vertex_array, i);
     if(vertex->selected == true){

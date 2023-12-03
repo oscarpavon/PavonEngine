@@ -68,7 +68,7 @@ void update_gpu_vertex_data(Array* array, GLuint id){
 
 }
 
-void GPU_buffers_create_for_model(Model* model){
+void GPU_buffers_create_for_model(PModel* model){
     Array* vertex_array = &model->vertex_array;
     Array* index_array = &model->index_array;
 
@@ -166,7 +166,7 @@ void pe_skinned_send_matrices(SkinnedMeshComponent* skin,  GLuint shader, GLuint
 
 }
 void pe_render_skinned_model(SkinnedMeshComponent *skin) {
-  Model *new_model = skin->mesh;
+  PModel *new_model = skin->mesh;
   if (!new_model) {
     LOG("Not model in skinned mesh component");
     return;
@@ -248,7 +248,7 @@ void update_draw_vertices(GLuint shader, GLuint buffer, mat4 matrix){
 }
 
 
-void draw_vertices_like(GLenum mode, Model* model, vec4 color){
+void draw_vertices_like(GLenum mode, PModel* model, vec4 color){
     update_draw_vertices(model->shader,model->vertex_buffer_id,model->model_mat);
     //send_color_to_shader(model->shader,color);
     glDrawArrays(GL_POINTS,0,model->vertex_array.count);
@@ -280,7 +280,7 @@ void pe_render_2d(DrawData* data, vec2 position , vec2 size, vec4 color){
     check_error("Two dimension");
 }
 
-void draw_model_with_color(Model* model, GLenum mode, vec4 color){
+void draw_model_with_color(PModel* model, GLenum mode, vec4 color){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
     
     send_color_to_shader(model->shader,color);
@@ -291,7 +291,7 @@ void draw_model_with_color(Model* model, GLenum mode, vec4 color){
     glDrawElements(mode,model->index_array.count, GL_UNSIGNED_SHORT, (void*)0);
 }
 
-void draw_model_like(Model* model, GLenum mode){
+void draw_model_like(PModel* model, GLenum mode){
     update_draw_vertices(model->shader, model->vertex_buffer_id, model->model_mat);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,model->index_buffer_id);
@@ -300,7 +300,7 @@ void draw_model_like(Model* model, GLenum mode){
 }
 
 
-void draw_simgle_model(Model *new_model) {
+void draw_simgle_model(PModel *new_model) {
   mat4 mvp;
   update_mvp(new_model->model_mat, mvp);
 

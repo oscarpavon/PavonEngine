@@ -9,7 +9,7 @@ void pe_comp_skinned_mesh_init(ComponentDefinition* element_component){
   }
   
   LOG("*********** SkinnedMesh array_models_loaded count %i",array_models_loaded.count);
-	Model *original_model = array_pop(&array_models_loaded);
+	PModel *original_model = array_pop(&array_models_loaded);
   if(!original_model){
     LOG("*******SKinned initialization error, original_model Model null");
   }
