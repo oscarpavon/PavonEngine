@@ -87,7 +87,7 @@ if in editor the shader need color multiplication uniform otherwise
 it not show it because color is multiplied per 0 ! */
 void engine_draw_elements(Array* elements);
 void pe_render_skinned(Array* elements);
-void draw_simgle_model(struct Model * new_model);
+void draw_simgle_model(PModel * new_model);
 
 void draw_editor_viewport(); 
 

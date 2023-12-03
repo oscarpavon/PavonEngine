@@ -3,7 +3,7 @@
 
 #include "../types.h"
 
-typedef struct Model PModel;
+typedef struct PModel PModel;
 
 
 bool collision_of(PModel* model, PModel* model2);

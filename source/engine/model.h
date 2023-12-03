@@ -23,7 +23,7 @@ typedef struct PMesh{
   VkBuffer index_buffer;
 }PMesh;
 
-typedef struct Model{
+typedef struct PModel{
     int id;
     unsigned short int texture_count;
     
