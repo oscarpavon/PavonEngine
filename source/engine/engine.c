@@ -207,7 +207,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         LOG("******* texture_loaded is NULL from current_textures_array");
     }
     texture_loaded->gpu_loaded = false;
-    if(texture_load(image_path,texture_loaded) == -1){
+    if(pe_load_texture(image_path,texture_loaded) == -1){
         
         LOG("******* texture_load() error");
 				return;
@@ -228,7 +228,7 @@ void load_simple_image(const char* path){
     array_add(current_textures_array,&new_texture);
 
     PTexture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
-		if(texture_load(path,texture_loaded) == -1)
+		if(pe_load_texture(path,texture_loaded) == -1)
 				return;
 }
 
@@ -288,7 +288,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
     glUseProgram(selected_model->shader);
 
     PTexture new_texture;
-    texture_load(color_texture_path,&new_texture);
+    pe_load_texture(color_texture_path,&new_texture);
 
     GPU_buffers_create_for_model(selected_model);
 

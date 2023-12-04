@@ -23,7 +23,7 @@ int image_load(const char* path, PImage* image);
 int load_image_with_format(const char* path, GLint format, PImage* out_image);
 void free_image(PImage*);
 
-int texture_load(const char* path, PTexture*);
+int pe_load_texture(const char* path, PTexture*);
 
 int texture_load_from_memory(PTexture* texture,u32 size,void* data);
 

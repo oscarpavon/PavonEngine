@@ -98,7 +98,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     hlod->model = selected_model;
     PTexture new_texture;
     sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
-    texture_load(path,&new_texture);
+    pe_load_texture(path,&new_texture);
     hlod->model->texture.id = new_texture.id;
 }
 
@@ -425,7 +425,7 @@ void pe_editor_load_native_model(){
                         "/sdcard/Download/NativeContent/Editor/floor.glb",
                         "/sdcard/Download/NativeContent/Editor/floor.jpg");
     
-    texture_load("/sdcard/Download/NativeContent/Editor/checker_texture.png",
+    pe_load_texture("/sdcard/Download/NativeContent/Editor/checker_texture.png",
                  &editor_texture_checker);
 }
 

@@ -34,20 +34,18 @@ int image_load(const char* path, PImage* image){
   return 0;
 }
 
-void pe_gpu_load_texture(PTexture* texture){
+void pe_gpu_load_texture(PTexture *texture) {
 
-  if(pe_renderer_type == PEWMOPENGLES2){
-    pe_tex_to_gpu(texture) ;
+  if (pe_renderer_type == PEWMOPENGLES2) {
+    pe_tex_to_gpu(texture);
   }
 
-    if(pe_renderer_type == PEWMVULKAN){
-        
-       VkImage image;
-       ZERO(image);
-        //pe_vk_image_create(texture->image.width,texture->image.heigth,texture->image.pixels_data,&image);
+  if (pe_renderer_type == PEWMVULKAN) {
 
-
-    }
+    VkImage image;
+    ZERO(image);
+    //pe_vk_image_create(texture->image.width,texture->image.heigth,texture->image.pixels_data,&image);
+  }
 }
 
 int texture_load_from_memory(PTexture *texture, u32 size, void *data) {
@@ -62,7 +60,8 @@ int texture_load_from_memory(PTexture *texture, u32 size, void *data) {
   return 0;
 }
 
-int texture_load(const char *path, PTexture *new_texture) {
+//First create a PTexture and pass here
+int pe_load_texture(const char *path, PTexture *new_texture) {
   texture_current_to_load = new_texture;
   if (image_load(path, &new_texture->image) == -1) {
     new_texture->id = -1;

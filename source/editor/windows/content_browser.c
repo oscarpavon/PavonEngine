@@ -324,7 +324,7 @@ void content_create_draw_image_thumbnail(int size){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     PTexture texture;
-    texture_load(content_manager_current_content_path,&texture);
+    pe_load_texture(content_manager_current_content_path,&texture);
 
     DrawData data;
     data.shader = create_engine_shader(standart_vertex_shader,editor_standard_fragment_shader);
@@ -460,7 +460,7 @@ void editor_window_content_browser_load_thumbnails(){
         if(strcmp(content_view->thumbnail_image_path, "") == 0)
             return;
         PTexture new_texture;
-        texture_load(content_view->thumbnail_image_path,&new_texture);       
+        pe_load_texture(content_view->thumbnail_image_path,&new_texture);       
 
         content_view->draw.texture = new_texture.id;
 
