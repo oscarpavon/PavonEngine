@@ -1,9 +1,11 @@
 #include "vk_buffer.h"
 #include "engine/macros.h"
+#include "engine/renderer/vulkan/vulkan.h"
 #include "vk_memory.h"
 #include <vulkan/vulkan_core.h>
 #include "commands.h"
-
+#include <engine/macros.h>
+#include <engine/log.h>
 
 void pe_vk_buffer_create(PEVKBufferCreateInfo *buffer_info) {
   VkBufferCreateInfo info;
@@ -14,12 +16,15 @@ void pe_vk_buffer_create(PEVKBufferCreateInfo *buffer_info) {
   info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
   VkBuffer buffer;
-  vkCreateBuffer(vk_device, &info, NULL, &buffer);
+  ZERO(buffer);
+  VKVALID(vkCreateBuffer(vk_device, &info, NULL, &buffer),
+          "Can't create buffer");
 
   VkMemoryRequirements requirement = pe_vk_memory_get_requirements(buffer);
   VkDeviceMemory memory = pe_vk_memory_allocate(requirement);
 
-  vkBindBufferMemory(vk_device, buffer, memory, 0);
+  VKVALID(vkBindBufferMemory(vk_device, buffer, memory, 0),
+          "Can't bind memory");
 
   buffer_info->buffer_memory = memory;
   buffer_info->buffer = buffer;

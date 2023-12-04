@@ -84,7 +84,7 @@ void pe_vk_uniform_buffer_update_one(uint32_t image_index) {
 
   glm_mat4_identity(pawn_ubo.model);
 
-  glm_rotate(pawn_ubo.model, 0.002f, VEC3(0, 1, 0));
+  glm_rotate(pawn_ubo.model, 90.f, VEC3(1, 0, 0));
 
   glm_mat4_copy(main_camera.projection, pawn_ubo.projection);
   glm_mat4_copy(main_camera.view, pawn_ubo.view);

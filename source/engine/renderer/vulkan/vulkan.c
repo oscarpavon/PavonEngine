@@ -21,6 +21,7 @@
 #include <engine/renderer/vulkan/descriptor_set.h>
 #include <engine/renderer/vulkan/uniform_buffer.h>
 #include <engine/renderer/vulkan/shader_module.h>
+#include "vk_images.h"
 
 const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
 //For Linux support
@@ -219,9 +220,7 @@ int pe_vk_init() {
 
   pe_vk_models_create();
 
-  pe_vk_descriptor_pool_create(test_model);
-  pe_vk_descriptor_set_create(test_model);
-
+  pe_vk_create_texture_image();
 
   pe_vk_framebuffer_create();
 

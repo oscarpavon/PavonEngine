@@ -3,7 +3,6 @@
 #include "../ThirdParty/stb_image.h"
 
 #include "engine.h"
-#include "renderer/vulkan/images.h"
 
 PTexture* texture_current_to_load;
 int image_load_from_memory(PImage *image, void *data, u32 size) {

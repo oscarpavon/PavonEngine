@@ -25,7 +25,7 @@ pe_vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
   for (int i = 0; i < char_count; i++) {
     new_message[i] = message[i];
   }
-  LOG("%s", new_message);
+  LOG("%s\n", new_message);
   return VK_FALSE;
 }
 
