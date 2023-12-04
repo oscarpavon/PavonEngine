@@ -96,7 +96,7 @@ void editor_add_HLOD_element(HLODCluster* cluster){
     duplicate_model_data(selected_model, original);
     selected_model->shader = create_engine_shader(standart_vertex_shader,standart_fragment_shader);
     hlod->model = selected_model;
-    Texture new_texture;
+    PTexture new_texture;
     sprintf(path,"HLOD/HLOD_texture%i.png",cluster->id);
     texture_load(path,&new_texture);
     hlod->model->texture.id = new_texture.id;
@@ -522,7 +522,7 @@ void editor_data_init() {
   array_init(&LOD_models, sizeof(PModel), 10);
   array_init(&editor_elements, sizeof(Element), 100);
   array_init(&editor_models, sizeof(PModel), 100);
-  array_init(&editor_textures, sizeof(Texture), 100);
+  array_init(&editor_textures, sizeof(PTexture), 100);
 
   element_id_count = 0;
   editor_mode = EDITOR_DEFAULT_MODE;

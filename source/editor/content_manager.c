@@ -92,7 +92,7 @@ void content_manager_create_engine_binary(const char *name, ContentType type) {
   case CONTENT_TYPE_TEXTURE: {
 
     fwrite(brute_file.data, 1, brute_file.size_in_bytes, engine_binary);
-    Image new_image;
+    PImage new_image;
     if (image_load_from_memory(&new_image, brute_file.data,
                                brute_file.size_in_bytes) == -1) {
       LOG("ERROR: No image loaded\n");

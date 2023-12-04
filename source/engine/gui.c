@@ -252,7 +252,7 @@ void pe_gui_button_set_tex_with_path(Button *button, const char *path) {
 
 void draw_logo(){
 
-    Image logo_image;
+    PImage logo_image;
     int result =  load_image_with_format("../NativeContent/white_logo.png",GL_RGBA, &logo_image);
     if(result == -1)
         return;

@@ -94,7 +94,7 @@ bool isDrawUV;
 
 bool editor_search_objects;
 
-Texture editor_texture_checker;
+PTexture editor_texture_checker;
 
 bool editor_running;
 

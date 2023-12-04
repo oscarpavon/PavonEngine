@@ -40,8 +40,8 @@ typedef struct PModel{
     mat4 model_mat;
     GLuint shader;
 
-    Texture texture;
-    Texture textures[4];
+    PTexture texture;
+    PTexture textures[4];
 
     PMaterial material;
 

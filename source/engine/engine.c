@@ -119,7 +119,7 @@ void new_empty_model(){
 
 }
 
-void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture, u8 path_id) {
+void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, PTexture* texture, u8 path_id) {
   if (meshes->count >= 1) {
     array_add(textures, &path_id);
     for (u8 i = 1; i < meshes->count; i++) {
@@ -132,7 +132,7 @@ void pe_mesh_data_fill_tex_ids(Array *meshes, Array *textures, Texture* texture,
   LOG("###### pe_mesh_data_fill_tex_ids");
 }
 
-void pe_mesh_tex_fill_ids(Texture *texture) {
+void pe_mesh_tex_fill_ids(PTexture *texture) {
   while (!texture->gpu_loaded) {
   }
 
@@ -166,7 +166,7 @@ void pe_mesh_tex_fill_ids(Texture *texture) {
   */
 }
 void pe_tex_loaded_to_model(int id) {
-  Texture *texture = array_get(current_textures_array, id);
+  PTexture *texture = array_get(current_textures_array, id);
 
   StaticMeshComponent *mesh = pe_comp_get(STATIC_MESH_COMPONENT);
   if (mesh) {
@@ -176,7 +176,7 @@ void pe_tex_loaded_to_model(int id) {
 }
 
 void engine_add_texture_from_memory_to_selected_element(void* data, u32 size){
-	Texture new_texture;
+	PTexture new_texture;
 	texture_load_from_memory(&new_texture,size,data);	
   array_add(&pe_arr_tex_paths,"from_memory");
 	pe_mesh_tex_fill_ids(&new_texture);
@@ -193,7 +193,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
         return;
     }
          
-    Texture new_texture;
+    PTexture new_texture;
 		ZERO(new_texture);
 
     if(!current_textures_array){
@@ -202,7 +202,7 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
     }
     array_add(current_textures_array,&new_texture);
 
-    Texture* texture_loaded = array_pop(current_textures_array); 
+    PTexture* texture_loaded = array_pop(current_textures_array); 
     if(!texture_loaded){
         LOG("******* texture_loaded is NULL from current_textures_array");
     }
@@ -223,11 +223,11 @@ void add_texture_to_selected_element_with_image_path(const char* image_path){
 
 void load_simple_image(const char* path){
        
-    Texture new_texture;
+    PTexture new_texture;
 		ZERO(new_texture);
     array_add(current_textures_array,&new_texture);
 
-    Texture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
+    PTexture* texture_loaded = array_get(current_textures_array,current_textures_array->count-1);
 		if(texture_load(path,texture_loaded) == -1)
 				return;
 }
@@ -287,7 +287,7 @@ void load_model_to_array(Array* array, const char* path_model, const char* color
 
     glUseProgram(selected_model->shader);
 
-    Texture new_texture;
+    PTexture new_texture;
     texture_load(color_texture_path,&new_texture);
 
     GPU_buffers_create_for_model(selected_model);
@@ -468,7 +468,7 @@ void pe_init_arrays() {
 
   array_init(&engine_windows, sizeof(EngineWindow), 40);
 
-  array_init(&pe_array_textures,sizeof(Texture),100);
+  array_init(&pe_array_textures,sizeof(PTexture),100);
 
   current_textures_array = &pe_array_textures;
 

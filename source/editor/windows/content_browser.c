@@ -323,7 +323,7 @@ void content_create_draw_image_thumbnail(int size){
     glClearColor(1,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Texture texture;
+    PTexture texture;
     texture_load(content_manager_current_content_path,&texture);
 
     DrawData data;
@@ -459,7 +459,7 @@ void editor_window_content_browser_load_thumbnails(){
         
         if(strcmp(content_view->thumbnail_image_path, "") == 0)
             return;
-        Texture new_texture;
+        PTexture new_texture;
         texture_load(content_view->thumbnail_image_path,&new_texture);       
 
         content_view->draw.texture = new_texture.id;

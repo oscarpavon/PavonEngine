@@ -89,7 +89,7 @@ void GPU_buffers_create_for_model(PModel* model){
 		model->gpu_ready = true;
 }
 
-void pe_tex_to_gpu(Texture* texture){
+void pe_tex_to_gpu(PTexture* texture){
     glGenTextures(1, &texture->id);
     glBindTexture(GL_TEXTURE_2D, texture->id);
 

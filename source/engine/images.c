@@ -5,8 +5,8 @@
 #include "engine.h"
 #include "renderer/vulkan/images.h"
 
-Texture* texture_current_to_load;
-int image_load_from_memory(Image *image, void *data, u32 size) {
+PTexture* texture_current_to_load;
+int image_load_from_memory(PImage *image, void *data, u32 size) {
   int width, height, comp, req_comp;
   req_comp = 3;
 
@@ -22,7 +22,7 @@ int image_load_from_memory(Image *image, void *data, u32 size) {
   return 0;
 }
 
-int image_load(const char* path, Image* image){
+int image_load(const char* path, PImage* image){
   File new_file;
   ZERO(new_file);
   if (load_file(path, &new_file) == -1) {
@@ -34,7 +34,7 @@ int image_load(const char* path, Image* image){
   return 0;
 }
 
-void pe_gpu_load_texture(Texture* texture){
+void pe_gpu_load_texture(PTexture* texture){
 
   if(pe_renderer_type == PEWMOPENGLES2){
     pe_tex_to_gpu(texture) ;
@@ -50,7 +50,7 @@ void pe_gpu_load_texture(Texture* texture){
     }
 }
 
-int texture_load_from_memory(Texture *texture, u32 size, void *data) {
+int texture_load_from_memory(PTexture *texture, u32 size, void *data) {
   texture_current_to_load = texture;
   if (image_load_from_memory(&texture->image, data, size) == -1) {
     LOG("### texture from memory error");
@@ -62,7 +62,7 @@ int texture_load_from_memory(Texture *texture, u32 size, void *data) {
   return 0;
 }
 
-int texture_load(const char *path, Texture *new_texture) {
+int texture_load(const char *path, PTexture *new_texture) {
   texture_current_to_load = new_texture;
   if (image_load(path, &new_texture->image) == -1) {
     new_texture->id = -1;
@@ -76,14 +76,14 @@ int texture_load(const char *path, Texture *new_texture) {
 
 }
 
-int load_image_with_format(const char* path, GLint format, Image* out_image){
+int load_image_with_format(const char* path, GLint format, PImage* out_image){
     File new_file;
 
     int result = load_file(path,&new_file);
     if(result == -1)
         return -1;
 
-    Image new_image;
+    PImage new_image;
 
     int width, height, comp, req_comp;
     if(format == GL_RGB)
@@ -98,10 +98,10 @@ int load_image_with_format(const char* path, GLint format, Image* out_image){
     new_image.heigth = (unsigned short)height;
     new_image.width = (unsigned short)width;
     new_image.pixels_data = decoded;
-    memcpy(out_image,&new_image,sizeof(Image));
+    memcpy(out_image,&new_image,sizeof(PImage));
     return 0;
 }
 
-void free_image(Image* image){
+void free_image(PImage* image){
   stbi_image_free(image->pixels_data);
 }

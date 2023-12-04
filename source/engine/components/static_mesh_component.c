@@ -76,7 +76,7 @@ void pe_comp_static_mesh_texture_fill(StaticMeshComponent* mesh_component,int i)
       texture_id = array_get(&mesh_component->textures, i);
 
     if (texture_id) {
-      Texture *texture = array_get(current_textures_array, *texture_id);
+      PTexture *texture = array_get(current_textures_array, *texture_id);
       if (texture)
         selected_model->texture.id = texture->id;
     } else {

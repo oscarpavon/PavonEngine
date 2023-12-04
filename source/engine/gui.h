@@ -27,7 +27,7 @@ typedef struct Button{
     u32 shader;
 
     int action_function_id;
-		Texture texture;
+		PTexture texture;
 }Button;
 
 
