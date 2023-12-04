@@ -220,11 +220,11 @@ int pe_vk_init() {
 
   pe_vk_models_create();
 
-  pe_vk_create_texture_image();
 
   pe_vk_framebuffer_create();
 
   pe_vk_commands_pool_init();
+  pe_vk_create_texture_image();
 
   pe_vk_command_init();
 

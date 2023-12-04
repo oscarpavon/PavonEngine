@@ -59,7 +59,7 @@ void pe_vk_image_copy_buffer(VkBuffer buffer, VkImage image, uint32_t width,
   pe_vk_end_single_time_cmd(command);
 }
 
-void pe_vk_image_create(uint32_t width, uint32_t height, void *pixels,
+void pe_vk_image_create(uint32_t width, uint32_t height,
                         VkImage *texture_image) {
 
   VkImageCreateInfo imageInfo;
@@ -110,7 +110,7 @@ void pe_vk_create_texture_image(){
   pe_load_texture("/sdcard/Download/chess/texture.jpg", &texture);
 
   
-  VkDeviceSize image_size = texture.image.width * texture.image.heigth * 4;
+  VkDeviceSize image_size = texture.image.width * texture.image.heigth * 3;
 
   PEVKBufferCreateInfo buffer_info;
   ZERO(buffer_info);
@@ -119,12 +119,20 @@ void pe_vk_create_texture_image(){
                            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
   buffer_info.size = image_size;
   pe_vk_buffer_create(&buffer_info);
-  //LOG("Image size %li\n", image_size);
   if(texture.image.pixels_data == NULL){
     return;
   }
   void *data;
-  vkMapMemory(vk_device, buffer_info.buffer_memory, 0, image_size, 0, &data);
-  // memcpy(data, texture.image.pixels_data, image_size);
-  // vkUnmapMemory(vk_device, buffer_info.buffer_memory);
+  VKVALID(vkMapMemory(vk_device, buffer_info.buffer_memory, 0, image_size, 0,
+                      &data),
+          "Can't map memory");
+  memcpy(data, texture.image.pixels_data, image_size);
+  vkUnmapMemory(vk_device, buffer_info.buffer_memory);
+  
+  pe_vk_image_create(texture.image.width, texture.image.heigth,
+      &pe_vk_texture_image);
+
+  pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
+                                VK_IMAGE_LAYOUT_UNDEFINED,
+                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 }
