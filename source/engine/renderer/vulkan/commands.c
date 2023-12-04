@@ -17,6 +17,7 @@ VkCommandBuffer pe_vk_begin_single_time_cmd(){
     bufferinfo.commandBufferCount = 1;
     
     VkCommandBuffer command_buffer;
+    ZERO(command_buffer);
     vkAllocateCommandBuffers(vk_device,&bufferinfo,&command_buffer);
 
     VkCommandBufferBeginInfo info;
@@ -25,12 +26,13 @@ VkCommandBuffer pe_vk_begin_single_time_cmd(){
 
     vkBeginCommandBuffer(command_buffer,&info);
 
+    return command_buffer;
+
 }
 
 
-void pe_vk_end_single_cmd(VkCommandBuffer buffer){
+void pe_vk_end_single_time_cmd(VkCommandBuffer buffer){
    vkEndCommandBuffer(buffer);
-    
 
     VkSubmitInfo submitInfo;
     ZERO(submitInfo);
@@ -87,6 +89,7 @@ void pe_vk_command_init() {
   vkAllocateCommandBuffers(vk_device, &bufferinfo, pe_vk_command_buffers.data);
 
 }
+
 
 void pe_vk_commands_end(int i) {
   VkCommandBuffer *buffer = array_get(&pe_vk_command_buffers, i);

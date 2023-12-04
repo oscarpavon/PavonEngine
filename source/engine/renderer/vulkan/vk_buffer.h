@@ -12,5 +12,6 @@ typedef struct PEVKBufferCreateInfo{
 
 
 void pe_vk_buffer_create(PEVKBufferCreateInfo* buffer_info);
+void pe_vk_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size);
 
 #endif
