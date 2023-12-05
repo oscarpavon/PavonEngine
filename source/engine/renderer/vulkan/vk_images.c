@@ -3,6 +3,7 @@
 #include "vulkan.h"
 #include <engine/macros.h>
 #include <engine/log.h>
+#include <stdalign.h>
 #include <stdint.h>
 #include <vulkan/vulkan_core.h>
 #include <wchar.h>
@@ -84,8 +85,10 @@ void pe_vk_image_copy_buffer(VkBuffer buffer, VkImage image, uint32_t width,
   pe_vk_end_single_time_cmd(command);
 }
 
-void pe_vk_image_create(uint32_t width, uint32_t height,
-                        VkImage *texture_image) {
+void pe_vk_create_image(uint32_t width, uint32_t height, VkFormat format,
+                        VkImageTiling tiling, VkImageUsageFlags usage,
+                        VkMemoryPropertyFlags properties,
+                        VkImage *texture_image, VkDeviceMemory *image_memory) {
 
   VkImageCreateInfo imageInfo;
   ZERO(imageInfo);
@@ -97,11 +100,10 @@ void pe_vk_image_create(uint32_t width, uint32_t height,
   imageInfo.extent.depth = 1;
   imageInfo.mipLevels = 1;
   imageInfo.arrayLayers = 1;
-  imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-  imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+  imageInfo.format = format;
+  imageInfo.tiling = tiling;
   imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-  imageInfo.usage =
-      VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+  imageInfo.usage = usage;
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
   imageInfo.flags = 0; // Optional
@@ -122,11 +124,11 @@ void pe_vk_image_create(uint32_t width, uint32_t height,
   info.allocationSize = image_memory_requirements.size;
   info.memoryTypeIndex =
       pe_vk_memory_find_type(image_memory_requirements.memoryTypeBits,
-                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                             properties);
 
-  vkAllocateMemory(vk_device, &info, NULL, &pe_vk_texture_image_memory);
+  vkAllocateMemory(vk_device, &info, NULL, image_memory);
 
-  vkBindImageMemory(vk_device, *(texture_image), pe_vk_texture_image_memory, 0);
+  vkBindImageMemory(vk_device, *(texture_image), *(image_memory), 0);
 }
 
 void pe_vk_create_texture_sampler() {
@@ -174,9 +176,13 @@ void pe_vk_create_texture_image(){
           "Can't map memory");
   memcpy(data, texture.image.pixels_data, image_size);
   vkUnmapMemory(vk_device, buffer_info.buffer_memory);
-  
-  pe_vk_image_create(texture.image.width, texture.image.heigth,
-      &pe_vk_texture_image);
+
+  pe_vk_create_image(texture.image.width, texture.image.heigth,
+                     VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+                     VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                         VK_IMAGE_USAGE_SAMPLED_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pe_vk_texture_image,
+                     &pe_vk_texture_image_memory);
 
   pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
                                 VK_IMAGE_LAYOUT_UNDEFINED,
@@ -193,5 +199,9 @@ void pe_vk_create_texture_image(){
       pe_vk_create_image_view(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB);
 
   pe_vk_create_texture_sampler();
+}
+
+void pe_vk_create_depth_resources(){
+  VkFormat format = VK_FORMAT_D32_SFLOAT;
 }
 

@@ -137,7 +137,7 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array *indices) {
 void pe_vk_models_create() {
 
   actual_model_array = &array_models_loaded;
-  pe_loader_model("/sdcard/Download/chess/floor.glb");
+  pe_loader_model("/sdcard/Download/chess/sphere.glb");
 
   test_model = selected_model;
 
@@ -150,7 +150,7 @@ void pe_vk_models_create() {
   pe_vk_descriptor_pool_create(test_model);
   pe_vk_create_descriptor_sets(test_model);
 
-  pe_loader_model("/sdcard/Download/chess/peon.glb");
+  pe_loader_model("/sdcard/Download/chess/reina.glb");
   test_model2 = selected_model;
 
   test_model2->vertex_buffer =

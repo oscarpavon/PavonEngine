@@ -16,7 +16,7 @@ layout(location = 1) out vec2 out_uv;
 
 const vec3 LIGHT_DIRECTION = normalize(vec3(3.0,3.0,3.0));
 
-const float AMBIENT = 0.03f;
+const float AMBIENT = 0.12f;
 
 void main() {
     gl_Position = ubo.proj * ubo.view * ubo.model * vec4(position, 1.0);
