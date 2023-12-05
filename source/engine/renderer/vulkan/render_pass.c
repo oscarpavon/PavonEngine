@@ -8,6 +8,7 @@
 #include"pipeline.h" 
 #include <engine/log.h>
 #include <engine/engine.h>
+#include "swap_chain.h"
 void pe_vk_create_render_pass(){
 
     VkAttachmentDescription color;

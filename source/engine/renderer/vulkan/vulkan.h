@@ -19,8 +19,6 @@ VkQueue vk_queue;
 
 VkSurfaceKHR vk_surface;
 
-VkFormat pe_vk_swch_format;
-VkExtent2D pe_vk_swch_extent;
 
 VkRenderPass pe_vk_render_pass;
 

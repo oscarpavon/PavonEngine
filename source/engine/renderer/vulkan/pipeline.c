@@ -7,6 +7,7 @@
 #include <engine/renderer/vulkan/vulkan.h>
 #include <engine/log.h>
 #include <vulkan/vulkan_core.h>
+#include "swap_chain.h"
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};

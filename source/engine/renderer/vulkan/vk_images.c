@@ -13,7 +13,7 @@
 #include "vk_images.h"
 #include "images_view.h"
 
-
+#include "swap_chain.h"
 
 void pe_vk_transition_image_layout(VkImage image, VkFormat format,
                                    VkImageLayout old_layout,
@@ -195,13 +195,18 @@ void pe_vk_create_texture_image(){
                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-  pe_vk_texture_image_view =
-      pe_vk_create_image_view(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB);
-
+  pe_vk_texture_image_view = pe_vk_create_image_view(
+      pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
   pe_vk_create_texture_sampler();
 }
 
 void pe_vk_create_depth_resources(){
   VkFormat format = VK_FORMAT_D32_SFLOAT;
+  pe_vk_create_image(pe_vk_swch_extent.width, pe_vk_swch_extent.height, format,
+                     VK_IMAGE_TILING_OPTIMAL,
+                     VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pe_vk_depth_image,
+                     &pe_vk_depth_image_memory);
+  pe_vk_depth_image_view = pe_vk_create_image_view(pe_vk_depth_image, format,
+                                                   VK_IMAGE_ASPECT_DEPTH_BIT);
 }
-

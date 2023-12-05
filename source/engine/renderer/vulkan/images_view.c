@@ -7,13 +7,14 @@
 
 #define PE_IMAGES_VIEWS_COUNT 4
 
-VkImageView pe_vk_create_image_view(VkImage image, VkFormat format) {
+VkImageView pe_vk_create_image_view(VkImage image, VkFormat format,
+                                    VkImageAspectFlags aspect_flags) {
   VkImageViewCreateInfo viewInfo = {};
   viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
   viewInfo.image = image;
   viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
   viewInfo.format = format;
-  viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  viewInfo.subresourceRange.aspectMask = aspect_flags;
   viewInfo.subresourceRange.baseMipLevel = 0;
   viewInfo.subresourceRange.levelCount = 1;
   viewInfo.subresourceRange.baseArrayLayer = 0;
