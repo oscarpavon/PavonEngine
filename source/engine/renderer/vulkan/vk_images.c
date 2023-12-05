@@ -131,10 +131,10 @@ void pe_vk_image_create(uint32_t width, uint32_t height,
 void pe_vk_create_texture_image(){
   PTexture texture;
   ZERO(texture);
-  pe_load_texture("/sdcard/Download/chess/texture.jpg", &texture);
+  pe_load_texture("/sdcard/Download/chess/floordiffuse.png", &texture);
 
   
-  VkDeviceSize image_size = texture.image.width * texture.image.heigth * 3;
+  VkDeviceSize image_size = texture.image.width * texture.image.heigth * 4;
 
   PEVKBufferCreateInfo buffer_info;
   ZERO(buffer_info);

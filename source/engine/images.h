@@ -19,8 +19,8 @@ typedef struct PTexture{
 		bool gpu_loaded;
 }PTexture;
 
-int image_load(const char* path, PImage* image);
-int load_image_with_format(const char* path, GLint format, PImage* out_image);
+int pe_load_image(const char* path, PImage* image);
+int pe_load_image_with_format(const char* path, GLint format, PImage* out_image);
 void free_image(PImage*);
 
 int pe_load_texture(const char* path, PTexture*);

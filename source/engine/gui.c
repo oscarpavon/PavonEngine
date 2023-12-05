@@ -241,7 +241,7 @@ void draw_logo_image(){
 
 void pe_gui_button_set_tex_with_path(Button *button, const char *path) {
   button->texture.format = GL_RGBA;
-  int result = load_image_with_format(path, GL_RGBA, &button->texture.image);
+  int result = pe_load_image_with_format(path, GL_RGBA, &button->texture.image);
   if (result == -1)
     return;
 
@@ -253,7 +253,7 @@ void pe_gui_button_set_tex_with_path(Button *button, const char *path) {
 void draw_logo(){
 
     PImage logo_image;
-    int result =  load_image_with_format("../NativeContent/white_logo.png",GL_RGBA, &logo_image);
+    int result =  pe_load_image_with_format("../NativeContent/white_logo.png",GL_RGBA, &logo_image);
     if(result == -1)
         return;
         

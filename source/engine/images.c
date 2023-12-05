@@ -21,7 +21,33 @@ int image_load_from_memory(PImage *image, void *data, u32 size) {
   return 0;
 }
 
-int image_load(const char* path, PImage* image){
+int pe_load_image_with_format(const char* path, GLint format, PImage* out_image){
+    File new_file;
+
+    int result = load_file(path,&new_file);
+    if(result == -1)
+        return -1;
+
+    PImage new_image;
+
+    int width, height, comp, req_comp;
+    if(format == GL_RGB)
+        req_comp = 3;
+
+    if(format == GL_RGBA)
+        req_comp = 4;
+
+    unsigned char* decoded = stbi_load_from_memory(new_file.data, (int)new_file.size_in_bytes, &width, &height, &comp, req_comp);
+    free(new_file.data);
+
+    new_image.heigth = (unsigned short)height;
+    new_image.width = (unsigned short)width;
+    new_image.pixels_data = decoded;
+    memcpy(out_image,&new_image,sizeof(PImage));
+    return 0;
+}
+
+int pe_load_image(const char* path, PImage* image){
   File new_file;
   ZERO(new_file);
   if (load_file(path, &new_file) == -1) {
@@ -62,43 +88,18 @@ int texture_load_from_memory(PTexture *texture, u32 size, void *data) {
 //First create a PTexture and pass here
 int pe_load_texture(const char *path, PTexture *new_texture) {
   texture_current_to_load = new_texture;
-  if (image_load(path, &new_texture->image) == -1) {
+  if (pe_load_image_with_format(path, GL_RGBA, &new_texture->image) == -1) {
     new_texture->id = -1;
     LOG("#### Image not loaded");
     return -1;
   }
-  
+
     pe_th_exec_in(pe_th_render_id,&pe_gpu_load_texture,new_texture);
     //pe_gpu_load_texture(new_texture);
     return 1;
 
 }
 
-int load_image_with_format(const char* path, GLint format, PImage* out_image){
-    File new_file;
-
-    int result = load_file(path,&new_file);
-    if(result == -1)
-        return -1;
-
-    PImage new_image;
-
-    int width, height, comp, req_comp;
-    if(format == GL_RGB)
-        req_comp = 3;
-
-    if(format == GL_RGBA)
-        req_comp = 4;
-
-    unsigned char* decoded = stbi_load_from_memory(new_file.data, (int)new_file.size_in_bytes, &width, &height, &comp, req_comp);
-    free(new_file.data);
-
-    new_image.heigth = (unsigned short)height;
-    new_image.width = (unsigned short)width;
-    new_image.pixels_data = decoded;
-    memcpy(out_image,&new_image,sizeof(PImage));
-    return 0;
-}
 
 void free_image(PImage* image){
   stbi_image_free(image->pixels_data);
