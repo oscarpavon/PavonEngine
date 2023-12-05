@@ -91,6 +91,14 @@ void pe_vk_start_render_pass(int i){
   VkClearValue clear_color = {0.5f, 0.0f, 1.0f, 1.0f};
   VkCommandBuffer *cmd_buffer = array_get(&pe_vk_command_buffers, i);
 
+
+  VkClearValue clear_values[2];
+  VkClearColorValue color_value = {0.3, 0, 8.f, 0};
+  VkClearDepthStencilValue depth_value = {1,0};
+  ZERO(clear_values);
+  clear_values[0].color = color_value;
+  clear_values[1].depthStencil = depth_value;
+
   VkRenderPassBeginInfo info;
   ZERO(info);
   info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -98,8 +106,8 @@ void pe_vk_start_render_pass(int i){
   info.framebuffer = *(framebuffer);
   info.renderArea.offset = offset;
   info.renderArea.extent = pe_vk_swch_extent;
-  info.clearValueCount = 1;
-  info.pClearValues = &clear_color;
+  info.clearValueCount = 2;
+  info.pClearValues = clear_values;
 
   vkCmdBeginRenderPass(*(cmd_buffer), &info, VK_SUBPASS_CONTENTS_INLINE);
 

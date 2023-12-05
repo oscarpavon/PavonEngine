@@ -220,6 +220,9 @@ int pe_vk_init() {
   pe_vk_initialized = true;
 
   pe_vk_commands_pool_init();
+  
+  pe_vk_create_depth_resources();
+ 
   pe_vk_framebuffer_create();
 
   pe_vk_command_init();
@@ -230,7 +233,6 @@ int pe_vk_init() {
 
   pe_vk_models_create();
 
-  pe_vk_create_depth_resources();
 
 
 

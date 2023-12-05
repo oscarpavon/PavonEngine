@@ -42,10 +42,27 @@ typedef struct PPipelineInfo {
   VkPipelineColorBlendAttachmentState color_attachment;
   VkPipelineColorBlendStateCreateInfo color_blend_state;
   VkVertexInputBindingDescription input_binding_description;
+  VkPipelineDepthStencilStateCreateInfo depth_stencil;
   PVertexAtrributes attributes;
 } PPipelineInfo;
 
 PPipelineInfo pe_vk_main_pipeline_info;
+
+VkPipelineDepthStencilStateCreateInfo pe_vk_pipeline_get_default_depth_stencil(){
+ VkPipelineDepthStencilStateCreateInfo info;
+ ZERO(info);
+ info.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+ info.depthTestEnable = VK_TRUE;
+ info.depthWriteEnable = VK_TRUE;
+ info.depthCompareOp = VK_COMPARE_OP_LESS;
+ info.depthBoundsTestEnable = VK_FALSE;
+ info.minDepthBounds = 0.0f;
+ info.maxDepthBounds = 1.0f;
+ info.stencilTestEnable = VK_TRUE;
+
+ return info;
+
+}
 
 VkPipelineDynamicStateCreateInfo pe_vk_pipeline_get_default_dynamic_state(){
 
@@ -208,6 +225,8 @@ void pe_vk_pipelines_init() {
       pe_vk_pipeline_get_default_multisample();
   pe_vk_main_pipeline_info.color_blend_state =
       pe_vk_pipeline_get_default_color_blend();
+  pe_vk_main_pipeline_info.depth_stencil = 
+    pe_vk_pipeline_get_default_depth_stencil();
 
   VkGraphicsPipelineCreateInfo base_pipeline_info = {
 
@@ -224,7 +243,7 @@ void pe_vk_pipelines_init() {
       .pMultisampleState = &pe_vk_main_pipeline_info.multisample_state,
       .pColorBlendState = &pe_vk_main_pipeline_info.color_blend_state,
       .pDynamicState = &pe_vk_main_pipeline_info.dynamic_state,
-      .pDepthStencilState = NULL,
+      .pDepthStencilState = &pe_vk_main_pipeline_info.depth_stencil,
 
       .subpass = 0};
 
