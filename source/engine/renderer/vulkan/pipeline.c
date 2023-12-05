@@ -24,7 +24,7 @@ void pe_vk_pipeline_create_layout(bool use_descriptor, VkPipelineLayout* layout)
 
   if (use_descriptor == true) {
     info.setLayoutCount = 1;
-    info.pSetLayouts = &pe_vk_descriptor_set_layout;
+    info.pSetLayouts = &pe_vk_descriptor_set_layout_with_texture;
   }
 
   VKVALID(vkCreatePipelineLayout(vk_device, &info, NULL, layout),
@@ -271,6 +271,7 @@ void pe_vk_pipelines_init() {
   uniform_pipeline_info.attributes.position = true;
   uniform_pipeline_info.attributes.color = true;
   uniform_pipeline_info.attributes.normal = true;
+  uniform_pipeline_info.attributes.uv = true;
   uniform_pipeline_info.vertex_input_state =
       pe_vk_pipeline_get_default_vertex_input(
           &uniform_pipeline_info.attributes);

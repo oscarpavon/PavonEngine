@@ -10,6 +10,9 @@
 #include <engine/engine.h>
 #include <engine/model.h>
 
+#include "descriptor_set.h"
+#include "uniform_buffer.h"
+
 #include <../demos/chess/chess.h>
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description() {
@@ -145,7 +148,7 @@ void pe_vk_models_create() {
 
   pe_vk_create_uniform_buffers(test_model);
   pe_vk_descriptor_pool_create(test_model);
-  pe_vk_descriptor_set_create(test_model);
+  pe_vk_create_descriptor_sets(test_model);
 
   pe_loader_model("/sdcard/Download/chess/peon.glb");
   test_model2 = selected_model;
@@ -158,5 +161,5 @@ void pe_vk_models_create() {
 
   pe_vk_create_uniform_buffers(test_model2);
   pe_vk_descriptor_pool_create(test_model2);
-  pe_vk_descriptor_set_create(test_model2);
+  pe_vk_create_descriptor_sets(test_model2);
 }

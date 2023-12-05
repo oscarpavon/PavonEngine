@@ -188,7 +188,10 @@ void pe_vk_create_texture_image(){
   pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-  pe_vk_create_images_views();
+
+  pe_vk_texture_image_view =
+      pe_vk_create_image_view(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB);
+
   pe_vk_create_texture_sampler();
 }
 

@@ -209,6 +209,7 @@ int pe_vk_init() {
   pe_vk_create_render_pass();
   
   pe_vk_create_descriptor_set_layout();
+  pe_vk_create_descriptor_set_layout_with_texture();
 
   pe_vk_pipeline_create_layout(false, &pe_vk_pipeline_layout);
 
@@ -218,17 +219,19 @@ int pe_vk_init() {
 
   pe_vk_initialized = true;
 
-  pe_vk_models_create();
-
-
+  pe_vk_commands_pool_init();
   pe_vk_framebuffer_create();
 
-  pe_vk_commands_pool_init();
-  pe_vk_create_texture_image();
 
   pe_vk_command_init();
 
   pe_vk_semaphores_create();
+
+  pe_vk_create_texture_image();
+
+  pe_vk_models_create();
+
+
 
   LOG("Vulkan intialize [OK]");
   return 0;
