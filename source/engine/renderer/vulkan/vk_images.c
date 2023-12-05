@@ -32,8 +32,32 @@ void pe_vk_transition_image_layout(VkImage image, VkFormat format,
       .subresourceRange.layerCount = 1
   };
 
-  vkCmdPipelineBarrier(command, 0 /* TODO */, 0 /* TODO */, 0, 0, NULL, 0, NULL,
-                       1, &barrier);
+  VkPipelineStageFlags source_stage;
+  ZERO(source_stage);
+  VkPipelineStageFlags destination_stage;
+  ZERO(destination_stage);
+
+  if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED &&
+      new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+    barrier.srcAccessMask = 0;
+    barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+    source_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    destination_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+  } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL &&
+             new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+    barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+    barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    source_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    destination_stage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+  } else {
+    LOG("Unsupported layout transition");
+  }
+
+  vkCmdPipelineBarrier(command, source_stage, destination_stage, 0, 0, NULL, 0,
+                       NULL, 1, &barrier);
 
   pe_vk_end_single_time_cmd(command);
 }
@@ -135,4 +159,11 @@ void pe_vk_create_texture_image(){
   pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
                                 VK_IMAGE_LAYOUT_UNDEFINED,
                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+  pe_vk_image_copy_buffer(buffer_info.buffer, pe_vk_texture_image,
+                          texture.image.width, texture.image.heigth);
+
+  pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
+                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
 }
