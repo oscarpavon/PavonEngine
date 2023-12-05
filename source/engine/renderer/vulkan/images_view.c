@@ -7,6 +7,25 @@
 
 #define PE_IMAGES_VIEWS_COUNT 4
 
+VkImageView pe_vk_create_image_view(VkImage image, VkFormat format) {
+  VkImageViewCreateInfo viewInfo = {};
+  viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+  viewInfo.image = image;
+  viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+  viewInfo.format = format;
+  viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  viewInfo.subresourceRange.baseMipLevel = 0;
+  viewInfo.subresourceRange.levelCount = 1;
+  viewInfo.subresourceRange.baseArrayLayer = 0;
+  viewInfo.subresourceRange.layerCount = 1;
+  
+  VkImageView image_view;
+
+  vkCreateImageView(vk_device, &viewInfo, NULL, &image_view);
+  
+  return image_view;
+}
+
 void pe_vk_create_images_views() {
   array_init(&pe_vk_images_views, sizeof(VkImageView), PE_IMAGES_VIEWS_COUNT);
 

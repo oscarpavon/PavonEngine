@@ -10,6 +10,7 @@
 #include "vk_buffer.h"
 #include "commands.h"
 #include "vk_images.h"
+#include "images_view.h"
 
 
 
@@ -128,6 +129,27 @@ void pe_vk_image_create(uint32_t width, uint32_t height,
   vkBindImageMemory(vk_device, *(texture_image), pe_vk_texture_image_memory, 0);
 }
 
+void pe_vk_create_texture_sampler() {
+  VkSamplerCreateInfo samplerInfo = {};
+  samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+  samplerInfo.magFilter = VK_FILTER_LINEAR;
+  samplerInfo.minFilter = VK_FILTER_LINEAR;
+  samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+  samplerInfo.unnormalizedCoordinates = VK_FALSE;
+  samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+  samplerInfo.mipLodBias = 0.0f;
+  samplerInfo.minLod = 0.0f;
+  samplerInfo.maxLod = 0.0f;
+  samplerInfo.anisotropyEnable = VK_FALSE;
+  samplerInfo.maxAnisotropy = 1.0f;
+  
+  vkCreateSampler(vk_device, &samplerInfo, NULL , &pe_vk_texture_sampler);
+
+}
+
 void pe_vk_create_texture_image(){
   PTexture texture;
   ZERO(texture);
@@ -166,5 +188,7 @@ void pe_vk_create_texture_image(){
   pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
+  pe_vk_create_images_views();
+  pe_vk_create_texture_sampler();
 }
+
