@@ -47,7 +47,7 @@ void pe_vk_transition_image_layout(VkImage image, VkFormat format,
 
   } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL &&
              new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-    barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+    barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
     source_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
@@ -73,7 +73,7 @@ void pe_vk_image_copy_buffer(VkBuffer buffer, VkImage image, uint32_t width,
                                   VK_IMAGE_ASPECT_COLOR_BIT,
                               .imageSubresource.mipLevel = 0,
                               .imageSubresource.baseArrayLayer = 0,
-                              .imageSubresource.layerCount = 0,
+                              .imageSubresource.layerCount = 1,
                               .imageOffset = {0, 0, 0},
                               .imageExtent = {width, height, 1}};
 
@@ -159,6 +159,7 @@ void pe_vk_create_texture_image(){
   pe_vk_transition_image_layout(pe_vk_texture_image, VK_FORMAT_R8G8B8A8_SRGB,
                                 VK_IMAGE_LAYOUT_UNDEFINED,
                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
   pe_vk_image_copy_buffer(buffer_info.buffer, pe_vk_texture_image,
                           texture.image.width, texture.image.heigth);
 
