@@ -13,7 +13,9 @@
 #include "vk_images.h"
 #include "images_view.h"
 #include <math.h>
+#include <wctype.h>
 #include "swap_chain.h"
+#include <ThirdParty/cglm/cglm.h>
 
 void pe_vk_transition_image_layout(VkImage image, VkFormat format,
                                    VkImageLayout old_layout,
@@ -103,7 +105,7 @@ void pe_vk_create_image(PImageCreateInfo *info){
   imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   imageInfo.usage = info->usage;
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-  imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+  imageInfo.samples = info->number_of_samples;
   imageInfo.flags = 0; // Optional
 
   if (vkCreateImage(vk_device, &imageInfo, NULL, info->texture_image) != VK_SUCCESS) {
@@ -235,10 +237,33 @@ void pe_vk_image_generate_mipmaps(VkImage image, uint32_t width,
   pe_vk_end_single_time_cmd(command);
 }
 
+void pe_vk_create_depth_resources(){
+  VkFormat format = VK_FORMAT_D32_SFLOAT;
+  
+  PImageCreateInfo image_create_info = {
+      .width = pe_vk_swch_extent.width,
+      .height = pe_vk_swch_extent.height,
+      .texture_image = &pe_vk_depth_image,
+      .image_memory = &pe_vk_depth_image_memory,
+      .format = format,
+      .tiling = VK_IMAGE_TILING_OPTIMAL,
+      .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+      .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+      .mip_level = 1,
+      .number_of_samples = pe_vk_msaa_samples
+  };
+
+  pe_vk_create_image(&image_create_info);
+
+  pe_vk_depth_image_view = pe_vk_create_image_view(pe_vk_depth_image, format,
+                                                   VK_IMAGE_ASPECT_DEPTH_BIT,
+                                                   1);
+}
+
 void pe_vk_create_texture_image(){
   PTexture texture;
   ZERO(texture);
-  pe_load_texture("/sdcard/Download/chess/floordiffuse.png", &texture);
+  pe_load_texture("/sdcard/Download/chess/viking_room.png", &texture);
   
   pe_vk_mip_levels = floor(log2(GLM_MAX(texture.image.width, texture.image.heigth))) + 1;
   
@@ -273,7 +298,8 @@ void pe_vk_create_texture_image(){
       .usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
                VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
       .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-      .mip_level = pe_vk_mip_levels};
+      .mip_level = pe_vk_mip_levels,
+      .number_of_samples = pe_vk_msaa_samples};
 
   pe_vk_create_image(&image_create_info);
 
@@ -303,24 +329,3 @@ void pe_vk_create_texture_image(){
 }
 
 
-void pe_vk_create_depth_resources(){
-  VkFormat format = VK_FORMAT_D32_SFLOAT;
-  
-  PImageCreateInfo image_create_info = {
-      .width = pe_vk_swch_extent.width,
-      .height = pe_vk_swch_extent.height,
-      .texture_image = &pe_vk_depth_image,
-      .image_memory = &pe_vk_depth_image_memory,
-      .format = format,
-      .tiling = VK_IMAGE_TILING_OPTIMAL,
-      .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-      .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-      .mip_level = 1
-  };
-
-  pe_vk_create_image(&image_create_info);
-
-  pe_vk_depth_image_view = pe_vk_create_image_view(pe_vk_depth_image, format,
-                                                   VK_IMAGE_ASPECT_DEPTH_BIT,
-                                                   1);
-}

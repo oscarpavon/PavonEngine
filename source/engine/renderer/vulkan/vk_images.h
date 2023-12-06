@@ -26,6 +26,7 @@ typedef struct PImageCreateInfo {
   VkMemoryPropertyFlags properties;
   VkImage *texture_image;
   VkDeviceMemory *image_memory;
+  VkSampleCountFlagBits number_of_samples;
 } PImageCreateInfo;
 
 void pe_vk_create_texture_image();

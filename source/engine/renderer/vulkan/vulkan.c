@@ -186,9 +186,33 @@ void pe_vk_create_surface() {
           "Can't create window surface");
 #endif
 }
-int pe_vk_init() {
 
-  pe_vk_validation_layer_enable = false;
+void pe_vk_create_color_resources(){
+  VkFormat color_format = pe_vk_swch_format;
+
+  PImageCreateInfo image_create_info = {
+      .width = pe_vk_swch_extent.width,
+      .height = pe_vk_swch_extent.height,
+      .texture_image = &pe_vk_color_image,
+      .image_memory = &pe_vk_color_memory,
+      .format = color_format,
+      .tiling = VK_IMAGE_TILING_OPTIMAL,
+      .usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT |
+               VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+      .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+      .mip_level = 1,
+      .number_of_samples = pe_vk_msaa_samples};
+
+  pe_vk_create_image(&image_create_info);
+
+  pe_vk_color_image_view = pe_vk_create_image_view(
+      pe_vk_color_image, color_format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+}
+
+int pe_vk_init() {
+  pe_vk_msaa_samples = VK_SAMPLE_COUNT_1_BIT;
+
+  pe_vk_validation_layer_enable = true;
 
   pe_vk_create_instance();
 
@@ -220,7 +244,9 @@ int pe_vk_init() {
   pe_vk_initialized = true;
 
   pe_vk_commands_pool_init();
-  
+
+  pe_vk_create_color_resources();
+
   pe_vk_create_depth_resources();
  
   pe_vk_framebuffer_create();
@@ -236,7 +262,7 @@ int pe_vk_init() {
 
 
 
-  LOG("Vulkan intialize [OK]");
+  LOG("Vulkan intialize [OK]\n");
   return 0;
 }
 

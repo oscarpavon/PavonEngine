@@ -3,6 +3,8 @@
 #include <engine/array.h>
 
 
+#include <engine/model.h>
+
 VkPipelineLayout pe_vk_pipeline_layout;
 VkPipelineLayout pe_vk_pipeline_layout_with_descriptors;
 
