@@ -64,29 +64,31 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
   vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
 
 
-
-  VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 1);
-
-  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(triangle_pipeline));
-  
-  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
-
- 
-
-  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
-  
-  vkCmdDraw(*(cmd_buffer), 3,1,0,0);
-  
-
   VkDeviceSize offsets[] = {0};
 
 
-  VkPipeline* in_position = array_get(&pe_graphics_pipelines, 2);
 
-  vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(in_position));
-
-  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer , offsets);
-  vkCmdDraw(*(cmd_buffer), test_model->vertex_array.count , 1, 0, 0);
+  // VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 1);
+  //
+  // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(triangle_pipeline));
+  // 
+  // vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+  //
+  //
+  //
+  // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+  // 
+  // vkCmdDraw(*(cmd_buffer), 3,1,0,0);
+  // 
+  //
+  //
+  //
+  // VkPipeline* in_position = array_get(&pe_graphics_pipelines, 2);
+  //
+  // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(in_position));
+  //
+  // vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer , offsets);
+  // vkCmdDraw(*(cmd_buffer), test_model->vertex_array.count , 1, 0, 0);
 
  
 //############################################################

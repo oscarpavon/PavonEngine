@@ -25,7 +25,7 @@ void main() {
 
     float light_intensity = AMBIENT + max(dot(normal_world_space, LIGHT_DIRECTION), 0);
 
-    frag_color = light_intensity * vec3(1,0,0);
+    frag_color = light_intensity * vec3(1,1,1);
 
     out_uv = uv;
 
