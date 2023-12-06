@@ -74,7 +74,7 @@ void pe_vk_queue_families_support() {
     
       LOG("graphics queue found");
     } else
-      LOG("[X] No graphics queue found");
+      LOG("[X] No graphics queue found\n");
 
     VkBool32 present_support = false;
     vkGetPhysicalDeviceSurfaceSupportKHR(vk_physical_device, i, vk_surface,
@@ -245,9 +245,9 @@ int pe_vk_init() {
 
   pe_vk_commands_pool_init();
 
-  pe_vk_create_color_resources();
-
   pe_vk_create_depth_resources();
+
+  pe_vk_create_color_resources();
  
   pe_vk_framebuffer_create();
 

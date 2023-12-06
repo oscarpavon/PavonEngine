@@ -171,7 +171,7 @@ VkPipelineMultisampleStateCreateInfo pe_vk_pipeline_get_default_multisample(){
   multisampling.sType =
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
-  multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+  multisampling.rasterizationSamples = pe_vk_msaa_samples;
   return multisampling;
 }
 
@@ -201,7 +201,7 @@ void pe_vk_pipeline_create_pipelines() {
               vk_device, VK_NULL_HANDLE, pe_vk_pipeline_infos.count,
               pe_vk_pipeline_infos.data, NULL, pe_graphics_pipelines.data),
           "Can't create pipelines");
-  LOG("Created %i pipelines", pe_vk_pipeline_infos.count);
+  LOG("Created %i pipelines\n", pe_vk_pipeline_infos.count);
 }
 
 void pe_vk_pipelines_init() {

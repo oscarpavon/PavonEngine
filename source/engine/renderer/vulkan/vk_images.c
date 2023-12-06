@@ -109,7 +109,7 @@ void pe_vk_create_image(PImageCreateInfo *info){
   imageInfo.flags = 0; // Optional
 
   if (vkCreateImage(vk_device, &imageInfo, NULL, info->texture_image) != VK_SUCCESS) {
-    LOG("failed to create image!");
+    LOG("failed to create image!\n");
   }
 
 
@@ -250,7 +250,7 @@ void pe_vk_create_depth_resources(){
       .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
       .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
       .mip_level = 1,
-      .number_of_samples = pe_vk_msaa_samples
+      .number_of_samples = VK_SAMPLE_COUNT_1_BIT
   };
 
   pe_vk_create_image(&image_create_info);
@@ -299,7 +299,7 @@ void pe_vk_create_texture_image(){
                VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
       .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
       .mip_level = pe_vk_mip_levels,
-      .number_of_samples = pe_vk_msaa_samples};
+      .number_of_samples = VK_SAMPLE_COUNT_1_BIT};
 
   pe_vk_create_image(&image_create_info);
 

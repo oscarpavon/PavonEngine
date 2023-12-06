@@ -110,7 +110,7 @@ void pe_vk_swch_create(){
   
   vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,NULL);
  
-  VKVALID(vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_images),"Cant't create images view");
+  VKVALID(vkGetSwapchainImagesKHR(vk_device,pe_vk_swap_chain,&image_count,pe_vk_swch_images),"Cant't create images view");
   
  
 }
