@@ -250,7 +250,7 @@ void pe_vk_create_depth_resources(){
       .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
       .properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
       .mip_level = 1,
-      .number_of_samples = VK_SAMPLE_COUNT_1_BIT
+      .number_of_samples = pe_vk_msaa_samples 
   };
 
   pe_vk_create_image(&image_create_info);

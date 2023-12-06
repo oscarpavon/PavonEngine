@@ -52,11 +52,13 @@ void pe_vk_create_render_pass() {
   color_ref.attachment = 0;
   color_ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
   
-  VkAttachmentReference depthAttachmentRef = {};
+  VkAttachmentReference depthAttachmentRef;
+  ZERO(depthAttachmentRef);
   depthAttachmentRef.attachment = 1;
   depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
   
-  VkAttachmentReference colorAttachmentResolveRef = {};
+  VkAttachmentReference colorAttachmentResolveRef;
+  ZERO(colorAttachmentResolveRef);
   colorAttachmentResolveRef.attachment = 2;
   colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 

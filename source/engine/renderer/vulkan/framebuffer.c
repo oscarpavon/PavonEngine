@@ -7,7 +7,7 @@
 
 #include "vk_images.h"
 
-void pe_vk_framebuffer_create(){
+void pe_vk_framebuffer_create() {
 
   array_init(&pe_vk_framebuffers, sizeof(VkFramebuffer),
              pe_vk_images_views.count);
@@ -16,9 +16,11 @@ void pe_vk_framebuffer_create(){
 
     VkImageView *framebuffer_image_view = array_get(&pe_vk_images_views, i);
 
-    VkImageView attachments[] = {*(framebuffer_image_view),
-                                 pe_vk_depth_image_view,
-                                 pe_vk_color_image_view};
+    VkImageView attachments[3];
+    attachments[2] = *(framebuffer_image_view);
+    attachments[1] = pe_vk_depth_image_view;
+    attachments[0] = pe_vk_color_image_view;
+
     VkFramebufferCreateInfo info;
     ZERO(info);
     info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -32,5 +34,6 @@ void pe_vk_framebuffer_create(){
     VkCommandBuffer buffer;
     vkCreateFramebuffer(vk_device, &info, NULL, &buffer);
     array_add(&pe_vk_framebuffers, &buffer);
+
   }
 }

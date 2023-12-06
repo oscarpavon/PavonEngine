@@ -210,7 +210,7 @@ void pe_vk_create_color_resources(){
 }
 
 int pe_vk_init() {
-  pe_vk_msaa_samples = VK_SAMPLE_COUNT_1_BIT;
+  pe_vk_msaa_samples = VK_SAMPLE_COUNT_4_BIT;
 
   pe_vk_validation_layer_enable = true;
 
@@ -245,10 +245,10 @@ int pe_vk_init() {
 
   pe_vk_commands_pool_init();
 
-  pe_vk_create_depth_resources();
-
   pe_vk_create_color_resources();
  
+  pe_vk_create_depth_resources();
+
   pe_vk_framebuffer_create();
 
   pe_vk_command_init();
