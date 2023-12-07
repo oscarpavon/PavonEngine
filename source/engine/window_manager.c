@@ -172,7 +172,7 @@ void window_update_viewport(int width, int height){
 		camera_update_aspect_ratio(&current_window->camera);
 }
 
-void pe_wm_create_window(EngineWindow* win){
+void pe_wm_configure_window(EngineWindow* win){
   
 	if (win == NULL) { 
 		LOG("ERROR: Window not found\n");
@@ -187,7 +187,7 @@ void pe_wm_create_window(EngineWindow* win){
 
 
 #ifdef LINUX
-	window_create(win,NULL, "PavonEngine");
+	pe_wm_create_window(win,NULL, "PavonEngine");
 	glfwSetKeyCallback(win->window, pe_input_key_callback);
 	glfwSetCursorPosCallback(win, pe_input_mouse_movement_callback);
 	glfwSetMouseButtonCallback(win, pe_input_mouse_button_callback);

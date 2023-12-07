@@ -376,7 +376,7 @@ void collision_test(){
 void editor_main_window_init() {
 
 #ifdef DESKTOP
-  window_create(window_editor_main, NULL, "PavonEngine");
+  pe_wm_create_window(window_editor_main, NULL, "PavonEngine");
   glfwSetKeyCallback(window_editor_main->window, &pe_input_key_callback);
   glfwSetCursorPosCallback(window_editor_main->window,
                            &pe_input_mouse_movement_callback);

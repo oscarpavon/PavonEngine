@@ -44,7 +44,7 @@ void windows_manager_init(){
   pe_is_window_init = true;
 }
 
-void window_create(EngineWindow *win, EngineWindow *share_window,
+void pe_wm_create_window(EngineWindow *win, EngineWindow *share_window,
                    const char *name) {
   if (win == NULL) {
             LOG("ERROR: Window not found\n");

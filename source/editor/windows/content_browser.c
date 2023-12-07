@@ -589,7 +589,7 @@ if(window_content_browser->initialized) return;
 
 void editor_window_content_init(){
 #ifdef DESKTOP
-  window_create(window_content_browser, window_editor_main, "Engine");
+  pe_wm_create_window(window_content_browser, window_editor_main, "Engine");
   glfwMakeContextCurrent(window_content_browser->window);
 
   glfwSetKeyCallback(window_content_browser->window, pe_input_key_callback);

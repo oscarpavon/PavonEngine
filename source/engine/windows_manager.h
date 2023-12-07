@@ -7,6 +7,6 @@
 #include "platforms/windows_manager.h"
 
 
-void pe_wm_create_window(EngineWindow*);
+void pe_wm_configure_window(EngineWindow*);
 
 #endif

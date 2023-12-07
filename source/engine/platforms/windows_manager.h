@@ -48,7 +48,7 @@ void window_resize_callback(GLFWwindow *, int width, int height);
 void window_focus_callback(GLFWwindow *, int);
 #endif
 
-void window_create(EngineWindow *, EngineWindow *share_window,
+void pe_wm_create_window(EngineWindow *, EngineWindow *share_window,
                    const char *name);
 
 void pe_wm_window_init(EngineWindow *window);
