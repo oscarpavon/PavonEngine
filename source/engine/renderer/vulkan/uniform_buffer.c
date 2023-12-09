@@ -1,6 +1,7 @@
 #include "uniform_buffer.h"
 #include <engine/engine.h>
 #include "ThirdParty/cglm/affine.h"
+#include "ThirdParty/cglm/vec4.h"
 #include "vk_buffer.h"
 
 PUniformBufferObject ubo;
@@ -89,6 +90,7 @@ void pe_vk_uniform_buffer_update_one(uint32_t image_index) {
   glm_mat4_copy(main_camera.projection, pawn_ubo.projection);
   glm_mat4_copy(main_camera.view, pawn_ubo.view);
 
+  glm_vec4_copy(VEC4(0,2,0,1), pawn_ubo.light_position);
 
   pawn_ubo.projection[1][1] *= -1;
 

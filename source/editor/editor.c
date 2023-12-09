@@ -541,7 +541,7 @@ void editor_render_init() {
 
 #ifdef DESKTOP
   if (pe_renderer_type == PEWMVULKAN) {
-    pe_vk_init();
+    //pe_vk_init();
   }
 
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);

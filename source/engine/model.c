@@ -143,7 +143,7 @@ void pe_debug_accesor_type(char* message , cgltf_accessor* accessor){
 void pe_loader_attribute(cgltf_attribute *attribute) {
   switch (attribute->type) {
   case cgltf_attribute_type_position: {
-    LOG("#### Vertex count: %i", (int)attribute->data->count) ;
+    //LOG("#### Vertex count: %i\n", (int)attribute->data->count) ;
     vec3 vertices_position[attribute->data->count];
     ZERO(vertices_position);
 
@@ -180,7 +180,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     break;
   }
   case cgltf_attribute_type_normal: {
-LOG("Normal attribute \n");
+    //LOG("Normal attribute \n");
     vec3 normals[attribute->data->count];
     ZERO(normals);
 
@@ -403,7 +403,7 @@ int pe_node_load(Node* parent, cgltf_node *in_cgltf_node){
    }
 
   if(in_cgltf_node->mesh != NULL){
-    LOG("Loading GLTF mesh");
+    //LOG("Loading GLTF mesh\n");
     //check_LOD_names(in_cgltf_node);
     pe_loader_mesh(in_cgltf_node->mesh);   
   }

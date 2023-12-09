@@ -46,7 +46,7 @@ void render_thread_init(){
   pe_shader_compile_std();
   int max ;
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max);
-  LOG("########## Maximun vertex attributes: %i",max);
+  //LOG("########## Maximun vertex attributes: %i",max);
 
 #ifdef DESKTOP
   glEnable(GL_MULTISAMPLE);

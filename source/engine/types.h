@@ -23,6 +23,7 @@ typedef struct PUniformBufferObject{
     mat4 model;
     mat4 view;
     mat4 projection;
+    vec4 light_position;
 }PUniformBufferObject;
 
 typedef struct PEColorShader{

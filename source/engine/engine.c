@@ -519,7 +519,7 @@ void pe_program_main_loop(void(*program_loop)(void), EngineWindow* program_windo
 
     //pe_wm_check(program_window);
 
-    LOG("######## Program LOOP go");
+    //LOG("######## Program LOOP go");
     while (!pe_wm_should_close(program_window))
     {
         pe_wm_events_update();

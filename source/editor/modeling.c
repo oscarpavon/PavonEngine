@@ -155,7 +155,7 @@ void init_modeling() {
 
   current_select_vertex = -1;
   
-  LOG("## Modeling init");
+  //LOG("## Modeling init\n");
 
 
 }
