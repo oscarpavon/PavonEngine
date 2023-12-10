@@ -32,8 +32,6 @@ void main() {
 
     vec3 light_color = vec3(1,1,1) * 1;
 
-
-
     float light_intensity = AMBIENT + max(dot(normal_world_space, LIGHT_DIRECTION), 0);
 
     vec3 ambient_light = vec3(1,1,1) * 0.12f;

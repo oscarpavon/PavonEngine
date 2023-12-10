@@ -24,7 +24,7 @@ VkVertexInputBindingDescription pe_vk_vertex_get_binding_description() {
   return binding;
 }
 
-void pe_vk_vertex_get_attribute(PVertexAtrributes* attributes) {
+void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
 
   if (attributes->position) {
     VkVertexInputAttributeDescription attribute;
@@ -92,7 +92,6 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes* attributes) {
     attribute.offset = offsetof(Vertex, weight);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
-
 }
 
 VkBuffer pe_vk_vertex_create_buffer(Array *vertices) {
@@ -158,8 +157,21 @@ void pe_vk_models_create() {
   test_model2->index_buffer =
       pe_vk_vertex_create_index_buffer(&selected_model->index_array);
 
-
   pe_vk_create_uniform_buffers(test_model2);
   pe_vk_descriptor_pool_create(test_model2);
   pe_vk_create_descriptor_sets(test_model2);
+
+  // ##########################################
+  // ##########################################
+  pe_loader_model("/sdcard/Download/chess/anim.glb");
+  anim_model = selected_model;
+
+  anim_model->vertex_buffer =
+      pe_vk_vertex_create_buffer(&anim_model->vertex_array);
+  anim_model->index_buffer =
+      pe_vk_vertex_create_index_buffer(&anim_model->index_array);
+
+  pe_vk_create_uniform_buffers(anim_model);
+  pe_vk_descriptor_pool_create(anim_model);
+  pe_vk_create_descriptor_sets(anim_model);
 }

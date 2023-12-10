@@ -2,14 +2,14 @@
 #include <engine/engine.h>
 
 void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
-  ZERO(skin_component->node_uniform) ;
+  ZERO(skin_component->node_uniform);
   if (!skin_component) {
     LOG("No skinned mesh component\n");
     return;
   }
 
   skin_component->node_uniform.joint_count = skin_component->joints.count;
-  LOG("#### Joints count: %i", skin_component->joints.count);
+  LOG("#### Joints count: %i\n", skin_component->joints.count);
 
   for (int i = 0; i < skin_component->joints.count; i++) {
     Node *joint = (Node *)array_get(&skin_component->joints, i);
@@ -29,14 +29,15 @@ void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
 
     mat4 joint_mat;
     ZERO(joint_mat);
-    
-    glm_mat4_inv(skin_component->transform->model_matrix,  negative);
+
+    glm_mat4_inv(skin_component->transform->model_matrix, negative);
 
     glm_mat4_inv(negative, inverse_model);
 
-    glm_mat4_mul(inverse_model, local ,inverse_dot_local);
+    glm_mat4_mul(inverse_model, local, inverse_dot_local);
 
-    glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],joint_mat);
+    glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],
+                 joint_mat);
 
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
@@ -126,7 +127,7 @@ void play_animation_list() {
     if (animation->time <= animation->end) {
       play_animation(play->skin, animation);
 #ifdef DEBUG
-   update_vertex_bones_gizmos = true;
+      update_vertex_bones_gizmos = true;
 #endif
     } else {
       if (animation->loop)
