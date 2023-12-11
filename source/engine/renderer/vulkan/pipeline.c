@@ -1,19 +1,19 @@
 #include "pipeline.h"
 #include "descriptor_set.h"
-#include "shader_module.h"
-#include "vk_vertex.h"
 #include "render_pass.h"
+#include "shader_module.h"
+#include "swap_chain.h"
+#include "vk_vertex.h"
+#include <engine/log.h>
 #include <engine/macros.h>
 #include <engine/renderer/vulkan/vulkan.h>
-#include <engine/log.h>
 #include <vulkan/vulkan_core.h>
-#include "swap_chain.h"
 
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
 
-
-void pe_vk_pipeline_create_layout(bool use_descriptor, VkPipelineLayout* layout) {
+void pe_vk_pipeline_create_layout(bool use_descriptor,
+                                  VkPipelineLayout *layout) {
 
   VkPipelineLayoutCreateInfo info;
   ZERO(info);
@@ -48,23 +48,23 @@ typedef struct PPipelineInfo {
 
 PPipelineInfo pe_vk_main_pipeline_info;
 
-VkPipelineDepthStencilStateCreateInfo pe_vk_pipeline_get_default_depth_stencil(){
- VkPipelineDepthStencilStateCreateInfo info;
- ZERO(info);
- info.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
- info.depthTestEnable = VK_TRUE;
- info.depthWriteEnable = VK_TRUE;
- info.depthCompareOp = VK_COMPARE_OP_LESS;
- info.depthBoundsTestEnable = VK_FALSE;
- info.minDepthBounds = 0.0f;
- info.maxDepthBounds = 1.0f;
- info.stencilTestEnable = VK_TRUE;
+VkPipelineDepthStencilStateCreateInfo
+pe_vk_pipeline_get_default_depth_stencil() {
+  VkPipelineDepthStencilStateCreateInfo info;
+  ZERO(info);
+  info.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+  info.depthTestEnable = VK_TRUE;
+  info.depthWriteEnable = VK_TRUE;
+  info.depthCompareOp = VK_COMPARE_OP_LESS;
+  info.depthBoundsTestEnable = VK_FALSE;
+  info.minDepthBounds = 0.0f;
+  info.maxDepthBounds = 1.0f;
+  info.stencilTestEnable = VK_TRUE;
 
- return info;
-
+  return info;
 }
 
-VkPipelineDynamicStateCreateInfo pe_vk_pipeline_get_default_dynamic_state(){
+VkPipelineDynamicStateCreateInfo pe_vk_pipeline_get_default_dynamic_state() {
 
   VkPipelineDynamicStateCreateInfo dynamicStateInfo;
   ZERO(dynamicStateInfo);
@@ -88,10 +88,11 @@ pe_vk_pipeline_get_default_vertex_input(PVertexAtrributes *attributes) {
   if (attributes->has_attributes == true) {
 
     array_init(&attributes->attributes_descriptions,
-               sizeof(VkVertexInputAttributeDescription), 5);
+               sizeof(VkVertexInputAttributeDescription), 6);
 
     pe_vk_main_pipeline_info.input_binding_description =
         pe_vk_vertex_get_binding_description();
+
     pe_vk_vertex_get_attribute(attributes);
     info.vertexBindingDescriptionCount = 1;
     info.pVertexBindingDescriptions =
@@ -104,7 +105,7 @@ pe_vk_pipeline_get_default_vertex_input(PVertexAtrributes *attributes) {
   return info;
 }
 
-VkPipelineViewportStateCreateInfo pe_vk_pipeline_get_default_viewport(){
+VkPipelineViewportStateCreateInfo pe_vk_pipeline_get_default_viewport() {
 
   VkViewport viewport;
   ZERO(viewport);
@@ -136,7 +137,8 @@ VkPipelineViewportStateCreateInfo pe_vk_pipeline_get_default_viewport(){
   return viewportState;
 }
 
-VkPipelineRasterizationStateCreateInfo pe_vk_pipeline_get_default_rasterization(){
+VkPipelineRasterizationStateCreateInfo
+pe_vk_pipeline_get_default_rasterization() {
 
   // rasterizer
   VkPipelineRasterizationStateCreateInfo rasterizer;
@@ -152,7 +154,8 @@ VkPipelineRasterizationStateCreateInfo pe_vk_pipeline_get_default_rasterization(
   return rasterizer;
 }
 
-VkPipelineInputAssemblyStateCreateInfo pe_vk_pipeline_get_default_input_assembly(){
+VkPipelineInputAssemblyStateCreateInfo
+pe_vk_pipeline_get_default_input_assembly() {
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly;
   ZERO(inputAssembly);
@@ -163,7 +166,7 @@ VkPipelineInputAssemblyStateCreateInfo pe_vk_pipeline_get_default_input_assembly
   return inputAssembly;
 }
 
-VkPipelineMultisampleStateCreateInfo pe_vk_pipeline_get_default_multisample(){
+VkPipelineMultisampleStateCreateInfo pe_vk_pipeline_get_default_multisample() {
 
   // multisampling
   VkPipelineMultisampleStateCreateInfo multisampling;
@@ -175,7 +178,7 @@ VkPipelineMultisampleStateCreateInfo pe_vk_pipeline_get_default_multisample(){
   return multisampling;
 }
 
-VkPipelineColorBlendStateCreateInfo pe_vk_pipeline_get_default_color_blend(){
+VkPipelineColorBlendStateCreateInfo pe_vk_pipeline_get_default_color_blend() {
 
   pe_vk_main_pipeline_info.color_attachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
@@ -191,7 +194,6 @@ VkPipelineColorBlendStateCreateInfo pe_vk_pipeline_get_default_color_blend(){
   colorBlending.pAttachments = &pe_vk_main_pipeline_info.color_attachment;
 
   return colorBlending;
-
 }
 
 void pe_vk_pipeline_create_pipelines() {
@@ -225,8 +227,8 @@ void pe_vk_pipelines_init() {
       pe_vk_pipeline_get_default_multisample();
   pe_vk_main_pipeline_info.color_blend_state =
       pe_vk_pipeline_get_default_color_blend();
-  pe_vk_main_pipeline_info.depth_stencil = 
-    pe_vk_pipeline_get_default_depth_stencil();
+  pe_vk_main_pipeline_info.depth_stencil =
+      pe_vk_pipeline_get_default_depth_stencil();
 
   VkGraphicsPipelineCreateInfo base_pipeline_info = {
 
@@ -249,21 +251,21 @@ void pe_vk_pipelines_init() {
 
   VkPipelineShaderStageCreateInfo red_shader[2];
   ZERO(red_shader);
-  pe_vk_shader_load(red_shader, 
+  pe_vk_shader_load(red_shader,
                     "/sdcard/Download/NativeContent/shaders/other_vert.spv",
                     "/sdcard/Download/NativeContent/shaders/blue_frag.spv");
   base_pipeline_info.pStages = red_shader;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
-  //red triangle
+  // red triangle
   VkPipelineShaderStageCreateInfo blue_shader[2];
   pe_vk_shader_load(blue_shader,
                     "/sdcard/Download/NativeContent/shaders/vert.spv",
                     "/sdcard/Download/NativeContent/shaders/frag.spv");
   base_pipeline_info.pStages = blue_shader;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
- 
-  //vertex buffer model 
+
+  // vertex buffer model
   VkPipelineShaderStageCreateInfo in_position[2];
   pe_vk_shader_load(in_position,
                     "/sdcard/Download/NativeContent/shaders/in_position.spv",
@@ -300,11 +302,36 @@ void pe_vk_pipelines_init() {
   base_pipeline_info.layout = pe_vk_pipeline_layout_with_descriptors;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
+  // #################### Skinned
+  //
+  VkPipelineShaderStageCreateInfo skinned[2];
+  pe_vk_shader_load(skinned,
+                    "/sdcard/Download/NativeContent/shaders/skinned.spv",
+                    "/sdcard/Download/NativeContent/shaders/diffuse_frag.spv");
+  base_pipeline_info.pStages = skinned;
+  PPipelineInfo skinned_pipeline_info;
+  ZERO(skinned_pipeline_info);
+  skinned_pipeline_info.attributes.has_attributes = true;
+  skinned_pipeline_info.attributes.position = true;
+  skinned_pipeline_info.attributes.color = true;
+  skinned_pipeline_info.attributes.normal = true;
+  skinned_pipeline_info.attributes.uv = true;
+  skinned_pipeline_info.attributes.weight = true;
+  skinned_pipeline_info.attributes.joint = true;
+
+  skinned_pipeline_info.vertex_input_state =
+      pe_vk_pipeline_get_default_vertex_input(
+          &skinned_pipeline_info.attributes);
+
+  base_pipeline_info.pVertexInputState =
+      &skinned_pipeline_info.vertex_input_state;
+  base_pipeline_info.layout = pe_vk_pipeline_layout_with_descriptors;
+  array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
+
   // ####################################################
   // ############## Create pipelines ##################
   pe_vk_pipeline_create_pipelines();
 
-  VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 0);
+  VkPipeline *triangle_pipeline = array_get(&pe_graphics_pipelines, 0);
   pe_vk_pipeline = *(triangle_pipeline);
-
 }
