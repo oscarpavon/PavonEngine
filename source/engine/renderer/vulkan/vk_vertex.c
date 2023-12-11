@@ -95,7 +95,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
 }
 
 VkBuffer pe_vk_vertex_create_buffer(Array *vertices) {
-  PEVKBufferCreateInfo info;
+  PBufferCreateInfo info;
   ZERO(info);
   info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
   info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -116,7 +116,7 @@ VkBuffer pe_vk_vertex_create_buffer(Array *vertices) {
 VkBuffer pe_vk_vertex_create_index_buffer(Array *indices) {
   VkBuffer buffer;
 
-  PEVKBufferCreateInfo info;
+  PBufferCreateInfo info;
   ZERO(info);
   info.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
   info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |

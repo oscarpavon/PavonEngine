@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <vulkan/vulkan_core.h>
 
-
 VkImage pe_vk_texture_image;
 VkImageView pe_vk_texture_image_view;
 VkSampler pe_vk_texture_sampler;

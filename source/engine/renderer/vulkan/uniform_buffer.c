@@ -1,22 +1,21 @@
 #include "uniform_buffer.h"
-#include <engine/engine.h>
 #include "ThirdParty/cglm/affine.h"
 #include "ThirdParty/cglm/vec4.h"
 #include "vk_buffer.h"
+#include <engine/engine.h>
 
 PUniformBufferObject ubo;
 
-
-void pe_vk_ubo_init(){
-    ZERO(ubo);
-    glm_mat4_identity(ubo.projection);
-    glm_mat4_identity(ubo.view);
-    glm_mat4_identity(ubo.model);
+void pe_vk_ubo_init() {
+  ZERO(ubo);
+  glm_mat4_identity(ubo.projection);
+  glm_mat4_identity(ubo.view);
+  glm_mat4_identity(ubo.model);
 }
 
-PEVKBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
+PBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
 
-  PEVKBufferCreateInfo info;
+  PBufferCreateInfo info;
   ZERO(info);
   info.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
   info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -28,7 +27,7 @@ PEVKBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
   return info;
 }
 
-void pe_vk_create_uniform_buffers(PModel* model) {
+void pe_vk_create_uniform_buffers(PModel *model) {
   VkDeviceSize buffer_size = sizeof(PUniformBufferObject);
 
   array_init(&model->uniform_buffers, sizeof(VkBuffer), 4);
@@ -36,13 +35,13 @@ void pe_vk_create_uniform_buffers(PModel* model) {
 
   for (int i = 0; i < 4; i++) {
     // create buffer
-    PEVKBufferCreateInfo info =
+    PBufferCreateInfo info =
         pe_vk_uniform_buffer_create_buffer(sizeof(PUniformBufferObject));
     array_add(&model->uniform_buffers, &info.buffer);
     array_add(&model->uniform_buffers_memory, &info.buffer_memory);
   }
 
-  //buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
+  // buffer_color = pe_vk_uniform_buffer_create_buffer(sizeof(PEColorShader));
 }
 
 void pe_vk_memory_copy(size_t size, VkDeviceMemory *memory, void *in_data) {
@@ -62,10 +61,9 @@ void pe_vk_uniform_buffer_update_two(uint32_t image_index) {
   glm_mat4_identity(pawn_ubo.model);
 
   glm_rotate(pawn_ubo.model, 90.f, VEC3(1, 0, 0));
-  glm_translate(pawn_ubo.model, VEC3(0,5,0));
+  glm_translate(pawn_ubo.model, VEC3(0, 5, 0));
   glm_mat4_copy(main_camera.projection, pawn_ubo.projection);
   glm_mat4_copy(main_camera.view, pawn_ubo.view);
-
 
   pawn_ubo.projection[1][1] *= -1;
 
@@ -75,7 +73,6 @@ void pe_vk_uniform_buffer_update_two(uint32_t image_index) {
       array_get(&test_model2->uniform_buffers_memory, image_index);
 
   pe_vk_memory_copy(sizeof(buffers), memory, buffers);
-
 }
 void pe_vk_uniform_buffer_update_one(uint32_t image_index) {
 
@@ -85,12 +82,12 @@ void pe_vk_uniform_buffer_update_one(uint32_t image_index) {
 
   glm_mat4_identity(pawn_ubo.model);
 
-  //glm_rotate(pawn_ubo.model, 90.f, VEC3(1, 0, 0));
+  // glm_rotate(pawn_ubo.model, 90.f, VEC3(1, 0, 0));
 
   glm_mat4_copy(main_camera.projection, pawn_ubo.projection);
   glm_mat4_copy(main_camera.view, pawn_ubo.view);
 
-  glm_vec4_copy(VEC4(0,2,0,1), pawn_ubo.light_position);
+  glm_vec4_copy(VEC4(0, 2, 0, 1), pawn_ubo.light_position);
 
   pawn_ubo.projection[1][1] *= -1;
 
@@ -100,5 +97,4 @@ void pe_vk_uniform_buffer_update_one(uint32_t image_index) {
       array_get(&test_model->uniform_buffers_memory, image_index);
 
   pe_vk_memory_copy(sizeof(buffers), memory, buffers);
-
 }

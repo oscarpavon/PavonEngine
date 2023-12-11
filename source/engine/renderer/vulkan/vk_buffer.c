@@ -1,13 +1,13 @@
 #include "vk_buffer.h"
+#include "commands.h"
 #include "engine/macros.h"
 #include "engine/renderer/vulkan/vulkan.h"
 #include "vk_memory.h"
-#include <vulkan/vulkan_core.h>
-#include "commands.h"
-#include <engine/macros.h>
 #include <engine/log.h>
+#include <engine/macros.h>
+#include <vulkan/vulkan_core.h>
 
-void pe_vk_buffer_create(PEVKBufferCreateInfo *buffer_info) {
+void pe_vk_buffer_create(PBufferCreateInfo *buffer_info) {
   VkBufferCreateInfo info;
   ZERO(info);
   info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -30,16 +30,15 @@ void pe_vk_buffer_create(PEVKBufferCreateInfo *buffer_info) {
   buffer_info->buffer = buffer;
 }
 
-void pe_vk_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size){
-    VkCommandBuffer command = pe_vk_begin_single_time_cmd();
+void pe_vk_copy_buffer(VkBuffer source, VkBuffer destination,
+                       VkDeviceSize size) {
+  VkCommandBuffer command = pe_vk_begin_single_time_cmd();
 
-    VkBufferCopy copy_region;
-    ZERO(copy_region);
-    copy_region.size = size;
+  VkBufferCopy copy_region;
+  ZERO(copy_region);
+  copy_region.size = size;
 
-    vkCmdCopyBuffer(command, source, destination, 1 , &copy_region);
+  vkCmdCopyBuffer(command, source, destination, 1, &copy_region);
 
-    pe_vk_end_single_time_cmd(command);
-
-    
+  pe_vk_end_single_time_cmd(command);
 }
