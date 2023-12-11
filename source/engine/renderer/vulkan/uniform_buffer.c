@@ -52,6 +52,28 @@ void pe_vk_memory_copy(size_t size, VkDeviceMemory *memory, void *in_data) {
   vkUnmapMemory(vk_device, *(memory));
 }
 
+void pe_vk_uniform_buffer_update_skeletal(uint32_t image_index) {
+
+  PUniformBufferObject pawn_ubo;
+
+  ZERO(pawn_ubo);
+
+  glm_mat4_identity(pawn_ubo.model);
+
+  // glm_rotate(pawn_ubo.model, 90.f, VEC3(1, 0, 0));
+  // glm_translate(pawn_ubo.model, VEC3(0, 5, 0));
+  glm_mat4_copy(main_camera.projection, pawn_ubo.projection);
+  glm_mat4_copy(main_camera.view, pawn_ubo.view);
+
+  pawn_ubo.projection[1][1] *= -1;
+
+  PUniformBufferObject buffers[] = {pawn_ubo};
+
+  VkDeviceMemory *memory =
+      array_get(&anim_model->uniform_buffers_memory, image_index);
+
+  pe_vk_memory_copy(sizeof(buffers), memory, buffers);
+}
 void pe_vk_uniform_buffer_update_two(uint32_t image_index) {
 
   PUniformBufferObject pawn_ubo;

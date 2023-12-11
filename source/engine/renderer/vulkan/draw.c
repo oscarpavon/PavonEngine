@@ -1,50 +1,48 @@
 #include "draw.h"
 #include "commands.h"
+#include "descriptor_set.h"
 #include "pipeline.h"
 #include "swap_chain.h"
 #include "sync.h"
-#include <engine/macros.h>
-#include "vk_vertex.h"
-#include <engine/engine.h>
-#include <vulkan/vulkan_core.h>
-#include "descriptor_set.h"
 #include "uniform_buffer.h"
+#include "vk_vertex.h"
 #include "vulkan.h"
+#include <engine/engine.h>
+#include <engine/macros.h>
+#include <vulkan/vulkan_core.h>
 
-void pe_vk_draw_model(int i , PModel* model){
+void pe_vk_draw_model(int i, PModel *model) {
 
-    VkCommandBuffer* cmd_buffer = array_get(&pe_vk_command_buffers,i);
+  VkCommandBuffer *cmd_buffer = array_get(&pe_vk_command_buffers, i);
 
+  vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    pe_vk_pipeline);
 
-    vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
+  VkBuffer vertex_buffers[] = {model->vertex_buffer};
+  VkDeviceSize offsets[] = {0};
 
+  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, vertex_buffers, offsets);
 
-    VkBuffer vertex_buffers[] = {model->vertex_buffer};
-    VkDeviceSize offsets[] = {0};
+  vkCmdBindIndexBuffer(*(cmd_buffer), model->index_buffer, 0,
+                       VK_INDEX_TYPE_UINT16);
 
-    vkCmdBindVertexBuffers(*(cmd_buffer),0,1,vertex_buffers,offsets);
+  // vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
 
-    vkCmdBindIndexBuffer(*(cmd_buffer),model->index_buffer,0,VK_INDEX_TYPE_UINT16);
+  //    VkDescriptorSet* set = array_get(&pe_vk_descriptor_sets,i);
 
-    //vkCmdDraw(*(cmd_buffer), vertices.count, 1, 0, 0);
+  //   vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
 
-//    VkDescriptorSet* set = array_get(&pe_vk_descriptor_sets,i);
-
- //   vkCmdBindDescriptorSets(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline_layout,0,1,set,0,NULL);
-    
-    vkCmdDrawIndexed(*(cmd_buffer),model->index_array.count,1,0,0,0);
-
+  vkCmdDrawIndexed(*(cmd_buffer), model->index_array.count, 1, 0, 0, 0);
 }
 
+void pe_vk_draw_simple_model(int i) {
 
-void pe_vk_draw_simple_model(int i){
-
-    pe_vk_draw_model(i,test_model);
-    //LOG("drawing model");
-    //pe_vk_draw_model(i,test_model2);
+  pe_vk_draw_model(i, test_model);
+  // LOG("drawing model");
+  // pe_vk_draw_model(i,test_model2);
 }
-void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
-  
+void pe_vk_draw_commands(VkCommandBuffer *cmd_buffer, uint32_t index) {
+
   VkOffset2D offset = {0, 0};
 
   VkViewport viewport;
@@ -55,31 +53,30 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
   viewport.height = (float)pe_vk_swch_extent.height;
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
-  vkCmdSetViewport(*(cmd_buffer), 0 , 1 , &viewport); 
+  vkCmdSetViewport(*(cmd_buffer), 0, 1, &viewport);
 
   VkRect2D scissor;
   scissor.extent = pe_vk_swch_extent;
   scissor.offset = offset;
 
-  vkCmdSetScissor(*(cmd_buffer), 0 , 1 , &scissor);
-
+  vkCmdSetScissor(*(cmd_buffer), 0, 1, &scissor);
 
   VkDeviceSize offsets[] = {0};
 
-
+  VkDescriptorSet *set = NULL;
 
   // VkPipeline* triangle_pipeline = array_get(&pe_graphics_pipelines, 1);
   //
   // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(triangle_pipeline));
-  // 
+  //
   // vkCmdDraw(*(cmd_buffer), 3,1,0,0);
   //
   //
   //
   // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,pe_vk_pipeline);
-  // 
+  //
   // vkCmdDraw(*(cmd_buffer), 3,1,0,0);
-  // 
+  //
   //
   //
   //
@@ -87,54 +84,72 @@ void pe_vk_draw_commands(VkCommandBuffer* cmd_buffer , uint32_t index){
   //
   // vkCmdBindPipeline(*(cmd_buffer),VK_PIPELINE_BIND_POINT_GRAPHICS,*(in_position));
   //
-  // vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer , offsets);
-  // vkCmdDraw(*(cmd_buffer), test_model->vertex_array.count , 1, 0, 0);
+  // vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer ,
+  // offsets); vkCmdDraw(*(cmd_buffer), test_model->vertex_array.count , 1, 0,
+  // 0);
 
- 
-//############################################################
-//############### with descriptor set ########################
-  pe_vk_uniform_buffer_update_one(index);
-   VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
+  // ############################################################
+  // ############### with descriptor set ########################
+  // pe_vk_uniform_buffer_update_one(index);
+  VkPipeline *uniform = array_get(&pe_graphics_pipelines, 3);
+  //
+  // VkDescriptorSet *set = array_get(&test_model->descriptor_sets, index);
+  //
+  // vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+  //                         pe_vk_pipeline_layout_with_descriptors, 0, 1, set,
+  //                         0, NULL);
+  // vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+  // *(uniform));
+  //
+  // vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer,
+  //                        offsets);
+  // vkCmdBindIndexBuffer(*(cmd_buffer), test_model->index_buffer, 0,
+  //                      VK_INDEX_TYPE_UINT16);
+  // vkCmdDrawIndexed(*(cmd_buffer), test_model->index_array.count, 1, 0, 0, 0);
 
-   VkDescriptorSet *set = array_get(&test_model->descriptor_sets, index);
+  // ############################################################
+  // ############### with descriptor set ########################
 
-   vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                           pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
-                           NULL);
-   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                     *(uniform));
-
-   vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model->vertex_buffer,
-                          offsets);
-   vkCmdBindIndexBuffer(*(cmd_buffer), test_model->index_buffer, 0,
-                        VK_INDEX_TYPE_UINT16);
-   vkCmdDrawIndexed(*(cmd_buffer), test_model->index_array.count, 1, 0, 0, 0);
-
-//############################################################
-//############### with descriptor set ########################
-
+  //
   pe_vk_uniform_buffer_update_two(index);
-   set = array_get(&test_model2->descriptor_sets, index);
+  set = array_get(&test_model2->descriptor_sets, index);
 
-   vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                           pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
-                           NULL);
-   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                     *(uniform));
+  vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
+                          NULL);
+  vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS, *(uniform));
 
-   vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model2->vertex_buffer,
-                          offsets);
-   vkCmdBindIndexBuffer(*(cmd_buffer), test_model2->index_buffer, 0,
-                        VK_INDEX_TYPE_UINT16);
-   vkCmdDrawIndexed(*(cmd_buffer), test_model2->index_array.count, 1, 0, 0, 0);
-   // vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
-   //  pe_vk_draw_model(i,test_model);
+  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &test_model2->vertex_buffer,
+                         offsets);
+  vkCmdBindIndexBuffer(*(cmd_buffer), test_model2->index_buffer, 0,
+                       VK_INDEX_TYPE_UINT16);
+  vkCmdDrawIndexed(*(cmd_buffer), test_model2->index_array.count, 1, 0, 0, 0);
+  // ############################################################
+  // ############### Skeletal ########################
+
+  VkPipeline *skeletal_pipeline = array_get(&pe_graphics_pipelines, 4);
+  pe_vk_uniform_buffer_update_skeletal(index);
+  set = array_get(&anim_model->descriptor_sets, index);
+
+  vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
+                          NULL);
+  vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    *(skeletal_pipeline));
+
+  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &anim_model->vertex_buffer,
+                         offsets);
+  vkCmdBindIndexBuffer(*(cmd_buffer), anim_model->index_buffer, 0,
+                       VK_INDEX_TYPE_UINT16);
+  vkCmdDrawIndexed(*(cmd_buffer), anim_model->index_array.count, 1, 0, 0, 0);
+
+  // vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
+  //  pe_vk_draw_model(i,test_model);
 }
 void pe_vk_draw_frame() {
-  
 
   vkWaitForFences(vk_device, 1, &pe_vk_fence_in_flight, VK_TRUE, UINT64_MAX);
-  vkResetFences(vk_device, 1 , &pe_vk_fence_in_flight);
+  vkResetFences(vk_device, 1, &pe_vk_fence_in_flight);
 
   uint32_t image_index;
 
@@ -142,7 +157,7 @@ void pe_vk_draw_frame() {
                         pe_vk_semaphore_images_available, VK_NULL_HANDLE,
                         &image_index);
 
-  //pe_vk_uniform_buffer_update(image_index);
+  // pe_vk_uniform_buffer_update(image_index);
   pe_vk_record_commands_buffer(image_index);
 
   VkSemaphore singal_semaphore[] = {pe_vk_semaphore_render_finished};
@@ -179,5 +194,4 @@ void pe_vk_draw_frame() {
   VKVALID(vkQueuePresentKHR(vk_queue, &present_info), "Can't present");
 
   vkQueueWaitIdle(vk_queue);
-
 }
