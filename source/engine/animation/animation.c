@@ -1,7 +1,7 @@
 #include "animation.h"
 #include <engine/engine.h>
 
-void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
+void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
   ZERO(skin_component->node_uniform);
   if (!skin_component) {
     LOG("No skinned mesh component\n");
@@ -48,7 +48,7 @@ void pe_anim_nodes_update(SkinnedMeshComponent *skin_component) {
   LOG("####### pe_anim_nodes_update ");
 }
 
-void play_animation(SkinnedMeshComponent *skin, Animation *animation) {
+void play_animation(PSkinnedMeshComponent *skin, Animation *animation) {
   animation->time += 0.01;
   float time = animation->time;
   for (int i = 0; i < animation->channels.count; i++) {
@@ -91,7 +91,7 @@ void play_animation(SkinnedMeshComponent *skin, Animation *animation) {
   pe_anim_nodes_update(skin);
 }
 
-void play_animation_by_name(SkinnedMeshComponent *skin_component,
+void play_animation_by_name(PSkinnedMeshComponent *skin_component,
                             const char *name, bool loop) {
   Animation *animation = NULL;
   if (skin_component->animations.count == 0) {

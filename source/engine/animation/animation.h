@@ -6,42 +6,43 @@
 #define PATH_TYPE_TRANSLATION 1
 #define PATH_TYPE_ROTATION 2
 
-#include "../skeletal.h"
-#include "../components/components.h"
-#include <engine/components/skinned_mesh_component.h>
 #include "../array.h"
-typedef struct AnimationSampler{
-    Array inputs;//int
-    Array outputs;//vec3 or vec4
-}AnimationSampler;
+#include "../components/components.h"
+#include "../skeletal.h"
+#include <engine/components/skinned_mesh_component.h>
+typedef struct AnimationSampler {
+  Array inputs;  // int
+  Array outputs; // vec3 or vec4
+} AnimationSampler;
 
 typedef struct AnimationChannel {
-    unsigned short int path_type; 
-    Node* node;
-    AnimationSampler sampler;
-}AnimationChannel;
+  unsigned short int path_type;
+  Node *node;
+  AnimationSampler sampler;
+} AnimationChannel;
 
-typedef struct Animation{
-    float time;
-    bool loop;
-    char name[20];
-    Array channels;//AnimationChannel
-    float start;
-    float end; 
-}Animation;
+typedef struct Animation {
+  float time;
+  bool loop;
+  char name[20];
+  Array channels; // AnimationChannel
+  float start;
+  float end;
+} Animation;
 
-typedef struct PEAnimationPlay{
-	Animation* anim;
-	SkinnedMeshComponent* skin;
-}PEAnimationPlay;
+typedef struct PEAnimationPlay {
+  Animation *anim;
+  PSkinnedMeshComponent *skin;
+} PEAnimationPlay;
 
 Array array_animation_play_list;
 
-void play_animation_by_name(SkinnedMeshComponent* skin_component , const char* name, bool loop);
+void play_animation_by_name(PSkinnedMeshComponent *skin_component,
+                            const char *name, bool loop);
 
 void play_animation_list();
 
-void pe_anim_nodes_update(SkinnedMeshComponent*);
+void pe_anim_nodes_update(PSkinnedMeshComponent *);
 
 #ifdef DEBUG
 bool update_vertex_bones_gizmos;

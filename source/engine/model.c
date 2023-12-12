@@ -406,6 +406,8 @@ int pe_node_load(Node *parent, cgltf_node *in_cgltf_node) {
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
     pe_debug_accesor_type("Inverse bind matrix",
                           in_cgltf_node->skin->inverse_bind_matrices);
+    LOG("Inverse bind matrix count %i\n",
+        in_cgltf_node->skin->inverse_bind_matrices->count);
     pe_loader_read_accessor(in_cgltf_node->skin->inverse_bind_matrices,
                             pe_curr_skin_loading->inverse_bind_matrices);
   }
@@ -447,7 +449,7 @@ cgltf_result pe_loader_model_from_memory(void *gltf_data, u32 size,
   current_loaded_component_type = STATIC_MESH_COMPONENT;
 
   if (data->skins_count >= 1) {
-    SkinnedMeshComponent skin;
+    PSkinnedMeshComponent skin;
     ZERO(skin);
     LOG("Creating skin mesh joints\n");
 

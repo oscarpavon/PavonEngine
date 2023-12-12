@@ -123,7 +123,7 @@ void update_component(ComponentDefinition *element_component) {
     pe_comp_static_mesh_update(element_component);
   } break;
   case COMPONENT_SKINNED_MESH: {
-    SkinnedMeshComponent *skin = element_component->data;
+    PSkinnedMeshComponent *skin = element_component->data;
     glm_mat4_copy(element_component->parent->transform->model_matrix,
                   skin->mesh->model_mat);
 
@@ -188,7 +188,7 @@ void update_per_frame_component(ComponentDefinition *element_component) {
   }
 
   case COMPONENT_SKINNED_MESH: {
-    SkinnedMeshComponent *skinned_mesh_component = element_component->data;
+    PSkinnedMeshComponent *skinned_mesh_component = element_component->data;
     array_add(&array_skinned_mesh_pointers, &skinned_mesh_component);
     break;
   }
@@ -372,9 +372,9 @@ void pe_comp_add(u32 models_loaded) {
   switch (current_loaded_component_type) {
   case COMPONENT_SKINNED_MESH: {
     LOG("********* SkinnedMesh component adding... ");
-    SkinnedMeshComponent skin_mesh_component;
+    PSkinnedMeshComponent skin_mesh_component;
     ZERO(skin_mesh_component);
-    add_component_to_selected_element(sizeof(SkinnedMeshComponent),
+    add_component_to_selected_element(sizeof(PSkinnedMeshComponent),
                                       &skin_mesh_component,
                                       COMPONENT_SKINNED_MESH);
 

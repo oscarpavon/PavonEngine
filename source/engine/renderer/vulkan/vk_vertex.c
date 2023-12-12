@@ -1,5 +1,6 @@
 
 #include "vk_vertex.h"
+#include "engine/components/skinned_mesh_component.h"
 #include "vk_buffer.h"
 #include "vk_memory.h"
 #include "vulkan.h"
@@ -165,6 +166,7 @@ void pe_vk_models_create() {
   // ##########################################
   pe_loader_model("/sdcard/Download/chess/anim.glb");
   anim_model = selected_model;
+  PSkinnedMeshComponent *skin = pe_curr_skin_loading;
 
   anim_model->vertex_buffer =
       pe_vk_vertex_create_buffer(&anim_model->vertex_array);
