@@ -2,7 +2,7 @@
 #define VK_BUFFER
 #include "vulkan.h"
 
-typedef struct PEVKBufferCreateInfo {
+typedef struct PBufferCreateInfo {
   VkDeviceSize size;
   VkBufferUsageFlags usage;
   VkMemoryPropertyFlags properties;
