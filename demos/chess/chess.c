@@ -425,7 +425,7 @@ void chess_human_create() {
   human_skin_component = human_comp;
 
   for (int i = 0; i < human_skin_component->mesh->vertex_array.count; i++) {
-    Vertex *v = array_get(&human_skin_component->mesh->vertex_array, i);
+    PVertex *v = array_get(&human_skin_component->mesh->vertex_array, i);
     // LOG("############ UV: %f %f",v->uv[0],v->uv[1]);
   }
 

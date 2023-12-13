@@ -4,8 +4,8 @@
 #include "HLOD/HLOD_factory.h"
 #include "geometry.h"
 #include "skeletal_editor.h"
-#include <engine/renderer/renderer.h>
 #include <editor/editor_mode.h>
+#include <engine/renderer/renderer.h>
 
 Array debug_objects;
 Array bounding_boxes;
@@ -31,15 +31,13 @@ void add_debug_line(vec3 start, vec3 end) {
 
 int create_bounding_vertices() {
   float *bounding_box = NULL;
-  StaticMeshComponent *mesh_component =
-      pe_comp_get(STATIC_MESH_COMPONENT);
+  StaticMeshComponent *mesh_component = pe_comp_get(STATIC_MESH_COMPONENT);
   if (mesh_component) {
     bounding_box = mesh_component->bounding_box[0];
   }
   if (!mesh_component) {
 
-    HLODBoxComponent *HLOD_box =
-        pe_comp_get(COMPONENT_HLOD_BOX);
+    HLODBoxComponent *HLOD_box = pe_comp_get(COMPONENT_HLOD_BOX);
     if (!HLOD_box) {
       LOG("No valid component for draw bounding box\n");
       can_draw_box = false;
@@ -113,7 +111,7 @@ void draw_bounding_box() {
 }
 
 void init_line_vertices(DebugLine *line) {
-  array_init(&line->vertex_array, sizeof(Vertex), 2);
+  array_init(&line->vertex_array, sizeof(PVertex), 2);
 
   struct Vertex vert = {{line->start[0], line->start[1], line->start[2]},
                         {0, 0}};
@@ -130,7 +128,7 @@ void update_line_vertices(DebugLine *line) {
                         {0, 0}};
   struct Vertex vert2 = {{line->end[0], line->end[1], line->end[2]}, {0, 0}};
 
-  Vertex *vertices = array_get(&line->vertex_array, 0);
+  PVertex *vertices = array_get(&line->vertex_array, 0);
   memcpy(&vertices[0], &vert, sizeof(struct Vertex));
   memcpy(&vertices[1], &vert2, sizeof(struct Vertex));
 }
@@ -158,7 +156,7 @@ void draw_axis_lines() {
       GLenum error;
       error = glGetError();
       if (error != GL_NO_ERROR) {
-//        LOG("[X] Send uniform error, Error %08x \n", error);
+        //        LOG("[X] Send uniform error, Error %08x \n", error);
       }
       glDrawArrays(GL_LINES, 0, line->vertex_array.count);
       continue;
@@ -204,18 +202,18 @@ void draw_camera_direction() {
 }
 
 void init_grid_greometry() {
-  array_init(&new_grid.vertex_array, sizeof(Vertex), 1000);
+  array_init(&new_grid.vertex_array, sizeof(PVertex), 1000);
 
   for (int i = 1; i < 10; i++) {
     for (int o = 1; o < 10; o++) {
-      Vertex vertex1;
-      Vertex vertex2;
-      Vertex vertex3;
-      Vertex vertex4;
-      Vertex vertex5;
-      Vertex vertex6;
-      Vertex vertex7;
-      Vertex vertex8;
+      PVertex vertex1;
+      PVertex vertex2;
+      PVertex vertex3;
+      PVertex vertex4;
+      PVertex vertex5;
+      PVertex vertex6;
+      PVertex vertex7;
+      PVertex vertex8;
 
       glm_vec3_copy((vec3){i, o, 0}, vertex1.position);
       glm_vec3_copy((vec3){-i, o, 0}, vertex2.position);
@@ -317,19 +315,19 @@ void gizmos_init() {
       "/sdcard/Download/NativeContent/Editor/transform_gizmo.jpg");
   selected_model->mesh.vertex_buffer_id = selected_model->vertex_buffer_id;
   selected_model->mesh.index_buffer_id = selected_model->index_buffer_id;
-  
+
   selected_model->mesh.vertex_array.count = selected_model->vertex_array.count;
   selected_model->mesh.index_array.count = selected_model->index_array.count;
 
-  load_model_to_array(
-      &gizmos, "/sdcard/Download/NativeContent/Editor/rotate.glb",
-      "/sdcard/Download/NativeContent/Editor/rotate_gizmo.png");
+  load_model_to_array(&gizmos,
+                      "/sdcard/Download/NativeContent/Editor/rotate.glb",
+                      "/sdcard/Download/NativeContent/Editor/rotate_gizmo.png");
   load_model_to_array(
       &gizmos, "/sdcard/Download/NativeContent/Editor/scale.glb",
       "/sdcard/Download/NativeContent/Editor/transform_gizmo.jpg");
-  load_model_to_array(
-      &gizmos, "/sdcard/Download/NativeContent/Editor/camera.gltf",
-      "/sdcard/Download/NativeContent/Editor/camera_gizmo.jpg");
+  load_model_to_array(&gizmos,
+                      "/sdcard/Download/NativeContent/Editor/camera.gltf",
+                      "/sdcard/Download/NativeContent/Editor/camera_gizmo.jpg");
   load_model_to_array(
       &gizmos, "/sdcard/Download/NativeContent/Editor/player_start.gltf",
       "/sdcard/Download/NativeContent/Editor/player_start_gizmo.jpg");
@@ -378,8 +376,7 @@ void draw_gizmos() {
 
       HLODs_generated_debug();
       if (selected_element) {
-        StaticMeshComponent *mesh =
-            pe_comp_get(STATIC_MESH_COMPONENT);
+        StaticMeshComponent *mesh = pe_comp_get(STATIC_MESH_COMPONENT);
         if (!mesh)
           return;
         Sphere sphere;
@@ -390,8 +387,8 @@ void draw_gizmos() {
     }
 
     glClear(GL_DEPTH_BUFFER_BIT);
-		
-		PModel *actual_gizmo = NULL;
+
+    PModel *actual_gizmo = NULL;
 
     if (draw_translate_gizmo) {
       actual_gizmo = array_get(&gizmos, 0);
@@ -403,10 +400,9 @@ void draw_gizmos() {
       actual_gizmo = array_get(&gizmos, 2);
     }
 
-		//Gizmo scale relative main camera position
+    // Gizmo scale relative main camera position
     if (selected_element != NULL) {
-      TransformComponent *transform =
-          pe_comp_get(TRASNFORM_COMPONENT);
+      TransformComponent *transform = pe_comp_get(TRASNFORM_COMPONENT);
       if (transform && actual_gizmo) {
         glm_mat4_copy(transform->model_matrix, actual_gizmo->model_mat);
         float distance =
@@ -420,15 +416,16 @@ void draw_gizmos() {
       draw_simgle_model(actual_gizmo);
 
     PEComponentPlayerStart *player_start_comp =
-				get_component_from_element(player_start,PE_COMP_PLAYER_START);
+        get_component_from_element(player_start, PE_COMP_PLAYER_START);
     if (player_start_comp) {
-      PModel* player_start_gizmo_model = array_get(&gizmos, 4);
+      PModel *player_start_gizmo_model = array_get(&gizmos, 4);
 
       TransformComponent *transform =
-					get_component_from_element(player_start,TRASNFORM_COMPONENT);
+          get_component_from_element(player_start, TRASNFORM_COMPONENT);
 
       if (transform && player_start_gizmo_model) {
-        glm_mat4_copy(transform->model_matrix, player_start_gizmo_model->model_mat);
+        glm_mat4_copy(transform->model_matrix,
+                      player_start_gizmo_model->model_mat);
       }
       draw_simgle_model(player_start_gizmo_model);
     }
@@ -445,8 +442,6 @@ void draw_gizmos() {
         distance *= 0.008;
         glm_scale(actual_gizmo->model_mat, VEC3(distance, distance, distance));
         draw_simgle_model(actual_gizmo);
-			
-
       }
       if (editor_mode == EDITOR_MODE_GUI_EDITOR) {
         if (selected_button == NULL)

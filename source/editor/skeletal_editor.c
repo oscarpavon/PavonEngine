@@ -32,7 +32,7 @@ void pe_skeletal_editor_creates_indices(int i, Node *current_joint) {
 void init_skeletal_vertices(mat4 global, int i, Node *current_joint) {
   //    struct Vertex vert = { { global[3][0],global[3][1],global[3][2] }
   //    ,{0,0}};
-  Vertex new_vertex;
+  PVertex new_vertex;
   ZERO(new_vertex);
 
   glm_vec3_copy(global[3], new_vertex.position);
@@ -100,7 +100,7 @@ void pe_skeletal_editor_create_vertices(PSkinnedMeshComponent *skin_component) {
   struct Vertex vertices[vertex_count];
   ZERO(vertices);
 
-  array_init(&skeletal_gizmo.vertex_array, sizeof(Vertex),
+  array_init(&skeletal_gizmo.vertex_array, sizeof(PVertex),
              skin_component->joints.count);
 
   // joints index for vertex
@@ -136,7 +136,7 @@ void create_skeletal_vertices() {
   struct Vertex vertices[vertex_count];
   ZERO(vertices);
 
-  array_init(&skeletal_gizmo.vertex_array, sizeof(Vertex),
+  array_init(&skeletal_gizmo.vertex_array, sizeof(PVertex),
              skin_component->joints.count);
 
   // joints index for vertex
@@ -221,7 +221,7 @@ void pe_skeletal_editor_init_for(PSkinnedMeshComponent *skin) {
   glGenBuffers(1, &skeletal_gizmo.vertex_buffer_id);
   glBindBuffer(GL_ARRAY_BUFFER, skeletal_gizmo.vertex_buffer_id);
   glBufferData(GL_ARRAY_BUFFER,
-               skeletal_gizmo.vertex_array.count * sizeof(Vertex),
+               skeletal_gizmo.vertex_array.count * sizeof(PVertex),
                skeletal_gizmo.vertex_array.data, GL_DYNAMIC_DRAW);
 
   init_static_gpu_index_buffer(&skeletal_gizmo.index_array,
@@ -244,7 +244,7 @@ void init_skeletal_editor() {
   glGenBuffers(1, &skeletal_gizmo.vertex_buffer_id);
   glBindBuffer(GL_ARRAY_BUFFER, skeletal_gizmo.vertex_buffer_id);
   glBufferData(GL_ARRAY_BUFFER,
-               skeletal_gizmo.vertex_array.count * sizeof(Vertex),
+               skeletal_gizmo.vertex_array.count * sizeof(PVertex),
                skeletal_gizmo.vertex_array.data, GL_DYNAMIC_DRAW);
 
   init_static_gpu_index_buffer(&skeletal_gizmo.index_array,

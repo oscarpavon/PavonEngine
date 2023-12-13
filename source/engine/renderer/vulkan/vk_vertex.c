@@ -20,7 +20,7 @@ VkVertexInputBindingDescription pe_vk_vertex_get_binding_description() {
   VkVertexInputBindingDescription binding;
   ZERO(binding);
   binding.binding = 0;
-  binding.stride = sizeof(Vertex);
+  binding.stride = sizeof(PVertex);
   binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
   return binding;
 }
@@ -35,7 +35,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 0;
 
     attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
-    attribute.offset = offsetof(Vertex, position);
+    attribute.offset = offsetof(PVertex, position);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
   if (attributes->color) {
@@ -46,7 +46,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 1;
 
     attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
-    attribute.offset = offsetof(Vertex, color);
+    attribute.offset = offsetof(PVertex, color);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
   if (attributes->normal) {
@@ -57,7 +57,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 2;
 
     attribute.format = VK_FORMAT_R32G32B32_SFLOAT;
-    attribute.offset = offsetof(Vertex, normal);
+    attribute.offset = offsetof(PVertex, normal);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
   if (attributes->uv) {
@@ -68,7 +68,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 3;
 
     attribute.format = VK_FORMAT_R32G32_SFLOAT;
-    attribute.offset = offsetof(Vertex, uv);
+    attribute.offset = offsetof(PVertex, uv);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
   if (attributes->joint) {
@@ -79,7 +79,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 4;
 
     attribute.format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    attribute.offset = offsetof(Vertex, joint);
+    attribute.offset = offsetof(PVertex, joint);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
   if (attributes->weight) {
@@ -90,7 +90,7 @@ void pe_vk_vertex_get_attribute(PVertexAtrributes *attributes) {
     attribute.location = 5;
 
     attribute.format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    attribute.offset = offsetof(Vertex, weight);
+    attribute.offset = offsetof(PVertex, weight);
     array_add(&attributes->attributes_descriptions, &attribute);
   }
 }

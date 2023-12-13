@@ -46,8 +46,8 @@ void init_static_gpu_vertex_buffer(Array *array, GLuint *id) {
   GLuint id_copy;
   memcpy(&id_copy, id, sizeof(GLuint));
   glBindBuffer(GL_ARRAY_BUFFER, id_copy);
-  glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(struct Vertex),
-               array->data, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(PVertex), array->data,
+               GL_STATIC_DRAW);
 }
 
 void init_static_gpu_index_buffer(Array *array, GLuint *id) {
@@ -55,13 +55,13 @@ void init_static_gpu_index_buffer(Array *array, GLuint *id) {
   GLuint id_copy;
   memcpy(&id_copy, id, sizeof(GLuint));
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_copy);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, array->count * sizeof(struct Vertex),
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, array->count * sizeof(PVertex),
                array->data, GL_STATIC_DRAW);
 }
 
 void update_gpu_vertex_data(Array *array, GLuint id) {
   glBindBuffer(GL_ARRAY_BUFFER, id);
-  glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(Vertex), array->data,
+  glBufferData(GL_ARRAY_BUFFER, array->count * sizeof(PVertex), array->data,
                GL_DYNAMIC_DRAW);
 }
 
@@ -70,7 +70,7 @@ void GPU_buffers_create_for_model(PModel *model) {
   Array *index_array = &model->index_array;
 
   for (int i = 0; i < vertex_array->count; i++) {
-    Vertex *vertex = array_get(vertex_array, i);
+    PVertex *vertex = array_get(vertex_array, i);
 
     //  LOG("######weight %f %f %f %f", vertex->weight[0], vertex->weight[1],
     //  vertex->weight[2], vertex->weight[3]);
@@ -79,7 +79,7 @@ void GPU_buffers_create_for_model(PModel *model) {
   }
   glGenBuffers(1, &model->vertex_buffer_id);
   glBindBuffer(GL_ARRAY_BUFFER, model->vertex_buffer_id);
-  glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(struct Vertex),
+  glBufferData(GL_ARRAY_BUFFER, vertex_array->count * sizeof(PVertex),
                vertex_array->data, GL_STATIC_DRAW);
 
   glGenBuffers(1, &model->index_buffer_id);
@@ -131,16 +131,16 @@ void pe_skinned_send_matrices(PSkinnedMeshComponent *skin, GLuint shader,
   int joint_id = 2;
   int weith_id = 3;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PVertex), (void *)0);
 
   glEnableVertexAttribArray(uv_id);
-  glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void *)offsetof(Vertex, uv));
+  glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(PVertex),
+                        (void *)offsetof(PVertex, uv));
 
   glEnableVertexAttribArray(normal_id);
 
-  glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void *)offsetof(Vertex, normal));
+  glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, sizeof(PVertex),
+                        (void *)offsetof(PVertex, normal));
 
   GLint model_uniform = get_uniform_location(shader, "model");
   GLint projection_uniform = get_uniform_location(shader, "projection");
@@ -156,11 +156,11 @@ void pe_skinned_send_matrices(PSkinnedMeshComponent *skin, GLuint shader,
   GLint joints_matrices_uniform = get_uniform_location(shader, "joint_matrix");
 
   glEnableVertexAttribArray(joint_id);
-  glVertexAttribPointer(joint_id, 4, GL_INT, GL_FALSE, sizeof(Vertex),
-                        (void *)offsetof(Vertex, joint));
+  glVertexAttribPointer(joint_id, 4, GL_INT, GL_FALSE, sizeof(PVertex),
+                        (void *)offsetof(PVertex, joint));
   glEnableVertexAttribArray(weith_id);
-  glVertexAttribPointer(weith_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void *)offsetof(Vertex, weight));
+  glVertexAttribPointer(weith_id, 4, GL_FLOAT, GL_FALSE, sizeof(PVertex),
+                        (void *)offsetof(PVertex, weight));
 
   glUniformMatrix4fv(joints_matrices_uniform, skin->node_uniform.joint_count,
                      GL_FALSE, skin->node_uniform.joints_matrix);

@@ -149,12 +149,12 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
       LOG("Actual vertex array is NULL\n");
     }
 
-    array_init(actual_vertex_array, sizeof(Vertex), attribute->data->count);
+    array_init(actual_vertex_array, sizeof(PVertex), attribute->data->count);
 
     pe_loader_read_accessor(attribute->data, vertices_position);
 
     for (int i = 0; i < attribute->data->count; i++) {
-      Vertex vertex;
+      PVertex vertex;
       ZERO(vertex);
       glm_vec3_copy(vertices_position[i], vertex.position);
       array_add(actual_vertex_array, &vertex);
@@ -169,7 +169,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     pe_loader_read_accessor(attribute->data, uvs);
 
     for (int i = 0; i < attribute->data->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
+      PVertex *vertex = array_get(actual_vertex_array, i);
       vertex->uv[0] = uvs[i][0];
       vertex->uv[1] = uvs[i][1];
     }
@@ -184,7 +184,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     pe_loader_read_accessor(attribute->data, normals);
 
     for (int i = 0; i < attribute->data->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
+      PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec3_copy(normals[i], vertex->normal);
     }
 
@@ -197,7 +197,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     pe_debug_accesor_type("Joints", attribute->data);
     pe_loader_read_accessor(attribute->data, joints);
     for (int i = 0; i < attribute->data->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
+      PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(joints[i], vertex->joint);
       // LOG("#### Vertex Joint attribute %f, %f , %f ,%f", vertex->joint[0],
       // vertex->joint[1], vertex->joint[2], vertex->joint[3]);
@@ -216,7 +216,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     pe_loader_read_accessor(attribute->data, weights);
 
     for (int i = 0; i < attribute->data->count; i++) {
-      Vertex *vertex = array_get(actual_vertex_array, i);
+      PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(weights[i], vertex->weight);
       LOG("## Weight in vertex\n");
       LOG("######vertex %f %f %f %f\n", vertex->weight[0], vertex->weight[1],
