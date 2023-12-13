@@ -11,7 +11,7 @@ typedef struct PSkinnedMeshComponent {
   Array joints;
   vec3 bounding_box[2];
   Array animations;
-  mat4 inverse_bind_matrices[35];
+  Array inverse_bind_matrices;
   struct SkeletalNodeUniform node_uniform;
   TransformComponent *transform;
 } PSkinnedMeshComponent;

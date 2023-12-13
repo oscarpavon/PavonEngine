@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "engine/array.h"
 #include <engine/engine.h>
 
 void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
@@ -36,8 +37,9 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
 
     glm_mat4_mul(inverse_model, local, inverse_dot_local);
 
-    glm_mat4_mul(inverse_dot_local, skin_component->inverse_bind_matrices[i],
-                 joint_mat);
+    mat4 *inverse_bind_matrix =
+        array_get(&skin_component->inverse_bind_matrices, i);
+    glm_mat4_mul(inverse_dot_local, inverse_bind_matrix, joint_mat);
 
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);

@@ -1,4 +1,6 @@
 #include "model.h"
+#include "engine/array.h"
+#include "engine/components/skinned_mesh_component.h"
 
 #define CGLTF_IMPLEMENTATION
 #include "../ThirdParty/cglm/vec3.h"
@@ -406,10 +408,21 @@ int pe_node_load(Node *parent, cgltf_node *in_cgltf_node) {
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
     pe_debug_accesor_type("Inverse bind matrix",
                           in_cgltf_node->skin->inverse_bind_matrices);
+
     LOG("Inverse bind matrix count %i\n",
         in_cgltf_node->skin->inverse_bind_matrices->count);
+
+    int inverse_bind_matrices_count =
+        in_cgltf_node->skin->inverse_bind_matrices->count;
+
+    array_init(&pe_curr_skin_loading->inverse_bind_matrices, sizeof(mat4),
+               inverse_bind_matrices_count);
+
+    array_resize(&pe_curr_skin_loading->inverse_bind_matrices,
+                 inverse_bind_matrices_count);
+
     pe_loader_read_accessor(in_cgltf_node->skin->inverse_bind_matrices,
-                            pe_curr_skin_loading->inverse_bind_matrices);
+                            pe_curr_skin_loading->inverse_bind_matrices.data);
   }
 
   Node *loaded_parent = NULL;
