@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "ThirdParty/cglm/mat4.h"
 #include "engine/array.h"
 #include <engine/engine.h>
 
@@ -31,7 +32,14 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
     mat4 joint_mat;
     ZERO(joint_mat);
 
-    glm_mat4_inv(skin_component->transform->model_matrix, negative);
+    // ##############################
+    //  TODO: configure transform model matrix
+    //  glm_mat4_inv(skin_component->transform->model_matrix, negative);
+    //  #############
+    mat4 model_matrix;
+    glm_mat4_identity(model_matrix);
+
+    glm_mat4_inv(model_matrix, negative);
 
     glm_mat4_inv(negative, inverse_model);
 
@@ -39,15 +47,16 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
 
     mat4 *inverse_bind_matrix =
         array_get(&skin_component->inverse_bind_matrices, i);
+
     glm_mat4_mul(inverse_dot_local, inverse_bind_matrix, joint_mat);
 
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
 
-    LOG("Joint count %i", i);
+    LOG("Updated skin->node_uniform.joints_matrix[i] Joint %i\n", i);
   }
 
-  LOG("####### pe_anim_nodes_update ");
+  LOG("####### pe_anim_nodes_update \n");
 }
 
 void play_animation(PSkinnedMeshComponent *skin, Animation *animation) {

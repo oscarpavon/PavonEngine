@@ -14,6 +14,8 @@ typedef struct PSkinnedMeshComponent {
   Array inverse_bind_matrices;
   struct SkeletalNodeUniform node_uniform;
   TransformComponent *transform;
+  Array shader_storage_buffers;
+  Array shader_storage_buffers_memory;
 } PSkinnedMeshComponent;
 
 void pe_comp_skinned_mesh_init(ComponentDefinition *);

@@ -1,8 +1,12 @@
 #include "uniform_buffer.h"
 #include "ThirdParty/cglm/affine.h"
+#include "ThirdParty/cglm/types.h"
 #include "ThirdParty/cglm/vec4.h"
+#include "engine/components/skinned_mesh_component.h"
+#include "engine/types.h"
 #include "vk_buffer.h"
 #include <engine/engine.h>
+#include <vulkan/vulkan_core.h>
 
 PUniformBufferObject ubo;
 
@@ -13,6 +17,19 @@ void pe_vk_ubo_init() {
   glm_mat4_identity(ubo.model);
 }
 
+PBufferCreateInfo pe_vk_create_shader_storage_buffer(size_t size) {
+
+  PBufferCreateInfo info;
+  ZERO(info);
+  info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+  info.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                    VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+  info.size = size;
+
+  pe_vk_buffer_create(&info);
+  return info;
+}
 PBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
 
   PBufferCreateInfo info;
@@ -25,6 +42,20 @@ PBufferCreateInfo pe_vk_uniform_buffer_create_buffer(size_t size) {
 
   pe_vk_buffer_create(&info);
   return info;
+}
+void pe_vk_create_shader_storage_buffers(PSkinnedMeshComponent *skinned) {
+
+  array_init(&skinned->shader_storage_buffers, sizeof(VkBuffer), 4);
+  array_init(&skinned->shader_storage_buffers_memory, sizeof(VkDeviceMemory),
+             4);
+
+  for (int i = 0; i < 4; i++) {
+    // create buffer
+    PBufferCreateInfo info = pe_vk_create_shader_storage_buffer(
+        skinned->joints.count * sizeof(mat4));
+    array_add(&skinned->shader_storage_buffers, &info.buffer);
+    array_add(&skinned->shader_storage_buffers_memory, &info.buffer_memory);
+  }
 }
 
 void pe_vk_create_uniform_buffers(PModel *model) {

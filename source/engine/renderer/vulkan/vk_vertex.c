@@ -1,5 +1,6 @@
 
 #include "vk_vertex.h"
+#include "engine/animation/animation.h"
 #include "engine/components/skinned_mesh_component.h"
 #include "vk_buffer.h"
 #include "vk_memory.h"
@@ -15,6 +16,8 @@
 #include "uniform_buffer.h"
 
 #include <../demos/chess/chess.h>
+
+#include <engine/animation/animation.h>
 
 VkVertexInputBindingDescription pe_vk_vertex_get_binding_description() {
   VkVertexInputBindingDescription binding;
@@ -167,6 +170,10 @@ void pe_vk_models_create() {
   pe_loader_model("/sdcard/Download/chess/anim.glb");
   anim_model = selected_model;
   PSkinnedMeshComponent *skin = pe_curr_skin_loading;
+
+  pe_vk_create_shader_storage_buffers(skin);
+
+  pe_anim_nodes_update(skin);
 
   anim_model->vertex_buffer =
       pe_vk_vertex_create_buffer(&anim_model->vertex_array);

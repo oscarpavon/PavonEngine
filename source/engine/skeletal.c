@@ -5,7 +5,7 @@ void pe_skeletal_inverse_kinematic(PSkinnedMeshComponent *skin) {}
 
 void get_global_matrix(Node *node, mat4 out_mat) {
   mat4 local;
-  // glm_mat4_identity(local);
+  glm_mat4_identity(local);
   get_local_matrix(node, local);
   Node *node_parent = node->parent;
   while (node_parent != NULL) {
@@ -18,7 +18,7 @@ void get_global_matrix(Node *node, mat4 out_mat) {
 }
 void get_local_matrix(Node *node, mat4 out_mat) {
   mat4 translation;
-  // glm_mat4_identity(translation);
+  glm_mat4_identity(translation);
   glm_translate(translation, node->translation);
   mat4 rot;
   glm_mat4_identity(rot);
