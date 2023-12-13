@@ -36,6 +36,5 @@ include_directories(${FREETYPE_INCLUDE_DIRS} ./source)
 
 add_subdirectory(source/engine)
 add_subdirectory(source/editor)
-add_subdirectory(source/engine/renderer/vulkan)
 #add_subdirectory(source/editor/utils/pcmd)
 #add_subdirectory(demos/)

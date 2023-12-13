@@ -29,7 +29,6 @@ set(linux_libraries
 
 set(pc_link 
 	  glfw
-    pe_vk
     vulkan
 	  ${OPENGL_LIBRARIES}
 	  dl
@@ -39,7 +38,6 @@ set(pc_link
     GLESv2
     peditor
     freetype
-    pe_vk
 )
 
 set(lib ${lib} ${linux_libraries})
@@ -62,7 +60,6 @@ set(android_link
     m
     peditor
     freetype
-    pe_vk
     vulkan
     
     )

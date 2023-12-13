@@ -37,8 +37,30 @@ set(opengl_es2_renderer
 	${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/shader.c        
 	)
 
+set(vulkan_renderer 
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/vulkan.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/debug.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/swap_chain.c 
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/shader_module.c 
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/pipeline.c 
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/render_pass.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/framebuffer.c
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/commands.c 
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/images_view.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/draw.c
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/sync.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/vk_vertex.c 
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/vk_memory.c
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/descriptor_set.c 
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/uniform_buffer.c
+			${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/vk_buffer.c
+      ${CMAKE_CURRENT_LIST_DIR}/renderer/vulkan/vk_images.c 
+			
+  )
+
 set(renderer
 	      ${opengl_es2_renderer}
+        ${vulkan_renderer}
 	      ${CMAKE_CURRENT_LIST_DIR}/renderer/render_thread.c
         ${CMAKE_CURRENT_LIST_DIR}/renderer/material.c
         ${CMAKE_CURRENT_LIST_DIR}/renderer/opengl/rasterizer.c
