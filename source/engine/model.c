@@ -143,7 +143,7 @@ void pe_debug_accesor_type(char *message, cgltf_accessor *accessor) {
 void pe_loader_attribute(cgltf_attribute *attribute) {
   switch (attribute->type) {
   case cgltf_attribute_type_position: {
-    // LOG("#### Vertex count: %i\n", (int)attribute->data->count) ;
+    LOG("#### Vertex count: %i\n", (int)attribute->data->count);
     vec3 vertices_position[attribute->data->count];
     ZERO(vertices_position);
 
@@ -201,8 +201,8 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     for (int i = 0; i < attribute->data->count; i++) {
       PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(joints[i], vertex->joint);
-      // LOG("#### Vertex Joint attribute %f, %f , %f ,%f", vertex->joint[0],
-      // vertex->joint[1], vertex->joint[2], vertex->joint[3]);
+      LOG("#### Vertex Joint attribute %f, %f , %f ,%f\n", vertex->joint[0],
+          vertex->joint[1], vertex->joint[2], vertex->joint[3]);
     }
     LOG("##### Joint load\n");
 
@@ -220,13 +220,13 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     for (int i = 0; i < attribute->data->count; i++) {
       PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(weights[i], vertex->weight);
-      LOG("## Weight in vertex\n");
-      LOG("######vertex %f %f %f %f\n", vertex->weight[0], vertex->weight[1],
+      // LOG("## Weight in vertex\n");
+      LOG("Vertex weight %f %f %f %f\n", vertex->weight[0], vertex->weight[1],
           vertex->weight[2], vertex->weight[3]);
 
-      LOG("## Weights array\n");
-      LOG("######array %f %f %f %f\n", weights[i][0], weights[i][1],
-          weights[i][2], weights[i][3]);
+      // LOG("## Weights array\n");
+      // LOG("######array %f %f %f %f\n", weights[i][0], weights[i][1],
+      //     weights[i][2], weights[i][3]);
     }
 
     LOG("##### Weighs load\n");
