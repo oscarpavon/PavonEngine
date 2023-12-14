@@ -132,8 +132,7 @@ void pe_vk_draw_commands(VkCommandBuffer *cmd_buffer, uint32_t index) {
   set = array_get(&anim_model->descriptor_sets, index);
 
   vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pe_vk_pipeline_layout_with_descriptors, 0, 1, set, 0,
-                          NULL);
+                          pe_vk_pipeline_layout_skinned, 0, 1, set, 0, NULL);
   vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
                     *(skeletal_pipeline));
 

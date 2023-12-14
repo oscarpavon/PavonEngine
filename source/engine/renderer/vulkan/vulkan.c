@@ -1,39 +1,40 @@
 #include "vulkan.h"
-#include <stdint.h>
-#include <vulkan/vulkan.h>
-#include <engine/log.h>
-#include <string.h>
-#include <engine/macros.h>
+#include "commands.h"
 #include "debug.h"
-#include <engine/windows_manager.h>
+#include "descriptor_set.h"
 #include "engine/engine.h"
+#include "framebuffer.h"
+#include "images_view.h"
 #include "pipeline.h"
 #include "render_pass.h"
-#include "framebuffer.h"
-#include "commands.h"
-#include "images_view.h"
 #include "sync.h"
-#include <engine/renderer/vulkan/swap_chain.h>
-#include "descriptor_set.h"
+#include "vk_images.h"
 #include "vk_vertex.h"
 #include <engine/game.h>
-#include <vulkan/vulkan_core.h>
+#include <engine/log.h>
+#include <engine/macros.h>
 #include <engine/renderer/vulkan/descriptor_set.h>
-#include <engine/renderer/vulkan/uniform_buffer.h>
 #include <engine/renderer/vulkan/shader_module.h>
-#include "vk_images.h"
+#include <engine/renderer/vulkan/swap_chain.h>
+#include <engine/renderer/vulkan/uniform_buffer.h>
+#include <engine/windows_manager.h>
+#include <stdint.h>
+#include <string.h>
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 
-const char* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
-//For Linux support
+const char *validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+// For Linux support
 #ifdef DESKTOP
-const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+const char *instance_extension[] = {"VK_KHR_surface", "VK_KHR_xcb_surface",
+                                    VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
 #endif
-//For Android support
+// For Android support
 #ifdef ANDROID
-const char* instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface", VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+const char *instance_extension[] = {"VK_KHR_surface", "VK_KHR_android_surface",
+                                    VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
 #endif
-const char* devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-
+const char *devices_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 VkDeviceQueueCreateInfo queues_creates_infos[2];
 
@@ -71,7 +72,7 @@ void pe_vk_queue_families_support() {
     LOG("Family queue flag %x", property.queueFlags);
     if (property.queueFlags == VK_QUEUE_GRAPHICS_BIT) {
       q_graphic_family = i;
-    
+
       LOG("graphics queue found");
     } else
       LOG("[X] No graphics queue found\n");
@@ -126,22 +127,24 @@ void pe_vk_create_instance() {
   instance_info.pApplicationInfo = &app_info;
   instance_info.enabledExtensionCount = 3;
   instance_info.ppEnabledExtensionNames = instance_extension;
-  
-  if(pe_vk_validation_layer_enable == true){
+
+  if (pe_vk_validation_layer_enable == true) {
 
     instance_info.enabledLayerCount = 1;
     instance_info.ppEnabledLayerNames = validation_layers;
     ZERO(g_messenger_info);
     pe_vk_populate_messenger_debug_info(&g_messenger_info);
-    instance_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&g_messenger_info;
+    instance_info.pNext =
+        (VkDebugUtilsMessengerCreateInfoEXT *)&g_messenger_info;
 
-  }else {
+  } else {
     instance_info.enabledLayerCount = 0;
   }
 
-  VKVALID(vkCreateInstance(&instance_info, NULL, &vk_instance),"Can't create vk instance");
-//  VkResult r = vkCreateInstance(&instance_info, NULL, &vk_instance);
- // LOG("ERROR enum = %i", r);
+  VKVALID(vkCreateInstance(&instance_info, NULL, &vk_instance),
+          "Can't create vk instance");
+  //  VkResult r = vkCreateInstance(&instance_info, NULL, &vk_instance);
+  // LOG("ERROR enum = %i", r);
 
   if (pe_vk_validation_layer_enable == true) {
     pe_vk_setup_debug_messenger();
@@ -187,7 +190,7 @@ void pe_vk_create_surface() {
 #endif
 }
 
-void pe_vk_create_color_resources(){
+void pe_vk_create_color_resources() {
   VkFormat color_format = pe_vk_swch_format;
 
   PImageCreateInfo image_create_info = {
@@ -217,7 +220,7 @@ int pe_vk_init() {
   pe_vk_create_instance();
 
   pe_vk_create_surface();
- 
+
   pe_vk_get_physical_device();
 
   pe_vk_queue_families_support();
@@ -229,24 +232,30 @@ int pe_vk_init() {
   pe_vk_swch_create();
 
   pe_vk_create_images_views();
-  
+
   pe_vk_create_render_pass();
-  
+
   pe_vk_create_descriptor_set_layout();
   pe_vk_create_descriptor_set_layout_with_texture();
+  pe_vk_create_descriptor_set_layout_skinned();
 
-  pe_vk_pipeline_create_layout(false, &pe_vk_pipeline_layout);
+  pe_vk_pipeline_create_layout(false, &pe_vk_pipeline_layout,
+                               &pe_vk_descriptor_set_layout_with_texture);
 
-  pe_vk_pipeline_create_layout(true, &pe_vk_pipeline_layout_with_descriptors);
+  pe_vk_pipeline_create_layout(true, &pe_vk_pipeline_layout_with_descriptors,
+                               &pe_vk_descriptor_set_layout_with_texture);
 
-  pe_vk_pipelines_init();  
+  pe_vk_pipeline_create_layout(true, &pe_vk_pipeline_layout_skinned,
+                               &pe_vk_descriptor_set_layout_skinned);
+
+  pe_vk_pipelines_init();
 
   pe_vk_initialized = true;
 
   pe_vk_commands_pool_init();
 
   pe_vk_create_color_resources();
- 
+
   pe_vk_create_depth_resources();
 
   pe_vk_framebuffer_create();
@@ -259,16 +268,13 @@ int pe_vk_init() {
 
   pe_vk_models_create();
 
-
-
-
   LOG("Vulkan intialize [OK]\n");
   return 0;
 }
 
-void pe_vk_end(){
-	pe_vk_debug_end();
-	vkDestroySurfaceKHR(vk_instance,vk_surface,NULL);
-	vkDestroyDevice(vk_device,NULL);	
-	vkDestroyInstance(vk_instance,NULL);		
+void pe_vk_end() {
+  pe_vk_debug_end();
+  vkDestroySurfaceKHR(vk_instance, vk_surface, NULL);
+  vkDestroyDevice(vk_device, NULL);
+  vkDestroyInstance(vk_instance, NULL);
 }

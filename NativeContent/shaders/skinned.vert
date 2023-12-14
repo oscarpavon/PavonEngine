@@ -7,6 +7,10 @@ layout(binding = 0) uniform UniformBufferObject {
     vec4 light_position;
 } ubo;
 
+layout(std430, set = 0, binding = 2) readonly buffer JointMatrices {
+	mat4 joint_matrices[];
+};
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 layout(location = 2) in vec3 normal;
@@ -22,6 +26,13 @@ const vec3 LIGHT_DIRECTION = normalize(vec3(3.0,3.0,3.0));
 const float AMBIENT = 0.12f;
 
 void main() {
+
+mat4 skin_mat= 
+		weight.x * joint_matrices[int(joint.x)] +
+		weight.y * joint_matrices[int(joint.y)] +
+		weight.z * joint_matrices[int(joint.z)] +
+		weight.w * joint_matrices[int(joint.w)];
+
     vec4 position_world = ubo.model * vec4(position, 1.0) ;
 
     gl_Position = ubo.proj * ubo.view * position_world ;

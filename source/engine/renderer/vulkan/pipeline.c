@@ -12,8 +12,8 @@
 VkDynamicState dynamicStates[] = {VK_DYNAMIC_STATE_VIEWPORT,
                                   VK_DYNAMIC_STATE_SCISSOR};
 
-void pe_vk_pipeline_create_layout(bool use_descriptor,
-                                  VkPipelineLayout *layout) {
+void pe_vk_pipeline_create_layout(bool use_descriptor, VkPipelineLayout *layout,
+                                  VkDescriptorSetLayout *set_layout) {
 
   VkPipelineLayoutCreateInfo info;
   ZERO(info);
@@ -25,7 +25,7 @@ void pe_vk_pipeline_create_layout(bool use_descriptor,
 
   if (use_descriptor == true) {
     info.setLayoutCount = 1;
-    info.pSetLayouts = &pe_vk_descriptor_set_layout_with_texture;
+    info.pSetLayouts = set_layout;
   }
 
   VKVALID(vkCreatePipelineLayout(vk_device, &info, NULL, layout),
@@ -325,7 +325,7 @@ void pe_vk_pipelines_init() {
 
   base_pipeline_info.pVertexInputState =
       &skinned_pipeline_info.vertex_input_state;
-  base_pipeline_info.layout = pe_vk_pipeline_layout_with_descriptors;
+  base_pipeline_info.layout = pe_vk_pipeline_layout_skinned;
   array_add(&pe_vk_pipeline_infos, &base_pipeline_info);
 
   // ####################################################
