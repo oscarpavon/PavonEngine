@@ -23,10 +23,10 @@ Array engine_textures;
 
 void pe_debug_print_mat4(mat4 mat) {
 
-  LOG("matrix0 %f %f %f %f", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
-  LOG("matrix1 %f %f %f %f", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
-  LOG("matrix2 %f %f %f %f", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
-  LOG("matrix3 %f %f %f %f", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+  LOG("matrix0 %f %f %f %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+  LOG("matrix1 %f %f %f %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+  LOG("matrix2 %f %f %f %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+  LOG("matrix3 %f %f %f %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
 
 void pe_input_character(unsigned int codepoint) {

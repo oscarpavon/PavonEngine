@@ -35,7 +35,7 @@ mat4 skin_mat=
 
     vec4 position_world = ubo.model * vec4(position, 1.0) ;
 
-    gl_Position = ubo.proj * ubo.view * position_world ;
+    gl_Position = ubo.proj * ubo.view * ubo.model * skin_mat * vec4(position,1.0);
    
     vec3 normal_world_space = normalize(mat3(ubo.model) * normal);
 

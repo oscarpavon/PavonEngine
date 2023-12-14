@@ -53,6 +53,8 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
 
+    pe_debug_print_mat4(skin_component->node_uniform.joints_matrix[i]);
+
     LOG("Updated skin->node_uniform.joints_matrix[i] Joint %i\n", i);
   }
 

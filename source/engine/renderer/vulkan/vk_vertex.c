@@ -182,5 +182,5 @@ void pe_vk_models_create() {
 
   pe_vk_create_uniform_buffers(anim_model);
   pe_vk_descriptor_pool_create(anim_model);
-  pe_vk_create_descriptor_sets_skinned(anim_model);
+  pe_vk_create_descriptor_sets_skinned(anim_model, pe_curr_skin_loading);
 }
