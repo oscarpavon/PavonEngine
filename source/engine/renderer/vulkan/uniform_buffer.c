@@ -108,7 +108,8 @@ void pe_vk_uniform_buffer_update_skeletal(uint32_t image_index) {
   VkDeviceMemory *skin_memory = array_get(
       &pe_curr_skin_loading->shader_storage_buffers_memory, image_index);
 
-  pe_vk_memory_copy(pe_curr_skin_loading->joints.count * sizeof(mat4), memory,
+  pe_vk_memory_copy(pe_curr_skin_loading->joints.count * sizeof(mat4),
+                    skin_memory,
                     pe_curr_skin_loading->node_uniform.joints_matrix);
 }
 void pe_vk_uniform_buffer_update_two(uint32_t image_index) {
