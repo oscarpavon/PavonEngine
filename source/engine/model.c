@@ -196,15 +196,15 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
   case cgltf_attribute_type_joints: {
     vec4 joints[attribute->data->count];
     ZERO(joints);
-    pe_debug_accesor_type("Joints", attribute->data);
+    // pe_debug_accesor_type("Joints", attribute->data);
     pe_loader_read_accessor(attribute->data, joints);
     for (int i = 0; i < attribute->data->count; i++) {
       PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(joints[i], vertex->joint);
-      LOG("#### Vertex Joint attribute %f, %f , %f ,%f\n", vertex->joint[0],
-          vertex->joint[1], vertex->joint[2], vertex->joint[3]);
+      // LOG("#### Vertex Joint attribute %f, %f , %f ,%f\n", vertex->joint[0],
+      //    vertex->joint[1], vertex->joint[2], vertex->joint[3]);
     }
-    LOG("##### Joint load\n");
+    // LOG("##### Joint load\n");
 
     break;
   }
@@ -213,7 +213,7 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
     vec4 weights[attribute->data->count];
     ZERO(weights);
 
-    pe_debug_accesor_type("Weight", attribute->data);
+    // pe_debug_accesor_type("Weight", attribute->data);
 
     pe_loader_read_accessor(attribute->data, weights);
 
@@ -221,15 +221,16 @@ void pe_loader_attribute(cgltf_attribute *attribute) {
       PVertex *vertex = array_get(actual_vertex_array, i);
       glm_vec4_copy(weights[i], vertex->weight);
       // LOG("## Weight in vertex\n");
-      LOG("Vertex weight %f %f %f %f\n", vertex->weight[0], vertex->weight[1],
-          vertex->weight[2], vertex->weight[3]);
+      // LOG("Vertex weight %f %f %f %f\n", vertex->weight[0],
+      // vertex->weight[1],
+      //    vertex->weight[2], vertex->weight[3]);
 
       // LOG("## Weights array\n");
       // LOG("######array %f %f %f %f\n", weights[i][0], weights[i][1],
       //     weights[i][2], weights[i][3]);
     }
 
-    LOG("##### Weighs load\n");
+    // LOG("##### Weighs load\n");
     break;
   }
 
@@ -406,11 +407,11 @@ int pe_node_load(Node *parent, cgltf_node *in_cgltf_node) {
 
   if (in_cgltf_node->skin != NULL) {
     current_loaded_component_type = COMPONENT_SKINNED_MESH;
-    pe_debug_accesor_type("Inverse bind matrix",
-                          in_cgltf_node->skin->inverse_bind_matrices);
+    // pe_debug_accesor_type("Inverse bind matrix",
+    //                       in_cgltf_node->skin->inverse_bind_matrices);
 
-    LOG("Inverse bind matrix count %i\n",
-        in_cgltf_node->skin->inverse_bind_matrices->count);
+    // LOG("Inverse bind matrix count %i\n",
+    //     in_cgltf_node->skin->inverse_bind_matrices->count);
 
     int inverse_bind_matrices_count =
         in_cgltf_node->skin->inverse_bind_matrices->count;

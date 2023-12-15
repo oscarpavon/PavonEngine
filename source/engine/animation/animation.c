@@ -11,7 +11,7 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
   }
 
   skin_component->node_uniform.joint_count = skin_component->joints.count;
-  LOG("#### Joints count: %i\n", skin_component->joints.count);
+  // LOG("#### Joints count: %i\n", skin_component->joints.count);
 
   for (int i = 0; i < skin_component->joints.count; i++) {
     Node *joint = (Node *)array_get(&skin_component->joints, i);
@@ -53,12 +53,12 @@ void pe_anim_nodes_update(PSkinnedMeshComponent *skin_component) {
     // joints matrix will sended to skin vertex shader
     glm_mat4_copy(joint_mat, skin_component->node_uniform.joints_matrix[i]);
 
-    pe_debug_print_mat4(skin_component->node_uniform.joints_matrix[i]);
+    // pe_debug_print_mat4(skin_component->node_uniform.joints_matrix[i]);
 
-    LOG("Updated skin->node_uniform.joints_matrix[i] Joint %i\n", i);
+    // LOG("Updated skin->node_uniform.joints_matrix[i] Joint %i\n", i);
   }
 
-  LOG("####### pe_anim_nodes_update \n");
+  // LOG("####### pe_anim_nodes_update \n");
 }
 
 void play_animation(PSkinnedMeshComponent *skin, Animation *animation) {
