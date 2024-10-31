@@ -1,5 +1,5 @@
 #/bin/bash
-AA="/home/pavon/Downloads/1.3.268.0/x86_64/bin/glslc"
+AA="/root/Downloads/vulkansdk/x86_64/bin/glslc"
 
 "$AA" shader_vk_tri.frag -o frag.spv
 "$AA" blue.frag -o blue_frag.spv

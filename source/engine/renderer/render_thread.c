@@ -162,7 +162,7 @@ void pe_frame_draw() {
 
   pe_vk_draw_frame();
 
-  draw_skeletal_bones();
+  //draw_skeletal_bones();
 
   pe_frame_clean();
 }

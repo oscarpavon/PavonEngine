@@ -99,7 +99,7 @@ void pe_vk_queue_families_support() {
 
 void pe_vk_create_instance() {
 
-  pe_vk_validation_layer_enable = true;
+  pe_vk_validation_layer_enable = false;
 
   uint32_t instance_layer_properties_count = 0;
   vkEnumerateInstanceLayerProperties(&instance_layer_properties_count, NULL);

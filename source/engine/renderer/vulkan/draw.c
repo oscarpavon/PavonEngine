@@ -127,21 +127,22 @@ void pe_vk_draw_commands(VkCommandBuffer *cmd_buffer, uint32_t index) {
   // ############################################################
   // ############### Skeletal ########################
 
-  VkPipeline *skeletal_pipeline = array_get(&pe_graphics_pipelines, 4);
-  pe_vk_uniform_buffer_update_skeletal(index);
-  set = array_get(&anim_model->descriptor_sets, index);
+  // VkPipeline *skeletal_pipeline = array_get(&pe_graphics_pipelines, 4);
+  // pe_vk_uniform_buffer_update_skeletal(index);
+  // set = array_get(&anim_model->descriptor_sets, index);
+  //
+  // vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+  //                         pe_vk_pipeline_layout_skinned, 0, 1, set, 0, NULL);
+  // vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
+  //                   *(skeletal_pipeline));
+  //
+  // vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &anim_model->vertex_buffer,
+  //                        offsets);
+  // vkCmdBindIndexBuffer(*(cmd_buffer), anim_model->index_buffer, 0,
+  //                      VK_INDEX_TYPE_UINT16);
+  // vkCmdDrawIndexed(*(cmd_buffer), anim_model->index_array.count, 1, 0, 0, 0);
 
-  vkCmdBindDescriptorSets(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pe_vk_pipeline_layout_skinned, 0, 1, set, 0, NULL);
-  vkCmdBindPipeline(*(cmd_buffer), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    *(skeletal_pipeline));
-
-  vkCmdBindVertexBuffers(*(cmd_buffer), 0, 1, &anim_model->vertex_buffer,
-                         offsets);
-  vkCmdBindIndexBuffer(*(cmd_buffer), anim_model->index_buffer, 0,
-                       VK_INDEX_TYPE_UINT16);
-  vkCmdDrawIndexed(*(cmd_buffer), anim_model->index_array.count, 1, 0, 0, 0);
-
+  //############################################################################3
   // vkCmdDraw(*(cmd_buffer), test_model2->vertex_array.count, 1, 0, 0);
   //  pe_vk_draw_model(i,test_model);
 }

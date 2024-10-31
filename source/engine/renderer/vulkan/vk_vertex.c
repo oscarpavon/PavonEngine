@@ -140,7 +140,7 @@ VkBuffer pe_vk_vertex_create_index_buffer(Array *indices) {
 void pe_vk_models_create() {
 
   actual_model_array = &array_models_loaded;
-  pe_loader_model("/sdcard/Download/chess/vikin.glb");
+  pe_loader_model("/sdcard/Download/chess/peon.glb");
 
   test_model = selected_model;
 
@@ -167,20 +167,22 @@ void pe_vk_models_create() {
 
   // ##########################################
   // ##########################################
-  pe_loader_model("/sdcard/Download/chess/anim.glb");
-  anim_model = selected_model;
-  PSkinnedMeshComponent *skin = pe_curr_skin_loading;
 
-  pe_vk_create_shader_storage_buffers(skin);
 
-  pe_anim_nodes_update(skin);
-
-  anim_model->vertex_buffer =
-      pe_vk_vertex_create_buffer(&anim_model->vertex_array);
-  anim_model->index_buffer =
-      pe_vk_vertex_create_index_buffer(&anim_model->index_array);
-
-  pe_vk_create_uniform_buffers(anim_model);
-  pe_vk_descriptor_pool_create(anim_model);
-  pe_vk_create_descriptor_sets_skinned(anim_model, pe_curr_skin_loading);
+  // pe_loader_model("/sdcard/Download/chess/anim.glb");
+  // anim_model = selected_model;
+  // PSkinnedMeshComponent *skin = pe_curr_skin_loading;
+  //
+  // pe_vk_create_shader_storage_buffers(skin);
+  //
+  // pe_anim_nodes_update(skin);
+  //
+  // anim_model->vertex_buffer =
+  //     pe_vk_vertex_create_buffer(&anim_model->vertex_array);
+  // anim_model->index_buffer =
+  //     pe_vk_vertex_create_index_buffer(&anim_model->index_array);
+  //
+  // pe_vk_create_uniform_buffers(anim_model);
+  // pe_vk_descriptor_pool_create(anim_model);
+  // pe_vk_create_descriptor_sets_skinned(anim_model, pe_curr_skin_loading);
 }
