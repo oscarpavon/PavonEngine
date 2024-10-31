@@ -1,23 +1,32 @@
 
 
-SRCS := $(wildcard *.c)
-OBJS := $(SRCS:c=o)
-
-CFLAGS := -g -fPIC -Wno-switch -Wno-implicit-function-declaration -Wno-int-conversion -Wno-return-type -fcommon -Wno-incompatible-pointer-types
-
-CINCLUDES := -I/root/PavonEngine/source/ -I/usr/include/freetype2 -I/usr/local/include
-
-GLOBAL_DEFINE := -D OPENGL_ES2 -D LINUX -D DESKTOP -D VULKAN -D DEBUG
+include ../../include.make
 
 .PHONY: all clean install
 
 all: engine.a
 
-$(OBJS): %.o : %.c
+components_src := $(wildcard ./components/*.c)
+
+vulkan_src := $(wildcard ./renderer/vulkan/*.c)
+opengl_src := $(wildcard ./renderer/opengl/*.c)
+renderer_src := $(wildcard ./renderer/*.c)
+animation_src := $(wildcard ./animation/*.c)
+
+$(OBJS): %.o : %.c 
 	$(CC) $(CFLAGS) $(GLOBAL_DEFINE) $(CINCLUDES) -c $<
 
-engine.a: $(OBJS)
-	ar rcs engine.a *.o
+engine.a: $(OBJS) parson.o
+	$(COMPILE) -c $(components_src)
+	$(COMPILE) -c $(renderer_src)
+	$(COMPILE) -c $(vulkan_src)
+	$(COMPILE) -c $(opengl_src)
+	$(COMPILE) -c $(animation_src)
+	$(COMPILE) -c ../ThirdParty/parson.c
+	$(COMPILE) -c ./platforms/windows_manager.c 
+	$(COMPILE) -c ./Collision/collision.c
+
+	ar rcs libengine.a *.o
 
 
 clean:

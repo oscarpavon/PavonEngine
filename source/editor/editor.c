@@ -43,7 +43,7 @@
 #include "commands.h"
 
 
-#include <editor/modeling.c>
+#include <editor/modeling.h>
 
 
 
