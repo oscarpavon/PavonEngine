@@ -17,6 +17,7 @@ $(OBJS): %.o : %.c
 	$(CC) $(CFLAGS) $(GLOBAL_DEFINE) $(CINCLUDES) -c $<
 
 engine.a: $(OBJS)
+	ar rcs engine.a *.o
 
 
 clean:
