@@ -28,7 +28,7 @@ void mouse_movement_control(float xpos, float ypos){
 }
 
 
-
+#ifdef LINUX
 void pe_input_character_callback(GLFWwindow* window, unsigned int codepoint){
 	pe_input_character(codepoint);
 }
@@ -244,7 +244,7 @@ void pe_input_mouse_button_callback(GLFWwindow* window, int button, int action, 
 
 }
 
-
+#endif//define LINUX
 void pe_input_init(){
     ZERO(input);
 }

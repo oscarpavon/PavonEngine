@@ -17,7 +17,6 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
-find_package(glfw3 REQUIRED)
 
 set(linux_libraries 
 	
@@ -28,7 +27,7 @@ set(linux_libraries
 
 
 set(pc_link 
-	  glfw
+	  glfw3
     vulkan
 	  ${OPENGL_LIBRARIES}
 	  dl
