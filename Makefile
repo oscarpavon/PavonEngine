@@ -8,7 +8,7 @@ all:
 
 
 clean:
-	make -C ./src/editor clean
-	make -C ./src/engine clean
+	make -C ./src/editor WORKDIR=$(WORKDIR) clean
+	make -C ./src/engine WORKDIR=$(WORKDIR) clean
 	make -C ./src/shaders clean
 	rm -f ./bin/peditor
