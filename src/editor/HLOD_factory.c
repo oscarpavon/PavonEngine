@@ -1,11 +1,11 @@
 #include "HLOD_factory.h"
-#include "../editor.h"
+#include "editor.h"
 
-#include "../../editor/gizmos.h"
-#include "../../engine/Math/math.h"
-#include "../Textures/texture_factory.h"
+#include <editor/gizmos.h>
+#include <engine/Math/math.h>
+#include "Textures/texture_factory.h"
 
-#include <editor/ProjectManager/project_manager.h>
+#include <editor/project_manager.h>
 
 #define SAVED_DATA_COUNT 20
 vec2 UV_tranlation_offset;

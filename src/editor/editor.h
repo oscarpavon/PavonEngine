@@ -32,7 +32,7 @@
 
 #include "commands.h"
 
-#include "network/network.h"
+#include "network.h"
 
 typedef struct HLODCluster HLODCluster;
 

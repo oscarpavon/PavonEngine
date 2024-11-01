@@ -6,7 +6,7 @@
 
 #include "../../engine/gui.h"
 
-#include "../ProjectManager/project_manager.h"
+#include <editor/project_manager.h>
 #include "../editor_shader.h"
 
 #include "../commands.h"

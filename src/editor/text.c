@@ -13,7 +13,7 @@
 #include "commands.h"
 
 #include <dirent.h>
-#include "ProjectManager/project_manager.h"
+#include "project_manager.h"
 #include <engine/text_renderer.h>
 #include "menus.h"
 #include <stdlib.h>

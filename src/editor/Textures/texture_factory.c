@@ -1,10 +1,10 @@
 
 #include "texture_factory.h"
-#include "../../engine/engine.h"
+#include <engine/engine.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../ThirdParty/stb_image_write.h"
-#include "../../engine/vertex.h"
-#include "../HLOD/HLOD_factory.h"
+#include <engine/vertex.h>
+#include "../HLOD_factory.h"
 #include <engine/windows_manager.h>
 PModel *uv_model;
 GLuint renderedTexture;

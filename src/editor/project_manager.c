@@ -1,8 +1,8 @@
 #include "project_manager.h"
 
-#include "../text.h"
-#include "../menus.h"
-#include "../file_explorer.h"
+#include "text.h"
+#include "menus.h"
+#include "file_explorer.h"
 
 #include <sys/stat.h>
 #include <editor/directories.h>

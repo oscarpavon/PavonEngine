@@ -10,7 +10,7 @@
 
 #include <ctype.h>
 
-#include "HLOD/HLOD_factory.h"
+#include "HLOD_factory.h"
 
 #include "../engine/vertex.h"
 

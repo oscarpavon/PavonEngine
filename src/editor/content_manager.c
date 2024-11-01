@@ -1,5 +1,5 @@
 #include "content_manager.h"
-#include "ProjectManager/project_manager.h"
+#include "project_manager.h"
 #include "Textures/texture_factory.h"
 #include "windows/content_browser.h"
 #include "editor.h"

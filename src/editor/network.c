@@ -1,5 +1,5 @@
-#include "../../engine/network/network.h"
-#include "../editor.h"
+#include <engine/network/network.h>
+#include "editor.h"
 #include "network.h"
 #include "engine/threads.h"
 void pe_net_editor_command(struct NetworkConnecion *connection) {

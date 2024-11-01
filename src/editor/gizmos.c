@@ -1,7 +1,7 @@
 #include "gizmos.h"
 #include "../engine/shader.h"
 
-#include "HLOD/HLOD_factory.h"
+#include "HLOD_factory.h"
 #include "geometry.h"
 #include "skeletal_editor.h"
 #include <editor/editor_mode.h>

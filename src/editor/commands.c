@@ -3,11 +3,11 @@
 
 #include "windows/content_browser.h"
 
-#include <editor/ProjectManager/project_manager.h>
+#include <editor/project_manager.h>
 
 #include "../engine/utils.h"
 #include "../editor/editor_mode.h"
-#include "HLOD/HLOD_factory.h"
+#include "HLOD_factory.h"
 #include <unistd.h>
 
 int log_command_offset = 0;

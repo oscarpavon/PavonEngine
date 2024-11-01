@@ -21,15 +21,15 @@
 
 #include "Textures/texture_factory.h"
 
-#include "HLOD/HLOD_factory.h"
+#include "HLOD_factory.h"
 
-#include "ProjectManager/project_manager.h"
+#include "project_manager.h"
 #include <engine/renderer/renderer.h>
 
 #ifdef DESKTOP
 #include "windows/content_browser.h"
 
-#include "EditServer/edit_server.h"
+#include "edit_server.h"
 
 #include "file_explorer.h"
 #include <engine/renderer/vulkan/vulkan.h>
