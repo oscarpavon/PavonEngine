@@ -20,7 +20,7 @@ peditor: $(OBJS)
 	$(COMPILE) -c ./ProjectManager/project_manager.c
 	$(COMPILE) -c $(textures)
 	$(COMPILE) -c $(windows)
-	ld $(LIBC) *.o -L../engine -lengine $(LIBRARIES) -o peditor
+	ld $(LIBC) *.o -L../engine -lengine $(LIBRARIES) -o $(WORKDIR)/bin/peditor
 	
 
 
