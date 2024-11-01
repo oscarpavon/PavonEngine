@@ -5,6 +5,8 @@ Vulkan game engine for GNU/Linux
 - GLFW3
 - make
 - gcc
+- glslc
+- freetype
 
 ## Build
 ```
