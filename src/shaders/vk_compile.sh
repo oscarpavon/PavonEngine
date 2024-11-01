@@ -1,5 +1,5 @@
 #/bin/bash
-AA="/root/Downloads/vulkansdk/x86_64/bin/glslc"
+AA="glslc"
 
 "$AA" shader_vk_tri.frag -o frag.spv
 "$AA" blue.frag -o blue_frag.spv
@@ -11,4 +11,5 @@ AA="/root/Downloads/vulkansdk/x86_64/bin/glslc"
 "$AA" shader_vk_uniform.vert -o uniform.spv
 "$AA" in_position.vert -o in_position.spv
 "$AA" shader_vk_tri.vert -o vert.spv
+
 echo "[OK]Shaders compiled"
