@@ -16,7 +16,7 @@ animation_src := $(wildcard ./animation/*.c)
 $(OBJS): %.o : %.c 
 	$(CC) $(CFLAGS) $(GLOBAL_DEFINE) $(CINCLUDES) -c $<
 
-engine.a: $(OBJS) parson.o
+engine.a: $(OBJS) 
 	$(COMPILE) -c $(components_src)
 	$(COMPILE) -c $(renderer_src)
 	$(COMPILE) -c $(vulkan_src)
@@ -30,6 +30,7 @@ engine.a: $(OBJS) parson.o
 
 
 clean:
-	rm *.o
+	rm -f *.o
+	rm -f libengine.a
 	
 	
